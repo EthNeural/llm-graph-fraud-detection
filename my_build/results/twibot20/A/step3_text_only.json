@@ -1,0 +1,62 @@
+[
+  {
+    "model": "minilm + LR",
+    "acc": 0.7025,
+    "macro_f1": 0.6978,
+    "f1_class1": 0.7353,
+    "auroc": 0.764,
+    "pr_auc": 0.7862,
+    "macro_f1_connected": 0.7013,
+    "macro_f1_isolated": 0.6529
+  },
+  {
+    "model": "e5en + LR",
+    "acc": 0.7278,
+    "macro_f1": 0.7265,
+    "f1_class1": 0.7457,
+    "auroc": 0.8006,
+    "pr_auc": 0.8285,
+    "macro_f1_connected": 0.7258,
+    "macro_f1_isolated": 0.7344
+  },
+  {
+    "model": "twroberta + LR",
+    "acc": 0.7481,
+    "macro_f1": 0.7467,
+    "f1_class1": 0.7657,
+    "auroc": 0.8116,
+    "pr_auc": 0.8302,
+    "macro_f1_connected": 0.7459,
+    "macro_f1_isolated": 0.7566
+  },
+  {
+    "model": "e5 + LR",
+    "acc": 0.7168,
+    "macro_f1": 0.7161,
+    "f1_class1": 0.7305,
+    "auroc": 0.7928,
+    "pr_auc": 0.8237,
+    "macro_f1_connected": 0.722,
+    "macro_f1_isolated": 0.642
+  },
+  {
+    "model": "qwen3emb + LR",
+    "acc": 0.7075,
+    "macro_f1": 0.7046,
+    "f1_class1": 0.7338,
+    "auroc": 0.7812,
+    "pr_auc": 0.8121,
+    "macro_f1_connected": 0.7017,
+    "macro_f1_isolated": 0.7414
+  },
+  {
+    "model": "qwen + LR",
+    "acc": 0.7574,
+    "macro_f1": 0.7565,
+    "f1_class1": 0.7709,
+    "auroc": 0.8222,
+    "pr_auc": 0.8305,
+    "macro_f1_connected": 0.7574,
+    "macro_f1_isolated": 0.7463
+  }
+]

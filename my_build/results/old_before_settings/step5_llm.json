@@ -1,0 +1,47 @@
+[
+  {
+    "model": "LLM target",
+    "acc": 0.5633,
+    "macro_f1": 0.5533,
+    "f1_class1": 0.4863,
+    "auroc": 0.6059,
+    "macro_f1_connected": 0.5334,
+    "macro_f1_isolated": 0.6457
+  },
+  {
+    "model": "LLM raw",
+    "acc": 0.63,
+    "macro_f1": 0.5523,
+    "f1_class1": 0.3657,
+    "auroc": 0.593,
+    "macro_f1_connected": 0.5176,
+    "macro_f1_isolated": 0.6419
+  },
+  {
+    "model": "LLM dgp",
+    "acc": 0.6133,
+    "macro_f1": 0.5367,
+    "f1_class1": 0.3483,
+    "auroc": 0.5787,
+    "macro_f1_connected": 0.4992,
+    "macro_f1_isolated": 0.6419
+  },
+  {
+    "model": "qwen + LR",
+    "acc": 0.63,
+    "macro_f1": 0.596,
+    "f1_class1": 0.4789,
+    "auroc": 0.6512,
+    "macro_f1_connected": 0.59,
+    "macro_f1_isolated": 0.5833
+  },
+  {
+    "model": "qwen + GCN",
+    "acc": 0.6733,
+    "macro_f1": 0.6226,
+    "f1_class1": 0.4842,
+    "auroc": 0.6497,
+    "macro_f1_connected": 0.604,
+    "macro_f1_isolated": 0.5998
+  }
+]

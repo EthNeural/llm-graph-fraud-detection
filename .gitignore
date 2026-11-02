@@ -1,0 +1,11 @@
+# Only my own work is published: everything at the top level is ignored except these.
+/*
+!/my_build/
+!/reports/
+!/README.md
+!/.gitignore
+
+__pycache__/
+*.pyc
+.DS_Store
+~$*

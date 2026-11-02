@@ -1,0 +1,62 @@
+[
+  {
+    "model": "minilm + LR",
+    "acc": 0.8459,
+    "macro_f1": 0.5918,
+    "f1_class1": 0.2698,
+    "auroc": 0.736,
+    "pr_auc": 0.2717,
+    "macro_f1_connected": 0.5935,
+    "macro_f1_isolated": 0.5815
+  },
+  {
+    "model": "e5en + LR",
+    "acc": 0.8827,
+    "macro_f1": 0.5614,
+    "f1_class1": 0.186,
+    "auroc": 0.7004,
+    "pr_auc": 0.2119,
+    "macro_f1_connected": 0.5455,
+    "macro_f1_isolated": 0.5853
+  },
+  {
+    "model": "twroberta + LR",
+    "acc": 0.8208,
+    "macro_f1": 0.6238,
+    "f1_class1": 0.3515,
+    "auroc": 0.7811,
+    "pr_auc": 0.323,
+    "macro_f1_connected": 0.62,
+    "macro_f1_isolated": 0.6173
+  },
+  {
+    "model": "e5 + LR",
+    "acc": 0.876,
+    "macro_f1": 0.6169,
+    "f1_class1": 0.3019,
+    "auroc": 0.7584,
+    "pr_auc": 0.2999,
+    "macro_f1_connected": 0.6358,
+    "macro_f1_isolated": 0.5791
+  },
+  {
+    "model": "qwen3emb + LR",
+    "acc": 0.871,
+    "macro_f1": 0.6113,
+    "f1_class1": 0.2936,
+    "auroc": 0.7399,
+    "pr_auc": 0.2642,
+    "macro_f1_connected": 0.6327,
+    "macro_f1_isolated": 0.5691
+  },
+  {
+    "model": "qwen + LR",
+    "acc": 0.8794,
+    "macro_f1": 0.6335,
+    "f1_class1": 0.3333,
+    "auroc": 0.7986,
+    "pr_auc": 0.2824,
+    "macro_f1_connected": 0.6061,
+    "macro_f1_isolated": 0.6732
+  }
+]

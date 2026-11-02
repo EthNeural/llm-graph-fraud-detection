@@ -1,0 +1,457 @@
+<title>LLM + Graph Study Notes</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: one reading column, phone first. Two class colours (class 0 = normal, class 1 = the "fraud-like" class) carry the identity. */
+:root {
+  --bg: #F4F6F9;
+  --surface: #FFFFFF;
+  --ink: #17202B;
+  --muted: #586373;
+  --line: #D9DEE6;
+  --c0: #2A64AA;        /* class 0: personal / human */
+  --c1: #B9521A;        /* class 1: commercial / bot */
+  --c1-soft: #FBEDE4;
+  --c0-soft: #E7EFF9;
+  --good: #217a4b;
+  --font-display: "Bricolage Grotesque", "Avenir Next", "Segoe UI", system-ui, sans-serif;
+  --font-body: "Source Serif 4", Georgia, "Times New Roman", serif;
+  --font-mono: "JetBrains Mono", ui-monospace, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #11151B; --surface: #192029; --ink: #E5E9EF; --muted: #9AA4B2; --line: #2A3340;
+    --c0: #82B2EA; --c1: #F09A62; --c1-soft: #3A2619; --c0-soft: #1B2A3D; --good: #6CCB97;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #11151B; --surface: #192029; --ink: #E5E9EF; --muted: #9AA4B2; --line: #2A3340;
+  --c0: #82B2EA; --c1: #F09A62; --c1-soft: #3A2619; --c0-soft: #1B2A3D; --good: #6CCB97;
+  color-scheme: dark;
+}
+
+body {
+  background: var(--bg); color: var(--ink);
+  font-family: var(--font-body); font-size: 17px; line-height: 1.6;
+}
+.wrap {
+  max-width: 44rem; margin: 0 auto;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 28px 64px;
+}
+h1, h2, h3 { font-family: var(--font-display); text-wrap: balance; line-height: 1.2; margin: 0; }
+h1 { font-size: 2rem; font-weight: 700; letter-spacing: -0.01em; }
+h2 { font-size: 1.45rem; font-weight: 700; }
+h3 { font-size: 1.1rem; font-weight: 700; margin-top: 0.4rem; }
+p, ul, ol { margin: 0; }
+ul, ol { padding-left: 1.25rem; display: grid; gap: 0.35rem; }
+a { color: var(--c0); }
+a:focus-visible, summary:focus-visible { outline: 2px solid var(--c0); outline-offset: 2px; border-radius: 3px; }
+code, .mono { font-family: var(--font-mono); font-size: 0.86em; }
+code { background: var(--c0-soft); padding: 0.05em 0.3em; border-radius: 4px; word-break: break-word; }
+strong { font-weight: 600; }
+
+.eyebrow {
+  font-family: var(--font-display); font-size: 0.75rem; font-weight: 500;
+  text-transform: uppercase; letter-spacing: 0.09em; color: var(--muted);
+}
+header.top { display: grid; gap: 0.6rem; padding-bottom: 1.4rem; border-bottom: 1px solid var(--line); }
+header.top p.lede { color: var(--muted); }
+.legend { display: flex; flex-wrap: wrap; gap: 0.5rem 1rem; font-family: var(--font-display); font-size: 0.85rem; }
+.dot { display: inline-block; width: 0.7rem; height: 0.7rem; border-radius: 50%; vertical-align: -0.05rem; margin-right: 0.35rem; }
+.dot.c0 { background: var(--c0); } .dot.c1 { background: var(--c1); }
+
+nav.toc { padding-block: 1.2rem; border-bottom: 1px solid var(--line); }
+nav.toc ol { font-family: var(--font-display); font-size: 0.95rem; gap: 0.25rem; }
+nav.toc a { text-decoration: none; }
+nav.toc a:hover { text-decoration: underline; }
+
+section { display: grid; gap: 0.9rem; padding-block: 2rem; border-bottom: 1px solid var(--line); }
+section > h2 .num { color: var(--c1); font-variant-numeric: tabular-nums; margin-right: 0.4rem; }
+
+.formula {
+  font-family: var(--font-mono); font-size: 0.9rem; background: var(--surface);
+  border: 1px solid var(--line); border-radius: 8px; padding: 0.75rem 0.9rem;
+  overflow-x: auto; white-space: pre; line-height: 1.5;
+}
+.key {
+  background: var(--c1-soft); border-radius: 8px; padding: 0.8rem 0.95rem;
+  display: grid; gap: 0.4rem;
+}
+.key .eyebrow { color: var(--c1); }
+
+.tbl { overflow-x: auto; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); }
+table { border-collapse: collapse; width: 100%; font-size: 0.88rem; }
+th, td { padding: 0.45rem 0.65rem; text-align: left; border-bottom: 1px solid var(--line); white-space: nowrap; }
+th { font-family: var(--font-display); font-weight: 500; color: var(--muted); font-size: 0.8rem; letter-spacing: 0.02em; }
+td.n, th.n { text-align: right; font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+tr:last-child td { border-bottom: 0; }
+tr.best td { color: var(--good); font-weight: 600; }
+tr.grp td { font-family: var(--font-display); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); background: var(--bg); }
+.cap { font-size: 0.85rem; color: var(--muted); }
+
+dl.gloss { display: grid; gap: 0.7rem; margin: 0; }
+dl.gloss dt { font-family: var(--font-display); font-weight: 700; }
+dl.gloss dd { margin: 0.1rem 0 0; }
+
+.quiz { display: grid; gap: 0.6rem; }
+details { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 0.7rem 0.9rem; }
+details summary { cursor: pointer; font-weight: 600; list-style-position: outside; }
+details[open] summary { margin-bottom: 0.5rem; }
+details .ans { color: var(--ink); display: grid; gap: 0.4rem; }
+details .ans::before { content: "Answer"; font-family: var(--font-display); font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.09em; color: var(--good); }
+
+footer { padding-top: 1.5rem; color: var(--muted); font-size: 0.85rem; }
+@media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; } }
+html { scroll-behavior: smooth; }
+</style>
+
+<div class="wrap">
+
+<header class="top">
+  <span class="eyebrow">COMP8851 · my_build · study notes</span>
+  <h1>LLM + Graph Study Notes</h1>
+  <p class="lede">Every idea from steps 1 to 5, in the order we built them, with your real numbers. Each section ends with what to remember. Questions with hidden answers are at the bottom.</p>
+  <div class="legend">
+    <span><span class="dot c0"></span>Class 0: personal account (Instagram), human (TwiBot-20)</span>
+    <span><span class="dot c1"></span>Class 1: commercial account, bot. This plays the "fraud" class</span>
+  </div>
+</header>
+
+<nav class="toc" aria-label="Contents">
+  <ol>
+    <li><a href="#big-picture">The big picture</a></li>
+    <li><a href="#graphs">Graph basics</a></li>
+    <li><a href="#homophily">Homophily and heterophily</a></li>
+    <li><a href="#datasets">The two datasets</a></li>
+    <li><a href="#settings">Setting A and Setting B</a></li>
+    <li><a href="#evaluation">Fair evaluation</a></li>
+    <li><a href="#metrics">Metrics</a></li>
+    <li><a href="#step2">Step 2: baselines</a></li>
+    <li><a href="#step3">Step 3: LLM as encoder</a></li>
+    <li><a href="#step4">Step 4: GNNs</a></li>
+    <li><a href="#step5">Step 5: LLM as reasoner</a></li>
+    <li><a href="#results">Results and what they mean</a></li>
+    <li><a href="#engineering">Running it on a laptop</a></li>
+    <li><a href="#glossary">Glossary</a></li>
+    <li><a href="#quiz">Test yourself</a></li>
+  </ol>
+</nav>
+
+<section id="big-picture">
+  <h2><span class="num">1</span>The big picture</h2>
+  <p><strong>The problem.</strong> Fraud detection on graphs. Each user is a node, each connection is an edge, and every user has text (a bio, tweets). Classic graph neural networks (GNNs) mostly ignore that text. Large language models (LLMs) read text well but don't see the graph. The question is how to combine them.</p>
+  <p><strong>The topic brief</strong> names three roles an LLM can play:</p>
+  <ol>
+    <li><strong>Encoder.</strong> The LLM turns each user's text into a vector, and a classifier or GNN uses that vector. This is step 3, plus step 4 for the GNN part.</li>
+    <li><strong>Reasoner.</strong> The LLM reads a prompt describing the user and their neighbours and answers Yes or No. This is step 5.</li>
+    <li><strong>Augmenter.</strong> The LLM adds knowledge to a GNN. We touch this with the neighbour summaries in step 5.</li>
+  </ol>
+  <p><strong>The supervisor's twist:</strong> evaluate under <strong>heterophily</strong>. Fraudsters camouflage themselves by connecting to normal users, so "your neighbours look like you" is often false. That breaks the main assumption of GCN-style models.</p>
+  <div class="key"><span class="eyebrow">Remember</span><p>Two weak signals: text, and a graph that is barely better than random. The research question is whether LLM + graph gets more out of them than either one alone.</p></div>
+</section>
+
+<section id="graphs">
+  <h2><span class="num">2</span>Graph basics</h2>
+  <ul>
+    <li><strong>Node</strong> = a user. <strong>Edge</strong> = a connection between two users.</li>
+    <li><strong><code>edge_index</code></strong> is stored as shape <code>(2, E)</code>: row 0 holds the source nodes and row 1 the destinations. That's the PyTorch Geometric convention. The raw file was <code>(E, 2)</code>, so step 1 transposes it.</li>
+    <li><strong>Undirected</strong> means every edge is stored both ways (a→b and b→a). Instagram has 144,010 rows, so 72,005 real friendships. We checked that no reverse edge was missing.</li>
+    <li><strong>Degree</strong> = number of neighbours: <code>np.bincount(edge_index[0])</code>. Instagram's median degree is 12.</li>
+    <li><strong>Isolated node</strong> = degree 0. The graph can't help these users, so a GNN only sees their own text. Instagram has 1,838 of them.</li>
+    <li><strong>Induced subgraph</strong>: keep a set of nodes, plus only the edges where <em>both</em> ends were kept. Setting B uses this.</li>
+  </ul>
+  <div class="key"><span class="eyebrow">Remember</span><p>We always report isolated and connected test nodes separately, because the graph can only change predictions for connected ones.</p></div>
+</section>
+
+<section id="homophily">
+  <h2><span class="num">3</span>Homophily and heterophily</h2>
+  <p><strong>Homophily</strong>: connected nodes tend to share a label. <strong>Heterophily</strong>: they don't. Step 1 measures this four ways, because one number can mislead you.</p>
+
+  <h3>Edge homophily</h3>
+  <p>The share of edges whose two ends have the same label.</p>
+  <div class="formula">h_edge = mean( y[src] == y[dst] )</div>
+  <p>Instagram: <strong>0.586</strong>. That sounds moderately homophilous, but it isn't. If 64% of users are class 0, random edges already land on same-label pairs a lot.</p>
+
+  <h3>Class homophily h<sub>k</sub></h3>
+  <p>Of all edges leaving a class-k node, the share that land on another class-k node.</p>
+  <p>Instagram: h<sub>0</sub> = 0.686 and h<sub>1</sub> = 0.392. Class 1 is 36.3% of all nodes, so a class-1 user's neighbours are class 1 only slightly more often than chance. <strong>The graph knows almost nothing about class 1.</strong></p>
+
+  <h3>Class-insensitive homophily (Lim et al., 2021)</h3>
+  <p>This one subtracts the chance level p<sub>k</sub> (the class's share of all nodes), so it only counts homophily <em>above random</em>. 0 means no better than random; 1 means perfect.</p>
+  <div class="formula">h = 1/(C−1) · Σ_k max(0, h_k − p_k)
+
+Instagram:  class 0: 0.686 − 0.637 = 0.049
+            class 1: 0.392 − 0.363 = 0.029
+            h = (0.049 + 0.029) / 1 = 0.078</div>
+  <p><strong>0.078</strong> is close to random. This is the honest number.</p>
+
+  <h3>Node homophily</h3>
+  <p>For each node, the share of its own neighbours with the same label. It gives a distribution per class instead of one number. Instagram class 1 has mean 0.389, and <strong>15.5%</strong> of class-1 users have <em>no</em> same-class neighbour at all. Those users are fully camouflaged.</p>
+
+  <div class="key"><span class="eyebrow">Remember</span><p>Edge homophily is inflated by class imbalance. Always look at h<sub>k</sub> against p<sub>k</sub>, or at class-insensitive homophily. In Setting B, edge homophily jumps to 0.861, yet h<sub>1</sub> = 0.109 against p<sub>1</sub> = 0.091: even more heterophilous for the fraud class.</p></div>
+</section>
+
+<section id="datasets">
+  <h2><span class="num">4</span>The two datasets</h2>
+  <h3>Instagram (text-attributed graph)</h3>
+  <ul>
+    <li>11,339 users, 72,005 undirected edges, text = bio only. Median bio length is 119 characters, and 99 bios are empty.</li>
+    <li>Class 0 = 7,224 (63.7%), class 1 = 4,115 (36.3%).</li>
+    <li>Class 1 is <strong>inferred</strong> to mean business, brand or media accounts. Its most telling words are <em>we, official, products, magazine, news, click</em>. There is no label file that says this; the dataset doesn't name its classes.</li>
+    <li>Splits: our own stratified 60/20/20 (6,803 / 2,268 / 2,268).</li>
+    <li>We dropped Elliptic, the team's original dataset, for this rebuild.</li>
+  </ul>
+  <h3>TwiBot-20 (second dataset)</h3>
+  <ul>
+    <li>11,826 labelled users, 6,589 of them bots (55.7%). Bots are the majority here.</li>
+    <li>Text = bio + about 20 tweets, capped at 2,000 characters. Edges are follow links between labelled users: 16,349 of them.</li>
+    <li>The <strong>official split</strong> is used (8,278 / 2,365 / 1,183), so results are comparable with the literature.</li>
+    <li>Bot h<sub>k</sub> = 0.516, below the bot share of 0.557. That's heterophilous: bots connect to humans more than chance would predict.</li>
+  </ul>
+  <h3>The metadata shortcut</h3>
+  <p>TwiBot-20 also has profile numbers (verified, follower counts and so on). A logistic regression on <strong>"verified" alone scores macro-F1 0.803</strong>, because only 1 of 6,589 bots is verified. That beats every text model and says nothing about how bots write or connect. So we use <strong>text + graph only, no metadata</strong>, and report the shortcut as a reference line (report Section 4.6).</p>
+  <div class="key"><span class="eyebrow">Remember</span><p>A dataset can contain a "leak" that solves the task without the signal you're studying. Excluding it on purpose, and saying so, is a strength of the method.</p></div>
+</section>
+
+<section id="settings">
+  <h2><span class="num">5</span>Setting A and Setting B</h2>
+  <p>From the FLAG paper we took exactly two ideas: <strong>(1)</strong> treat the commercial class as the fraud-like minority, and <strong>(2)</strong> its 1:10 subsampling. Nothing else.</p>
+  <div class="tbl"><table>
+    <thead><tr><th></th><th>Setting A</th><th>Setting B</th></tr></thead>
+    <tbody>
+      <tr><td>Class ratio</td><td>Natural (Instagram 64/36)</td><td>1:10. Keep all class 0, randomly keep 10% as many class 1</td></tr>
+      <tr><td>Graph</td><td>All edges</td><td>Induced subgraph of the kept users</td></tr>
+      <tr><td>Instagram size</td><td>11,339 nodes</td><td>7,946 nodes (722 class 1), 1,407 isolated</td></tr>
+      <tr><td>Why</td><td>The data as it is</td><td>Realistic fraud: rare positives</td></tr>
+    </tbody>
+  </table></div>
+  <p>Set it with an environment variable: <code>SETTING=B python step4_gnn.py</code>. Embeddings and summaries are computed once for all users and shared; splits and metrics are kept per setting.</p>
+  <div class="key"><span class="eyebrow">Remember</span><p>Setting B is harder and is where accuracy is most misleading: always predicting "normal" scores 91% accuracy.</p></div>
+</section>
+
+<section id="evaluation">
+  <h2><span class="num">6</span>Fair evaluation (common.py)</h2>
+  <p>Every model uses the <strong>same splits</strong>, the <strong>same <code>evaluate()</code></strong> and the <strong>same threshold rule</strong>. Otherwise a comparison table means nothing.</p>
+  <ul>
+    <li><strong>Train / validation / test.</strong> Train fits the model. Validation picks settings: C, the epoch, the threshold. Test is touched once, at the end.</li>
+    <li><strong>Stratified split</strong> keeps the class-1 share the same in every part (0.363 each on Instagram). It uses <code>train_test_split</code> twice, with <code>stratify=y</code>.</li>
+    <li><strong>Splits made once</strong>, saved to <code>splits.npz</code>, and reused by every step.</li>
+    <li><strong>No leakage.</strong> Fit TF-IDF and scalers on <em>train only</em>. Standardise embeddings with train mean and standard deviation. If test data shapes the model, the test score is inflated.</li>
+    <li><strong>Class weights</strong> (<code>class_weight="balanced"</code>, inverse frequency) make mistakes on the rare class cost more.</li>
+    <li><strong>Threshold tuning.</strong> Model scores aren't calibrated, and 0.5 is a poor cut-off when class 1 is rare. <code>best_threshold()</code> tries 99 quantiles of the validation scores, keeps the one with the best validation macro-F1, then applies it unchanged to test.</li>
+    <li><strong>Seeds.</strong> GNNs are trained with 3 seeds; we report the mean ± standard deviation.</li>
+    <li><strong>Early stopping.</strong> Keep the epoch with the best validation macro-F1. Stop after 50 epochs with no improvement (patience).</li>
+  </ul>
+  <div class="key"><span class="eyebrow">Remember</span><p>Validation chooses, test reports. Anything tuned on test is cheating, even by accident.</p></div>
+</section>
+
+<section id="metrics">
+  <h2><span class="num">7</span>Metrics</h2>
+  <dl class="gloss">
+    <div><dt>Accuracy</dt><dd>Share of correct predictions. <strong>A bad main metric here.</strong> "Always predict 0" gets 63.7% on Instagram A and catches zero fraud.</dd></div>
+    <div><dt>F1 (class 1)</dt><dd>Harmonic mean of precision and recall on the minority class. It measures how well we catch class 1 without false alarms.</dd></div>
+    <div><dt>Macro-F1 (main metric)</dt><dd>F1 for each class, averaged equally. Majority-class guessing scores only 0.389, so it can't be gamed that way.</dd></div>
+    <div><dt>AUROC</dt><dd>The probability that a random class-1 user gets a higher score than a random class-0 user. 0.5 = random. It doesn't depend on the threshold.</dd></div>
+    <div><dt>PR-AUC</dt><dd>Area under the precision–recall curve for class 1. A random model scores the class-1 share (0.36 in A, about 0.09 in B), so it's much harsher than AUROC when fraud is rare.</dd></div>
+    <div><dt>conn / iso</dt><dd>Macro-F1 on connected and on isolated test nodes separately. This shows whether the graph helped where it could.</dd></div>
+  </dl>
+</section>
+
+<section id="step2">
+  <h2><span class="num">8</span>Step 2: baselines</h2>
+  <p>The bar every fancy model must clear. If an LLM or GNN can't beat these, it isn't earning its cost.</p>
+  <ol>
+    <li><strong>Majority class</strong>: predict the most common training label for everyone. This is the floor.</li>
+    <li><strong>TF-IDF + logistic regression</strong>: text only, no graph, no LLM. TF-IDF scores words that are frequent in this bio but rare overall. Settings: 1–2 word phrases, at most 20,000 features, <code>min_df=2</code>, <code>sublinear_tf</code>.</li>
+  </ol>
+  <p>On Instagram A, TF-IDF reaches macro-F1 about 0.58 with AUROC only 0.59. <strong>Text alone is weak</strong>, and step 1 showed the graph is barely better than random. On TwiBot-20 A, TF-IDF does much better (0.70), because tweets carry more signal than short bios.</p>
+  <div class="key"><span class="eyebrow">Remember</span><p>"balanced" class weights can <em>lower</em> accuracy while <em>raising</em> macro-F1 and class-1 F1. A fraud team prefers catching fraud over a flattering accuracy.</p></div>
+</section>
+
+<section id="step3">
+  <h2><span class="num">9</span>Step 3: LLM as encoder</h2>
+  <p>Turn each user's text into a vector (an <strong>embedding</strong>), then train logistic regression on it. The embeddings are cached in <code>emb_&lt;name&gt;.npy</code> and become the node features for step 4.</p>
+  <h3>Two kinds of encoder</h3>
+  <ul>
+    <li><strong>Sentence encoders</strong> (MiniLM, multilingual-E5, English E5-base, Qwen3-Embedding) are trained to output one vector per text directly. Both E5 models expect a <code>"query: "</code> prefix.</li>
+    <li><strong>Decoder LLMs and plain pre-trained models</strong> (Qwen2.5-1.5B, Twitter-RoBERTa) output one vector <em>per token</em>. We <strong>mean-pool</strong> them: average the token vectors, using the attention mask so padding is ignored.</li>
+  </ul>
+  <h3>Gotchas we hit</h3>
+  <ul>
+    <li><strong>Empty text gives NaN.</strong> Qwen adds no start token, so an empty bio becomes zero tokens and the mean pooling divides 0 by 0. Fix: a placeholder text <code>"[empty bio]"</code>.</li>
+    <li><strong>Outlier dimensions.</strong> Decoder hidden states have a few huge dimensions, so <code>StandardScaler</code> goes before logistic regression.</li>
+    <li><strong>Regularisation C</strong> is tuned on validation from {0.001, 0.01, 0.1, 1}.</li>
+    <li><strong>Long TwiBot-20 text</strong> (about 570 tokens) won't fit an encoder's 128-token window. So we encode each piece (the bio, each tweet) separately, L2-normalise each piece vector, and average them per user. A user with no text gets a zero vector plus 0/1 flags for "no bio" and "no tweets". Nobody is dropped.</li>
+  </ul>
+  <h3>The model ladder (TwiBot-20)</h3>
+  <p>Everything is fixed except the encoder, so differences come from the encoder alone:</p>
+  <div class="tbl"><table>
+    <thead><tr><th>Encoder</th><th class="n">Size</th><th>Type</th></tr></thead>
+    <tbody>
+      <tr><td>MiniLM</td><td class="n">22M</td><td>Small English sentence model</td></tr>
+      <tr><td>E5-base (English)</td><td class="n">110M</td><td>General embedder</td></tr>
+      <tr><td>Twitter-RoBERTa</td><td class="n">125M</td><td>Pre-trained on tweets</td></tr>
+      <tr><td>multilingual-E5</td><td class="n">278M</td><td>Multilingual embedder; 192M of it is the vocabulary</td></tr>
+      <tr><td>Qwen3-Embedding</td><td class="n">0.6B</td><td>LLM-based embedder</td></tr>
+      <tr><td>Qwen2.5</td><td class="n">1.5B</td><td>Decoder LLM, mean-pooled</td></tr>
+    </tbody>
+  </table></div>
+  <div class="key"><span class="eyebrow">Remember</span><p>Bigger isn't automatically better. Qwen3-Embedding (0.6B) lost to Twitter-RoBERTa (125M). Domain match (tweets) can beat size.</p></div>
+</section>
+
+<section id="step4">
+  <h2><span class="num">10</span>Step 4: GNNs, the heterophily test</h2>
+  <p><strong>Message passing</strong>: each layer updates a node from its own features and its neighbours'. Two layers let information travel two hops.</p>
+  <div class="formula">GCN :  h_v = W · mean over {v and its neighbours} of x_u
+                                    (self and neighbours MIXED)
+
+SAGE:  h_v = W1 · x_v  +  W2 · mean over neighbours of x_u
+                                    (self and neighbours SEPARATE)</div>
+  <p><strong>Why it matters under heterophily.</strong> GCN averages a class-1 user together with mostly class-0 neighbours, which blurs exactly the users we want to find. SAGE keeps a separate weight for "me", so the model can learn to trust its own text more than its neighbours'. Prediction: GCN ≤ text-only, and SAGE holds up better.</p>
+  <h3>Two controls make it a clean experiment</h3>
+  <ul>
+    <li><strong>MLP</strong>: the same 2-layer network with the edges ignored (<code>NoGraph</code>). This is text only.</li>
+    <li><strong>Graph-only</strong>: GCN or SAGE on structure features alone (log degree and mean neighbour degree). No text.</li>
+  </ul>
+  <p>So "text only vs hybrid" differs <em>only</em> in whether the graph is used.</p>
+  <p><strong>Training recipe</strong> (same for all): 2 layers, hidden size 128, dropout 0.5, Adam with lr 0.01 and weight decay 5e-4, class-weighted cross-entropy, up to 300 epochs with patience 50, 3 seeds.</p>
+  <div class="key"><span class="eyebrow">Remember</span><p>On TwiBot-20 A, GCN lost 0.04–0.06 macro-F1 against MLP for <em>every</em> encoder. SAGE stayed close to MLP. That's the heterophily prediction, confirmed.</p></div>
+</section>
+
+<section id="step5">
+  <h2><span class="num">11</span>Step 5: LLM as reasoner</h2>
+  <p>The LLM (Qwen2.5-1.5B-Instruct) answers a Yes/No question <strong>zero-shot</strong>, meaning it gets no training on our labels. The question is "Is this a business/brand account?" for Instagram and "Is this a bot?" for TwiBot-20.</p>
+  <h3>Three prompt variants, to isolate what helps</h3>
+  <div class="tbl"><table>
+    <thead><tr><th>Variant</th><th>The prompt contains</th><th>Tests</th></tr></thead>
+    <tbody>
+      <tr><td>target</td><td>Target's text only</td><td>No graph</td></tr>
+      <tr><td>raw</td><td>Target + 8 neighbours' full texts</td><td>Fine + fine</td></tr>
+      <tr><td>dgp</td><td>Target + 8 neighbours' <em>summaries</em></td><td>Fine + coarse (Dual Granularity Prompting)</td></tr>
+    </tbody>
+  </table></div>
+  <ul>
+    <li><strong>Summaries</strong>: each neighbour's text is condensed to at most 25 words (a 32-token budget) with a <strong>task-agnostic</strong> prompt that never mentions the label. They're cached in <code>summaries.json</code>, which is why the restart after the shutdown didn't redo them.</li>
+    <li><strong>Which 8 neighbours?</strong> The ones most similar to the target by cosine similarity on multilingual-E5 embeddings. On a heterophilous graph, this filters out the most different (likely other-class) neighbours.</li>
+    <li><strong>Scoring</strong>: one forward pass. Take the logits for the tokens "Yes" and "No" at the last position, apply a softmax, and use P(Yes) as the score. The threshold is tuned on a validation sample.</li>
+    <li><strong>Sampling</strong>: LLMs are slow, so the test set is a stratified sample. On that <em>same sample</em> we re-score Qwen + LR and Qwen + GCN for a fair comparison.</li>
+  </ul>
+  <div class="key"><span class="eyebrow">Remember</span><p>On Instagram A, the zero-shot reasoner (0.553) lost to the trained Qwen + LR (0.607) on the same sample, and DGP (0.537) didn't beat target-only. Reading neighbours didn't help, because the neighbours are mostly the other class.</p></div>
+</section>
+
+<section id="results">
+  <h2><span class="num">12</span>Results and what they mean</h2>
+  <p class="cap">Macro-F1 on the test set. GNN rows are the mean of 3 seeds. Green = best in that block.</p>
+
+  <h3>Instagram</h3>
+  <div class="tbl"><table>
+    <thead><tr><th>Model</th><th class="n">Setting A</th><th class="n">Setting B</th></tr></thead>
+    <tbody>
+      <tr class="grp"><td colspan="3">Baselines</td></tr>
+      <tr><td>Majority</td><td class="n">0.389</td><td class="n">0.476</td></tr>
+      <tr><td>TF-IDF (balanced)</td><td class="n">0.578</td><td class="n">0.552</td></tr>
+      <tr class="grp"><td colspan="3">Text only (encoder + LR)</td></tr>
+      <tr><td>MiniLM</td><td class="n">0.588</td><td class="n">0.546</td></tr>
+      <tr class="best"><td>multilingual-E5</td><td class="n">0.612</td><td class="n">0.563</td></tr>
+      <tr><td>Qwen2.5</td><td class="n">0.608</td><td class="n">0.578</td></tr>
+      <tr class="grp"><td colspan="3">Graph (encoder + GNN)</td></tr>
+      <tr><td>MiniLM + GCN</td><td class="n">0.607</td><td class="n">0.552</td></tr>
+      <tr><td>multilingual-E5 + SAGE</td><td class="n">0.602</td><td class="n">0.572</td></tr>
+      <tr><td>Qwen2.5 + GCN</td><td class="n">0.609</td><td class="n">0.549</td></tr>
+      <tr class="grp"><td colspan="3">LLM reasoner (test sample)</td></tr>
+      <tr><td>LLM target</td><td class="n">0.553</td><td class="n">0.522</td></tr>
+      <tr><td>LLM dgp</td><td class="n">0.537</td><td class="n">0.538</td></tr>
+    </tbody>
+  </table></div>
+  <p>In Setting B, the best model is Qwen2.5 + LR (0.578), and no GNN beats it.</p>
+
+  <h3>TwiBot-20 ladder (text only vs hybrid)</h3>
+  <div class="tbl"><table>
+    <thead><tr><th>Encoder</th><th class="n">A: MLP</th><th class="n">A: GCN</th><th class="n">A: SAGE</th><th class="n">B: MLP</th><th class="n">B: GCN</th><th class="n">B: SAGE</th></tr></thead>
+    <tbody>
+      <tr><td>MiniLM</td><td class="n">0.726</td><td class="n">0.686</td><td class="n">0.721</td><td class="n">0.588</td><td class="n">0.550</td><td class="n">0.565</td></tr>
+      <tr><td>E5-base (English)</td><td class="n">0.760</td><td class="n">0.700</td><td class="n">0.740</td><td class="n">0.564</td><td class="n">0.589</td><td class="n">0.567</td></tr>
+      <tr><td>Twitter-RoBERTa</td><td class="n">0.749</td><td class="n">0.692</td><td class="n">0.743</td><td class="n">0.612</td><td class="n">0.579</td><td class="n">0.609</td></tr>
+      <tr><td>multilingual-E5</td><td class="n">0.747</td><td class="n">0.699</td><td class="n">0.741</td><td class="n">0.606</td><td class="n">0.585</td><td class="n">0.589</td></tr>
+      <tr><td>Qwen3-Embedding</td><td class="n">0.727</td><td class="n">0.691</td><td class="n">0.707</td><td class="n">0.599</td><td class="n">0.574</td><td class="n">0.558</td></tr>
+      <tr class="best"><td>Qwen2.5</td><td class="n">0.766</td><td class="n">0.707</td><td class="n">0.750</td><td class="n">0.613</td><td class="n">0.577</td><td class="n">0.624</td></tr>
+      <tr><td>Graph only</td><td class="n">–</td><td class="n">0.577</td><td class="n">0.568</td><td class="n">–</td><td class="n">0.497</td><td class="n">0.497</td></tr>
+    </tbody>
+  </table></div>
+  <p class="cap">Reference, not a valid model: metadata without "verified" scores 0.755 (A) and 0.564 (B). The TwiBot-20 step 5 run is still going: "LLM target" in A scored 0.584.</p>
+
+  <h3>The findings, in plain words</h3>
+  <ol>
+    <li><strong>A better encoder is the biggest win.</strong> On TwiBot-20 A, going from TF-IDF (0.70) to Qwen2.5 + MLP (0.766) beats anything the graph adds.</li>
+    <li><strong>The graph adds little, and its gain shrinks as the encoder improves.</strong> On Instagram A, GCN lifts MiniLM from 0.588 to 0.607 but does nothing for Qwen2.5 (0.608 to 0.609).</li>
+    <li><strong>GCN hurts under heterophily</strong> on TwiBot-20: below MLP for every encoder in A. SAGE, which keeps "self" separate, loses much less. In B, Qwen2.5 + SAGE edges past MLP (0.624 vs 0.613), but the gap is within about one standard deviation (±0.012–0.015).</li>
+    <li><strong>The graph alone is weak</strong>: 0.577 in A, and near the floor in B (0.497).</li>
+    <li><strong>The zero-shot LLM reasoner loses to trained models</strong>, and adding neighbours (raw, dgp) doesn't reliably help. That's consistent with neighbours being mostly the other class.</li>
+    <li><strong>Size isn't everything.</strong> The tweet-trained 125M model beats the 0.6B LLM embedder.</li>
+  </ol>
+</section>
+
+<section id="engineering">
+  <h2><span class="num">13</span>Running it on a laptop</h2>
+  <ul>
+    <li><strong>Cache the slow parts</strong>: embeddings (<code>.npy</code>) and summaries (<code>.json</code>, saved every 20 batches). Re-runs then redo only the cheap parts, and a crash loses little.</li>
+    <li><strong>Half precision (fp16)</strong> on the Mac GPU (<code>mps</code>) is about 2× faster and uses half the memory.</li>
+    <li><strong>Sort texts by length</strong> before batching, so batches carry little padding. Then restore the original order.</li>
+    <li><strong>Swap is the enemy.</strong> With 16 GB of RAM, Chrome and VS Code pushed swap to 10 GB, and batches went from 8 seconds to 5–10 minutes. Quitting apps fixed it.</li>
+    <li><strong><code>caffeinate</code></strong> stops the Mac from choosing to sleep. It can't stop a flat battery, or a <code>sudo shutdown -h +50</code> timer, which is what ended the 2 November run.</li>
+    <li><strong>Environment switches</strong>: <code>DATASET=twibot20</code>, <code>SETTING=B</code>, <code>SKIP_ENCODERS=qwen</code>. One codebase, every experiment.</li>
+  </ul>
+</section>
+
+<section id="glossary">
+  <h2><span class="num">14</span>Glossary</h2>
+  <dl class="gloss">
+    <div><dt>Embedding</dt><dd>A list of numbers that represents a text. Similar texts get nearby vectors.</dd></div>
+    <div><dt>Cosine similarity</dt><dd>The angle-based similarity of two vectors. For unit vectors it's just the dot product.</dd></div>
+    <div><dt>Mean pooling</dt><dd>Averaging the token vectors into one text vector, ignoring padding.</dd></div>
+    <div><dt>L2-normalise</dt><dd>Scale a vector to length 1, so its length can't dominate an average.</dd></div>
+    <div><dt>Logits</dt><dd>The model's raw scores before softmax. We compare the logits for "Yes" and "No".</dd></div>
+    <div><dt>Zero-shot</dt><dd>Asking a model to do a task it wasn't trained on, with no examples.</dd></div>
+    <div><dt>Regularisation (C)</dt><dd>Controls how hard logistic regression is pushed towards simple weights. Smaller C means stronger regularisation.</dd></div>
+    <div><dt>Weight decay</dt><dd>The same idea for neural networks: a penalty on large weights.</dd></div>
+    <div><dt>Dropout</dt><dd>Randomly zeroes features during training so the network can't rely on any single one.</dd></div>
+    <div><dt>Early stopping / patience</dt><dd>Keep the best-validation epoch, and stop after N epochs without improvement.</dd></div>
+    <div><dt>Stratified sampling</dt><dd>Sampling that keeps the class proportions the same.</dd></div>
+    <div><dt>Data leakage</dt><dd>Test information reaching training or tuning, which inflates the scores.</dd></div>
+    <div><dt>Camouflage</dt><dd>Fraudsters connecting to normal users so they look normal to a graph model.</dd></div>
+    <div><dt>DGP</dt><dd>Dual Granularity Prompting: the target in full detail, neighbours as short summaries.</dd></div>
+  </dl>
+</section>
+
+<section id="quiz">
+  <h2><span class="num">15</span>Test yourself</h2>
+  <p>Say the answer out loud, in your own words, before you open it.</p>
+  <div class="quiz">
+    <details><summary>Why is 0.586 edge homophily misleading on Instagram?</summary><div class="ans"><p>Class 0 is 64% of users, so even random edges often join two class-0 users. After subtracting chance, class-insensitive homophily is only 0.078, which is close to random.</p></div></details>
+    <details><summary>Class 1 is 36.3% of nodes and h<sub>1</sub> = 0.392. What does that tell you?</summary><div class="ans"><p>A class-1 user's neighbours are class 1 barely more often than random (0.392 vs 0.363). The graph carries almost no information about class 1.</p></div></details>
+    <details><summary>Why does Setting B show edge homophily 0.861 when it is <em>more</em> heterophilous?</summary><div class="ans"><p>91% of nodes are class 0, so nearly all edges are 0–0. That inflates the edge score. For the fraud class, h<sub>1</sub> = 0.109 against a chance level of 0.091, which is almost no signal.</p></div></details>
+    <details><summary>Why is accuracy a bad main metric here?</summary><div class="ans"><p>"Always predict normal" scores 63.7% (A) or about 91% (B) while catching zero fraud. Macro-F1 weights both classes equally, so it can't be fooled that way.</p></div></details>
+    <details><summary>Why must the TF-IDF vectorizer never be fitted on test text?</summary><div class="ans"><p>Its vocabulary and IDF weights would then contain test information. That's data leakage, and it inflates the test score.</p></div></details>
+    <details><summary>Why pick the threshold on validation instead of using 0.5?</summary><div class="ans"><p>Class weights and LLM logits shift the scores, so they aren't calibrated probabilities. When class 1 is rare, 0.5 is badly placed. Picking it on validation (not test) keeps the test score honest.</p></div></details>
+    <details><summary>What's the difference between GCN and SAGE, and why does it matter here?</summary><div class="ans"><p>GCN mixes a node with its neighbours in one average. SAGE has a separate weight for the node itself and one for its neighbours. Under heterophily, the neighbours are mostly the other class, so GCN blurs the fraud users while SAGE can learn to trust their own text.</p></div></details>
+    <details><summary>Why include the MLP and graph-only controls?</summary><div class="ans"><p>MLP is the identical network without edges, so "MLP vs GCN" isolates the effect of the graph. Graph-only shows how much the structure knows without any text (0.577 on TwiBot-20 A).</p></div></details>
+    <details><summary>What will a GNN predict for an isolated node?</summary><div class="ans"><p>With no neighbours, it can only use the node's own features, so it behaves like the MLP. That's why the iso column is reported separately.</p></div></details>
+    <details><summary>Why did we mean-pool Qwen2.5 but not MiniLM?</summary><div class="ans"><p>MiniLM is a sentence encoder that outputs one vector per text. Qwen2.5 is a decoder LLM that outputs one vector per token, so we average them, using the attention mask to skip padding.</p></div></details>
+    <details><summary>What caused the NaN embeddings, and how did we fix it?</summary><div class="ans"><p>An empty bio became zero tokens (Qwen adds no start token), so mean pooling divided 0 by 0. We replaced empty text with a placeholder, "[empty bio]".</p></div></details>
+    <details><summary>How does TwiBot-20 text fit into a 128-token encoder?</summary><div class="ans"><p>Encode each piece (the bio, each tweet) separately, L2-normalise each vector, then average per user. Users with no text get a zero vector plus "no bio" / "no tweets" flags.</p></div></details>
+    <details><summary>Why exclude TwiBot-20 metadata?</summary><div class="ans"><p>"Verified" alone scores macro-F1 0.803, because only 1 of 6,589 bots is verified. It's a shortcut that says nothing about text or graph, so it would hide the effect we're studying. It's reported only as a reference line.</p></div></details>
+    <details><summary>In DGP, why are the summaries task-agnostic?</summary><div class="ans"><p>If the summary prompt mentioned bots or businesses, the LLM's summary would already contain a guess at the label. Keeping it neutral means the reasoner, not the summariser, makes the decision.</p></div></details>
+    <details><summary>Why choose the 8 most similar neighbours?</summary><div class="ans"><p>On a heterophilous graph, many neighbours are the other class. Picking the ones most similar by multilingual-E5 cosine similarity filters out the most misleading ones and keeps the prompt short.</p></div></details>
+    <details><summary>Why compare the LLM reasoner on the "same sample"?</summary><div class="ans"><p>The LLM is scored on a stratified sample of the test set, not all of it. Re-scoring Qwen + LR and Qwen + GCN on exactly those users makes the comparison fair.</p></div></details>
+    <details><summary>What's the single main finding?</summary><div class="ans"><p>Better text encoders give the biggest gains. The heterophilous graph adds little, and the gain shrinks as the encoder improves. GCN actively hurts, SAGE is safer, and a zero-shot LLM reasoner doesn't beat trained models.</p></div></details>
+  </div>
+</section>
+
+<footer>
+  <p>Built from my_build/ (common.py, step1–5, compare.py) and the results files as of 2 November 2026. The FLAG baseline hasn't been run yet. The TwiBot-20 step 5 numbers will be added when the current run finishes.</p>
+</footer>
+
+</div>

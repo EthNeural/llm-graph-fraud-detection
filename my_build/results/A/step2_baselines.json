@@ -1,0 +1,30 @@
+[
+  {
+    "model": "majority",
+    "acc": 0.6371,
+    "macro_f1": 0.3892,
+    "f1_class1": 0.0,
+    "macro_f1_connected": 0.3949,
+    "macro_f1_isolated": 0.3594
+  },
+  {
+    "model": "tfidf (None)",
+    "acc": 0.6398,
+    "macro_f1": 0.5791,
+    "f1_class1": 0.4193,
+    "auroc": 0.5926,
+    "pr_auc": 0.502,
+    "macro_f1_connected": 0.5763,
+    "macro_f1_isolated": 0.5773
+  },
+  {
+    "model": "tfidf (balanced)",
+    "acc": 0.6354,
+    "macro_f1": 0.5779,
+    "f1_class1": 0.4221,
+    "auroc": 0.5919,
+    "pr_auc": 0.5006,
+    "macro_f1_connected": 0.5777,
+    "macro_f1_isolated": 0.5639
+  }
+]

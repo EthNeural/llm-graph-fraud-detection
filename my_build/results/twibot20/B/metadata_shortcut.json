@@ -1,0 +1,42 @@
+[
+  {
+    "model": "meta: verified only",
+    "acc": 0.6365,
+    "macro_f1": 0.5413,
+    "f1_class1": 0.3323,
+    "auroc": 0.8002,
+    "pr_auc": 0.1993,
+    "macro_f1_connected": 0.5358,
+    "macro_f1_isolated": 0.5486
+  },
+  {
+    "model": "meta: followers only",
+    "acc": 0.8107,
+    "macro_f1": 0.5617,
+    "f1_class1": 0.2313,
+    "auroc": 0.7733,
+    "pr_auc": 0.1986,
+    "macro_f1_connected": 0.5784,
+    "macro_f1_isolated": 0.5172
+  },
+  {
+    "model": "meta: verified + followers",
+    "acc": 0.8191,
+    "macro_f1": 0.5736,
+    "f1_class1": 0.25,
+    "auroc": 0.8037,
+    "pr_auc": 0.2051,
+    "macro_f1_connected": 0.5532,
+    "macro_f1_isolated": 0.6024
+  },
+  {
+    "model": "meta: all except verified",
+    "acc": 0.876,
+    "macro_f1": 0.5643,
+    "f1_class1": 0.1957,
+    "auroc": 0.7923,
+    "pr_auc": 0.2225,
+    "macro_f1_connected": 0.5461,
+    "macro_f1_isolated": 0.6035
+  }
+]

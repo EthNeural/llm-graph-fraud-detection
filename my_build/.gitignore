@@ -1,0 +1,5 @@
+# Cached embeddings (~400 MB): regenerate with step3_embed.py
+results/**/*.npy
+# Step 6 LoRA checkpoints and adapters (large, machine-specific)
+results/**/step6_*/
+*.pt

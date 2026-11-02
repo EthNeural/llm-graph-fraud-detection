@@ -1,0 +1,32 @@
+[
+  {
+    "model": "minilm + LR",
+    "acc": 0.6398,
+    "macro_f1": 0.5878,
+    "f1_class1": 0.4416,
+    "auroc": 0.6093,
+    "pr_auc": 0.5033,
+    "macro_f1_connected": 0.5867,
+    "macro_f1_isolated": 0.5862
+  },
+  {
+    "model": "e5 + LR",
+    "acc": 0.6645,
+    "macro_f1": 0.6118,
+    "f1_class1": 0.4689,
+    "auroc": 0.6428,
+    "pr_auc": 0.55,
+    "macro_f1_connected": 0.6068,
+    "macro_f1_isolated": 0.6232
+  },
+  {
+    "model": "qwen + LR",
+    "acc": 0.6645,
+    "macro_f1": 0.6083,
+    "f1_class1": 0.4599,
+    "auroc": 0.6445,
+    "pr_auc": 0.5525,
+    "macro_f1_connected": 0.604,
+    "macro_f1_isolated": 0.6171
+  }
+]
