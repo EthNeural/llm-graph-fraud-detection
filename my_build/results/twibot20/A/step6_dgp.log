@@ -21,4 +21,4 @@ Diffusion-based metapath trimming:
   metapath follow             edges      9,844   targets with neighbours 44.6%   mean kept 0.8
   metapath friend-of-friend   edges    157,618   targets with neighbours 70.2%   mean kept 5.1
   node summaries: 30 cached, 8,873 to generate
-node summaries:   0%|          | 0/28 [00:00<?, ?it/s]node summaries:   4%|▎         | 1/28 [05:50<2:37:55, 350.93s/it]
+node summaries:   0%|          | 0/28 [00:00<?, ?it/s]node summaries:   4%|▎         | 1/28 [05:50<2:37:55, 350.93s/it]node summaries:   7%|▋         | 2/28 [10:30<2:13:49, 308.83s/it]

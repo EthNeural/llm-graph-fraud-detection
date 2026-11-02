@@ -7,6 +7,9 @@ This repository is my part of the COMP8851 major project (Macquarie University).
 LLM-based approaches for graph fraud detection, and the supervisor asked for an evaluation
 that accounts for heterophily and camouflaged fraud.
 
+- **New to the project?** Start with [TEAM_GUIDE.md](TEAM_GUIDE.md), which explains every step and decision.
+- **Latest status and results:** see [REPORT.md](REPORT.md), updated as experiments finish.
+
 It compares three ways of combining an LLM with a graph, all on the same splits and metrics:
 
 | LLM role | What it does | Step |

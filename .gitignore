@@ -3,6 +3,8 @@
 !/my_build/
 !/reports/
 !/README.md
+!/TEAM_GUIDE.md
+!/REPORT.md
 !/.gitignore
 
 __pycache__/
