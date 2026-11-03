@@ -9,6 +9,11 @@ Run (one script for every run; each phase is cached, so re-running resumes where
   caffeinate -ims env DATASET=twibot20 SETTING=A VARIANT=dgp python -u my_build/step6_dgp.py
   ... VARIANT=target ...                      the same LLM fine-tuned on the target's text alone
   ... PROBE=1 ...                             20 training steps only: prints speed and memory, saves nothing
+  ... VARIANT=dgp_num ...                     dgp + the paper's numerical summarisation (eq. 11): per
+                                              metapath, the mean of the kept neighbours' profile numbers
+                                              (TwiBot-20: the 5 non-shortcut fields from metadata_check.py:
+                                              followers, following, tweets, listed, account age; never
+                                              "verified"). Cached in metapath_numeric_<model>.json.
   ... LORA_SEED=1 ...                         seeds the LoRA start weights, dropout and batch order (torch,
                                               numpy, random). The 1,300 users, samples and summaries stay on
                                               SEED=42. Without LORA_SEED a run behaves as before (the first
@@ -62,7 +67,9 @@ from step5_llm_reason import (sample, same_sample_baselines, QUESTION, TARGET_LA
 
 MODEL_ID = os.environ.get("MODEL", "Qwen/Qwen3-1.7B")
 VARIANT = os.environ.get("VARIANT", "dgp")
-assert VARIANT in ("target", "dgp"), "VARIANT must be target or dgp"
+assert VARIANT in ("target", "dgp", "dgp_num"), "VARIANT must be target, dgp or dgp_num"
+GRAPH_PROMPT = VARIANT in ("dgp", "dgp_num")          # variants whose prompt carries neighbour summaries
+NUM_SUM = {}                                           # dgp_num: "orig|metapath" -> numeric summary line
 PROBE = os.environ.get("PROBE") == "1"
 LORA_SEED = os.environ.get("LORA_SEED")                # None = the original, unseeded LoRA runs
 FORCE = os.environ.get("FORCE") == "1"           # run even if the estimate is over MAX_HOURS
@@ -247,12 +254,38 @@ def fit_target(tok, text):
     return "\n".join(kept).strip() or EMPTY
 
 
+NUM_FIELDS = [("followers_count", "followers"), ("following_count", "following"), ("tweet_count", "tweets"),
+              ("listed_count", "listed")]
+
+
+def numeric_summaries(chosen, orig):
+    # Paper eq. 11: per metapath, the mean of the kept neighbours' numerical features. TwiBot-20
+    # only; "verified" is a labelling shortcut and is never used.
+    import pandas as pd
+    m = pd.read_csv(DATA_DIR / "metadata.csv")
+    vals = {c: pd.to_numeric(m[c], errors="coerce").fillna(0).to_numpy() for c, _ in NUM_FIELDS}
+    created = pd.to_datetime(m.created_at, format="%a %b %d %H:%M:%S %z %Y", errors="coerce")
+    vals["age"] = ((pd.Timestamp("2020-09-01", tz="UTC") - created).dt.days / 365.25).fillna(0).to_numpy()
+    out = {}
+    for (v, name), nb in chosen.items():
+        if not nb:
+            out[f"{orig[v]}|{name}"] = "none"
+            continue
+        ids = [orig[u] for u in nb]
+        parts = [f"{label} {np.mean(vals[c][ids]):,.0f}" for c, label in NUM_FIELDS]
+        out[f"{orig[v]}|{name}"] = "mean " + ", ".join(parts) + f", account age {np.mean(vals['age'][ids]):.1f} years"
+    return out
+
+
 def build_prompt(tok, v, x_text, path_sum, orig):
     msg = f"{TARGET_LABEL}:\n{fit_target(tok, x_text[v])}\n"
-    if VARIANT == "dgp":
+    if GRAPH_PROMPT:
         msg += "\nSummaries of linked accounts:\n"
         for name in METAPATHS:
-            msg += f"- {PATH_TEXT[name]}: {path_sum.get(f'{orig[v]}|{name}', 'none')}\n"
+            key = f"{orig[v]}|{name}"
+            msg += f"- {PATH_TEXT[name]}: {path_sum.get(key, 'none')}\n"
+            if VARIANT == "dgp_num":
+                msg += f"  {PATH_TEXT[name]}, numbers: {NUM_SUM.get(key, 'none')}\n"
     return chat(tok, msg + "\n" + QUESTION)
 
 
@@ -441,7 +474,7 @@ def main():
     no = tok.encode("No", add_special_tokens=False)[0]
 
     path_sum = {}
-    if VARIANT == "dgp" and not PROBE:
+    if GRAPH_PROMPT and not PROBE:
         targets = np.concatenate([train_s, val, test])
         X = load_embeddings("e5").astype(np.float32)
         if DATASET == "twibot20":
@@ -457,6 +490,10 @@ def main():
                  for (v, name), nb in chosen.items()}
         path_sum = cached_summaries(PATH_SUMMARY_FILE, items, node_prompt, tok, model,
                                     "metapath summaries")
+        if VARIANT == "dgp_num":
+            assert DATASET == "twibot20", "numerical summaries use TwiBot-20 profile fields"
+            NUM_SUM.update(numeric_summaries(chosen, orig))
+            json.dump(NUM_SUM, open(RESULTS_DIR / f"metapath_numeric_{SHORT}.json", "w"))
         torch.mps.empty_cache() if DEVICE == "mps" else None
 
     enc = lambda nodes: [tok(build_prompt(tok, v, x_text, path_sum, orig), add_special_tokens=False)

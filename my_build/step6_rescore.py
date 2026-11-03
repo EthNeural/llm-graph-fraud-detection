@@ -49,7 +49,9 @@ def main():
         tok, model = s6.load_llm(torch.float16)
         yes = tok.encode("Yes", add_special_tokens=False)[0]
         no = tok.encode("No", add_special_tokens=False)[0]
-        path_sum = json.load(open(s6.PATH_SUMMARY_FILE)) if s6.VARIANT == "dgp" else {}
+        path_sum = json.load(open(s6.PATH_SUMMARY_FILE)) if s6.GRAPH_PROMPT else {}
+        if s6.VARIANT == "dgp_num":
+            s6.NUM_SUM.update(json.load(open(RESULTS_DIR / f"metapath_numeric_{s6.SHORT}.json")))
         enc = lambda nodes: [tok(s6.build_prompt(tok, v, x_text, path_sum, orig), add_special_tokens=False)
                              ["input_ids"] for v in nodes]
         model = get_peft_model(model, LoraConfig(task_type="CAUSAL_LM", **s6.LORA))
