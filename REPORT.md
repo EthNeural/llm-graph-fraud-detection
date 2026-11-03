@@ -162,6 +162,8 @@ Each pair is scored on the same 2,000 resamples of the 1,183 test users; seeded 
 | LoRA + DGP − MLP (both 1,300) | −0.014 | [−0.041, +0.013] | no |
 | LoRA + DGP − LR (both 1,300) | −0.014 | [−0.042, +0.016] | no |
 | LoRA + DGP (1,300) − MLP (all train) | −0.054 | [−0.080, −0.027] | yes |
+| LoRA target only − MLP (both 1,300) | −0.022 | [−0.047, +0.003] | no |
+| LoRA + DGP − LoRA target only | +0.007 | [−0.015, +0.030] | no |
 
 ### Control: the same GNNs on shuffled edges (full test set, mean of 3 seeds)
 
@@ -220,7 +222,7 @@ Step 4 rerun with the bridge edges added (`GRAPH=bridges`, `results/twibot20/A/s
 4. **The graph alone is weak:** 0.577 (TwiBot-20 A), and 0.497 in B, near the floor. On the bridge graph it drops further, to 0.538.
 5. **The zero-shot LLM reasoner (Qwen2.5-1.5B-Instruct, step 5) loses to trained classifiers** on every dataset and setting. Adding neighbours (raw or summaries) does not reliably help.
 6. **Size is not everything.** Twitter-RoBERTa (125M) beats Qwen3-Embedding (0.6B). On Instagram A the encoders are tied (LR 0.588–0.612, MLP 0.585–0.607).
-7. **Fine-tuning helps a lot; the gap to text-only models is mostly training data.** On TwiBot-20 A (step 5 sample), Qwen3-1.7B with DGP summaries goes from 0.562 zero-shot to 0.726 with LoRA. Against text-only models trained on all 8,278 users it is behind (full test set: 0.711 vs 0.756 LR, 0.766 MLP). Trained on the same 1,300 users as LoRA, those models drop to 0.725–0.726, so the remaining gap is only 0.014, and its 95% CI [−0.041, +0.013] includes 0 (see "Control: training-set size" and the bootstrap table). One seed; the DGP trimming had little to trim on this sparse graph (mean 0.8–1.8 neighbours kept per 1-hop metapath, limit 8). **Do the DGP neighbour summaries help?** Barely: LoRA with summaries scores 0.711 on the full test set against 0.704 for the same model on the user's own text (AUROC 0.794 vs 0.782); on the step 5 sample 0.726 vs 0.694. Zero-shot, the summaries even hurt (0.562 vs 0.590). A paired bootstrap for dgp vs target is queued.
+7. **Fine-tuning helps a lot; the gap to text-only models is mostly training data.** On TwiBot-20 A (step 5 sample), Qwen3-1.7B with DGP summaries goes from 0.562 zero-shot to 0.726 with LoRA. Against text-only models trained on all 8,278 users it is behind (full test set: 0.711 vs 0.756 LR, 0.766 MLP). Trained on the same 1,300 users as LoRA, those models drop to 0.725–0.726, so the remaining gap is only 0.014, and its 95% CI [−0.041, +0.013] includes 0 (see "Control: training-set size" and the bootstrap table). One seed; the DGP trimming had little to trim on this sparse graph (mean 0.8–1.8 neighbours kept per 1-hop metapath, limit 8). **Do the DGP neighbour summaries help?** Barely: LoRA with summaries scores 0.711 on the full test set against 0.704 for the same model on the user's own text (AUROC 0.794 vs 0.782); on the step 5 sample 0.726 vs 0.694. Zero-shot, the summaries even hurt (0.562 vs 0.590). Paired bootstrap: +0.007 [−0.015, +0.030], so the summaries' effect is not distinguishable from test-set noise.
 
 ## Decision log
 

@@ -101,6 +101,22 @@
       "ci_low": -0.08,
       "ci_high": -0.027,
       "significant": true
+    },
+    {
+      "a": "LoRA target (1,300)",
+      "b": "MLP (1,300)",
+      "diff": -0.0218,
+      "ci_low": -0.0468,
+      "ci_high": 0.0031,
+      "significant": false
+    },
+    {
+      "a": "LoRA dgp (1,300)",
+      "b": "LoRA target (1,300)",
+      "diff": 0.0073,
+      "ci_low": -0.0148,
+      "ci_high": 0.03,
+      "significant": false
     }
   ],
   "n_boot": 2000,

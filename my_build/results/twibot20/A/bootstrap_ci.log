@@ -20,4 +20,6 @@ MLP (1,300)            - MLP (all train)    -0.040  [-0.055, -0.023]  *
 LoRA dgp (1,300)       - MLP (1,300)        -0.014  [-0.041, +0.013]
 LoRA dgp (1,300)       - LR (1,300)         -0.014  [-0.042, +0.016]
 LoRA dgp (1,300)       - MLP (all train)    -0.054  [-0.080, -0.027]  *
+LoRA target (1,300)    - MLP (1,300)        -0.022  [-0.047, +0.003]
+LoRA dgp (1,300)       - LoRA target (1,300) +0.007  [-0.015, +0.030]
 saved /Users/pj/Desktop/Macquarie - Sem 4/PROJECT/Graph-based-fraud-detection-system/my_build/results/twibot20/A/bootstrap_ci.json
