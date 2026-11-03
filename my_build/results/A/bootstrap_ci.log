@@ -1,0 +1,20 @@
+  best C = 0.001 (val macroF1 0.569)
+{'train_users': 325, 'lr': 0.5628, 'mlp': 0.5585, 'mlp_std': 0.0079}
+  best C = 0.001 (val macroF1 0.585)
+{'train_users': 650, 'lr': 0.5794, 'mlp': 0.5649, 'mlp_std': 0.0111}
+  best C = 0.001 (val macroF1 0.601)
+{'train_users': 1300, 'lr': 0.5791, 'mlp': 0.5718, 'mlp_std': 0.0072}
+  best C = 0.001 (val macroF1 0.593)
+{'train_users': 2600, 'lr': 0.5974, 'mlp': 0.5958, 'mlp_std': 0.0013}
+  best C = 0.001 (val macroF1 0.598)
+{'train_users': 5200, 'lr': 0.6055, 'mlp': 0.6008, 'mlp_std': 0.0029}
+  best C = 0.001 (val macroF1 0.596)
+{'train_users': 6803, 'lr': 0.6083, 'mlp': 0.6028, 'mlp_std': 0.0013}
+  best C = 0.001 (val macroF1 0.596)
+  best C = 0.001 (val macroF1 0.601)
+GCN (all train)        - MLP (all train)    +0.002  [-0.016, +0.020]
+SAGE (all train)       - MLP (all train)    -0.003  [-0.018, +0.012]
+FAGCN (all train)      - MLP (all train)    -0.002  [-0.017, +0.013]
+FAGCN (all train)      - GCN (all train)    -0.004  [-0.017, +0.010]
+MLP (1,300)            - MLP (all train)    -0.035  [-0.051, -0.020]  *
+saved /Users/pj/Desktop/Macquarie - Sem 4/PROJECT/Graph-based-fraud-detection-system/my_build/results/A/bootstrap_ci.json
