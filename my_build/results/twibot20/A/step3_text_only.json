@@ -58,5 +58,15 @@
     "pr_auc": 0.8305,
     "macro_f1_connected": 0.7574,
     "macro_f1_isolated": 0.7463
+  },
+  {
+    "model": "qwen3 + LR",
+    "acc": 0.765,
+    "macro_f1": 0.7646,
+    "f1_class1": 0.7747,
+    "auroc": 0.8264,
+    "pr_auc": 0.8406,
+    "macro_f1_connected": 0.7641,
+    "macro_f1_isolated": 0.7701
   }
 ]

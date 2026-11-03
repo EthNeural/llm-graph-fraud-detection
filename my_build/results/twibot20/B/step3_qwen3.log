@@ -1,0 +1,35 @@
+
+=== minilm ===
+  embeddings (5761, 386)
+  best C = 0.001 (val macroF1 0.663)
+minilm + LR        acc 0.846  macroF1 0.592  F1_1 0.270  AUROC 0.736  PR-AUC 0.272  | conn 0.593  iso 0.581
+
+=== e5en ===
+  embeddings (5761, 770)
+  best C = 0.001 (val macroF1 0.638)
+e5en + LR          acc 0.883  macroF1 0.561  F1_1 0.186  AUROC 0.700  PR-AUC 0.212  | conn 0.546  iso 0.585
+
+=== twroberta ===
+  embeddings (5761, 770)
+  best C = 0.001 (val macroF1 0.643)
+twroberta + LR     acc 0.821  macroF1 0.624  F1_1 0.352  AUROC 0.781  PR-AUC 0.323  | conn 0.620  iso 0.617
+
+=== e5 ===
+  embeddings (5761, 770)
+  best C = 0.001 (val macroF1 0.662)
+e5 + LR            acc 0.876  macroF1 0.617  F1_1 0.302  AUROC 0.758  PR-AUC 0.300  | conn 0.636  iso 0.579
+
+=== qwen3emb ===
+  embeddings (5761, 1026)
+  best C = 0.001 (val macroF1 0.655)
+qwen3emb + LR      acc 0.871  macroF1 0.611  F1_1 0.294  AUROC 0.740  PR-AUC 0.264  | conn 0.633  iso 0.569
+
+=== qwen ===
+  embeddings (5761, 1538)
+  best C = 0.001 (val macroF1 0.685)
+qwen + LR          acc 0.879  macroF1 0.634  F1_1 0.333  AUROC 0.799  PR-AUC 0.282  | conn 0.606  iso 0.673
+
+=== qwen3 ===
+  embeddings (5761, 2050)
+  best C = 0.001 (val macroF1 0.677)
+qwen3 + LR         acc 0.879  macroF1 0.584  F1_1 0.234  AUROC 0.796  PR-AUC 0.257  | conn 0.542  iso 0.644

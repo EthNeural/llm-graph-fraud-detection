@@ -1,0 +1,29 @@
+{
+  "flag share, bots": [
+    0.6499999761581421,
+    0.5569999814033508,
+    0.6380000114440918
+  ],
+  "flag share, humans": [
+    0.7950000166893005,
+    0.2930000126361847,
+    0.7850000262260437
+  ],
+  "metapaths": [
+    "friend",
+    "follow",
+    "friend-of-friend"
+  ],
+  "text": {
+    "macro_f1": 0.7565,
+    "auroc": 0.8222
+  },
+  "text + link flags": {
+    "macro_f1": 0.7696,
+    "auroc": 0.8333
+  },
+  "link flags only": {
+    "macro_f1": 0.6327,
+    "auroc": 0.6554
+  }
+}

@@ -22,7 +22,49 @@ qwen + LR | 1300 train | step 5 sample acc 0.713  macroF1 0.712  F1_1 0.724  AUR
   seed 2 full test acc 0.730  macroF1 0.727  F1_1 0.753  AUROC 0.796  PR-AUC 0.811  | conn 0.727  iso 0.724
   seed 2 step 5 sample acc 0.728  macroF1 0.725  F1_1 0.753  AUROC 0.795  PR-AUC 0.821  | conn 0.722  iso 0.760
 
+=== qwen3, full train ===
+  best C = 0.001 (val macroF1 0.759)
+qwen3 + LR | full train | full test acc 0.765  macroF1 0.765  F1_1 0.775  AUROC 0.826  PR-AUC 0.841  | conn 0.764  iso 0.770
+qwen3 + LR | full train | step 5 sample acc 0.760  macroF1 0.759  F1_1 0.773  AUROC 0.802  PR-AUC 0.811  | conn 0.759  iso 0.768
+  seed 0 full test acc 0.772  macroF1 0.771  F1_1 0.786  AUROC 0.840  PR-AUC 0.854  | conn 0.769  iso 0.792
+  seed 0 step 5 sample acc 0.760  macroF1 0.759  F1_1 0.775  AUROC 0.826  PR-AUC 0.842  | conn 0.756  iso 0.812
+  seed 1 full test acc 0.774  macroF1 0.774  F1_1 0.785  AUROC 0.842  PR-AUC 0.854  | conn 0.774  iso 0.770
+  seed 1 step 5 sample acc 0.767  macroF1 0.767  F1_1 0.780  AUROC 0.830  PR-AUC 0.841  | conn 0.764  iso 0.812
+  seed 2 full test acc 0.763  macroF1 0.763  F1_1 0.772  AUROC 0.838  PR-AUC 0.854  | conn 0.762  iso 0.781
+  seed 2 step 5 sample acc 0.750  macroF1 0.750  F1_1 0.757  AUROC 0.822  PR-AUC 0.835  | conn 0.749  iso 0.768
+
+=== qwen3, 1300 train ===
+  best C = 0.001 (val macroF1 0.733)
+qwen3 + LR | 1300 train | full test acc 0.719  macroF1 0.717  F1_1 0.742  AUROC 0.795  PR-AUC 0.818  | conn 0.713  iso 0.769
+qwen3 + LR | 1300 train | step 5 sample acc 0.715  macroF1 0.713  F1_1 0.739  AUROC 0.786  PR-AUC 0.807  | conn 0.707  iso 0.812
+  seed 0 full test acc 0.723  macroF1 0.721  F1_1 0.741  AUROC 0.791  PR-AUC 0.811  | conn 0.718  iso 0.758
+  seed 0 step 5 sample acc 0.730  macroF1 0.728  F1_1 0.750  AUROC 0.805  PR-AUC 0.819  | conn 0.726  iso 0.768
+  seed 1 full test acc 0.721  macroF1 0.720  F1_1 0.736  AUROC 0.793  PR-AUC 0.812  | conn 0.718  iso 0.746
+  seed 1 step 5 sample acc 0.720  macroF1 0.719  F1_1 0.733  AUROC 0.790  PR-AUC 0.811  | conn 0.716  iso 0.768
+  seed 2 full test acc 0.730  macroF1 0.729  F1_1 0.749  AUROC 0.791  PR-AUC 0.810  | conn 0.722  iso 0.816
+  seed 2 step 5 sample acc 0.740  macroF1 0.739  F1_1 0.756  AUROC 0.799  PR-AUC 0.814  | conn 0.734  iso 0.817
+
 model                                             macroF1  AUROC
+qwen + LR | 1300 train draw 1 | full test           0.731  0.793
+qwen + LR | 1300 train draw 1 | step 5 sample       0.716  0.768
+qwen + MLP | 1300 train draw 1 | full test          0.745  0.805
+qwen + MLP | 1300 train draw 1 | step 5 sample      0.721  0.782
+qwen + LR | 1300 train draw 2 | full test           0.739  0.800
+qwen + LR | 1300 train draw 2 | step 5 sample       0.725  0.789
+qwen + MLP | 1300 train draw 2 | full test          0.736  0.801
+qwen + MLP | 1300 train draw 2 | step 5 sample      0.733  0.795
+qwen + LR | 1300 train draw 3 | full test           0.725  0.796
+qwen + LR | 1300 train draw 3 | step 5 sample       0.710  0.771
+qwen + MLP | 1300 train draw 3 | full test          0.736  0.802
+qwen + MLP | 1300 train draw 3 | step 5 sample      0.732  0.791
+qwen + LR | 1300 train draw 4 | full test           0.728  0.783
+qwen + LR | 1300 train draw 4 | step 5 sample       0.691  0.740
+qwen + MLP | 1300 train draw 4 | full test          0.728  0.797
+qwen + MLP | 1300 train draw 4 | step 5 sample      0.710  0.764
+qwen + LR | 1300 train draw 5 | full test           0.734  0.793
+qwen + LR | 1300 train draw 5 | step 5 sample       0.734  0.780
+qwen + MLP | 1300 train draw 5 | full test          0.731  0.800
+qwen + MLP | 1300 train draw 5 | step 5 sample      0.716  0.785
 qwen + LR | full train | full test                  0.756  0.822
 qwen + LR | full train | step 5 sample              0.749  0.794
 qwen + MLP | full train | full test                 0.766  0.840
@@ -31,4 +73,12 @@ qwen + LR | 1300 train | full test                  0.725  0.786
 qwen + LR | 1300 train | step 5 sample              0.712  0.768
 qwen + MLP | 1300 train | full test                 0.726  0.796
 qwen + MLP | 1300 train | step 5 sample             0.723  0.790
+qwen3 + LR | full train | full test                 0.765  0.826
+qwen3 + LR | full train | step 5 sample             0.759  0.802
+qwen3 + MLP | full train | full test                0.769  0.840
+qwen3 + MLP | full train | step 5 sample            0.758  0.826
+qwen3 + LR | 1300 train | full test                 0.717  0.795
+qwen3 + LR | 1300 train | step 5 sample             0.713  0.786
+qwen3 + MLP | 1300 train | full test                0.724  0.792
+qwen3 + MLP | 1300 train | step 5 sample            0.729  0.798
 saved /Users/pj/Desktop/Macquarie - Sem 4/PROJECT/Graph-based-fraud-detection-system/my_build/results/twibot20/A/control_train_size.json
