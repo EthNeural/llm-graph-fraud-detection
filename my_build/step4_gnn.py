@@ -18,6 +18,13 @@ so we expect GCN <= text-only, and SAGE to hold up better.
 Each model is trained with 3 seeds; we report mean ± std on the test set,
 using the epoch with the best VALIDATION macro-F1 (early stopping).
 
+FAGCN (Bo et al., AAAI 2021) is built for heterophily: each edge learns a weight in [-1, 1],
+so a neighbour can be added (low-frequency, homophily) or SUBTRACTED (high-frequency,
+heterophily), and the layer input is mixed back in (eps). Same 2 layers, hidden size, dropout.
+
+MODELS=FAGCN (comma-separated) runs only those models and merges their rows into the existing
+results file, e.g.  DATASET=twibot20 MODELS=FAGCN python my_build/step4_gnn.py
+
 Two controls make the comparison clean (same layers, hidden size, dropout, optimiser, seeds):
   MLP         : the same 2-layer network with the edges ignored  -> text only
   graph-only  : GCN / SAGE on structure features alone (degree)   -> graph only, no text
@@ -29,7 +36,7 @@ import numpy as np
 import scipy.sparse as sp
 import torch
 import torch.nn.functional as F
-from torch_geometric.nn import GCNConv, SAGEConv
+from torch_geometric.nn import GCNConv, SAGEConv, FAConv
 from sklearn.metrics import f1_score
 
 from common import (load, load_embeddings, get_splits, isolated_mask, evaluate, best_threshold,
@@ -39,6 +46,8 @@ from step3_embed import ENCODERS, emb_file
 SEEDS = [0, 1, 2]
 EPOCHS = 300
 PATIENCE = 50
+FAGCN_EPS = 0.3                 # share of the layer input kept each layer (FAGCN paper, heterophilous graphs)
+MODELS = os.environ.get("MODELS", "MLP,GCN,SAGE,FAGCN").split(",")
 GRAPH = os.environ.get("GRAPH", "labelled")
 assert GRAPH == "labelled" or (GRAPH == "bridges" and DATASET == "twibot20"), "GRAPH=bridges is TwiBot-20 only"
 
@@ -67,9 +76,26 @@ class GNN(torch.nn.Module):
         return self.conv2(x, edge_index)
 
 
+class FAGCN(torch.nn.Module):
+    # Linear in -> 2 FAConv layers (signed edge weights, input mixed back in) -> linear out.
+    def __init__(self, in_dim, hidden=128, out_dim=2, dropout=0.5):
+        super().__init__()
+        self.lin_in = torch.nn.Linear(in_dim, hidden)
+        self.convs = torch.nn.ModuleList([FAConv(hidden, eps=FAGCN_EPS, dropout=dropout) for _ in range(2)])
+        self.lin_out = torch.nn.Linear(hidden, out_dim)
+        self.dropout = dropout
+
+    def forward(self, x, edge_index):
+        x = F.dropout(x, self.dropout, self.training)
+        x = x_0 = F.relu(self.lin_in(x))
+        for conv in self.convs:
+            x = conv(F.dropout(x, self.dropout, self.training), x_0, edge_index)
+        return self.lin_out(F.dropout(x, self.dropout, self.training))
+
+
 def train_one(conv, x, edge_index, y, train, val, seed):
     torch.manual_seed(seed)
-    model = GNN(conv, x.shape[1])
+    model = FAGCN(x.shape[1]) if conv is FAConv else GNN(conv, x.shape[1])
     opt = torch.optim.Adam(model.parameters(), lr=0.01, weight_decay=5e-4)
     # Class weights = inverse frequency, same idea as class_weight="balanced" in step 2/3.
     counts = torch.bincount(y[train])
@@ -165,8 +191,9 @@ def main():
     args = (edge_index, y, y_np, train_t, val_t, val, test, iso_test)
     results = []
     x_struct = structure_features(edge_index_np, len(y_np), train)
-    for conv_name, conv in [("GCN", GCNConv), ("SAGE", SAGEConv)]:
-        results.append(run_seeds(f"graph-only + {conv_name}", conv, x_struct, *args))
+    for conv_name, conv in [("GCN", GCNConv), ("SAGE", SAGEConv), ("FAGCN", FAConv)]:
+        if conv_name in MODELS:
+            results.append(run_seeds(f"graph-only + {conv_name}", conv, x_struct, *args))
 
     for name in ENCODERS:
         if not emb_file(name).exists():
@@ -177,12 +204,16 @@ def main():
         mu, sd = emb[train].mean(0), emb[train].std(0) + 1e-6
         x = torch.as_tensor((emb - mu) / sd)
 
-        for conv_name, conv in [("MLP", NoGraph), ("GCN", GCNConv), ("SAGE", SAGEConv)]:
-            results.append(run_seeds(f"{name} + {conv_name}", conv, x, *args))
+        for conv_name, conv in [("MLP", NoGraph), ("GCN", GCNConv), ("SAGE", SAGEConv), ("FAGCN", FAConv)]:
+            if conv_name in MODELS:
+                results.append(run_seeds(f"{name} + {conv_name}", conv, x, *args))
 
-    out = "step4_gnn.json" if GRAPH == "labelled" else f"step4_gnn_{GRAPH}.json"
-    with open(RESULTS_DIR / out, "w") as f:
-        json.dump(results, f, indent=2)
+    out = RESULTS_DIR / ("step4_gnn.json" if GRAPH == "labelled" else f"step4_gnn_{GRAPH}.json")
+    # Merge: rows of the models run now replace their old rows; other rows are kept.
+    new = {r["model"] for r in results}
+    old = [r for r in json.load(open(out)) if r["model"] not in new] if out.exists() else []
+    with open(out, "w") as f:
+        json.dump(old + results, f, indent=2)
     print(f"\nSetting {SETTING} done. Full table: python my_build/compare.py")
 
 

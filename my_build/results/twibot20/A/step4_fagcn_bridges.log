@@ -1,0 +1,45 @@
+GRAPH=bridges: 32,698 edge rows + 60,480 bridge rows -> 92,724 (isolated 137)
+
+=== graph-only + FAGCN ===
+  seed 0           acc 0.533  macroF1 0.520  F1_1 0.597  AUROC 0.542  PR-AUC 0.564  | conn 0.522  iso 0.441
+  seed 1           acc 0.533  macroF1 0.520  F1_1 0.598  AUROC 0.546  PR-AUC 0.582  | conn 0.527  iso 0.425
+  seed 2           acc 0.521  macroF1 0.516  F1_1 0.562  AUROC 0.544  PR-AUC 0.579  | conn 0.514  iso 0.465
+  -> mean macroF1 0.519 ± 0.002
+
+=== minilm + FAGCN ===
+  seed 0           acc 0.703  macroF1 0.703  F1_1 0.718  AUROC 0.781  PR-AUC 0.811  | conn 0.703  iso 0.701
+  seed 1           acc 0.713  macroF1 0.712  F1_1 0.730  AUROC 0.789  PR-AUC 0.821  | conn 0.712  iso 0.712
+  seed 2           acc 0.734  macroF1 0.732  F1_1 0.754  AUROC 0.792  PR-AUC 0.812  | conn 0.730  iso 0.758
+  -> mean macroF1 0.716 ± 0.012
+
+=== e5en + FAGCN ===
+  seed 0           acc 0.743  macroF1 0.742  F1_1 0.760  AUROC 0.813  PR-AUC 0.845  | conn 0.742  iso 0.735
+  seed 1           acc 0.746  macroF1 0.741  F1_1 0.776  AUROC 0.815  PR-AUC 0.843  | conn 0.739  iso 0.765
+  seed 2           acc 0.749  macroF1 0.748  F1_1 0.763  AUROC 0.810  PR-AUC 0.842  | conn 0.744  iso 0.793
+  -> mean macroF1 0.744 ± 0.003
+
+=== twroberta + FAGCN ===
+  seed 0           acc 0.740  macroF1 0.739  F1_1 0.755  AUROC 0.803  PR-AUC 0.827  | conn 0.732  iso 0.827
+  seed 1           acc 0.724  macroF1 0.724  F1_1 0.735  AUROC 0.793  PR-AUC 0.810  | conn 0.718  iso 0.793
+  seed 2           acc 0.729  macroF1 0.727  F1_1 0.751  AUROC 0.804  PR-AUC 0.827  | conn 0.722  iso 0.781
+  -> mean macroF1 0.730 ± 0.006
+
+=== e5 + FAGCN ===
+  seed 0           acc 0.737  macroF1 0.737  F1_1 0.744  AUROC 0.816  PR-AUC 0.843  | conn 0.741  iso 0.689
+  seed 1           acc 0.732  macroF1 0.730  F1_1 0.752  AUROC 0.801  PR-AUC 0.824  | conn 0.731  iso 0.722
+  seed 2           acc 0.737  macroF1 0.736  F1_1 0.752  AUROC 0.802  PR-AUC 0.828  | conn 0.739  iso 0.701
+  -> mean macroF1 0.735 ± 0.003
+
+=== qwen3emb + FAGCN ===
+  seed 0           acc 0.712  macroF1 0.708  F1_1 0.741  AUROC 0.787  PR-AUC 0.817  | conn 0.705  iso 0.741
+  seed 1           acc 0.724  macroF1 0.722  F1_1 0.740  AUROC 0.783  PR-AUC 0.809  | conn 0.721  iso 0.745
+  seed 2           acc 0.719  macroF1 0.718  F1_1 0.729  AUROC 0.788  PR-AUC 0.807  | conn 0.718  iso 0.712
+  -> mean macroF1 0.716 ± 0.006
+
+=== qwen + FAGCN ===
+  seed 0           acc 0.746  macroF1 0.746  F1_1 0.760  AUROC 0.818  PR-AUC 0.840  | conn 0.746  iso 0.735
+  seed 1           acc 0.749  macroF1 0.749  F1_1 0.759  AUROC 0.819  PR-AUC 0.844  | conn 0.746  iso 0.781
+  seed 2           acc 0.737  macroF1 0.736  F1_1 0.753  AUROC 0.806  PR-AUC 0.832  | conn 0.737  iso 0.724
+  -> mean macroF1 0.743 ± 0.005
+
+Setting A done. Full table: python my_build/compare.py
