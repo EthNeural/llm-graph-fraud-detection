@@ -17,12 +17,12 @@ section. For how everything works, see [TEAM_GUIDE.md](TEAM_GUIDE.md).
 | Step 4: MLP / GCN / SAGE / FAGCN | ✅ + bridge graph | ✅ | ✅ | ✅ |
 | Step 5: zero-shot reasoner | ✅ | ✅ | ✅ | ✅ |
 | Step 6: DGP (LoRA), dgp | ✅ 1 seed | ✅ 1 seed | not in scope | not in scope |
-| Step 6: DGP (LoRA), target | ✅ 1 seed | 🔄 running | not in scope | not in scope |
+| Step 6: DGP (LoRA), target | ✅ 1 seed | ✅ 1 seed | not in scope | not in scope |
 | FLAG baseline (see next steps) | ⏳ | ⏳ | not in scope | not in scope |
 
 ✅ done · 🔄 running · ⏳ to do
 
-**Current run (GPU, one job at a time):** step 6 `target` on TwiBot-20 B (started 3 Nov 23:02; `dgp` on B finished 19:14–23:02), then rescoring of the epoch-2 LoRA adapters (`step6_rescore.py`). Expected to end about 04:00–05:00 on 4 Nov.
+**Current run (GPU):** rescoring of the last-check LoRA adapters (started 4 Nov 01:12; step 6 `dgp` on B ran 19:14–23:02 and `target` on B 23:02–01:09), then of the epoch-2 LoRA adapters (`step6_rescore.py`). Expected to end about 04:00–05:00 on 4 Nov.
 - Done today: step 6 `target` on TwiBot-20 A (13:30–15:42); Qwen3-1.7B embeddings (15:42–19:14, 3.5 h).
 - On CPU after the chain: the setting B training-size control and bootstrap.
 
@@ -73,12 +73,14 @@ Two different LLMs appear here. **Step 5 uses Qwen2.5-1.5B-Instruct** (zero-shot
 | 5 | Qwen2.5-1.5B-Instruct zero-shot: target only | 0.584 | 0.541 | 0.553 | 0.522 |
 | 5 | Qwen2.5-1.5B-Instruct zero-shot: raw neighbours | 0.591 | 0.547 | 0.552 | 0.499 |
 | 5 | Qwen2.5-1.5B-Instruct zero-shot: DGP summaries | 0.550 | 0.541 | 0.537 | 0.538 |
-| 6 | Qwen3-1.7B zero-shot: target only | 0.590 | ⏳ | not in scope | not in scope |
+| 6 | Qwen3-1.7B zero-shot: target only | 0.590 | 0.503 | not in scope | not in scope |
 | 6 | Qwen3-1.7B zero-shot: DGP summaries | 0.562 | 0.527 | not in scope | not in scope |
-| 6 | Qwen3-1.7B LoRA: target only | 0.694 | ⏳ | not in scope | not in scope |
+| 6 | Qwen3-1.7B LoRA: target only | 0.694 | 0.618 | not in scope | not in scope |
 | 6 | Qwen3-1.7B LoRA: DGP summaries | 0.726 | 0.628 | not in scope | not in scope |
 
-**TwiBot-20 B, step 6 `dgp`** (597 test users, 54 bots; the step 5 "sample" is the whole test set; 1 seed): LoRA + DGP scores macro-F1 0.628, AUROC 0.723, PR-AUC 0.296, against Qwen2.5 + LR 0.634 / 0.799 / 0.282 and MLP (seed 0) 0.633 / 0.788 / 0.274. Paired bootstrap against MLP on all 4,000 training users (`B/bootstrap_ci.json`): macro-F1 +0.015 [−0.051, +0.081], AUROC −0.064 [−0.124, −0.008], PR-AUC +0.027 [−0.080, +0.143]. So in B LoRA is level on macro-F1 and PR-AUC (CIs about ±0.07–0.11 wide) and significantly lower on AUROC. With 54 test bots, B's apparent PR-AUC lead is noise. Validation loss and AUROC agreed in B (best check at epoch 2.0: loss 0.335, AUROC 0.810), unlike A.
+**TwiBot-20 B, step 6 `dgp`** (597 test users, 54 bots; the step 5 "sample" is the whole test set; 1 seed): LoRA + DGP scores macro-F1 0.628, AUROC 0.723, PR-AUC 0.296, against Qwen2.5 + LR 0.634 / 0.799 / 0.282 and MLP (seed 0) 0.633 / 0.788 / 0.274. Paired bootstrap against MLP on all 4,000 training users (`B/bootstrap_ci.json`): macro-F1 +0.015 [−0.051, +0.081], AUROC −0.064 [−0.124, −0.008], PR-AUC +0.027 [−0.080, +0.143]. So in B LoRA is level on macro-F1 and PR-AUC (CIs about ±0.07–0.11 wide) and significantly lower on AUROC. With 54 test bots, B's apparent PR-AUC lead is noise.
+
+**TwiBot-20 B, step 6 `target`**: LoRA on the user's own text scores 0.618 / AUROC 0.683 / PR-AUC 0.188 (zero-shot 0.503), so `dgp` − `target` is +0.010 macro-F1, +0.040 AUROC, +0.108 PR-AUC (paired bootstrap queued). Unlike A, the link-type cue does not account for it: target LoRA + 3 link flags (LR fitted on validation) scores only 0.574 (AUROC 0.687), −0.054 [−0.102, −0.006] below `dgp`, and `dgp` ranks better than `target` within most flag groups (no follow link: AUROC 0.702 vs 0.611; no friend link: 0.718 vs 0.681; has follow link is the exception, 0.770 vs 0.814). So in B the summaries seem to add something beyond "which links exist", but B's edges are themselves label-dependent and its CIs are wide. Validation loss and AUROC agreed in B (best check at epoch 2.0: loss 0.335, AUROC 0.810), unlike A.
 
 **Sample noise.** On 400 users, macro-F1 moves by about ±0.04 from test-set noise alone, and the sample shifts models in different directions against the full test set: LoRA + DGP 0.711 → 0.726, LoRA target 0.704 → 0.694, LR 0.756 → 0.749. So on the sample dgp − target is +0.032; on the full test set it is +0.007. Use the full-test numbers (training-size and bootstrap sections) for any LoRA claim.
 
@@ -239,7 +241,7 @@ We read this as a property of how the dataset was collected (who appeared in who
 
 In setting B the three flags lift LR from 0.634 to 0.656 (+0.023, `B/isolation_cue.json`), but B's edges themselves depend on every user's label through its subsampling, so that number is partly built from the labels.
 
-**Does step 6 `dgp` gain only through this cue?** The `dgp` prompt writes "none" for each missing link type, so it exposes the three undirected flags; `target` does not. Combining the target-only LoRA score with the three flags (an LR fitted on the validation set) scores 0.731 macro-F1 (AUROC 0.803), against 0.711 (0.794) for `dgp`: +0.020 [−0.002, +0.040]. Within groups of users with the same flag, `dgp` is better in some (no friend link: AUROC 0.803 vs 0.775; has follow link: 0.786 vs 0.770) and worse in others (has friend: 0.768 vs 0.777). So the summaries' own contribution is not established: a 4-feature LR on top of target LoRA matches `dgp`.
+**Does step 6 `dgp` gain only through this cue? In A, apparently yes.** The `dgp` prompt writes "none" for each missing link type, so it exposes the three undirected flags; `target` does not. Combining the target-only LoRA score with the three flags (an LR fitted on the validation set) scores 0.731 macro-F1 (AUROC 0.803), against 0.711 (0.794) for `dgp`: +0.020 [−0.002, +0.040]. Within groups of users with the same flag, `dgp` is better in some (no friend link: AUROC 0.803 vs 0.775; has follow link: 0.786 vs 0.770) and worse in others (has friend: 0.768 vs 0.777). So in A the summaries' own contribution is not established: a 4-feature LR on top of target LoRA matches `dgp`. In setting B the same check goes the other way (target + flags 0.574 vs `dgp` 0.628, see the setting B step 6 paragraph).
 
 ### Robustness check: step 4 on the bridge graph (TwiBot-20 A, full test set)
 
@@ -322,6 +324,7 @@ Step 4 rerun with the bridge edges added (`GRAPH=bridges`, `results/twibot20/A/s
 
 ## Changelog
 
+- **4 Nov 2026 (01:20):** Step 6 `target` on TwiBot-20 B: 0.618 / AUROC 0.683 / PR-AUC 0.188 (`dgp` 0.628 / 0.723 / 0.296). In B, target LoRA + link flags does not reach `dgp` (0.574), unlike A.
 - **3 Nov 2026 (23:50):** `bootstrap_ci.py` now also gives AUROC and PR-AUC CIs and can use either LoRA adapter (`LORA_ADAPTER`); setting B: LoRA + DGP vs MLP AUROC −0.064 (significant), PR-AUC +0.027 (not).
 - **3 Nov 2026 (23:20):** Step 6 `dgp` on TwiBot-20 B: LoRA 0.628 macro-F1 (LR 0.634), AUROC 0.723 (LR 0.799), PR-AUC 0.296 (LR 0.282); zero-shot 0.527.
 - **3 Nov 2026 (22:00):** After review 4: TwiBot-20's link signal is in link direction (incoming links), tracks follower count and reflects how the dataset was collected (`link_direction.py`); the cue section, finding 3 and the one-line answer reworded. Target LoRA + 3 link flags matches `dgp` (0.731 vs 0.711). Number fixes (GCN/FAGCN ranges, LR 0.756, B +0.023, zero-shot on the sample only); softened two overclaims.

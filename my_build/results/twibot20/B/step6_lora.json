@@ -30,6 +30,36 @@
     "macro_f1_isolated": 0.5279
   },
   {
+    "model": "Qwen3-1.7B LoRA target (full test)",
+    "acc": 0.866,
+    "macro_f1": 0.6181,
+    "f1_class1": 0.3103,
+    "auroc": 0.6834,
+    "pr_auc": 0.1883,
+    "macro_f1_connected": 0.6297,
+    "macro_f1_isolated": 0.5914
+  },
+  {
+    "model": "Qwen3-1.7B LoRA target",
+    "acc": 0.866,
+    "macro_f1": 0.6181,
+    "f1_class1": 0.3103,
+    "auroc": 0.6834,
+    "pr_auc": 0.1883,
+    "macro_f1_connected": 0.6297,
+    "macro_f1_isolated": 0.5914
+  },
+  {
+    "model": "Qwen3-1.7B zero-shot target",
+    "acc": 0.7119,
+    "macro_f1": 0.5031,
+    "f1_class1": 0.181,
+    "auroc": 0.6116,
+    "pr_auc": 0.124,
+    "macro_f1_connected": 0.523,
+    "macro_f1_isolated": 0.4556
+  },
+  {
     "model": "qwen+LR (same sample)",
     "acc": 0.8794,
     "macro_f1": 0.6335,
