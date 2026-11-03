@@ -15,8 +15,12 @@ and (in steps 4-5) merge the two types. This script, on setting A, measures:
      bootstrap 95% CIs (2,000 test resamples).
 All labels are used only to DESCRIBE the data (1-4) or to score test predictions (5-6).
 Run:  DATASET=twibot20 SETTING=A python my_build/link_direction.py   (CPU, about 2 min)
+      SETTING=B runs parts 5-6 only (B's edges depend on the labels through its subsampling,
+      so the descriptive parts 1-4 would mostly describe the subsampling).
+      LORA_ADAPTER=last uses the final-check adapter scores from step6_rescore.py.
 """
 import json
+import os
 
 import numpy as np
 import pandas as pd
@@ -24,11 +28,12 @@ from scipy.stats import spearmanr
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import f1_score, roc_auc_score
 
-from common import load, load_embeddings, get_splits, best_threshold, DATA_DIR, RESULTS_DIR, SETTING
+from common import load, load_embeddings, get_splits, best_threshold, original_ids, DATA_DIR, RESULTS_DIR, SETTING
 from step3_embed import make_clf, tune_C
 from step6_dgp import typed_relations, metapath_adjacency, METAPATHS
 
 N_BOOT = 2000
+LORA_ADAPTER = os.environ.get("LORA_ADAPTER", "best")
 
 
 def lr_preds(X, y, train, val, test):
@@ -45,14 +50,8 @@ def paired_ci(y, a, b, boots):
     return dict(diff=round(f(a, np.arange(len(y))) - f(b, np.arange(len(y))), 4), ci=[round(lo, 4), round(hi, 4)])
 
 
-def main():
-    assert SETTING == "A", "run on setting A (B's edges depend on the labels through its subsampling)"
-    _, _, y = load()
-    n = len(y)
-    train, val, test = get_splits(y)
-    typed = {r: e.T for r, e in np.load(DATA_DIR / "edge_typed.npz").items()}      # (2, E) source -> target
-    out = {}
-
+def describe(out, typed, deg, y, n, test):
+    # Parts 1-4: setting A only.
     # 1. caps and reciprocity
     for r, (s, t) in typed.items():
         od = np.bincount(s, minlength=n)
@@ -61,9 +60,6 @@ def main():
         out[f"{r}: mutual share"] = round(sum((b, a) in pairs for a, b in pairs) / len(pairs), 4)
 
     # 2. in vs out, by label; training-free score
-    deg = {}
-    for r, (s, t) in typed.items():
-        deg[f"out-{r}"], deg[f"in-{r}"] = np.bincount(s, minlength=n), np.bincount(t, minlength=n)
     for k, d in deg.items():
         out[f"has {k}: bots / humans"] = [round(float((d[y == 1] > 0).mean()), 3), round(float((d[y == 0] > 0).mean()), 3)]
         out[f"{k}: test AUROC of the count"] = round(roc_auc_score(y[test], d[test]), 3)
@@ -85,11 +81,33 @@ def main():
         has = np.bincount(sup["lab"][sup["rel"] == r], minlength=n) > 0
         out[f"own {r} list recorded (any support link): bots / humans"] = [round(float(has[y == 1].mean()), 3), round(float(has[y == 0].mean()), 3)]
 
+
+def main():
+    _, _, y = load()
+    n = len(y)
+    train, val, test = get_splits(y)
+    # (2, E) source -> target, renumbered to this setting (B keeps a subset of users)
+    keep = original_ids()
+    new_id = np.full(len(np.load(DATA_DIR / "y.npy")), -1)
+    new_id[keep] = np.arange(len(keep))
+    typed = {}
+    for r, e in np.load(DATA_DIR / "edge_typed.npz").items():
+        e = new_id[e.T]
+        typed[r] = e[:, (e >= 0).all(0)]
+    out = {}
+
+    deg = {}
+    for r, (s, t) in typed.items():
+        deg[f"out-{r}"], deg[f"in-{r}"] = np.bincount(s, minlength=n), np.bincount(t, minlength=n)
+    if SETTING == "A":
+        describe(out, typed, deg, y, n, test)
+
     # 5. step 6: is dgp's gain the cue?
     rel = typed_relations()
     flags = np.stack([np.asarray(metapath_adjacency(rel, path, n).sum(1)).ravel() > 0
                       for path in METAPATHS.values()], 1).astype(np.float32)
-    sc = {v: np.load(RESULTS_DIR / f"step6_Qwen3-1.7B_{v}_scores.npz") for v in ["dgp", "target"]}
+    suffix = "_scores.npz" if LORA_ADAPTER == "best" else "_last_scores.npz"
+    sc = {v: np.load(RESULTS_DIR / f"step6_Qwen3-1.7B_{v}{suffix}") for v in ["dgp", "target"]}
     assert (sc["dgp"]["test_nodes"] == test).all() and (sc["target"]["test_nodes"] == test).all()
     groups = {}
     for j, name in enumerate(METAPATHS):
@@ -129,7 +147,8 @@ def main():
         out[name] = dict(macro_f1=round(f1_score(yt, p > t, average="macro"), 4), auroc=round(roc_auc_score(yt, p), 4))
 
     print(json.dumps(out, indent=1))
-    json.dump(out, open(RESULTS_DIR / "link_direction.json", "w"), indent=2)
+    name = "link_direction.json" if LORA_ADAPTER == "best" else "link_direction_last_adapter.json"
+    json.dump(out, open(RESULTS_DIR / name, "w"), indent=2)
 
 
 if __name__ == "__main__":
