@@ -54,6 +54,28 @@ section. For how everything works, see [TEAM_GUIDE.md](TEAM_GUIDE.md).
 ### Encoding (step 3)
 TwiBot-20 text is longer than an encoder reads, so each piece (the bio and each tweet) is encoded separately, up to 128 tokens, and the L2-normalised piece vectors are averaged per user. Decoder LLMs (Qwen2.5-1.5B, Qwen3-1.7B) and Twitter-RoBERTa are mean-pooled over tokens. A user with no text gets a zero vector, and two 0/1 flags ("no bio", "no tweets") are added for TwiBot-20, so nobody is dropped. Features are standardised with training-set statistics only.
 
+### Profile metadata: which fields are shortcuts? (TwiBot-20 A, full test set)
+
+We use every profile field unless it is a shortcut, under a rule fixed before looking at results (`my_build/metadata_check.py`): a field is excluded if (a) it is a documented collection or labelling artefact, or (b) one split on it labels a large group almost perfectly (a depth-1 tree leaf with at least 10% of training users that is at least 99% one class).
+
+| Field | Single-field depth-1 tree: macro-F1 / AUROC | Purest large leaf (share of users, purity) | Spearman with in-friend count | Verdict |
+|---|---|---|---|---|
+| verified | 0.803 / 0.800 | – | – | **shortcut**: documented (Hays et al., WWW 2023, §4.1) |
+| followers count | 0.731 / 0.731 | 31.7%, 77.0% | +0.59 | allowed |
+| following count | 0.456 / 0.534 | 16.9%, 68.8% | −0.03 | allowed |
+| tweet count | 0.594 / 0.597 | 49.9%, 65.8% | +0.38 | allowed |
+| listed count | 0.714 / 0.716 | 27.0%, 81.6% | +0.59 | allowed |
+| account age | 0.620 / 0.621 | 52.6%, 66.5% | +0.33 | allowed |
+
+| Qwen2.5-1.5B embeddings + | LR macro-F1 (AUROC) | MLP macro-F1 (AUROC), 3 seeds | Gain over text only (paired bootstrap) |
+|---|---|---|---|
+| nothing (text only) | 0.756 (0.822) | 0.766 (0.840) | – |
+| **the 5 allowed fields** | **0.804 (0.874)** | **0.806 (0.885)** | LR +0.048 [+0.027, +0.067]; MLP +0.040 [+0.024, +0.056] |
+| all 6 fields incl. verified (reference only) | 0.861 (0.926) | 0.844 (0.921) | +0.10 |
+| the 5 allowed fields alone (no text) | 0.748 (0.769) | 0.742 (0.796) | – |
+
+The allowed fields add a real +0.04–0.05 to text. Two caveats: followers and listed count correlate ρ 0.59 with the crawl artefact (in-friend count), so part of their gain is the same collection effect; and every comparison elsewhere in this report (encoders, GNNs, LLMs) is text-only, so these rows are a separate "text + profile" track, not a replacement. The DGP numerical-summary variant (`VARIANT=dgp_num`) uses only the 5 allowed fields.
+
 ### Checks on the prepared data
 | Check | Result |
 |---|---|
@@ -412,6 +434,7 @@ Step 4 rerun with the bridge edges added (`GRAPH=bridges`, `results/twibot20/A/s
 
 ## Changelog
 
+- **4 Nov 2026 (05:40):** Metadata shortcut check: only "verified" is a shortcut under the pre-set rule; text + the 5 allowed fields gains +0.04–0.05 macro-F1 (significant). `VARIANT=dgp_num` (DGP's numerical summaries) added and queued after the LoRA seeds.
 - **4 Nov 2026 (05:00):** New Data preparation section (sources, text, edges, splits and settings, encoding, checks). Raw vs cleaned text check: cleaning changes TF-IDF + LR by −0.026 to +0.002, all CIs include 0. Noted the 2,000-character text cap (61.6% of TwiBot-20 users).
 - **4 Nov 2026 (04:40):** `LORA_SEED` added to step 6; seeds 1 and 2 started on TwiBot-20 A. Duplicate-text check: 1 TwiBot-20 test user and 12 Instagram test users share a training user's text; removing them changes Qwen2.5 + LR by at most 0.001. Heterophily sweep started.
 - **4 Nov 2026 (05:30):** FLAG-lite (similar-10 graph + skip-GCN) and LINKX on all four settings: neither beats MLP on TwiBot-20 A; the skip connection recovers most of GCN's loss.

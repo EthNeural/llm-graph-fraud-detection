@@ -1,0 +1,157 @@
+{
+  "fields": {
+    "verified": {
+      "depth1_macro_f1": 0.8027,
+      "depth1_auroc": 0.8002,
+      "purest_large_leaf": [
+        0.248,
+        0.9995
+      ],
+      "spearman_in_friend": 0.496,
+      "spearman_in_follow": -0.383,
+      "shortcut": "Hays et al. (WWW 2023, \u00a74.1): verified accounts were automatically labelled human"
+    },
+    "log_followers_count": {
+      "depth1_macro_f1": 0.7313,
+      "depth1_auroc": 0.7308,
+      "purest_large_leaf": [
+        0.317,
+        0.7702
+      ],
+      "spearman_in_friend": 0.594,
+      "spearman_in_follow": -0.435,
+      "shortcut": null
+    },
+    "log_following_count": {
+      "depth1_macro_f1": 0.4563,
+      "depth1_auroc": 0.5338,
+      "purest_large_leaf": [
+        0.169,
+        0.6877
+      ],
+      "spearman_in_friend": -0.028,
+      "spearman_in_follow": 0.124,
+      "shortcut": null
+    },
+    "log_tweet_count": {
+      "depth1_macro_f1": 0.5941,
+      "depth1_auroc": 0.5965,
+      "purest_large_leaf": [
+        0.499,
+        0.6575
+      ],
+      "spearman_in_friend": 0.375,
+      "spearman_in_follow": -0.26,
+      "shortcut": null
+    },
+    "log_listed_count": {
+      "depth1_macro_f1": 0.7136,
+      "depth1_auroc": 0.7157,
+      "purest_large_leaf": [
+        0.27,
+        0.8164
+      ],
+      "spearman_in_friend": 0.594,
+      "spearman_in_follow": -0.447,
+      "shortcut": null
+    },
+    "account_age_years": {
+      "depth1_macro_f1": 0.6202,
+      "depth1_auroc": 0.621,
+      "purest_large_leaf": [
+        0.526,
+        0.665
+      ],
+      "spearman_in_friend": 0.331,
+      "spearman_in_follow": -0.253,
+      "shortcut": null
+    }
+  },
+  "allowed": [
+    "log_followers_count",
+    "log_following_count",
+    "log_tweet_count",
+    "log_listed_count",
+    "account_age_years"
+  ],
+  "models": [
+    {
+      "model": "LR",
+      "features": "text only",
+      "macro_f1": 0.7565,
+      "auroc": 0.8222
+    },
+    {
+      "model": "MLP",
+      "features": "text only",
+      "macro_f1": 0.7656,
+      "auroc": 0.8395
+    },
+    {
+      "model": "LR",
+      "features": "text + allowed metadata",
+      "macro_f1": 0.8041,
+      "auroc": 0.8738,
+      "minus_text_only": 0.0475,
+      "ci": [
+        0.0266,
+        0.0672
+      ]
+    },
+    {
+      "model": "MLP",
+      "features": "text + allowed metadata",
+      "macro_f1": 0.8057,
+      "auroc": 0.885,
+      "minus_text_only": 0.0401,
+      "ci": [
+        0.0239,
+        0.0563
+      ]
+    },
+    {
+      "model": "LR",
+      "features": "text + all metadata (incl. shortcuts; reference only)",
+      "macro_f1": 0.8607,
+      "auroc": 0.9256,
+      "minus_text_only": 0.1042,
+      "ci": [
+        0.0809,
+        0.1262
+      ]
+    },
+    {
+      "model": "MLP",
+      "features": "text + all metadata (incl. shortcuts; reference only)",
+      "macro_f1": 0.8435,
+      "auroc": 0.9206,
+      "minus_text_only": 0.0779,
+      "ci": [
+        0.0588,
+        0.0959
+      ]
+    },
+    {
+      "model": "LR",
+      "features": "allowed metadata only",
+      "macro_f1": 0.7479,
+      "auroc": 0.7686,
+      "minus_text_only": -0.0086,
+      "ci": [
+        -0.0395,
+        0.0215
+      ]
+    },
+    {
+      "model": "MLP",
+      "features": "allowed metadata only",
+      "macro_f1": 0.7422,
+      "auroc": 0.7962,
+      "minus_text_only": -0.0234,
+      "ci": [
+        -0.054,
+        0.008
+      ]
+    }
+  ]
+}

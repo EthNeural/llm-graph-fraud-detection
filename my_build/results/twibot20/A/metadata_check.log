@@ -1,0 +1,19 @@
+verified               depth-1 F1 0.803 AUROC 0.800 leaf (0.248, 0.9995)  rho(in-friend) +0.50  -> SHORTCUT: Hays et al. (WWW 2023, §4.1): verified accounts were automatically labelled human
+log_followers_count    depth-1 F1 0.731 AUROC 0.731 leaf (0.317, 0.7702)  rho(in-friend) +0.59  -> allowed
+log_following_count    depth-1 F1 0.456 AUROC 0.534 leaf (0.169, 0.6877)  rho(in-friend) -0.03  -> allowed
+log_tweet_count        depth-1 F1 0.594 AUROC 0.597 leaf (0.499, 0.6575)  rho(in-friend) +0.38  -> allowed
+log_listed_count       depth-1 F1 0.714 AUROC 0.716 leaf (0.27, 0.8164)  rho(in-friend) +0.59  -> allowed
+account_age_years      depth-1 F1 0.620 AUROC 0.621 leaf (0.526, 0.665)  rho(in-friend) +0.33  -> allowed
+  best C = 0.01 (val macroF1 0.759)
+LR   text only                                               0.756  AUROC 0.822
+MLP  text only                                               0.766  AUROC 0.840
+  best C = 0.01 (val macroF1 0.802)
+LR   text + allowed metadata                                 0.804  AUROC 0.874  +0.0475 [0.0266, 0.0672]
+MLP  text + allowed metadata                                 0.806  AUROC 0.885  +0.0401 [0.0239, 0.0563]
+  best C = 0.01 (val macroF1 0.856)
+LR   text + all metadata (incl. shortcuts; reference only)   0.861  AUROC 0.926  +0.1042 [0.0809, 0.1262]
+MLP  text + all metadata (incl. shortcuts; reference only)   0.844  AUROC 0.921  +0.0779 [0.0588, 0.0959]
+  best C = 0.001 (val macroF1 0.726)
+LR   allowed metadata only                                   0.748  AUROC 0.769  -0.0086 [-0.0395, 0.0215]
+MLP  allowed metadata only                                   0.742  AUROC 0.796  -0.0234 [-0.054, 0.008]
+saved /Users/pj/Desktop/Macquarie - Sem 4/PROJECT/Graph-based-fraud-detection-system/my_build/results/twibot20/A/metadata_check.json
