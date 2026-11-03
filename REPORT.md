@@ -111,7 +111,7 @@ Plain edge homophily is misleading when classes are unbalanced, so this table al
 | Instagram A, all edges | 72,005 | 0.586 | 0.551 | 0.078 | 0.005 |
 | Instagram B, all edges | 38,193 | 0.861 | 0.856 | 0.033 | 0.002 |
 
-Every graph sits near zero once chance is removed. Setting B's high edge homophily (0.86–0.88) only reflects the 1:10 ratio: almost every edge touches the large class. On TwiBot-20, B's near-zero value is also caused by how B is built: it keeps 8% of bots and only edges whose two ends are both kept, so bot–bot edge rows fall from 8,162 (A) to 54 (B). A bot's neighbours are then 7.8% bots, below B's 9.1% base rate, and isolation becomes tied to the label (41.8% of B's bots are isolated, against 27.6% of its humans; 7.3% vs 8.5% in A). Friend links on TwiBot-20 carry no label signal at all. The bridge edges raise adjusted homophily to 0.175, yet GCN still gets worse on them (robustness check below).
+Every graph sits near zero once chance is removed. Setting B's high edge homophily (0.86–0.88) only reflects the 1:10 ratio: almost every edge touches the large class. On TwiBot-20, B's near-zero value is also caused by how B is built: it keeps 8% of bots and only edges whose two ends are both kept, so bot–bot edge rows fall from 8,162 (A) to 54 (B). A bot's neighbours are then 7.8% bots, below B's 9.1% base rate, and isolation becomes tied to the label (41.8% of B's bots are isolated, against 27.6% of its humans; 7.3% vs 8.5% in A). Friend links on TwiBot-20 join same-label users no more often than chance (adjusted −0.015); the label signal in TwiBot-20's links sits elsewhere, in who lists whom (see "who lists whom"). The bridge edges raise adjusted homophily to 0.175, yet GCN still gets worse on them (robustness check below).
 
 ### TwiBot-20 graph: dropped support users
 
@@ -146,7 +146,7 @@ Step 6 fine-tunes on **1,300** training users (the DGP paper's size); the text-o
 | Qwen3-1.7B LoRA + DGP summaries (1 seed) | 1,300 | 0.711 | 0.794 | 0.726 |
 | Qwen3-1.7B LoRA, target text only (1 seed) | 1,300 | 0.704 | 0.782 | 0.694 |
 
-**Same model, two roles.** Qwen3-1.7B used as a frozen encoder with an MLP scores 0.724 on 1,300 users and 0.769 on all users; fine-tuned with LoRA on the same 1,300 users it scores 0.711 (DGP summaries) and 0.704 (target text). So the model version does not explain the gap: Qwen2.5 and Qwen3 behave alike as encoders. With the same 1,300 users, the text-only models lose about 0.03–0.04, and the gap to LoRA + DGP shrinks from 0.055 to 0.015 on the full test set. On the step 5 sample LoRA is level with them. The full-train rows reproduce steps 3 and 4 exactly, which checks the setup.
+**Same model, two roles.** Qwen3-1.7B used as a frozen encoder with an MLP scores 0.724 on 1,300 users and 0.769 on all users; fine-tuned with LoRA on the same 1,300 users it scores 0.711 (DGP summaries) and 0.704 (target text). So the model version does not explain the gap: in setting A, Qwen2.5 and Qwen3 behave alike as encoders (in B, Qwen3 is lower: LR 0.584 vs 0.634). With the same 1,300 users, the text-only models lose about 0.03–0.04, and the gap to LoRA + DGP shrinks from 0.055 to 0.015 on the full test set. On the step 5 sample LoRA is level with them. The full-train rows reproduce steps 3 and 4 exactly, which checks the setup.
 
 **Which 1,300 users?** The table uses the same draw as step 6. Over 6 random stratified 1,300-user draws (`control_train_size.py`, `DRAWS=6`), LR scores 0.730 ± 0.005 and MLP 0.733 ± 0.006 on the full test set (MLP: 3 seeds per draw). The step 6 draw is the lowest of the six (LR 0.725, MLP 0.726), so the typical gap between LoRA + DGP (0.711) and a text-only model on 1,300 users is about 0.02, not 0.014. LoRA itself was trained on one draw only.
 
@@ -154,7 +154,7 @@ Step 6 fine-tunes on **1,300** training users (the DGP paper's size); the text-o
 
 | Training users | 325 | 650 | 1,300 | 2,600 | 5,200 | 8,278 |
 |---|---|---|---|---|---|---|
-| LR | 0.714 | 0.720 | 0.725 | 0.743 | 0.754 | 0.757 |
+| LR | 0.714 | 0.720 | 0.725 | 0.743 | 0.754 | 0.756 |
 | MLP | 0.697 | 0.713 | 0.726 | 0.751 | 0.754 | 0.766 |
 
 LoRA + DGP at 1,300 users (0.711) is below every text-only point from 650 users up, and level with LR trained on 325 users (0.714), a quarter of its data. LoRA target only (0.704) is below them all. Equal training data closes most of the gap, but not all of it.
@@ -208,20 +208,36 @@ Each shuffled value is the mean ± std over 5 random rewirings (each itself the 
 
 Real edges join users with similar text whatever their labels, even across bot–human pairs (0.235). So GCN loses less on real edges because averaging similar users blurs a user's own vector less, not because the edges reveal labels. Setting B shows the same pattern (0.336 real vs 0.071 shuffled).
 
-### Which link types a user has is itself a cue (TwiBot-20, full test set)
+### Who lists whom: a crawl artefact that carries label signal (TwiBot-20 A)
 
-The step 6 `dgp` prompt writes "none" for every metapath a user has no neighbours in, so the LLM can see which link types exist, whatever the summaries say. `my_build/isolation_cue.py` measures that cue with LR on Qwen2.5-1.5B embeddings, with and without three 0/1 flags (has a friend, a follow link, a friend-of-friend). Checked before the setting B step 6 result was read.
+TwiBot-20 stored, for each labelled user, a sample of about 10 accounts they follow (`friend`) and 10 accounts following them (`follow`). So a link between two labelled users means one appears in the other's 10-sample; out-degree inside the labelled graph is capped at 10, and only 1.2% (friend) and 3.8% (follow) of links are mutual. Our pipelines symmetrise these links, and steps 4–5 also merge the two types. `my_build/link_direction.py` (`results/twibot20/A/link_direction.json`) looks at direction:
 
-| | A: share of bots / humans with the link | A: macro-F1 (AUROC) | B: share of bots / humans | B: macro-F1 (AUROC) |
-|---|---|---|---|---|
-| has friend | 0.650 / 0.795 | | 0.464 / 0.655 | |
-| has follow | **0.557 / 0.293** | | 0.275 / 0.182 | |
-| has friend-of-friend | 0.638 / 0.785 | | 0.431 / 0.620 | |
-| Link flags alone | | 0.633 (0.655) | | 0.561 (0.632) |
-| Text (LR) | | 0.757 (0.822) | | 0.634 (0.799) |
-| Text + link flags (LR) | | 0.770 (0.833) | | 0.656 (0.805) |
+| Link, as stored | Share with ≥1: bots | humans | Test AUROC of the count |
+|---|---|---|---|
+| Outgoing friend (user lists someone) | 0.387 | 0.358 | 0.517 |
+| Outgoing follow | 0.118 | 0.088 | 0.509 |
+| **Incoming friend** (user is in someone's following sample) | 0.388 | **0.634** | 0.306 (0.694 reversed) |
+| **Incoming follow** (user is in someone's follower sample) | **0.499** | 0.238 | 0.640 |
 
-Bots are almost twice as likely as humans to have a follow link in A, so link *types* carry label signal even though link *neighbours* barely do (finding 3). Adding the flags lifts LR by 0.013 (A) and 0.022 (B). This is a confound for `dgp` − `target`: a `dgp` gain can come from this cue rather than from the summaries. Our step 4 GNNs merge friend and follow into one edge type, so they cannot use it.
+- **All the signal is in incoming links**, and it is strong: the untrained score in-follow minus in-friend reaches test AUROC 0.713, above graph-only GCN (0.61). Outgoing links carry almost none.
+- **It tracks follower count**, a metadata field we exclude as a shortcut: Spearman ρ between in-friend count and `followers_count` is 0.59 (0.69 among humans), and −0.44 for in-follow.
+- **Whether a user's own lists were recorded also depends on the label**: 95.8% of bots have a recorded follow list against 81.4% of humans (friend lists 95.0% vs 88.0%).
+
+We read this as a property of how the dataset was collected (who appeared in whose sample, and how popular they are), not as relational signal a deployed detector would have. It explains why graph-only models still score 0.577 although neighbour labels are uninformative.
+
+**How much do these cues add to text?** LR on Qwen2.5-1.5B embeddings, full test set, paired bootstrap 95% CIs:
+
+| Features | Macro-F1 | AUROC | Gain over text |
+|---|---|---|---|
+| Text | 0.756 | 0.822 | – |
+| Text + 3 undirected link flags (has friend / follow / friend-of-friend) | 0.770 | 0.833 | +0.013 [−0.003, +0.029] |
+| Text + 4 log in/out degrees | 0.775 | 0.845 | +0.019 [+0.001, +0.038] |
+| 3 link flags only | 0.633 | 0.655 | |
+| 4 log in/out degrees only | 0.660 | 0.717 | |
+
+In setting B the three flags lift LR from 0.634 to 0.656 (+0.023, `B/isolation_cue.json`), but B's edges themselves depend on every user's label through its subsampling, so that number is partly built from the labels.
+
+**Does step 6 `dgp` gain only through this cue?** The `dgp` prompt writes "none" for each missing link type, so it exposes the three undirected flags; `target` does not. Combining the target-only LoRA score with the three flags (an LR fitted on the validation set) scores 0.731 macro-F1 (AUROC 0.803), against 0.711 (0.794) for `dgp`: +0.020 [−0.002, +0.040]. Within groups of users with the same flag, `dgp` is better in some (no friend link: AUROC 0.803 vs 0.775; has follow link: 0.786 vs 0.770) and worse in others (has friend: 0.768 vs 0.777). So the summaries' own contribution is not established: a 4-feature LR on top of target LoRA matches `dgp`.
 
 ### Robustness check: step 4 on the bridge graph (TwiBot-20 A, full test set)
 
@@ -249,7 +265,8 @@ Step 4 rerun with the bridge edges added (`GRAPH=bridges`, `results/twibot20/A/s
 - **LoRA reads less text than the encoders.** Its prompt caps the user's own text at 480 tokens of whole lines, which cuts 81% of TwiBot-20 users short (13.2 of 16.6 lines kept on average, 800-user sample). The encoders read every line. This biases LoRA vs MLP against LoRA; dgp vs target is unaffected (same cap).
 - **LoRA and the other models choose their checkpoint differently.** LoRA keeps the lowest validation loss on a 200-user sample; MLP and GNNs keep the best full-validation macro-F1. In both TwiBot-20 A LoRA runs the loss was lowest at epoch 1 while validation AUROC kept rising (dgp 0.748 → 0.772, target 0.765 → 0.781). The epoch-2 adapters are being scored with the full-validation rule (`my_build/step6_rescore.py`).
 - **GNN hyperparameters are fixed and shared, not tuned.**
-- **The `dgp` prompt reveals which link types a user has** (its "none" lines), a label cue worth +0.013 to LR in A and +0.022 in B (see "link types as a cue"). `target` does not see it.
+- **The `dgp` prompt reveals which link types a user has** (its "none" lines), a label cue worth +0.013 to LR in A (CI includes 0) and +0.023 in B; target LoRA plus these flags matches `dgp` (see "who lists whom"). `target` does not see it.
+- **TwiBot-20's links reflect how it was collected.** Each user stores a sample of about 10 followers and 10 followings; incoming links track follower count (excluded metadata), and whether a user's own lists were recorded depends on the label (95.8% of bots vs 81.4% of humans for follow lists).
 - **Step 5's neighbour ranking uses multilingual-E5 vectors with the two 0/1 "no bio" / "no tweets" flags still attached** (`step5_llm_reason.py:180`), so a shared flag can outweigh text similarity when a user has more than 8 neighbours. Step 6's diffusion drops the flags (`step6_dgp.py:441`).
 - **Setting B is small and changes the graph.** Its test set has 54 bots; one random bot subsample (seed 42); 29% of users are isolated in B against 7.8% in A (37% of B's test bots). Its paired bootstrap CIs are about ±0.05: GCN − MLP −0.036 [−0.087, +0.012], SAGE − MLP +0.012 [−0.034, +0.058], FAGCN − MLP −0.058 [−0.112, −0.002]. Only the FAGCN gap is outside noise. B's MLP learning curve is flat and noisy (0.622 at 325 users, 0.613 at 4,000); LR rises from 0.583 to 0.634. B cannot separate most models. B also has almost no bot–bot edges (54 rows), so its "no edge signal" result reflects the subsampling, not rare fraud as such. `results/twibot20/B/bootstrap_ci.json`.
 - **TwiBot-20 graph = labelled users only** (see "dropped support users"; bridge check below).
@@ -257,15 +274,15 @@ Step 4 rerun with the bridge edges added (`GRAPH=bridges`, `results/twibot20/A/s
 
 ## Findings so far
 
-**In one line:** on TwiBot-20 a strong text encoder does the work. The edges carry almost no label signal, so no GNN and no neighbour-summary prompt beats a text-only model, and a fine-tuned LLM roughly matches text-only models trained on the same 1,300 users but stays below them when those use all 8,278.
+**In one line:** on TwiBot-20 a strong text encoder does the work. Neighbour labels carry almost no signal, so no GNN and no neighbour-summary prompt is significantly better than a text-only model; the label signal that the links do carry comes from how the dataset was collected (who appears in whose follower sample) and tracks follower count. A fine-tuned LLM roughly matches text-only models trained on the same 1,300 users but stays below them when those use all 8,278.
 
 1. **A good text encoder is where the gains are.** On TwiBot-20 A, Qwen3-1.7B + MLP (0.769) and Qwen2.5-1.5B + MLP (0.766) beat TF-IDF (0.702) by about 0.065. The neural encoders span 0.726–0.769, and no graph model improves on its encoder's MLP.
-2. **Neighbour averaging (GCN) hurts; models that keep a user's own features lose less; none beats MLP on TwiBot-20.** GCN is 0.04–0.06 below MLP for every encoder in A (Qwen2.5: −0.059, 95% CI [−0.082, −0.037]). SAGE (own features kept separate) is within about 0.02 (−0.015, borderline). FAGCN is 0.004–0.027 below MLP and beats GCN by 0.02–0.04, but it beats GCN by as much on shuffled edges (Qwen2.5 0.725 vs 0.670), so its gain comes from mixing its input back in at every layer (eps), not from signed edge weights. All GNNs use the same fixed, untuned hyperparameters. Even on the bridge graph, the only one with clear label signal (adjusted homophily 0.175), GCN gets worse by 0.02–0.04. On Instagram A, where text alone is weak (AUROC about 0.63), GCN is level with MLP (+0.002, CI [−0.016, +0.020]): averaging hurts when a user's own text is strong and is neutral when it is weak.
-3. **The edges carry almost no label signal; they join users who write alike.** Adjusted homophily is −0.015 to 0.08 on every original graph and label informativeness at most 0.005. Real edges join users with similar text whatever their labels (centred cosine 0.26 vs 0.05 for shuffled edges). So on TwiBot-20 A real edges are less harmful than random ones (GCN +0.037 over 5 rewirings) but never better than no edges. Link *types* are different: bots are almost twice as likely to have a follow link (0.557 vs 0.293), a cue our GNNs cannot see because they merge edge types.
+2. **Neighbour averaging (GCN) hurts; models that keep a user's own features lose less; none beats MLP on TwiBot-20.** GCN is 0.036–0.064 below MLP for every encoder in A (Qwen2.5: −0.059, 95% CI [−0.082, −0.037]). SAGE (own features kept separate) is within about 0.02 (−0.015, borderline). FAGCN is 0.003–0.030 below MLP and beats GCN by 0.02–0.04, but it beats GCN by as much on shuffled edges (Qwen2.5 0.725 vs 0.670), so its gain comes from mixing its input back in at every layer (eps), not from signed edge weights. All GNNs use the same fixed, untuned hyperparameters. Even on the bridge graph, the only one with clear label signal (adjusted homophily 0.175), GCN gets worse by 0.02–0.04. On Instagram A, where text alone is weak (AUROC about 0.63), GCN is level with MLP (+0.002, CI [−0.016, +0.020]). This is consistent with averaging hurting when a user's own text is strong and being neutral when it is weak, though the two datasets also differ in language, label meaning and density.
+3. **Neighbour labels carry almost no signal; neighbours write alike; who lists whom is a crawl artefact.** Adjusted homophily is −0.015 to 0.08 on every original graph and label informativeness at most 0.005. Real edges join users with similar text whatever their labels (centred cosine 0.26 vs 0.05 for shuffled edges), so on TwiBot-20 A real edges are less harmful than random ones (GCN +0.037 over 5 rewirings) but never better than no edges. The links do carry label signal in their direction: being in other users' follower samples vs their following samples gives an untrained AUROC of 0.713, and it tracks follower count. We read it as an artefact of how TwiBot-20 was collected. Our undirected pipelines discard it.
 4. **The graph alone is weak:** 0.577 (TwiBot-20 A) and 0.497 (B). On the bridge graph it drops to 0.538.
 5. **The zero-shot LLM reasoner (Qwen2.5-1.5B-Instruct, step 5) loses to trained classifiers on TwiBot-20 A and B and Instagram A.** On Instagram B it roughly ties the weak trained baselines on its 600-user sample (zero-shot DGP summaries 0.538 vs LR 0.546; zero-shot target AUROC 0.567 vs LR 0.524). Adding neighbours (raw or summaries) does not reliably help.
 6. **Encoder type matters more than size.** The two decoder LLMs lead (Qwen3-1.7B 0.769, Qwen2.5-1.5B 0.766), then English E5-base (110M, 0.760), ahead of multilingual-E5 (278M, 0.747) and Qwen3-Embedding (0.6B, 0.727). On Instagram A the encoders are tied.
-7. **Fine-tuning helps a lot; at equal data the fine-tuned LLM roughly matches text-only models.** Qwen3-1.7B goes from 0.562 zero-shot to 0.711 with LoRA (full test set). The same model as a frozen encoder + MLP scores 0.724 on the same 1,300 users and 0.769 on all 8,278. Against Qwen2.5 + MLP on 1,300 users the gap is −0.014 (95% CI [−0.041, +0.013]) on the same draw and about −0.02 over 6 draws. LoRA was never trained on more than 1,300 users, so whether more data would close the full-data gap is untested. One seed. **The DGP neighbour summaries add +0.007** over target-only LoRA (0.711 vs 0.704; CI [−0.015, +0.030]), and part of even that may be the link-type cue in the prompt. Zero-shot they hurt (0.562 vs 0.590).
+7. **Fine-tuning helps a lot; at equal data the fine-tuned LLM roughly matches text-only models.** Qwen3-1.7B goes from 0.562 zero-shot to 0.726 with LoRA on the step 5 sample (0.711 on the full test set; zero-shot was scored on the sample only). The same model as a frozen encoder + MLP scores 0.724 on the same 1,300 users and 0.769 on all 8,278. Against Qwen2.5 + MLP on 1,300 users the gap is −0.014 (95% CI [−0.041, +0.013]) on the same draw and about −0.02 over 6 draws. LoRA was never trained on more than 1,300 users, so whether more data would close the full-data gap is untested. One seed. **The DGP neighbour summaries add +0.007** over target-only LoRA (0.711 vs 0.704; CI [−0.015, +0.030]), and target LoRA plus three link flags matches `dgp` (0.731 vs 0.711, +0.020 [−0.002, +0.040]), so the summaries' own contribution is not established. Zero-shot they hurt (0.562 vs 0.590, step 5 sample).
 8. **Setting B cannot separate most models.** Its test set has 54 bots and its CIs are about ±0.05; only FAGCN − MLP excludes 0. Its subsampling also removes almost every bot–bot edge (54 rows, against 8,162 in A).
 
 ## Decision log
@@ -303,6 +320,7 @@ Step 4 rerun with the bridge edges added (`GRAPH=bridges`, `results/twibot20/A/s
 
 ## Changelog
 
+- **3 Nov 2026 (22:00):** After review 4: TwiBot-20's link signal is in link direction (incoming links), tracks follower count and reflects how the dataset was collected (`link_direction.py`); the cue section, finding 3 and the one-line answer reworded. Target LoRA + 3 link flags matches `dgp` (0.731 vs 0.711). Number fixes (GCN/FAGCN ranges, LR 0.756, B +0.023, zero-shot on the sample only); softened two overclaims.
 - **3 Nov 2026 (20:30):** Instagram A paired bootstrap: every GNN − MLP gap is within ±0.02 and includes 0.
 - **3 Nov 2026 (20:15):** After review 3: Findings rewritten (one-line answer first; finding 2 credits FAGCN's gain to its input residual, shown by shuffled edges; Instagram contrast; finding 6 by encoder type; finding 7 with the same-model comparison; new finding 8 on setting B). Qwen3-1.7B encoder rows (ladder, training-size control). Link-type cue table (`isolation_cue.py`). Instagram label described; step 5 sample noise noted; stale numbers fixed.
 - **3 Nov 2026 (18:30):** Shuffled-edge control over 5 rewirings (A: GCN +0.037–0.039 on real edges; B: no consistent direction). 6 training draws of 1,300 users: MLP 0.733 ± 0.006; the step 6 draw is the lowest, so LoRA's typical gap at equal data is about 0.02.
