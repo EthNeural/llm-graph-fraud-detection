@@ -24,6 +24,14 @@ FAGCN (Bo et al., AAAI 2021) is built for heterophily: each edge learns a weight
 so a neighbour can be added (low-frequency, homophily) or SUBTRACTED (high-frequency,
 heterophily), and the layer input is mixed back in (eps). Same 2 layers, hidden size, dropout.
 
+GRAPH=synthetic builds a semi-synthetic version of the graph at adjusted homophily SYNTH_H
+(default -0.6, strongly heterophilous): same users, texts, splits and degree pattern, edges
+rewired with heterophily_sweep.synthetic_edges (seed 0) and saved to
+results/<...>/synthetic_edges_h<SYNTH_H>.npy. Building them uses every user's label, test
+included, so this is a diagnostic of what models could do with informative edges, never a
+result on the real graph.
+  e.g.  DATASET=twibot20 GRAPH=synthetic SYNTH_H=-0.6 python my_build/step4_gnn.py
+
 FLAG-lite (FLAG, Yang et al., KDD 2025, without its LLM): SKIPGCN is FLAG's skip-GNN,
 GCN(X, A) + Linear(X) (its eq. 6), and GRAPH=similar10 keeps, for each user, the 10 neighbours
 whose text embedding is most similar (cosine > 0 on train-standardised vectors; FLAG's top-10,
@@ -64,7 +72,8 @@ MODELS = os.environ.get("MODELS", "MLP,GCN,SAGE,FAGCN").split(",")
 assert set(MODELS) <= {"MLP", "GCN", "SAGE", "FAGCN", "SKIPGCN", "LINKX"}, f"unknown name in MODELS={MODELS}"
 GRAPH = os.environ.get("GRAPH", "labelled")
 SHUFFLE_SEED = int(os.environ.get("SHUFFLE_SEED", 0))     # GRAPH=shuffled: which random rewiring
-assert GRAPH in ("labelled", "shuffled", "similar10") or (GRAPH == "bridges" and DATASET == "twibot20"), \
+SYNTH_H = float(os.environ.get("SYNTH_H", -0.6))            # GRAPH=synthetic: target adjusted homophily
+assert GRAPH in ("labelled", "shuffled", "similar10", "synthetic") or (GRAPH == "bridges" and DATASET == "twibot20"), \
     "GRAPH must be labelled, shuffled, or bridges (TwiBot-20 only)"
 
 
@@ -251,6 +260,12 @@ def main():
         edge_index_np = add_bridge_edges(edge_index_np)
     elif GRAPH == "shuffled":
         edge_index_np = shuffle_edges(edge_index_np, len(y_np), SHUFFLE_SEED)
+    elif GRAPH == "synthetic":
+        from heterophily_sweep import synthetic_edges
+        from graph_stats import measures, undirected
+        edge_index_np = synthetic_edges(edge_index_np, y_np, SYNTH_H, seed=0)
+        np.save(RESULTS_DIR / f"synthetic_edges_h{SYNTH_H:+.1f}.npy", edge_index_np)
+        print(f"GRAPH=synthetic (target {SYNTH_H:+.1f}): {measures(*undirected(edge_index_np, len(y_np)), y_np)}")
 
     edge_index = torch.as_tensor(edge_index_np, dtype=torch.long)
     y = torch.as_tensor(y_np, dtype=torch.long)
@@ -284,6 +299,8 @@ def main():
                 results.append(run_seeds(f"{name} + {conv_name}", conv, x, *enc_args))
 
     tag = f"{GRAPH}_s{SHUFFLE_SEED}" if GRAPH == "shuffled" and SHUFFLE_SEED else GRAPH
+    if GRAPH == "synthetic":
+        tag = f"synthetic_h{SYNTH_H:+.1f}"
     out = RESULTS_DIR / ("step4_gnn.json" if GRAPH == "labelled" else f"step4_gnn_{tag}.json")
     # Merge: rows of the models run now replace their old rows; other rows are kept.
     new = {r["model"] for r in results}
