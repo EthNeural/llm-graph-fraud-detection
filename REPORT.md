@@ -24,7 +24,7 @@ section. For how everything works, see [TEAM_GUIDE.md](TEAM_GUIDE.md).
 
 **Current run (GPU, one job at a time):** step 3 Qwen3-1.7B embeddings (started 3 Nov 15:42), then step 6 `dgp` and `target` on TwiBot-20 B, then rescoring of the epoch-2 LoRA adapters (`step6_rescore.py`). Expected to end about 05:30 on 4 Nov.
 - Done today: step 6 `target` on TwiBot-20 A (13:30–15:42, early stop after epoch 2).
-- On CPU alongside: 4 more shuffled-edge rewirings and 5 more 1,300-user training draws; after the chain, the setting B training-size control and bootstrap.
+- On CPU after the chain: the setting B training-size control and bootstrap.
 
 ## Latest results (macro-F1, test set)
 
@@ -139,6 +139,8 @@ Step 6 fine-tunes on **1,300** training users (the DGP paper's size); the text-o
 
 With the same 1,300 users, the text-only models lose about 0.03–0.04, and the gap to LoRA + DGP shrinks from 0.055 to 0.015 on the full test set. On the step 5 sample LoRA is level with them. The full-train rows reproduce steps 3 and 4 exactly, which checks the setup.
 
+**Which 1,300 users?** The table uses the same draw as step 6. Over 6 random stratified 1,300-user draws (`control_train_size.py`, `DRAWS=6`), LR scores 0.730 ± 0.005 and MLP 0.733 ± 0.006 on the full test set (MLP: 3 seeds per draw). The step 6 draw is the lowest of the six (LR 0.725, MLP 0.726), so the typical gap between LoRA + DGP (0.711) and a text-only model on 1,300 users is about 0.02, not 0.014. LoRA itself was trained on one draw only.
+
 **Learning curve** (Qwen2.5-1.5B embeddings, full test set, MLP mean of 3 seeds; `my_build/bootstrap_ci.py`):
 
 | Training users | 325 | 650 | 1,300 | 2,600 | 5,200 | 8,278 |
@@ -169,21 +171,21 @@ Each pair is scored on the same 2,000 resamples of the 1,183 test users; seeded 
 
 `GRAPH=shuffled` keeps every user's degree but rewires who links to whom at random (`my_build/step4_gnn.py`, `step4_gnn_shuffled.json`). If a GNN scores the same on shuffled edges, the real edges give it nothing.
 
-| Model | TwiBot-20 A: real edges | A: shuffled | TwiBot-20 B: real edges | B: shuffled |
+| Model | TwiBot-20 A: real edges | A: shuffled (5 rewirings) | TwiBot-20 B: real edges | B: shuffled (5 rewirings) |
 |---|---|---|---|---|
 | Qwen2.5 + MLP (no edges) | 0.766 | 0.766 | 0.613 | 0.613 |
-| Qwen2.5 + GCN | 0.707 | 0.659 | 0.577 | 0.573 |
-| Qwen2.5 + SAGE | 0.750 | 0.751 | 0.624 | 0.634 |
-| Qwen2.5 + FAGCN | 0.744 | 0.723 | 0.554 | 0.563 |
-| E5-base + GCN | 0.700 | 0.652 | 0.589 | 0.560 |
-| E5-base + SAGE | 0.740 | 0.736 | 0.567 | 0.574 |
-| E5-base + FAGCN | 0.733 | 0.727 | 0.542 | 0.569 |
-| Graph only (GCN) | 0.577 | 0.554 | 0.497 | 0.497 |
+| Qwen2.5 + GCN | **0.707** | 0.670 ± 0.009 | 0.577 | 0.588 ± 0.022 |
+| Qwen2.5 + SAGE | 0.750 | 0.751 ± 0.006 | 0.624 | 0.615 ± 0.014 |
+| Qwen2.5 + FAGCN | **0.744** | 0.725 ± 0.002 | 0.554 | 0.575 ± 0.008 |
+| E5-base + GCN | **0.700** | 0.661 ± 0.007 | **0.589** | 0.559 ± 0.004 |
+| E5-base + SAGE | 0.740 | 0.731 ± 0.004 | 0.567 | 0.577 ± 0.017 |
+| E5-base + FAGCN | 0.733 | 0.738 ± 0.007 | 0.542 | 0.568 ± 0.013 |
+| Graph only (GCN) | **0.577** | 0.552 ± 0.012 | 0.497 | 0.497 ± 0.000 |
 
-- **In A the real edges are better than random for GCN**: it scores 0.048 higher on them (0.707 vs 0.659), nearly as much as its whole gap to MLP (−0.059). FAGCN gains 0.006–0.021, graph-only 0.023. Label signal cannot explain this (label informativeness 0.003); similar text along real edges can (next table).
-- **SAGE scores about the same on real and random edges** in A (0.750 vs 0.751). In B, shuffled edges even score higher for SAGE and FAGCN on AUROC (Qwen2.5 SAGE 0.786 vs 0.749).
-- **In B, mostly no difference**, except E5-base + GCN (0.589 real vs 0.560 shuffled). B has almost no bot–bot edges (see the homophily note).
-- These numbers use one random rewiring (seed 0); four more are running, so the spread over rewirings can be reported.
+Each shuffled value is the mean ± std over 5 random rewirings (each itself the mean of 3 model seeds). Bold: real edges more than 2 rewiring std above shuffled.
+
+- **In A, real edges beat random ones for GCN** by 0.037–0.039 (both encoders), and for graph-only by 0.025. FAGCN gains 0.019 with Qwen2.5 and nothing with E5-base; SAGE gains 0–0.009. GCN's gain is a large part of its gap to MLP (−0.059). Label signal cannot explain it (label informativeness 0.003); similar text along real edges can (next table).
+- **In B, no consistent direction**: real edges help E5-base + GCN (+0.030), shuffled edges score higher for FAGCN (+0.021–0.026) and Qwen2.5 + GCN. B has almost no bot–bot edges (see the homophily note).
 
 **Why real edges help GCN without carrying labels: linked users write alike.** Mean cosine similarity of centred Qwen2.5-1.5B embeddings (`my_build/edge_similarity.py`; centring removes the common direction that pushes every raw cosine of these vectors to about 0.9):
 
@@ -233,7 +235,7 @@ Step 4 rerun with the bridge edges added (`GRAPH=bridges`, `results/twibot20/A/s
 4. **The graph alone is weak:** 0.577 (TwiBot-20 A), and 0.497 in B, near the floor. On the bridge graph it drops further, to 0.538.
 5. **The zero-shot LLM reasoner (Qwen2.5-1.5B-Instruct, step 5) loses to trained classifiers** on every dataset and setting. Adding neighbours (raw or summaries) does not reliably help.
 6. **Size is not everything.** Twitter-RoBERTa (125M) beats Qwen3-Embedding (0.6B). On Instagram A the encoders are tied (LR 0.588–0.612, MLP 0.585–0.607).
-7. **Fine-tuning helps a lot; the gap to text-only models is mostly training data.** On TwiBot-20 A (step 5 sample), Qwen3-1.7B with DGP summaries goes from 0.562 zero-shot to 0.726 with LoRA. Against text-only models trained on all 8,278 users it is behind (full test set: 0.711 vs 0.756 LR, 0.766 MLP). Trained on the same 1,300 users as LoRA, those models drop to 0.725–0.726, so the remaining gap is only 0.014, and its 95% CI [−0.041, +0.013] includes 0 (see "Control: training-set size" and the bootstrap table). One seed; the DGP trimming had little to trim on this sparse graph (mean 0.8–1.8 neighbours kept per 1-hop metapath, limit 8). **Do the DGP neighbour summaries help?** Barely: LoRA with summaries scores 0.711 on the full test set against 0.704 for the same model on the user's own text (AUROC 0.794 vs 0.782); on the step 5 sample 0.726 vs 0.694. Zero-shot, the summaries even hurt (0.562 vs 0.590). Paired bootstrap: +0.007 [−0.015, +0.030], so the summaries' effect is not distinguishable from test-set noise.
+7. **Fine-tuning helps a lot; the gap to text-only models is mostly training data.** On TwiBot-20 A (step 5 sample), Qwen3-1.7B with DGP summaries goes from 0.562 zero-shot to 0.726 with LoRA. Against text-only models trained on all 8,278 users it is behind (full test set: 0.711 vs 0.756 LR, 0.766 MLP). Trained on the same 1,300 users as LoRA, those models drop to 0.725–0.726, so the remaining gap is 0.014 on the same draw (95% CI [−0.041, +0.013], includes 0) and about 0.02 averaged over 6 draws (see "Control: training-set size"). One seed; the DGP trimming had little to trim on this sparse graph (mean 0.8–1.8 neighbours kept per 1-hop metapath, limit 8). **Do the DGP neighbour summaries help?** Barely: LoRA with summaries scores 0.711 on the full test set against 0.704 for the same model on the user's own text (AUROC 0.794 vs 0.782); on the step 5 sample 0.726 vs 0.694. Zero-shot, the summaries even hurt (0.562 vs 0.590). Paired bootstrap: +0.007 [−0.015, +0.030], so the summaries' effect is not distinguishable from test-set noise.
 
 ## Decision log
 
@@ -269,6 +271,7 @@ Step 4 rerun with the bridge edges added (`GRAPH=bridges`, `results/twibot20/A/s
 
 ## Changelog
 
+- **3 Nov 2026 (18:30):** Shuffled-edge control over 5 rewirings (A: GCN +0.037–0.039 on real edges; B: no consistent direction). 6 training draws of 1,300 users: MLP 0.733 ± 0.006; the step 6 draw is the lowest, so LoRA's typical gap at equal data is about 0.02.
 - **3 Nov 2026 (18:00):** After review 2: corrected the learning-curve, shuffled-edge and setting B sentences against their numbers; isolated column marked unreliable; setting B's bot–bot edge loss documented; new edge text-similarity table (real edges join similar-text users regardless of label). Fixed epoch labels in `step6_rescore.py`. Queued 4 more rewirings, 5 more training draws, and the setting B control and bootstrap.
 - **3 Nov 2026 (16:00):** Shuffled-edge control (A: real edges slightly better than random for GCN/FAGCN; B: no difference; SAGE indifferent). Setting B paired bootstrap: CIs about ±0.05, only FAGCN − MLP excludes 0.
 - **3 Nov 2026 (15:45):** Step 6 `target` on TwiBot-20 A: LoRA 0.704 (full test), 0.694 (step 5 sample); zero-shot 0.590. DGP summaries add +0.007 on the full test set.
