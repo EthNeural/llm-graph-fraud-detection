@@ -1,0 +1,18 @@
+  best C = 0.01 (val macroF1 0.624)
+{'train_users': 325, 'lr': 0.583, 'mlp': 0.622, 'mlp_std': 0.0096}
+  best C = 0.01 (val macroF1 0.680)
+{'train_users': 650, 'lr': 0.5847, 'mlp': 0.6155, 'mlp_std': 0.0121}
+  best C = 0.001 (val macroF1 0.682)
+{'train_users': 1300, 'lr': 0.6219, 'mlp': 0.6188, 'mlp_std': 0.0047}
+  best C = 0.001 (val macroF1 0.680)
+{'train_users': 2600, 'lr': 0.6294, 'mlp': 0.6361, 'mlp_std': 0.0183}
+  best C = 0.001 (val macroF1 0.685)
+{'train_users': 4000, 'lr': 0.6335, 'mlp': 0.6127, 'mlp_std': 0.0151}
+  best C = 0.001 (val macroF1 0.685)
+  best C = 0.001 (val macroF1 0.682)
+GCN (all train)        - MLP (all train)    -0.036  [-0.087, +0.012]
+SAGE (all train)       - MLP (all train)    +0.012  [-0.034, +0.058]
+FAGCN (all train)      - MLP (all train)    -0.058  [-0.112, -0.002]  *
+FAGCN (all train)      - GCN (all train)    -0.022  [-0.062, +0.015]
+MLP (1,300)            - MLP (all train)    +0.006  [-0.037, +0.048]
+saved /Users/pj/Desktop/Macquarie - Sem 4/PROJECT/Graph-based-fraud-detection-system/my_build/results/twibot20/B/bootstrap_ci.json

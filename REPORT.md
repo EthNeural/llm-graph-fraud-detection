@@ -163,6 +163,25 @@ Each pair is scored on the same 2,000 resamples of the 1,183 test users; seeded 
 | LoRA + DGP − LR (both 1,300) | −0.014 | [−0.042, +0.016] | no |
 | LoRA + DGP (1,300) − MLP (all train) | −0.054 | [−0.080, −0.027] | yes |
 
+### Control: the same GNNs on shuffled edges (full test set, mean of 3 seeds)
+
+`GRAPH=shuffled` keeps every user's degree but rewires who links to whom at random (`my_build/step4_gnn.py`, `step4_gnn_shuffled.json`). If a GNN scores the same on shuffled edges, the real edges give it nothing.
+
+| Model | TwiBot-20 A: real edges | A: shuffled | TwiBot-20 B: real edges | B: shuffled |
+|---|---|---|---|---|
+| Qwen2.5 + MLP (no edges) | 0.766 | 0.766 | 0.613 | 0.613 |
+| Qwen2.5 + GCN | 0.707 | 0.659 | 0.577 | 0.573 |
+| Qwen2.5 + SAGE | 0.750 | 0.751 | 0.624 | 0.634 |
+| Qwen2.5 + FAGCN | 0.744 | 0.723 | 0.554 | 0.563 |
+| E5-base + GCN | 0.700 | 0.652 | 0.589 | 0.560 |
+| E5-base + SAGE | 0.740 | 0.736 | 0.567 | 0.574 |
+| E5-base + FAGCN | 0.733 | 0.727 | 0.542 | 0.569 |
+| Graph only (GCN) | 0.577 | 0.554 | 0.497 | 0.497 |
+
+- **In A the real edges carry a little signal**: GCN loses 0.05 more on random edges, FAGCN 0.01–0.02, and graph-only drops 0.023. This matches the small positive adjusted homophily (0.062). It is far less than what GCN's averaging costs (−0.059 against MLP).
+- **SAGE does not care**: it scores the same on real and random edges, because it can learn to ignore the neighbour average.
+- **In B the real edges are no better than random** (within about one standard deviation everywhere), as adjusted homophily 0.014 predicts.
+
 ### Robustness check: step 4 on the bridge graph (TwiBot-20 A, full test set)
 
 Step 4 rerun with the bridge edges added (`GRAPH=bridges`, `results/twibot20/A/step4_gnn_bridges.json`): 92,724 edge rows instead of 32,698, and 137 isolated users instead of 923. **This is a robustness check only. Steps 5 and 6 and all tables above stay on the labelled-only graph.** "Isolated" still means isolated in the labelled-only graph, so the groups are the same users in both runs. Macro-F1, mean of 3 seeds:
@@ -189,7 +208,7 @@ Step 4 rerun with the bridge edges added (`GRAPH=bridges`, `results/twibot20/A/s
 - **LoRA reads less text than the encoders.** Its prompt caps the user's own text at 480 tokens of whole lines, which cuts 81% of TwiBot-20 users short (13.2 of 16.6 lines kept on average, 800-user sample). The encoders read every line. This biases LoRA vs MLP against LoRA; dgp vs target is unaffected (same cap).
 - **LoRA and the other models choose their checkpoint differently.** LoRA keeps the lowest validation loss on a 200-user sample; MLP and GNNs keep the best full-validation macro-F1. In both TwiBot-20 A LoRA runs the loss was lowest at epoch 1 while validation AUROC kept rising (dgp 0.748 → 0.772, target 0.765 → 0.781). The epoch-2 adapters are being scored with the full-validation rule (`my_build/step6_rescore.py`).
 - **GNN hyperparameters are fixed and shared, not tuned.**
-- **Setting B is small and changes the graph.** Its test set has 54 bots; one random bot subsample (seed 42); 29% of users are isolated in B against 7.8% in A (37% of B's test bots). No CIs for B yet.
+- **Setting B is small and changes the graph.** Its test set has 54 bots; one random bot subsample (seed 42); 29% of users are isolated in B against 7.8% in A (37% of B's test bots). Its paired bootstrap CIs are about ±0.05: GCN − MLP −0.036 [−0.087, +0.012], SAGE − MLP +0.012 [−0.034, +0.058], FAGCN − MLP −0.058 [−0.112, −0.002]. Only the FAGCN gap is outside noise. B's learning curve is flat (MLP 0.62 at 325 users, 0.61 at 4,000), so B cannot separate most models. `results/twibot20/B/bootstrap_ci.json`.
 - **TwiBot-20 graph = labelled users only** (see "dropped support users"; bridge check below).
 - **Edge signal near zero**, so these results speak to near-random edges, not to strongly heterophilous graphs (see the adjusted-homophily table).
 
@@ -197,7 +216,7 @@ Step 4 rerun with the bridge edges added (`GRAPH=bridges`, `results/twibot20/A/s
 
 1. **A good text encoder is where the gains are; the graph adds nothing.** On TwiBot-20 A, Qwen2.5 + MLP (0.766) beats TF-IDF (0.702) by 0.06. The neural encoders span 0.04 (0.726–0.766), and no graph model improves on its encoder's MLP.
 2. **GCN hurts under heterophily; a heterophily GNN only recovers the loss.** GCN is below MLP for every encoder on TwiBot-20 A, by 0.04–0.06. FAGCN, built for heterophily, beats GCN on every encoder (by 0.02–0.04) but stays 0.004–0.027 below MLP. So on this graph, no GNN we tried beats ignoring the edges, with the same fixed, untuned hyperparameters for all of them. The GCN and FAGCN gaps are outside test-set noise (paired bootstrap); SAGE's is borderline. SAGE stays within about 0.02 of MLP. In B, Qwen2.5 + SAGE edges past MLP on macro-F1 (0.624 vs 0.613, within about one standard deviation), but not on the threshold-free metrics (AUROC 0.749 vs 0.788, PR-AUC 0.251 vs 0.269). E5-base is the one encoder where GCN beats MLP in B (0.589 vs 0.564, GCN std 0.027). *Robustness:* this is on the labelled-only graph, whose edges are barely above random (homophily 0.532 vs 0.507). Adding the more homophilous bridge edges (0.619) makes GCN worse on every encoder, by 0.02–0.04, while SAGE gains up to 0.012. So the GCN result is not an artifact of dropping the support users. On Instagram, all graph models stay within about 0.03 of text-only LR in both settings.
-3. **The edges carry almost no label signal.** Adjusted homophily is −0.015 to 0.08 on every original graph, and label informativeness is at most 0.005. This is consistent with findings 2 and 4: averaging neighbours mostly adds noise. A direct test (the same GNNs on degree-preserving shuffled edges) is running.
+3. **The edges carry almost no label signal.** Adjusted homophily is −0.015 to 0.08 on every original graph, and label informativeness is at most 0.005. This is consistent with findings 2 and 4: averaging neighbours mostly adds noise. On degree-preserving shuffled edges, GCN loses a further 0.05 in A and nothing in B: the edges carry a little signal in A and none in B (see the shuffled-edge control).
 4. **The graph alone is weak:** 0.577 (TwiBot-20 A), and 0.497 in B, near the floor. On the bridge graph it drops further, to 0.538.
 5. **The zero-shot LLM reasoner (Qwen2.5-1.5B-Instruct, step 5) loses to trained classifiers** on every dataset and setting. Adding neighbours (raw or summaries) does not reliably help.
 6. **Size is not everything.** Twitter-RoBERTa (125M) beats Qwen3-Embedding (0.6B). On Instagram A the encoders are tied (LR 0.588–0.612, MLP 0.585–0.607).
@@ -237,6 +256,7 @@ Step 4 rerun with the bridge edges added (`GRAPH=bridges`, `results/twibot20/A/s
 
 ## Changelog
 
+- **3 Nov 2026 (16:00):** Shuffled-edge control (A: real edges slightly better than random for GCN/FAGCN; B: no difference; SAGE indifferent). Setting B paired bootstrap: CIs about ±0.05, only FAGCN − MLP excludes 0.
 - **3 Nov 2026 (15:45):** Step 6 `target` on TwiBot-20 A: LoRA 0.704 (full test), 0.694 (step 5 sample); zero-shot 0.590. DGP summaries add +0.007 on the full test set.
 - **3 Nov 2026 (16:00):** After an independent review: connected/isolated table; Limitations section; fixed ranges in findings 2 and the B FAGCN note; setting B SAGE claim checked against AUROC/PR-AUC; finding 1 reworded. Queued step 6 rescoring of the epoch-2 adapters and a shuffled-edge control.
 - **3 Nov 2026 (15:00):** Adjusted homophily and label informativeness for every graph (near 0 everywhere). Learning curve and paired bootstrap CIs on TwiBot-20 A: the LoRA vs MLP gap at equal training size is not significant.

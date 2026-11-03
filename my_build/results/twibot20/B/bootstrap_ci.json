@@ -1,0 +1,78 @@
+{
+  "learning_curve": [
+    {
+      "train_users": 325,
+      "lr": 0.583,
+      "mlp": 0.622,
+      "mlp_std": 0.0096
+    },
+    {
+      "train_users": 650,
+      "lr": 0.5847,
+      "mlp": 0.6155,
+      "mlp_std": 0.0121
+    },
+    {
+      "train_users": 1300,
+      "lr": 0.6219,
+      "mlp": 0.6188,
+      "mlp_std": 0.0047
+    },
+    {
+      "train_users": 2600,
+      "lr": 0.6294,
+      "mlp": 0.6361,
+      "mlp_std": 0.0183
+    },
+    {
+      "train_users": 4000,
+      "lr": 0.6335,
+      "mlp": 0.6127,
+      "mlp_std": 0.0151
+    }
+  ],
+  "paired_bootstrap": [
+    {
+      "a": "GCN (all train)",
+      "b": "MLP (all train)",
+      "diff": -0.0362,
+      "ci_low": -0.0874,
+      "ci_high": 0.0122,
+      "significant": false
+    },
+    {
+      "a": "SAGE (all train)",
+      "b": "MLP (all train)",
+      "diff": 0.0116,
+      "ci_low": -0.0342,
+      "ci_high": 0.0576,
+      "significant": false
+    },
+    {
+      "a": "FAGCN (all train)",
+      "b": "MLP (all train)",
+      "diff": -0.0584,
+      "ci_low": -0.1118,
+      "ci_high": -0.002,
+      "significant": true
+    },
+    {
+      "a": "FAGCN (all train)",
+      "b": "GCN (all train)",
+      "diff": -0.0222,
+      "ci_low": -0.0622,
+      "ci_high": 0.015,
+      "significant": false
+    },
+    {
+      "a": "MLP (1,300)",
+      "b": "MLP (all train)",
+      "diff": 0.0061,
+      "ci_low": -0.0366,
+      "ci_high": 0.0476,
+      "significant": false
+    }
+  ],
+  "n_boot": 2000,
+  "test_users": 597
+}
