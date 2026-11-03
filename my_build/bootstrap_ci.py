@@ -23,7 +23,7 @@ from step4_gnn import train_one, NoGraph, SEEDS
 from step5_llm_reason import sample
 
 N_BOOT = 2000
-SIZES = [325, 650, 1300, 2600, 5200]
+SIZES = [325, 650, 1300, 2600, 5200]                 # sizes >= the training split are skipped
 
 
 def predictions(conv, x, edge_index, y, tr, val, test):
@@ -58,7 +58,7 @@ def main():
 
     # 1. Learning curve
     curve = []
-    for n in SIZES + [len(train)]:
+    for n in [m for m in SIZES if m < len(train)] + [len(train)]:
         tr = sample(train, y, n)
         lr = lr_predictions(emb, y, tr, val, test)
         mlp = predictions(NoGraph, features(tr), edge_index, y, tr, val, test)

@@ -8,6 +8,8 @@ neighbour (a "bridge", see playground_bridges.py, which must run first). Uses no
 Results go to step4_gnn_bridges.json; "isolated" still means isolated in the labelled-only
 graph, so the connected / isolated groups are the same users in both runs.
   e.g.  DATASET=twibot20 GRAPH=bridges python my_build/step4_gnn.py
+GRAPH=shuffled keeps every user's degree but rewires who links to whom at random (a control:
+if GNNs score the same on it, the real edges carry no usable signal). Any dataset.
 
 The heterophily test:
   GCN   : h_v = mean over {v and its neighbours} of W x      -> self and neighbours MIXED
@@ -50,7 +52,8 @@ FAGCN_EPS = 0.3                 # share of the layer input kept each layer (FAGC
 MODELS = os.environ.get("MODELS", "MLP,GCN,SAGE,FAGCN").split(",")
 assert set(MODELS) <= {"MLP", "GCN", "SAGE", "FAGCN"}, f"unknown name in MODELS={MODELS}"
 GRAPH = os.environ.get("GRAPH", "labelled")
-assert GRAPH == "labelled" or (GRAPH == "bridges" and DATASET == "twibot20"), "GRAPH=bridges is TwiBot-20 only"
+assert GRAPH in ("labelled", "shuffled") or (GRAPH == "bridges" and DATASET == "twibot20"), \
+    "GRAPH must be labelled, shuffled, or bridges (TwiBot-20 only)"
 
 
 class NoGraph(torch.nn.Module):
@@ -178,12 +181,29 @@ def add_bridge_edges(edge_index_np):
     return merged
 
 
+def shuffle_edges(edge_index_np, n, seed=0):
+    # Degree-preserving rewiring: list both ends of every undirected edge ("stubs"), shuffle,
+    # pair them up again. Self-loops and duplicate pairs are dropped (a few %), then both
+    # directions are stored, as in the real graph.
+    u, v = edge_index_np
+    u, v = u[u < v], v[u < v]
+    stubs = np.random.default_rng(seed).permutation(np.concatenate([u, v]))
+    a, b = stubs[0::2], stubs[1::2]
+    a, b = np.minimum(a, b)[a != b], np.maximum(a, b)[a != b]
+    pairs = np.unique(np.stack([a, b]), axis=1)
+    out = np.hstack([pairs, pairs[::-1]])
+    print(f"GRAPH=shuffled: {edge_index_np.shape[1]:,} edge rows -> {out.shape[1]:,} after rewiring")
+    return out
+
+
 def main():
     _, edge_index_np, y_np = load()
     train, val, test = get_splits(y_np)
     iso_test = isolated_mask(edge_index_np, len(y_np))[test]   # labelled-only graph, for every GRAPH
     if GRAPH == "bridges":
         edge_index_np = add_bridge_edges(edge_index_np)
+    elif GRAPH == "shuffled":
+        edge_index_np = shuffle_edges(edge_index_np, len(y_np))
 
     edge_index = torch.as_tensor(edge_index_np, dtype=torch.long)
     y = torch.as_tensor(y_np, dtype=torch.long)
