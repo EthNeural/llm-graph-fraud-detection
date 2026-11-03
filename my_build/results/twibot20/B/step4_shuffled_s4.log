@@ -1,0 +1,57 @@
+GRAPH=shuffled: 10,548 edge rows -> 10,530 after rewiring
+
+=== graph-only + GCN ===
+  seed 0           acc 0.697  macroF1 0.497  F1_1 0.181  AUROC 0.547  PR-AUC 0.106  | conn 0.479  iso 0.107
+  seed 1           acc 0.697  macroF1 0.497  F1_1 0.181  AUROC 0.552  PR-AUC 0.107  | conn 0.479  iso 0.107
+  seed 2           acc 0.697  macroF1 0.497  F1_1 0.181  AUROC 0.540  PR-AUC 0.105  | conn 0.479  iso 0.107
+  -> mean macroF1 0.497 ± 0.000
+
+=== graph-only + SAGE ===
+  seed 0           acc 0.697  macroF1 0.497  F1_1 0.181  AUROC 0.528  PR-AUC 0.104  | conn 0.479  iso 0.107
+  seed 1           acc 0.697  macroF1 0.497  F1_1 0.181  AUROC 0.564  PR-AUC 0.110  | conn 0.479  iso 0.107
+  seed 2           acc 0.695  macroF1 0.496  F1_1 0.180  AUROC 0.533  PR-AUC 0.105  | conn 0.479  iso 0.107
+  -> mean macroF1 0.497 ± 0.001
+
+=== graph-only + FAGCN ===
+  seed 0           acc 0.697  macroF1 0.497  F1_1 0.181  AUROC 0.546  PR-AUC 0.106  | conn 0.479  iso 0.107
+  seed 1           acc 0.697  macroF1 0.497  F1_1 0.181  AUROC 0.548  PR-AUC 0.107  | conn 0.479  iso 0.107
+  seed 2           acc 0.692  macroF1 0.494  F1_1 0.179  AUROC 0.549  PR-AUC 0.107  | conn 0.478  iso 0.107
+  -> mean macroF1 0.496 ± 0.002
+
+=== e5en + GCN ===
+  seed 0           acc 0.881  macroF1 0.540  F1_1 0.145  AUROC 0.669  PR-AUC 0.189  | conn 0.475  iso 0.591
+  seed 1           acc 0.864  macroF1 0.570  F1_1 0.214  AUROC 0.668  PR-AUC 0.209  | conn 0.487  iso 0.647
+  seed 2           acc 0.866  macroF1 0.555  F1_1 0.184  AUROC 0.689  PR-AUC 0.224  | conn 0.490  iso 0.611
+  -> mean macroF1 0.555 ± 0.012
+
+=== e5en + SAGE ===
+  seed 0           acc 0.858  macroF1 0.591  F1_1 0.261  AUROC 0.684  PR-AUC 0.219  | conn 0.585  iso 0.580
+  seed 1           acc 0.836  macroF1 0.604  F1_1 0.300  AUROC 0.707  PR-AUC 0.255  | conn 0.584  iso 0.608
+  seed 2           acc 0.881  macroF1 0.616  F1_1 0.297  AUROC 0.700  PR-AUC 0.268  | conn 0.591  iso 0.629
+  -> mean macroF1 0.604 ± 0.010
+
+=== e5en + FAGCN ===
+  seed 0           acc 0.863  macroF1 0.589  F1_1 0.255  AUROC 0.672  PR-AUC 0.231  | conn 0.552  iso 0.599
+  seed 1           acc 0.876  macroF1 0.546  F1_1 0.159  AUROC 0.660  PR-AUC 0.216  | conn 0.507  iso 0.544
+  seed 2           acc 0.869  macroF1 0.596  F1_1 0.264  AUROC 0.675  PR-AUC 0.241  | conn 0.548  iso 0.630
+  -> mean macroF1 0.577 ± 0.022
+
+=== qwen + GCN ===
+  seed 0           acc 0.869  macroF1 0.589  F1_1 0.250  AUROC 0.697  PR-AUC 0.244  | conn 0.515  iso 0.635
+  seed 1           acc 0.861  macroF1 0.581  F1_1 0.239  AUROC 0.689  PR-AUC 0.239  | conn 0.524  iso 0.624
+  seed 2           acc 0.858  macroF1 0.597  F1_1 0.274  AUROC 0.662  PR-AUC 0.198  | conn 0.580  iso 0.616
+  -> mean macroF1 0.589 ± 0.007
+
+=== qwen + SAGE ===
+  seed 0           acc 0.873  macroF1 0.631  F1_1 0.333  AUROC 0.776  PR-AUC 0.275  | conn 0.609  iso 0.653
+  seed 1           acc 0.858  macroF1 0.615  F1_1 0.309  AUROC 0.749  PR-AUC 0.261  | conn 0.585  iso 0.641
+  seed 2           acc 0.879  macroF1 0.614  F1_1 0.294  AUROC 0.778  PR-AUC 0.257  | conn 0.558  iso 0.679
+  -> mean macroF1 0.620 ± 0.008
+
+=== qwen + FAGCN ===
+  seed 0           acc 0.851  macroF1 0.578  F1_1 0.239  AUROC 0.640  PR-AUC 0.200  | conn 0.572  iso 0.562
+  seed 1           acc 0.874  macroF1 0.621  F1_1 0.312  AUROC 0.675  PR-AUC 0.242  | conn 0.580  iso 0.652
+  seed 2           acc 0.831  macroF1 0.561  F1_1 0.217  AUROC 0.694  PR-AUC 0.211  | conn 0.531  iso 0.561
+  -> mean macroF1 0.587 ± 0.025
+
+Setting B done. Full table: python my_build/compare.py
