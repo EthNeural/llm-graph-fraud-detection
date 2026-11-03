@@ -250,11 +250,11 @@ Step 4 rerun with the bridge edges added (`GRAPH=bridges`, `results/twibot20/A/s
 
 ## Next steps
 
-1. Step 6 on TwiBot-20 A, `VARIANT=target` (running).
-2. Step 4 FAGCN on TwiBot-20 B (CPU, about 30 min).
-3. Step 6 on TwiBot-20 B (`dgp` and `target`).
-4. Run the FLAG baseline on our splits (`results/<setting>/flag.json`).
-5. Optional, if time allows: 3 seeds for step 6, and an M ∈ {4, 8, 16} sweep.
+1. Running tonight (GPU): Qwen3-1.7B as an encoder (step 3, then LR / MLP / GNNs and the 1,300-user control), step 6 `dgp` and `target` on TwiBot-20 B, then scoring the epoch-2 LoRA adapters.
+2. Decide the LoRA checkpoint rule (best validation loss vs best full-validation macro-F1) once the rescoring is in.
+3. FLAG: Yang et al., KDD 2025, has no public code. Decide whether to implement a FLAG-inspired baseline or drop it; check whether "FLAG-style 1:10" for setting B has a source.
+4. Optional, by Saturday night: more LoRA seeds (one GPU night each), a semi-synthetic heterophily sweep (CPU), figures.
+5. Dropped: the M ∈ {4, 8, 16} sweep. With 0.8–1.8 neighbours kept per 1-hop metapath, the limit of 8 rarely binds.
 
 ## Changelog
 
