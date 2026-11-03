@@ -17,16 +17,14 @@ section. For how everything works, see [TEAM_GUIDE.md](TEAM_GUIDE.md).
 | Step 4: MLP / GCN / SAGE / FAGCN | ✅ + bridge graph | ✅ | ✅ | ✅ |
 | Step 5: zero-shot reasoner | ✅ | ✅ | ✅ | ✅ |
 | Step 6: DGP (LoRA), dgp | ✅ 1 seed | ⏳ | not in scope | not in scope |
-| Step 6: DGP (LoRA), target | 🔄 running | ⏳ | not in scope | not in scope |
+| Step 6: DGP (LoRA), target | ✅ 1 seed | ⏳ | not in scope | not in scope |
 | FLAG baseline | ⏳ | ⏳ | ⏳ | ⏳ |
 
 ✅ done · 🔄 running · ⏳ to do
 
-**Current run:** TwiBot-20 A, `VARIANT=target` (log `results/twibot20/A/step6_target.log`).
-- Started 3 Nov ~13:30. No summaries needed, so it goes straight to zero-shot scoring and LoRA training.
-- Expected ~2.5–3.5 h (prompts are a median 495 tokens, close to dgp's, so training speed is similar). It resumes from checkpoints if stopped.
-- Done earlier: `VARIANT=dgp` (3 Nov 02:40, ~5.7 h) and step 4 on the bridge graph (~12 min).
-- On CPU alongside it (done 13:55): step 4 FAGCN on TwiBot-20 A (both graphs), and Instagram A and B MLP + FAGCN rows.
+**Current run (GPU, one job at a time):** step 3 Qwen3-1.7B embeddings (started 3 Nov 15:42), then step 6 `dgp` and `target` on TwiBot-20 B, then rescoring of the epoch-2 LoRA adapters (`step6_rescore.py`). Expected to end about 05:30 on 4 Nov.
+- Done today: step 6 `target` on TwiBot-20 A (13:30–15:42, early stop after epoch 2).
+- On CPU alongside: shuffled-edge control (step 4), then the setting B bootstrap.
 
 ## Latest results (macro-F1, test set)
 
@@ -72,8 +70,9 @@ Two different LLMs appear here. **Step 5 uses Qwen2.5-1.5B-Instruct** (zero-shot
 | 5 | Qwen2.5-1.5B-Instruct zero-shot: target only | 0.584 | 0.541 | 0.553 | 0.522 |
 | 5 | Qwen2.5-1.5B-Instruct zero-shot: raw neighbours | 0.591 | 0.547 | 0.552 | 0.499 |
 | 5 | Qwen2.5-1.5B-Instruct zero-shot: DGP summaries | 0.550 | 0.541 | 0.537 | 0.538 |
+| 6 | Qwen3-1.7B zero-shot: target only | 0.590 | ⏳ | not in scope | not in scope |
 | 6 | Qwen3-1.7B zero-shot: DGP summaries | 0.562 | ⏳ | not in scope | not in scope |
-| 6 | Qwen3-1.7B LoRA: target only | 🔄 | ⏳ | not in scope | not in scope |
+| 6 | Qwen3-1.7B LoRA: target only | 0.694 | ⏳ | not in scope | not in scope |
 | 6 | Qwen3-1.7B LoRA: DGP summaries | 0.726 | ⏳ | not in scope | not in scope |
 
 **Validation samples.** LLM scoring is slow, so the zero-shot rows (steps 5 and 6) pick their cut-off on a stratified validation *sample*: 200 users for TwiBot-20 A, 400 for B, 150 for Instagram A and 300 for Instagram B. The trained models pick theirs on the full validation set. The step 6 LoRA runs use that same sample for early stopping, then pick their cut-off on the full validation set (2,365 users for TwiBot-20 A).
@@ -136,6 +135,7 @@ Step 6 fine-tunes on **1,300** training users (the DGP paper's size); the text-o
 | Qwen2.5-1.5B + MLP | 1,300 | 0.726 | 0.796 | 0.723 |
 | Qwen2.5-1.5B + LR | 1,300 | 0.725 | 0.786 | 0.712 |
 | Qwen3-1.7B LoRA + DGP summaries (1 seed) | 1,300 | 0.711 | 0.794 | 0.726 |
+| Qwen3-1.7B LoRA, target text only (1 seed) | 1,300 | 0.704 | 0.782 | 0.694 |
 
 With the same 1,300 users, the text-only models lose about 0.03–0.04, and the gap to LoRA + DGP shrinks from 0.055 to 0.015 on the full test set. On the step 5 sample LoRA is level with them. The full-train rows reproduce steps 3 and 4 exactly, which checks the setup.
 
@@ -201,7 +201,7 @@ Step 4 rerun with the bridge edges added (`GRAPH=bridges`, `results/twibot20/A/s
 4. **The graph alone is weak:** 0.577 (TwiBot-20 A), and 0.497 in B, near the floor. On the bridge graph it drops further, to 0.538.
 5. **The zero-shot LLM reasoner (Qwen2.5-1.5B-Instruct, step 5) loses to trained classifiers** on every dataset and setting. Adding neighbours (raw or summaries) does not reliably help.
 6. **Size is not everything.** Twitter-RoBERTa (125M) beats Qwen3-Embedding (0.6B). On Instagram A the encoders are tied (LR 0.588–0.612, MLP 0.585–0.607).
-7. **Fine-tuning helps a lot; the gap to text-only models is mostly training data.** On TwiBot-20 A (step 5 sample), Qwen3-1.7B with DGP summaries goes from 0.562 zero-shot to 0.726 with LoRA. Against text-only models trained on all 8,278 users it is behind (full test set: 0.711 vs 0.756 LR, 0.766 MLP). Trained on the same 1,300 users as LoRA, those models drop to 0.725–0.726, so the remaining gap is only 0.014, and its 95% CI [−0.041, +0.013] includes 0 (see "Control: training-set size" and the bootstrap table). One seed; the DGP trimming had little to trim on this sparse graph (mean 0.8–1.8 neighbours kept per 1-hop metapath, limit 8). Still open: the `target` variant, to see if the summaries help at all.
+7. **Fine-tuning helps a lot; the gap to text-only models is mostly training data.** On TwiBot-20 A (step 5 sample), Qwen3-1.7B with DGP summaries goes from 0.562 zero-shot to 0.726 with LoRA. Against text-only models trained on all 8,278 users it is behind (full test set: 0.711 vs 0.756 LR, 0.766 MLP). Trained on the same 1,300 users as LoRA, those models drop to 0.725–0.726, so the remaining gap is only 0.014, and its 95% CI [−0.041, +0.013] includes 0 (see "Control: training-set size" and the bootstrap table). One seed; the DGP trimming had little to trim on this sparse graph (mean 0.8–1.8 neighbours kept per 1-hop metapath, limit 8). **Do the DGP neighbour summaries help?** Barely: LoRA with summaries scores 0.711 on the full test set against 0.704 for the same model on the user's own text (AUROC 0.794 vs 0.782); on the step 5 sample 0.726 vs 0.694. Zero-shot, the summaries even hurt (0.562 vs 0.590). A paired bootstrap for dgp vs target is queued.
 
 ## Decision log
 
@@ -237,6 +237,7 @@ Step 4 rerun with the bridge edges added (`GRAPH=bridges`, `results/twibot20/A/s
 
 ## Changelog
 
+- **3 Nov 2026 (15:45):** Step 6 `target` on TwiBot-20 A: LoRA 0.704 (full test), 0.694 (step 5 sample); zero-shot 0.590. DGP summaries add +0.007 on the full test set.
 - **3 Nov 2026 (16:00):** After an independent review: connected/isolated table; Limitations section; fixed ranges in findings 2 and the B FAGCN note; setting B SAGE claim checked against AUROC/PR-AUC; finding 1 reworded. Queued step 6 rescoring of the epoch-2 adapters and a shuffled-edge control.
 - **3 Nov 2026 (15:00):** Adjusted homophily and label informativeness for every graph (near 0 everywhere). Learning curve and paired bootstrap CIs on TwiBot-20 A: the LoRA vs MLP gap at equal training size is not significant.
 - **3 Nov 2026 (14:30):** FAGCN on TwiBot-20 B; Instagram graph-only GCN/SAGE rows. Rerunning Instagram GCN/SAGE reproduced every earlier number exactly.
