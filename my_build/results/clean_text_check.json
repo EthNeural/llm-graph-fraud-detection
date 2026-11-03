@@ -1,0 +1,98 @@
+{
+  "twibot20 A": {
+    "raw": {
+      "macro_f1": 0.7022,
+      "auroc": 0.7739
+    },
+    "normalised": {
+      "macro_f1": 0.6951,
+      "auroc": 0.7675,
+      "minus_raw": -0.0071,
+      "ci": [
+        -0.0249,
+        0.0112
+      ]
+    },
+    "stripped": {
+      "macro_f1": 0.6882,
+      "auroc": 0.7603,
+      "minus_raw": -0.014,
+      "ci": [
+        -0.0304,
+        0.0027
+      ]
+    }
+  },
+  "twibot20 B": {
+    "raw": {
+      "macro_f1": 0.586,
+      "auroc": 0.6886
+    },
+    "normalised": {
+      "macro_f1": 0.5792,
+      "auroc": 0.6932,
+      "minus_raw": -0.0068,
+      "ci": [
+        -0.0598,
+        0.0459
+      ]
+    },
+    "stripped": {
+      "macro_f1": 0.5595,
+      "auroc": 0.6808,
+      "minus_raw": -0.0265,
+      "ci": [
+        -0.0701,
+        0.0127
+      ]
+    }
+  },
+  "instagram A": {
+    "raw": {
+      "macro_f1": 0.5779,
+      "auroc": 0.5919
+    },
+    "normalised": {
+      "macro_f1": 0.5798,
+      "auroc": 0.5965,
+      "minus_raw": 0.0019,
+      "ci": [
+        -0.0113,
+        0.0144
+      ]
+    },
+    "stripped": {
+      "macro_f1": 0.5709,
+      "auroc": 0.5895,
+      "minus_raw": -0.007,
+      "ci": [
+        -0.0193,
+        0.0051
+      ]
+    }
+  },
+  "instagram B": {
+    "raw": {
+      "macro_f1": 0.552,
+      "auroc": 0.6026
+    },
+    "normalised": {
+      "macro_f1": 0.5534,
+      "auroc": 0.5988,
+      "minus_raw": 0.0014,
+      "ci": [
+        -0.0235,
+        0.0247
+      ]
+    },
+    "stripped": {
+      "macro_f1": 0.5427,
+      "auroc": 0.5916,
+      "minus_raw": -0.0093,
+      "ci": [
+        -0.0218,
+        0.0051
+      ]
+    }
+  }
+}
