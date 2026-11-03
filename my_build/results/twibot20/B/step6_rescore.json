@@ -1,0 +1,98 @@
+[
+  {
+    "model": "Qwen3-1.7B LoRA dgp | best val loss (epoch 2) | full test",
+    "acc": 0.8643,
+    "macro_f1": 0.6275,
+    "f1_class1": 0.3306,
+    "auroc": 0.7233,
+    "pr_auc": 0.2965,
+    "macro_f1_connected": 0.6302,
+    "macro_f1_isolated": 0.599,
+    "full_val_macro_f1": 0.6482,
+    "chosen_by_val_f1": true
+  },
+  {
+    "model": "Qwen3-1.7B LoRA dgp | best val loss (epoch 2) | step 5 sample",
+    "acc": 0.8643,
+    "macro_f1": 0.6275,
+    "f1_class1": 0.3306,
+    "auroc": 0.7233,
+    "pr_auc": 0.2965,
+    "macro_f1_connected": 0.6302,
+    "macro_f1_isolated": 0.599,
+    "full_val_macro_f1": 0.6482,
+    "chosen_by_val_f1": true
+  },
+  {
+    "model": "Qwen3-1.7B LoRA dgp | last check (epoch 3) | full test",
+    "acc": 0.8526,
+    "macro_f1": 0.5016,
+    "f1_class1": 0.0833,
+    "auroc": 0.5464,
+    "pr_auc": 0.1165,
+    "macro_f1_connected": 0.5328,
+    "macro_f1_isolated": 0.4454,
+    "full_val_macro_f1": 0.5376,
+    "chosen_by_val_f1": false
+  },
+  {
+    "model": "Qwen3-1.7B LoRA dgp | last check (epoch 3) | step 5 sample",
+    "acc": 0.8526,
+    "macro_f1": 0.5016,
+    "f1_class1": 0.0833,
+    "auroc": 0.5464,
+    "pr_auc": 0.1165,
+    "macro_f1_connected": 0.5328,
+    "macro_f1_isolated": 0.4454,
+    "full_val_macro_f1": 0.5376,
+    "chosen_by_val_f1": false
+  },
+  {
+    "model": "Qwen3-1.7B LoRA target | best val loss (epoch 1) | full test",
+    "acc": 0.866,
+    "macro_f1": 0.6181,
+    "f1_class1": 0.3103,
+    "auroc": 0.6834,
+    "pr_auc": 0.1883,
+    "macro_f1_connected": 0.6297,
+    "macro_f1_isolated": 0.5914,
+    "full_val_macro_f1": 0.6378,
+    "chosen_by_val_f1": false
+  },
+  {
+    "model": "Qwen3-1.7B LoRA target | best val loss (epoch 1) | step 5 sample",
+    "acc": 0.866,
+    "macro_f1": 0.6181,
+    "f1_class1": 0.3103,
+    "auroc": 0.6834,
+    "pr_auc": 0.1883,
+    "macro_f1_connected": 0.6297,
+    "macro_f1_isolated": 0.5914,
+    "full_val_macro_f1": 0.6378,
+    "chosen_by_val_f1": false
+  },
+  {
+    "model": "Qwen3-1.7B LoRA target | last check (epoch 2) | full test",
+    "acc": 0.8928,
+    "macro_f1": 0.6443,
+    "f1_class1": 0.3469,
+    "auroc": 0.7391,
+    "pr_auc": 0.2906,
+    "macro_f1_connected": 0.6554,
+    "macro_f1_isolated": 0.6198,
+    "full_val_macro_f1": 0.6435,
+    "chosen_by_val_f1": true
+  },
+  {
+    "model": "Qwen3-1.7B LoRA target | last check (epoch 2) | step 5 sample",
+    "acc": 0.8928,
+    "macro_f1": 0.6443,
+    "f1_class1": 0.3469,
+    "auroc": 0.7391,
+    "pr_auc": 0.2906,
+    "macro_f1_connected": 0.6554,
+    "macro_f1_isolated": 0.6198,
+    "full_val_macro_f1": 0.6435,
+    "chosen_by_val_f1": true
+  }
+]

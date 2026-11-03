@@ -8,8 +8,9 @@ Two checks on the headline comparisons (TwiBot-20, Qwen2.5-1.5B embeddings, full
    range. A range that crosses 0 means the gap is not distinguishable from test-set noise.
    Seeded models (MLP, GCN, ...) are scored as the mean over their 3 seeds in each resample.
    The same resamples also give CIs for AUROC and PR-AUC differences (threshold-free).
-LORA_ADAPTER=best (default: lowest validation loss, step6_*_scores.npz) or last (the final
-check's adapter, step6_*_last_scores.npz from step6_rescore.py) picks which LoRA scores to use.
+LORA_ADAPTER=best (default: lowest validation loss, step6_*_scores.npz), last (the final check's
+adapter, step6_*_last_scores.npz from step6_rescore.py) or chosen (whichever has the higher
+full-validation macro-F1) picks which LoRA scores to use.
 
 Run:  DATASET=twibot20 SETTING=A python my_build/bootstrap_ci.py     (CPU, ~15 min)
 """
@@ -28,8 +29,22 @@ from step5_llm_reason import sample
 
 N_BOOT = 2000
 LORA_ADAPTER = os.environ.get("LORA_ADAPTER", "best")
-assert LORA_ADAPTER in ("best", "last"), "LORA_ADAPTER must be best or last"
+assert LORA_ADAPTER in ("best", "last", "chosen"), "LORA_ADAPTER must be best, last or chosen"
 SIZES = [325, 650, 1300, 2600, 5200]                 # sizes >= the training split are skipped
+
+
+def lora_scores(variant, y, val):
+    # LORA_ADAPTER=best: lowest validation loss; last: final check; chosen: whichever of the two
+    # has the higher FULL-validation macro-F1 (the rule the text-only models use).
+    best = RESULTS_DIR / f"step6_Qwen3-1.7B_{variant}_scores.npz"
+    last = RESULTS_DIR / f"step6_Qwen3-1.7B_{variant}_last_scores.npz"
+    if LORA_ADAPTER == "best" or not last.exists():
+        return np.load(best) if best.exists() else None
+    if LORA_ADAPTER == "last":
+        return np.load(last)
+    f1 = lambda s: f1_score(y[val], s["val"] > best_threshold(y[val], s["val"]), average="macro")
+    b, l = np.load(best), np.load(last)
+    return l if f1(l) > f1(b) else b
 
 
 def predictions(conv, x, edge_index, y, tr, val, test, probs=False):
@@ -90,11 +105,9 @@ def main():
         P[name], S[name] = predictions(args[0], args[1], edge_index, y, args[2], val, test, probs=True)
     P["LR (all train)"], S["LR (all train)"] = lr_predictions(emb, y, train, val, test, probs=True)
     P["LR (1,300)"], S["LR (1,300)"] = lr_predictions(emb, y, tr_1300, val, test, probs=True)
-    suffix = "_scores.npz" if LORA_ADAPTER == "best" else "_last_scores.npz"
     for variant in ["dgp", "target"]:
-        f = RESULTS_DIR / f"step6_Qwen3-1.7B_{variant}{suffix}"
-        if f.exists():
-            s = np.load(f)
+        s = lora_scores(variant, y, val)
+        if s is not None:
             assert (s["test_nodes"] == test).all()
             P[f"LoRA {variant} (1,300)"] = (s["test"] > best_threshold(y[val], s["val"]))[None]
             S[f"LoRA {variant} (1,300)"] = s["test"][None]
@@ -126,7 +139,7 @@ def main():
               f"  AUROC {row['auroc_diff']:+.3f} {row['auroc_ci']}  PR-AUC {row['pr_auc_diff']:+.3f} {row['pr_auc_ci']}",
               flush=True)
 
-    out = RESULTS_DIR / ("bootstrap_ci.json" if LORA_ADAPTER == "best" else "bootstrap_ci_last_adapter.json")
+    out = RESULTS_DIR / ("bootstrap_ci.json" if LORA_ADAPTER == "best" else f"bootstrap_ci_{LORA_ADAPTER}_adapter.json")
     json.dump(dict(learning_curve=curve, paired_bootstrap=ci, n_boot=N_BOOT, test_users=len(test), lora_adapter=LORA_ADAPTER),
               open(out, "w"), indent=2)
     print(f"saved {out}")

@@ -17,7 +17,7 @@ All labels are used only to DESCRIBE the data (1-4) or to score test predictions
 Run:  DATASET=twibot20 SETTING=A python my_build/link_direction.py   (CPU, about 2 min)
       SETTING=B runs parts 5-6 only (B's edges depend on the labels through its subsampling,
       so the descriptive parts 1-4 would mostly describe the subsampling).
-      LORA_ADAPTER=last uses the final-check adapter scores from step6_rescore.py.
+      LORA_ADAPTER=last / chosen: final-check adapter, or the one with the higher full-validation macro-F1.
 """
 import json
 import os
@@ -34,6 +34,21 @@ from step6_dgp import typed_relations, metapath_adjacency, METAPATHS
 
 N_BOOT = 2000
 LORA_ADAPTER = os.environ.get("LORA_ADAPTER", "best")
+assert LORA_ADAPTER in ("best", "last", "chosen"), "LORA_ADAPTER must be best, last or chosen"
+
+
+def lora_scores(variant, y, val):
+    # LORA_ADAPTER=best: lowest validation loss; last: final check; chosen: whichever of the two
+    # has the higher FULL-validation macro-F1 (the rule the text-only models use).
+    best = RESULTS_DIR / f"step6_Qwen3-1.7B_{variant}_scores.npz"
+    last = RESULTS_DIR / f"step6_Qwen3-1.7B_{variant}_last_scores.npz"
+    if LORA_ADAPTER == "best" or not last.exists():
+        return np.load(best) if best.exists() else None
+    if LORA_ADAPTER == "last":
+        return np.load(last)
+    f1 = lambda s: f1_score(y[val], s["val"] > best_threshold(y[val], s["val"]), average="macro")
+    b, l = np.load(best), np.load(last)
+    return l if f1(l) > f1(b) else b
 
 
 def lr_preds(X, y, train, val, test):
@@ -106,8 +121,7 @@ def main():
     rel = typed_relations()
     flags = np.stack([np.asarray(metapath_adjacency(rel, path, n).sum(1)).ravel() > 0
                       for path in METAPATHS.values()], 1).astype(np.float32)
-    suffix = "_scores.npz" if LORA_ADAPTER == "best" else "_last_scores.npz"
-    sc = {v: np.load(RESULTS_DIR / f"step6_Qwen3-1.7B_{v}{suffix}") for v in ["dgp", "target"]}
+    sc = {v: lora_scores(v, y, val) for v in ["dgp", "target"]}
     assert (sc["dgp"]["test_nodes"] == test).all() and (sc["target"]["test_nodes"] == test).all()
     groups = {}
     for j, name in enumerate(METAPATHS):
@@ -147,7 +161,7 @@ def main():
         out[name] = dict(macro_f1=round(f1_score(yt, p > t, average="macro"), 4), auroc=round(roc_auc_score(yt, p), 4))
 
     print(json.dumps(out, indent=1))
-    name = "link_direction.json" if LORA_ADAPTER == "best" else "link_direction_last_adapter.json"
+    name = "link_direction.json" if LORA_ADAPTER == "best" else f"link_direction_{LORA_ADAPTER}_adapter.json"
     json.dump(out, open(RESULTS_DIR / name, "w"), indent=2)
 
 

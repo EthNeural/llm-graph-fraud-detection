@@ -90,6 +90,19 @@ The two "zero-shot: DGP summaries" rows (0.550 and 0.562) differ in the LLM and 
 
 LoRA dgp is one seed (42). On the full TwiBot-20 A test set (1,183 users) it scores 0.711 macro-F1, AUROC 0.794. Every model picks its own cut-off by the same rule: the one that maximises macro-F1 on validation, applied unchanged to test. On the 400-user step 5 sample its AUROC (0.828) is the highest, but that does not hold on the full test set: AUROC 0.794, against 0.822 for Qwen2.5 + LR and 0.840 for MLP. So it is behind on ranking too, not just on the cut-off. Even the best cut-off chosen on test itself (not a valid model) gives only 0.726.
 
+### LoRA checkpoint rule: both adapters (full test set, 1 seed)
+
+`my_build/step6_rescore.py` scores each run's last-check adapter and applies the text-only models' rule, written into the script before any last-adapter test score existed (commit `fc45a63`, 3 Nov 15:24): keep the adapter with the higher full-validation macro-F1. Only two adapters per run were saved and compared.
+
+| Run | Lowest val loss: epoch, test macro-F1 / AUROC | Last check: epoch, test macro-F1 / AUROC | Full-val macro-F1 (lowest loss / last) | Kept by the rule |
+|---|---|---|---|---|
+| A `dgp` | 1: 0.711 / 0.794 | 2: **0.727** / 0.815 | 0.718 / 0.743 | last |
+| A `target` | 1: 0.704 / 0.782 | 2: **0.728** / 0.812 | 0.718 / 0.737 | last |
+| B `dgp` | 2: **0.628** / 0.723 | 3: 0.502 / 0.546 (collapsed) | 0.648 / 0.538 | lowest loss |
+| B `target` | 1: 0.618 / 0.683 | 2: **0.644** / 0.739 | 0.638 / 0.644 | last |
+
+**Under this rule the DGP summaries add nothing:** `dgp` − `target` is −0.001 in A (0.727 vs 0.728) and −0.016 in B (0.628 vs 0.644). LoRA on 1,300 users is then level with text-only models on the same 1,300 users (MLP 0.726 on the same draw). **The tables and findings below still use the lowest-validation-loss adapters** until the team decides which rule is primary; CIs for the rule's adapters (`LORA_ADAPTER=chosen` in `bootstrap_ci.py` and `link_direction.py`) are running.
+
 ### Where GCN loses: connected vs isolated test users (TwiBot-20 A, full test set, mean of 3 seeds)
 
 | Qwen2.5-1.5B + | Connected (1,096 users) | Isolated (87 users) |
@@ -317,13 +330,14 @@ Step 4 rerun with the bridge edges added (`GRAPH=bridges`, `results/twibot20/A/s
 ## Next steps
 
 1. Running tonight (GPU): Qwen3-1.7B as an encoder (step 3, then LR / MLP / GNNs and the 1,300-user control), step 6 `dgp` and `target` on TwiBot-20 B, then scoring the last-check LoRA adapters.
-2. Decide the LoRA checkpoint rule (best validation loss vs best full-validation macro-F1) once the rescoring is in.
+2. Decide which LoRA checkpoint rule is primary. The full-validation macro-F1 rule was fixed in `step6_rescore.py` (commit `fc45a63`) before the last-check adapters were scored; both are reported (see "LoRA checkpoint rule").
 3. FLAG: Yang et al., KDD 2025, has no public code. Decide whether to implement a FLAG-inspired baseline or drop it; check whether "FLAG-style 1:10" for setting B has a source.
 4. Optional, by Saturday night: more LoRA seeds on TwiBot-20 A (about 2.2 h per run, so 2 seeds × dgp and target fit one night; needs a separate `LORA_SEED` and the seed in the checkpoint name first), a semi-synthetic heterophily sweep (CPU), figures.
 5. Low priority: the M ∈ {4, 8, 16} sweep. The limit of 8 binds only for friend-of-friend (mean 5.1 kept in A); 1-hop metapaths keep 0.8–1.8.
 
 ## Changelog
 
+- **4 Nov 2026 (03:30):** Rescoring done: the full-validation rule keeps the last-check adapter in A (both) and B `target`, and the lowest-loss one in B `dgp`. Under it `dgp` − `target` is −0.001 (A) and −0.016 (B). New section with both adapters; main tables unchanged pending a decision.
 - **4 Nov 2026 (01:40):** After review 6 (QA): B MLP baseline quoted as the 3-seed mean the CIs use; checkpoint-rule wording covers B (B target like A; B dgp ended on a collapsed check); "target + flags matches dgp" limited to A; finding 8 adds B's AUROC CIs.
 - **4 Nov 2026 (01:20):** Step 6 `target` on TwiBot-20 B: 0.618 / AUROC 0.683 / PR-AUC 0.188 (`dgp` 0.628 / 0.723 / 0.296). In B, target LoRA + link flags does not reach `dgp` (0.574), unlike A.
 - **3 Nov 2026 (23:50):** `bootstrap_ci.py` now also gives AUROC and PR-AUC CIs and can use either LoRA adapter (`LORA_ADAPTER`); setting B: LoRA + DGP vs MLP AUROC −0.064 (significant), PR-AUC +0.027 (not).
