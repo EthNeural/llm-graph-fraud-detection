@@ -1,0 +1,111 @@
+{
+  "labelled": 11826,
+  "support": 217754,
+  "edge_kinds": {
+    "follow": {
+      "L-L": 5018,
+      "L-S": 97997,
+      "S-L": 492,
+      "S-S": 7362
+    },
+    "friend": {
+      "L-L": 11890,
+      "L-S": 93811,
+      "S-L": 2348,
+      "S-S": 9061
+    }
+  },
+  "labelled_neighbours_per_support": {
+    "0": 37776,
+    "1": 171896,
+    "2": 5813,
+    "3-5": 1879,
+    "6-20": 386,
+    "21-100": 4,
+    "101-1000": 0,
+    ">1000": 0
+  },
+  "bridges": 8082,
+  "largest_hub": 25,
+  "isolated_gain": [
+    {
+      "split": "all",
+      "users": 11826,
+      "isolated_now": 923,
+      "isolated_but_next_to_bridge": 786,
+      "any_support_neighbour": 11158
+    },
+    {
+      "split": "train",
+      "users": 8278,
+      "isolated_now": 664,
+      "isolated_but_next_to_bridge": 563,
+      "any_support_neighbour": 7804
+    },
+    {
+      "split": "val",
+      "users": 2365,
+      "isolated_now": 172,
+      "isolated_but_next_to_bridge": 148,
+      "any_support_neighbour": 2237
+    },
+    {
+      "split": "test",
+      "users": 1183,
+      "isolated_now": 87,
+      "isolated_but_next_to_bridge": 75,
+      "any_support_neighbour": 1117
+    }
+  ],
+  "homophily": {
+    "random_baseline": 0.507,
+    "our_graph": 0.532,
+    "our_graph_edges": 16349
+  },
+  "collapsed": [
+    {
+      "cap": 10,
+      "bridges_used": 7994,
+      "pairs_before_dedup": 21586,
+      "bridge_edges": 20909,
+      "new_edges_not_in_our_graph": 20719,
+      "homophily_bridge_edges": 0.623,
+      "union_edges": 37068,
+      "homophily_union": 0.583,
+      "isolated_after": 320
+    },
+    {
+      "cap": 50,
+      "bridges_used": 8082,
+      "pairs_before_dedup": 31113,
+      "bridge_edges": 30240,
+      "new_edges_not_in_our_graph": 30013,
+      "homophily_bridge_edges": 0.619,
+      "union_edges": 46362,
+      "homophily_union": 0.588,
+      "isolated_after": 137
+    },
+    {
+      "cap": 200,
+      "bridges_used": 8082,
+      "pairs_before_dedup": 31113,
+      "bridge_edges": 30240,
+      "new_edges_not_in_our_graph": 30013,
+      "homophily_bridge_edges": 0.619,
+      "union_edges": 46362,
+      "homophily_union": 0.588,
+      "isolated_after": 137
+    },
+    {
+      "cap": "none",
+      "bridges_used": 8082,
+      "pairs_before_dedup": 31113,
+      "bridge_edges": 30240,
+      "new_edges_not_in_our_graph": 30013,
+      "homophily_bridge_edges": 0.619,
+      "union_edges": 46362,
+      "homophily_union": 0.588,
+      "isolated_after": 137
+    }
+  ]
+}
