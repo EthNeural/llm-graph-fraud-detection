@@ -18,7 +18,7 @@ section. For how everything works, see [TEAM_GUIDE.md](TEAM_GUIDE.md).
 | Step 5: zero-shot reasoner | ✅ | ✅ | ✅ | ✅ |
 | Step 6: DGP (LoRA), dgp | ✅ 1 seed | ✅ 1 seed | not in scope | not in scope |
 | Step 6: DGP (LoRA), target | ✅ 1 seed | ✅ 1 seed | not in scope | not in scope |
-| FLAG baseline (see next steps) | ⏳ | ⏳ | not in scope | not in scope |
+| FLAG-lite baseline (similarity top-10 + skip-GNN) | 🔄 | 🔄 | not in scope | not in scope |
 
 ✅ done · 🔄 running · ⏳ to do
 
@@ -49,7 +49,7 @@ References for TwiBot-20 A: TF-IDF 0.702; metadata without "verified" 0.755 (not
 
 ### Instagram (secondary dataset, steps 1–5): full test set; LR one fit, MLP and GNNs mean of 3 seeds
 
-On Instagram, class 1 is **commercial accounts** (business, brand or media) against personal ones: a stand-in for a minority class, not fraud. Text alone is much weaker here than on TwiBot-20 (AUROC about 0.63 against 0.84).
+On Instagram, class 1 is **commercial accounts** (business, brand or media) against personal ones: a stand-in for a minority class, not fraud. FLAG uses the same Instagram graph (from GLBench, Li et al. 2024) as a fraud proxy at 1:10, our setting B. Its reported macro-F1 there is 0.473–0.483 for text-embedding GNNs and at most 0.507 for FLAG itself (Table 4), near the 0.476 an all-majority predictor scores; our Qwen2.5 + LR reaches 0.578 in B. Splits, subsample and encoder differ (FLAG uses Sentence-BERT), so this is not a head-to-head comparison. Text alone is much weaker here than on TwiBot-20 (AUROC about 0.63 against 0.84).
 
 | Encoder | A: LR | A: MLP | A: GCN | A: SAGE | A: FAGCN | B: LR | B: MLP | B: GCN | B: SAGE | B: FAGCN |
 |---|---|---|---|---|---|---|---|---|---|---|
@@ -129,6 +129,21 @@ Plain edge homophily is misleading when classes are unbalanced, so this table al
 | Instagram B, all edges | 38,193 | 0.861 | 0.856 | 0.033 | 0.002 |
 
 Every graph sits near zero once chance is removed. Setting B's high edge homophily (0.86–0.88) only reflects the 1:10 ratio: almost every edge touches the large class. On TwiBot-20, B's near-zero value is also caused by how B is built: it keeps 8% of bots and only edges whose two ends are both kept, so bot–bot edge rows fall from 8,162 (A) to 54 (B). A bot's neighbours are then 7.8% bots, below B's 9.1% base rate, and isolation becomes tied to the label (41.8% of B's bots are isolated, against 27.6% of its humans; 7.3% vs 8.5% in A). Friend links on TwiBot-20 join same-label users no more often than chance (adjusted −0.015); the label signal in TwiBot-20's links sits elsewhere, in who lists whom (see "who lists whom"). The bridge edges raise adjusted homophily to 0.175, yet GCN still gets worse on them (robustness check below).
+
+### Per-class homophily: is there "camouflage"? (FLAG's Figure 5 test)
+
+FLAG (KDD 2025, Fig. 5) argues its 1:10 fraud datasets show *neighbourhood camouflage*: minority nodes have low per-node homophily, majority nodes high. We ran the same histogram on our four graphs, adding the chance level (each class's share of all edge ends, which is what random edges would give). `my_build/class_homophily.py`, figure `my_build/figures/class_homophily.png`.
+
+| Graph | Minority: mean homophily | Minority: chance | Majority: mean | Majority: chance |
+|---|---|---|---|---|
+| TwiBot-20 A | 0.543 | 0.484 | 0.581 | 0.516 |
+| TwiBot-20 B (1:10) | 0.091 | 0.065 | 0.935 | 0.935 |
+| Instagram A | 0.389 | 0.341 | 0.692 | 0.659 |
+| Instagram B (1:10) | 0.099 | 0.078 | 0.921 | 0.922 |
+
+Every class sits a few points above chance. The low-minority / high-majority pattern FLAG reads as camouflage appears in both 1:10 settings, but it is almost exactly what chance predicts once one class is 10 times the other; it comes from the imbalance, not from the minority hiding among the majority. On TwiBot-20 A there is no camouflage at all (bots 0.54 vs humans 0.58).
+
+![Per-class homophily](my_build/figures/class_homophily.png)
 
 ### TwiBot-20 graph: dropped support users
 
@@ -324,19 +339,20 @@ Step 4 rerun with the bridge edges added (`GRAPH=bridges`, `results/twibot20/A/s
 | 1 Nov | Excluded TwiBot-20 metadata | "Verified" alone gives macro-F1 0.803: a shortcut, not text or graph signal |
 | 1 Nov | Encoder ladder: six encoders, everything else fixed | To separate encoder size and type from the graph's effect |
 | 30 Oct | Threshold chosen on validation for every model | Scores are not calibrated; 0.5 is badly placed when class 1 is rare |
-| 30 Oct | Settings A (natural) and B (1:10, FLAG-style) | Tests both the data as it is and rare fraud |
+| 30 Oct | Settings A (natural) and B (1:10, FLAG-style) | Tests both the data as it is and rare fraud. FLAG (Yang et al., KDD 2025, §4.1.1) builds its text-rich fraud datasets the same way: the minority class "randomly selected so that the final ratio … is about 1:10" |
 | 27 Oct | Dropped Elliptic, rebuilt on Instagram | Elliptic has no natural text for an LLM to read |
 
 ## Next steps
 
 1. Running tonight (GPU): Qwen3-1.7B as an encoder (step 3, then LR / MLP / GNNs and the 1,300-user control), step 6 `dgp` and `target` on TwiBot-20 B, then scoring the last-check LoRA adapters.
 2. Decide which LoRA checkpoint rule is primary. The full-validation macro-F1 rule was fixed in `step6_rescore.py` (commit `fc45a63`) before the last-check adapters were scored; both are reported (see "LoRA checkpoint rule").
-3. FLAG: Yang et al., KDD 2025, has no public code. Decide whether to implement a FLAG-inspired baseline or drop it; check whether "FLAG-style 1:10" for setting B has a source.
+3. FLAG (Yang et al., KDD 2025; no public code): running a FLAG-lite baseline from its two non-LLM components (semantic-similarity top-10 neighbour sampling, skip-GNN `GNN(X) + Linear(X)`), which its own ablation (Table 5) credits with most of the gain. FLAG also selects models by best validation macro-F1 (§4.1.2), the rule `step6_rescore.py` applies.
 4. Optional, by Saturday night: more LoRA seeds on TwiBot-20 A (about 2.2 h per run, so 2 seeds × dgp and target fit one night; needs a separate `LORA_SEED` and the seed in the checkpoint name first), a semi-synthetic heterophily sweep (CPU), figures.
 5. Low priority: the M ∈ {4, 8, 16} sweep. The limit of 8 binds only for friend-of-friend (mean 5.1 kept in A); 1-hop metapaths keep 0.8–1.8.
 
 ## Changelog
 
+- **4 Nov 2026 (04:15):** FLAG (KDD 2025) read: setting B's 1:10 protocol and the validation-F1 model selection both match it; Instagram comparison with its Table 4; FLAG-lite baseline and per-class homophily histograms (FLAG Fig. 5) started.
 - **4 Nov 2026 (03:30):** Rescoring done: the full-validation rule keeps the last-check adapter in A (both) and B `target`, and the lowest-loss one in B `dgp`. Under it `dgp` − `target` is −0.001 (A) and −0.016 (B). New section with both adapters; main tables unchanged pending a decision.
 - **4 Nov 2026 (01:40):** After review 6 (QA): B MLP baseline quoted as the 3-seed mean the CIs use; checkpoint-rule wording covers B (B target like A; B dgp ended on a collapsed check); "target + flags matches dgp" limited to A; finding 8 adds B's AUROC CIs.
 - **4 Nov 2026 (01:20):** Step 6 `target` on TwiBot-20 B: 0.618 / AUROC 0.683 / PR-AUC 0.188 (`dgp` 0.628 / 0.723 / 0.296). In B, target LoRA + link flags does not reach `dgp` (0.574), unlike A.
