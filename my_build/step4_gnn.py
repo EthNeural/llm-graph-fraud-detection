@@ -52,6 +52,7 @@ FAGCN_EPS = 0.3                 # share of the layer input kept each layer (FAGC
 MODELS = os.environ.get("MODELS", "MLP,GCN,SAGE,FAGCN").split(",")
 assert set(MODELS) <= {"MLP", "GCN", "SAGE", "FAGCN"}, f"unknown name in MODELS={MODELS}"
 GRAPH = os.environ.get("GRAPH", "labelled")
+SHUFFLE_SEED = int(os.environ.get("SHUFFLE_SEED", 0))     # GRAPH=shuffled: which random rewiring
 assert GRAPH in ("labelled", "shuffled") or (GRAPH == "bridges" and DATASET == "twibot20"), \
     "GRAPH must be labelled, shuffled, or bridges (TwiBot-20 only)"
 
@@ -203,7 +204,7 @@ def main():
     if GRAPH == "bridges":
         edge_index_np = add_bridge_edges(edge_index_np)
     elif GRAPH == "shuffled":
-        edge_index_np = shuffle_edges(edge_index_np, len(y_np))
+        edge_index_np = shuffle_edges(edge_index_np, len(y_np), SHUFFLE_SEED)
 
     edge_index = torch.as_tensor(edge_index_np, dtype=torch.long)
     y = torch.as_tensor(y_np, dtype=torch.long)
@@ -229,7 +230,8 @@ def main():
             if conv_name in MODELS:
                 results.append(run_seeds(f"{name} + {conv_name}", conv, x, *args))
 
-    out = RESULTS_DIR / ("step4_gnn.json" if GRAPH == "labelled" else f"step4_gnn_{GRAPH}.json")
+    tag = f"{GRAPH}_s{SHUFFLE_SEED}" if GRAPH == "shuffled" and SHUFFLE_SEED else GRAPH
+    out = RESULTS_DIR / ("step4_gnn.json" if GRAPH == "labelled" else f"step4_gnn_{tag}.json")
     # Merge: rows of the models run now replace their old rows; other rows are kept.
     new = {r["model"] for r in results}
     old = [r for r in json.load(open(out)) if r["model"] not in new] if out.exists() else []

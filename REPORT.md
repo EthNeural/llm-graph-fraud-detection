@@ -3,7 +3,7 @@
 A living report, updated as experiments finish. The newest entries are at the top of each
 section. For how everything works, see [TEAM_GUIDE.md](TEAM_GUIDE.md).
 
-**Last updated:** 3 November 2026, 14:15
+**Last updated:** 3 November 2026, 18:00
 
 **Scope.** TwiBot-20 is the main dataset: steps 1–6, settings A and B. Instagram is the secondary dataset, steps 1–5 only: it checks whether the step 1–5 findings hold on a second, multilingual graph. Step 6 is not planned for Instagram. One step 6 run takes about 3–6 h on our Mac, so that time goes to the main dataset.
 
@@ -24,7 +24,7 @@ section. For how everything works, see [TEAM_GUIDE.md](TEAM_GUIDE.md).
 
 **Current run (GPU, one job at a time):** step 3 Qwen3-1.7B embeddings (started 3 Nov 15:42), then step 6 `dgp` and `target` on TwiBot-20 B, then rescoring of the epoch-2 LoRA adapters (`step6_rescore.py`). Expected to end about 05:30 on 4 Nov.
 - Done today: step 6 `target` on TwiBot-20 A (13:30–15:42, early stop after epoch 2).
-- On CPU alongside: shuffled-edge control (step 4), then the setting B bootstrap.
+- On CPU alongside: 4 more shuffled-edge rewirings and 5 more 1,300-user training draws; after the chain, the setting B training-size control and bootstrap.
 
 ## Latest results (macro-F1, test set)
 
@@ -86,11 +86,11 @@ LoRA dgp is one seed (42). On the full TwiBot-20 A test set (1,183 users) it sco
 | Qwen2.5-1.5B + | Connected (1,096 users) | Isolated (87 users) |
 |---|---|---|
 | MLP | **0.767** | 0.743 |
-| GCN | 0.701 | **0.777** |
+| GCN | 0.701 | 0.777 |
 | SAGE | 0.752 | 0.734 |
 | FAGCN | 0.742 | 0.770 |
 
-GCN's whole loss is on connected users, where neighbours are averaged in. On isolated users GCN has nothing to average, so it acts like an MLP. The isolated group is only 87 users, so that column is noisy.
+GCN's whole loss is on connected users, where neighbours are averaged in. The isolated column is only 87 users (47 bots) and is not reliable: isolated users have no neighbours in either graph, yet GCN scores 0.777 on them when trained on the real edges and 0.724 when trained on shuffled ones. The difference comes only from weights learned on a different graph.
 
 ### How much label signal do the edges carry? (all graphs)
 
@@ -106,7 +106,7 @@ Plain edge homophily is misleading when classes are unbalanced, so this table al
 | Instagram A, all edges | 72,005 | 0.586 | 0.551 | 0.078 | 0.005 |
 | Instagram B, all edges | 38,193 | 0.861 | 0.856 | 0.033 | 0.002 |
 
-Every graph sits near zero once chance is removed. Setting B's high edge homophily (0.86–0.88) only reflects the 1:10 ratio: almost every edge touches the large class. Friend links on TwiBot-20 carry no label signal at all. The bridge edges raise adjusted homophily to 0.175, yet GCN still gets worse on them (robustness check below).
+Every graph sits near zero once chance is removed. Setting B's high edge homophily (0.86–0.88) only reflects the 1:10 ratio: almost every edge touches the large class. On TwiBot-20, B's near-zero value is also caused by how B is built: it keeps 8% of bots and only edges whose two ends are both kept, so bot–bot edge rows fall from 8,162 (A) to 54 (B). A bot's neighbours are then 7.8% bots, below B's 9.1% base rate, and isolation becomes tied to the label (41.8% of B's bots are isolated, against 27.6% of its humans; 7.3% vs 8.5% in A). Friend links on TwiBot-20 carry no label signal at all. The bridge edges raise adjusted homophily to 0.175, yet GCN still gets worse on them (robustness check below).
 
 ### TwiBot-20 graph: dropped support users
 
@@ -146,7 +146,7 @@ With the same 1,300 users, the text-only models lose about 0.03–0.04, and the 
 | LR | 0.714 | 0.720 | 0.725 | 0.743 | 0.754 | 0.757 |
 | MLP | 0.697 | 0.713 | 0.726 | 0.751 | 0.754 | 0.766 |
 
-LoRA + DGP at 1,300 users (0.711) sits between the 650- and 1,300-user text-only points.
+LoRA + DGP at 1,300 users (0.711) is below every text-only point from 650 users up, and level with LR trained on 325 users (0.714), a quarter of its data. LoRA target only (0.704) is below them all. Equal training data closes most of the gap, but not all of it.
 
 ### Are the gaps real? Paired bootstrap 95% CIs (TwiBot-20 A, full test set)
 
@@ -180,9 +180,20 @@ Each pair is scored on the same 2,000 resamples of the 1,183 test users; seeded 
 | E5-base + FAGCN | 0.733 | 0.727 | 0.542 | 0.569 |
 | Graph only (GCN) | 0.577 | 0.554 | 0.497 | 0.497 |
 
-- **In A the real edges carry a little signal**: GCN loses 0.05 more on random edges, FAGCN 0.01–0.02, and graph-only drops 0.023. This matches the small positive adjusted homophily (0.062). It is far less than what GCN's averaging costs (−0.059 against MLP).
-- **SAGE does not care**: it scores the same on real and random edges, because it can learn to ignore the neighbour average.
-- **In B the real edges are no better than random** (within about one standard deviation everywhere), as adjusted homophily 0.014 predicts.
+- **In A the real edges are better than random for GCN**: it scores 0.048 higher on them (0.707 vs 0.659), nearly as much as its whole gap to MLP (−0.059). FAGCN gains 0.006–0.021, graph-only 0.023. Label signal cannot explain this (label informativeness 0.003); similar text along real edges can (next table).
+- **SAGE scores about the same on real and random edges** in A (0.750 vs 0.751). In B, shuffled edges even score higher for SAGE and FAGCN on AUROC (Qwen2.5 SAGE 0.786 vs 0.749).
+- **In B, mostly no difference**, except E5-base + GCN (0.589 real vs 0.560 shuffled). B has almost no bot–bot edges (see the homophily note).
+- These numbers use one random rewiring (seed 0); four more are running, so the spread over rewirings can be reported.
+
+**Why real edges help GCN without carrying labels: linked users write alike.** Mean cosine similarity of centred Qwen2.5-1.5B embeddings (`my_build/edge_similarity.py`; centring removes the common direction that pushes every raw cosine of these vectors to about 0.9):
+
+| TwiBot-20 A | All | Bot–bot | Bot–human | Human–human |
+|---|---|---|---|---|
+| Real edges | **0.263** | 0.274 | 0.235 | 0.299 |
+| Shuffled edges (mean of 5 rewirings) | 0.053 | 0.066 | 0.044 | 0.058 |
+| Random pairs | 0.034 | 0.062 | 0.021 | 0.022 |
+
+Real edges join users with similar text whatever their labels, even across bot–human pairs (0.235). So GCN loses less on real edges because averaging similar users blurs a user's own vector less, not because the edges reveal labels. Setting B shows the same pattern (0.336 real vs 0.071 shuffled).
 
 ### Robustness check: step 4 on the bridge graph (TwiBot-20 A, full test set)
 
@@ -199,7 +210,7 @@ Step 4 rerun with the bridge edges added (`GRAPH=bridges`, `results/twibot20/A/s
 | Graph only | – | 0.577 → 0.538 | 0.568 → 0.532 | 0.562 → 0.519 |
 
 - MLP is identical in both runs (it ignores edges), which confirms only the graph changed.
-- GCN drops on every encoder (std 0.002–0.010), most on users who were isolated before (Qwen2.5: 0.777 → 0.666). Average degree rises from about 2.8 to about 7.8, so GCN's averaging gives each user's own text less weight, and homophily 0.588 is still close to the 0.507 random baseline.
+- GCN drops on every encoder (std 0.002–0.010), most on users who were isolated before (Qwen2.5: 0.777 → 0.666; the 0.777 starting point is itself unstable, see the connected/isolated note). Average degree rises from about 2.8 to about 7.8, so GCN's averaging gives each user's own text less weight, and homophily 0.588 is still close to the 0.507 random baseline.
 - SAGE, which keeps its own features separate, gains slightly: Qwen2.5 + SAGE comes within 0.005 of MLP.
 - FAGCN, which can give an edge a negative weight, holds steady or gains slightly (−0.007 to +0.010). The extra edges do not hurt it the way they hurt GCN.
 - Graph-only drops by about 0.04. One hypothesis, not tested: in the labelled-only graph, degree partly reflects a user's position in the dataset's BFS crawl, and the bridge edges blur that.
@@ -210,7 +221,7 @@ Step 4 rerun with the bridge edges added (`GRAPH=bridges`, `results/twibot20/A/s
 - **LoRA reads less text than the encoders.** Its prompt caps the user's own text at 480 tokens of whole lines, which cuts 81% of TwiBot-20 users short (13.2 of 16.6 lines kept on average, 800-user sample). The encoders read every line. This biases LoRA vs MLP against LoRA; dgp vs target is unaffected (same cap).
 - **LoRA and the other models choose their checkpoint differently.** LoRA keeps the lowest validation loss on a 200-user sample; MLP and GNNs keep the best full-validation macro-F1. In both TwiBot-20 A LoRA runs the loss was lowest at epoch 1 while validation AUROC kept rising (dgp 0.748 → 0.772, target 0.765 → 0.781). The epoch-2 adapters are being scored with the full-validation rule (`my_build/step6_rescore.py`).
 - **GNN hyperparameters are fixed and shared, not tuned.**
-- **Setting B is small and changes the graph.** Its test set has 54 bots; one random bot subsample (seed 42); 29% of users are isolated in B against 7.8% in A (37% of B's test bots). Its paired bootstrap CIs are about ±0.05: GCN − MLP −0.036 [−0.087, +0.012], SAGE − MLP +0.012 [−0.034, +0.058], FAGCN − MLP −0.058 [−0.112, −0.002]. Only the FAGCN gap is outside noise. B's learning curve is flat (MLP 0.62 at 325 users, 0.61 at 4,000), so B cannot separate most models. `results/twibot20/B/bootstrap_ci.json`.
+- **Setting B is small and changes the graph.** Its test set has 54 bots; one random bot subsample (seed 42); 29% of users are isolated in B against 7.8% in A (37% of B's test bots). Its paired bootstrap CIs are about ±0.05: GCN − MLP −0.036 [−0.087, +0.012], SAGE − MLP +0.012 [−0.034, +0.058], FAGCN − MLP −0.058 [−0.112, −0.002]. Only the FAGCN gap is outside noise. B's MLP learning curve is flat and noisy (0.622 at 325 users, 0.613 at 4,000); LR rises from 0.583 to 0.634. B cannot separate most models. B also has almost no bot–bot edges (54 rows), so its "no edge signal" result reflects the subsampling, not rare fraud as such. `results/twibot20/B/bootstrap_ci.json`.
 - **TwiBot-20 graph = labelled users only** (see "dropped support users"; bridge check below).
 - **Edge signal near zero**, so these results speak to near-random edges, not to strongly heterophilous graphs (see the adjusted-homophily table).
 
@@ -218,7 +229,7 @@ Step 4 rerun with the bridge edges added (`GRAPH=bridges`, `results/twibot20/A/s
 
 1. **A good text encoder is where the gains are; the graph adds nothing.** On TwiBot-20 A, Qwen2.5 + MLP (0.766) beats TF-IDF (0.702) by 0.06. The neural encoders span 0.04 (0.726–0.766), and no graph model improves on its encoder's MLP.
 2. **GCN hurts under heterophily; a heterophily GNN only recovers the loss.** GCN is below MLP for every encoder on TwiBot-20 A, by 0.04–0.06. FAGCN, built for heterophily, beats GCN on every encoder (by 0.02–0.04) but stays 0.004–0.027 below MLP. So on this graph, no GNN we tried beats ignoring the edges, with the same fixed, untuned hyperparameters for all of them. The GCN and FAGCN gaps are outside test-set noise (paired bootstrap); SAGE's is borderline. SAGE stays within about 0.02 of MLP. In B, Qwen2.5 + SAGE edges past MLP on macro-F1 (0.624 vs 0.613, within about one standard deviation), but not on the threshold-free metrics (AUROC 0.749 vs 0.788, PR-AUC 0.251 vs 0.269). E5-base is the one encoder where GCN beats MLP in B (0.589 vs 0.564, GCN std 0.027). *Robustness:* this is on the labelled-only graph, whose edges are barely above random (homophily 0.532 vs 0.507). Adding the more homophilous bridge edges (0.619) makes GCN worse on every encoder, by 0.02–0.04, while SAGE gains up to 0.012. So the GCN result is not an artifact of dropping the support users. On Instagram, all graph models stay within about 0.03 of text-only LR in both settings.
-3. **The edges carry almost no label signal.** Adjusted homophily is −0.015 to 0.08 on every original graph, and label informativeness is at most 0.005. This is consistent with findings 2 and 4: averaging neighbours mostly adds noise. On degree-preserving shuffled edges, GCN loses a further 0.05 in A and nothing in B: the edges carry a little signal in A and none in B (see the shuffled-edge control).
+3. **The edges carry almost no label signal.** Adjusted homophily is −0.015 to 0.08 on every original graph, and label informativeness is at most 0.005. This is consistent with findings 2 and 4: averaging neighbours mostly adds noise. On degree-preserving shuffled edges GCN loses a further 0.048 in A; the real edges join users with similar text (centred cosine 0.26 vs 0.05 shuffled), not users with the same label (see the shuffled-edge control).
 4. **The graph alone is weak:** 0.577 (TwiBot-20 A), and 0.497 in B, near the floor. On the bridge graph it drops further, to 0.538.
 5. **The zero-shot LLM reasoner (Qwen2.5-1.5B-Instruct, step 5) loses to trained classifiers** on every dataset and setting. Adding neighbours (raw or summaries) does not reliably help.
 6. **Size is not everything.** Twitter-RoBERTa (125M) beats Qwen3-Embedding (0.6B). On Instagram A the encoders are tied (LR 0.588–0.612, MLP 0.585–0.607).
@@ -258,6 +269,7 @@ Step 4 rerun with the bridge edges added (`GRAPH=bridges`, `results/twibot20/A/s
 
 ## Changelog
 
+- **3 Nov 2026 (18:00):** After review 2: corrected the learning-curve, shuffled-edge and setting B sentences against their numbers; isolated column marked unreliable; setting B's bot–bot edge loss documented; new edge text-similarity table (real edges join similar-text users regardless of label). Fixed epoch labels in `step6_rescore.py`. Queued 4 more rewirings, 5 more training draws, and the setting B control and bootstrap.
 - **3 Nov 2026 (16:00):** Shuffled-edge control (A: real edges slightly better than random for GCN/FAGCN; B: no difference; SAGE indifferent). Setting B paired bootstrap: CIs about ±0.05, only FAGCN − MLP excludes 0.
 - **3 Nov 2026 (15:45):** Step 6 `target` on TwiBot-20 A: LoRA 0.704 (full test), 0.694 (step 5 sample); zero-shot 0.590. DGP summaries add +0.007 on the full test set.
 - **3 Nov 2026 (16:00):** After an independent review: connected/isolated table; Limitations section; fixed ranges in findings 2 and the B FAGCN note; setting B SAGE claim checked against AUROC/PR-AUC; finding 1 reworded. Queued step 6 rescoring of the epoch-2 adapters and a shuffled-edge control.

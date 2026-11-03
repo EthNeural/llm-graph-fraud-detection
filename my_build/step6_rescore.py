@@ -12,6 +12,9 @@ sets, and applies the text-only models' rule to choose between the two adapters:
   macro-F1 at its own best cut-off. Both adapters are reported either way.
 No training, no new summaries: prompts are rebuilt from the cached metapath summaries.
 
+Only these two adapters are saved, so the rule chooses between 2 of the validation checks,
+not all of them as MLP does; and training stopped there, so later epochs are not covered.
+
 Run:  caffeinate -ims env DATASET=twibot20 SETTING=A VARIANT=dgp python -u my_build/step6_rescore.py
 GPU, about 40 min for TwiBot-20 A (full val 2,365 + test 1,183), less for B.
 Results: results/<dataset>/<setting>/step6_rescore.json (one row per variant, merged).
@@ -56,14 +59,19 @@ def main():
         model.eval()
         p_val = s6.score(model, enc(val), tok.pad_token_id, yes, no, desc="last adapter: full val")
         p_test = s6.score(model, enc(test), tok.pad_token_id, yes, no, desc="last adapter: full test")
-        np.savez(out_file, val=p_val, test=p_test, test_nodes=test, last_epoch=state["state"]["epoch"])
+        np.savez(out_file, val=p_val, test=p_test, test_nodes=test)
         del model
         torch.mps.empty_cache() if DEVICE == "mps" else None
     last = np.load(out_file)
 
+    # Label each adapter by its validation check (epochs counted from 0.5 = half of the first epoch).
+    hist = torch.load(s6.CKPT / "state.pt", weights_only=False)["state"]["history"]
+    best_ep = min(hist, key=lambda h: h["val_loss"])["epoch"]
+    last_ep = hist[-1]["epoch"]
+    print(f"validation checks: {hist}")
     rows, f1s = [], {}
     pos = {v: i for i, v in enumerate(test)}
-    for name, sc in [("best val loss (epoch 1)", best), ("last (epoch 2)", last)]:
+    for name, sc in [(f"best val loss (epoch {best_ep:g})", best), (f"last check (epoch {last_ep:g})", last)]:
         f1s[name] = val_f1(y[val], sc["val"])
         t = best_threshold(y[val], sc["val"])
         r = evaluate(f"{s6.NAME} | {name} | full test", y[test], (sc["test"] > t).astype(int), sc["test"], iso[test])

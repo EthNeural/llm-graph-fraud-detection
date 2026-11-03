@@ -1,0 +1,29 @@
+{
+  "real edges": {
+    "all": 0.3358,
+    "bot-bot": 0.4061,
+    "bot-bot edges": 27,
+    "bot-human": 0.3392,
+    "bot-human edges": 636,
+    "human-human": 0.3349,
+    "human-human edges": 4611
+  },
+  "shuffled edges (mean of 5 rewirings)": {
+    "all": 0.0713,
+    "bot-bot": 0.127,
+    "bot-bot edges": 20.6,
+    "bot-human": 0.0859,
+    "bot-human edges": 647.4,
+    "human-human": 0.069,
+    "human-human edges": 4599.2
+  },
+  "random pairs": {
+    "all": 0.0535,
+    "bot-bot": 0.1175,
+    "bot-bot edges": 1675,
+    "bot-human": 0.0741,
+    "bot-human edges": 33120,
+    "human-human": 0.0487,
+    "human-human edges": 165172
+  }
+}

@@ -16,6 +16,7 @@ import os
 
 import numpy as np
 import torch
+from sklearn.model_selection import train_test_split
 
 from common import load, load_embeddings, get_splits, isolated_mask, evaluate, best_threshold, RESULTS_DIR
 from step3_embed import make_clf, tune_C, emb_file
@@ -24,6 +25,7 @@ from step5_llm_reason import sample, N_TEST
 from step6_dgp import N_TRAIN
 
 ENC = os.environ.get("ENC", "qwen,qwen3").split(",")
+DRAWS = int(os.environ.get("DRAWS", 1))   # DRAWS=k adds k-1 more random 1,300-user training draws
 
 
 def mean_rows(label, runs):
@@ -50,7 +52,10 @@ def main():
             print(f"(skipping {name}: no embeddings)")
             continue
         emb = load_embeddings(name).astype(np.float32)
-        for tr_name, tr in [("full train", train), (f"{len(train_s)} train", train_s)]:
+        extra = [(f"{len(train_s)} train draw {d}",
+                  np.sort(train_test_split(train, train_size=len(train_s), stratify=y[train], random_state=d)[0]))
+                 for d in range(1, DRAWS)]
+        for tr_name, tr in [("full train", train), (f"{len(train_s)} train", train_s)] + extra:
             print(f"\n=== {name}, {tr_name} ===")
             # LR: deterministic, one fit.
             clf = make_clf(tune_C(emb, y, tr, val)).fit(emb[tr], y[tr])
