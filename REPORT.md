@@ -3,7 +3,7 @@
 A living report, updated as experiments finish. The newest entries are at the top of each
 section. For how everything works, see [TEAM_GUIDE.md](TEAM_GUIDE.md).
 
-**Last updated:** 3 November 2026, 13:00
+**Last updated:** 3 November 2026, 13:30
 
 ## Status
 
@@ -12,17 +12,18 @@ section. For how everything works, see [TEAM_GUIDE.md](TEAM_GUIDE.md).
 | Step 1: homophily | ✅ | ✅ | ✅ | ✅ |
 | Step 2: baselines | ✅ | ✅ | ✅ | ✅ |
 | Step 3: encoders | ✅ 3 encoders | ✅ 3 encoders | ✅ 6 encoders | ✅ 6 encoders |
-| Step 4: MLP / GCN / SAGE | ✅ (no MLP rows) | ✅ (no MLP rows) | ✅ | ✅ |
+| Step 4: MLP / GCN / SAGE | ✅ (no MLP rows) | ✅ (no MLP rows) | ✅ + bridge graph | ✅ |
 | Step 5: zero-shot reasoner | ✅ | ✅ | ✅ | ✅ |
 | Step 6: DGP (LoRA), dgp | ⏳ | ⏳ | ✅ 1 seed | ⏳ |
-| Step 6: DGP (LoRA), target | ⏳ | ⏳ | ⏳ next | ⏳ |
+| Step 6: DGP (LoRA), target | ⏳ | ⏳ | 🔄 running | ⏳ |
 | FLAG baseline | ⏳ | ⏳ | ⏳ | ⏳ |
 
 ✅ done · 🔄 running · ⏳ to do
 
-**Current run:** none.
-- TwiBot-20 A, `VARIANT=dgp` finished 3 Nov 02:40 (started 2 Nov 20:56, one restart).
-- Next on the GPU: step 4 on the bridge graph (minutes), then step 6 `VARIANT=target`.
+**Current run:** TwiBot-20 A, `VARIANT=target` (log `results/twibot20/A/step6_target.log`).
+- Started 3 Nov ~13:30. No summaries needed, so it goes straight to zero-shot scoring and LoRA training.
+- Expected ~2–3 h; it resumes from checkpoints if stopped.
+- Done earlier: `VARIANT=dgp` (3 Nov 02:40, ~5.7 h) and step 4 on the bridge graph (~12 min).
 
 ## Latest results (macro-F1, test set)
 
@@ -82,11 +83,30 @@ Our TwiBot-20 graph keeps only the 11,826 labelled users. The benchmark also shi
 
 Homophily here uses all labels, test included: it describes the data and is never a model input. The published TwiBot-20 GCN/GAT scores (F1 0.809 / 0.853) are binary F1 with profile metadata, so they are not comparable with our text-only macro-F1.
 
+### Robustness check: step 4 on the bridge graph (TwiBot-20 A)
+
+Step 4 rerun with the bridge edges added (`GRAPH=bridges`, `results/twibot20/A/step4_gnn_bridges.json`): 92,724 edge rows instead of 32,698, and 137 isolated users instead of 923. **This is a robustness check only. Steps 5 and 6 and all tables above stay on the labelled-only graph.** "Isolated" still means isolated in the labelled-only graph, so the groups are the same users in both runs. Macro-F1, mean of 3 seeds:
+
+| Encoder | MLP | GCN: original → bridges | SAGE: original → bridges |
+|---|---|---|---|
+| MiniLM | 0.726 | 0.686 → 0.651 (−0.035) | 0.721 → 0.725 (+0.005) |
+| E5-base (English) | 0.760 | 0.700 → 0.671 (−0.029) | 0.740 → 0.746 (+0.006) |
+| Twitter-RoBERTa | 0.749 | 0.692 → 0.670 (−0.021) | 0.743 → 0.741 (−0.002) |
+| multilingual-E5 | 0.747 | 0.699 → 0.676 (−0.023) | 0.741 → 0.741 (0.000) |
+| Qwen3-Embedding | 0.727 | 0.691 → 0.665 (−0.025) | 0.707 → 0.719 (+0.012) |
+| Qwen2.5-1.5B | **0.766** | 0.707 → 0.677 (−0.029) | 0.750 → **0.761** (+0.010) |
+| Graph only | – | 0.577 → 0.538 | 0.568 → 0.532 |
+
+- MLP is identical in both runs (it ignores edges), which confirms only the graph changed.
+- GCN drops on every encoder (std 0.002–0.010), most on users who were isolated before (Qwen2.5: 0.777 → 0.666). Average degree rises from about 2.8 to about 7.8, so GCN's averaging gives each user's own text less weight, and homophily 0.588 is still close to the 0.507 random baseline.
+- SAGE, which keeps its own features separate, gains slightly: Qwen2.5 + SAGE comes within 0.005 of MLP.
+- Graph-only drops by about 0.04. One hypothesis, not tested: in the labelled-only graph, degree partly reflects a user's position in the dataset's BFS crawl, and the bridge edges blur that.
+
 ## Findings so far
 
 1. **The encoder matters most.** On TwiBot-20 A, Qwen2.5 + MLP (0.766) beats TF-IDF (0.702) by more than any graph model adds.
-2. **GCN hurts under heterophily.** It is below MLP for every encoder on TwiBot-20 A, by 0.04–0.06. SAGE stays within about 0.02 of MLP. In B, Qwen2.5 + SAGE edges past MLP (0.624 vs 0.613), but the gap is within about one standard deviation. *Caveat:* this is on the labelled-only graph. Its edges are barely above random (homophily 0.532 vs 0.507); the dropped bridge paths are more homophilous (0.619). Part of this gap may come from how we built the graph; the step 4 rerun on the bridge graph will test it.
-3. **The graph alone is weak:** 0.577 (TwiBot-20 A), and 0.497 in B, near the floor. Same caveat as finding 2.
+2. **GCN hurts under heterophily.** It is below MLP for every encoder on TwiBot-20 A, by 0.04–0.06. SAGE stays within about 0.02 of MLP. In B, Qwen2.5 + SAGE edges past MLP (0.624 vs 0.613), but the gap is within about one standard deviation. *Robustness:* this is on the labelled-only graph, whose edges are barely above random (homophily 0.532 vs 0.507). Adding the more homophilous bridge edges (0.619) makes GCN worse on every encoder, by 0.02–0.04, while SAGE gains up to 0.012. So the GCN result is not an artifact of dropping the support users.
+3. **The graph alone is weak:** 0.577 (TwiBot-20 A), and 0.497 in B, near the floor. On the bridge graph it drops further, to 0.538.
 4. **The zero-shot LLM reasoner loses to trained classifiers** on every dataset and setting. Adding neighbours (raw or summaries) does not reliably help.
 5. **Size is not everything.** Twitter-RoBERTa (125M) beats Qwen3-Embedding (0.6B). Multilingual-E5 is the best text-only encoder on multilingual Instagram A.
 6. **Fine-tuning helps a lot, but does not beat text-only models yet.** On TwiBot-20 A, LoRA with DGP summaries goes from 0.562 (zero-shot) to 0.726. That beats GCN (0.698) but stays below Qwen2.5 + LR (0.749) and MLP (0.747), on connected users too (0.726 vs 0.746). One seed; the DGP trimming had little to trim on this sparse graph (mean 0.8–1.8 neighbours kept per 1-hop metapath, limit 8). Still open: the `target` variant, to see if the summaries help at all.
@@ -95,6 +115,7 @@ Homophily here uses all labels, test included: it describes the data and is neve
 
 | Date | Decision | Why |
 |---|---|---|
+| 3 Nov | Bridge graph used only as a step 4 robustness check; steps 5 and 6 stay on the labelled-only graph | Keeps all main tables on one graph; the step 4 check already answers whether the graph construction drove finding 2 |
 | 3 Nov | Measured the dropped support users (bridges, homophily) before changing any model | Findings 2, 3 and 6 depend on the graph; the benchmark keeps support users as neighbours |
 | 2 Nov | Step 6 summaries generated in batches of 4 on TwiBot-20 | At 16, the GPU memory cache grew to 16 GB and the Mac swapped |
 | 2 Nov | Step 6 relations treated as undirected | Kept directed, only 38% of users had a friend link; undirected, 93% have a neighbour (matches steps 4–5) |
@@ -110,14 +131,14 @@ Homophily here uses all labels, test included: it describes the data and is neve
 
 ## Next steps
 
-1. Rerun step 4 (MLP / GCN / SAGE) on TwiBot-20 A with bridge edges added. Does the GCN gap to MLP shrink?
-2. Step 6 on TwiBot-20 A, `VARIANT=target`.
-3. Step 6 on TwiBot-20 B, then Instagram A and B.
-4. Run the FLAG baseline on our splits (`results/<setting>/flag.json`).
-5. Add MLP rows to Instagram step 4 so it matches the TwiBot-20 ladder.
-6. Optional, if time allows: 3 seeds for step 6, and an M ∈ {4, 8, 16} sweep.
+1. Step 6 on TwiBot-20 A, `VARIANT=target` (running).
+2. Step 6 on TwiBot-20 B, then Instagram A and B.
+3. Run the FLAG baseline on our splits (`results/<setting>/flag.json`).
+4. Add MLP rows to Instagram step 4 so it matches the TwiBot-20 ladder.
+5. Optional, if time allows: 3 seeds for step 6, and an M ∈ {4, 8, 16} sweep.
 
 ## Changelog
 
+- **3 Nov 2026 (afternoon):** Step 4 robustness check on the bridge graph: GCN drops 0.02–0.04 on every encoder, SAGE gains up to 0.012. Steps 5 and 6 stay on the labelled-only graph. Started step 6 `VARIANT=target` on TwiBot-20 A.
 - **3 Nov 2026:** TwiBot-20 A step 6 `dgp` finished (LoRA 0.726 on the step 5 sample, 0.711 on the full test set). Counted the dropped support users: 8,082 bridges; bridge edges are more homophilous (0.619) than our graph (0.532).
 - **2 Nov 2026:** TwiBot-20 step 5 finished (A and B). Step 6 (DGP replication) written and started on TwiBot-20 A. Repository created.

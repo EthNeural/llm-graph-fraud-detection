@@ -3,6 +3,12 @@ Step 4: Add the graph. GCN vs GraphSAGE on top of each LLM's embeddings.
 
 Run:  python my_build/step4_gnn.py      (needs step 3 embeddings)
 
+TwiBot-20 only: GRAPH=bridges adds an edge between two labelled users who share a support-user
+neighbour (a "bridge", see playground_bridges.py, which must run first). Uses no labels.
+Results go to step4_gnn_bridges.json; "isolated" still means isolated in the labelled-only
+graph, so the connected / isolated groups are the same users in both runs.
+  e.g.  DATASET=twibot20 GRAPH=bridges python my_build/step4_gnn.py
+
 The heterophily test:
   GCN   : h_v = mean over {v and its neighbours} of W x      -> self and neighbours MIXED
   SAGE  : h_v = W1 x_v  +  W2 mean(x_neighbours)             -> self and neighbours SEPARATE
@@ -18,19 +24,23 @@ Two controls make the comparison clean (same layers, hidden size, dropout, optim
 So "text-only vs hybrid" differs ONLY in whether the graph is used.
 """
 import json
+import os
 import numpy as np
+import scipy.sparse as sp
 import torch
 import torch.nn.functional as F
 from torch_geometric.nn import GCNConv, SAGEConv
 from sklearn.metrics import f1_score
 
 from common import (load, load_embeddings, get_splits, isolated_mask, evaluate, best_threshold,
-                    RESULTS_DIR, SETTING)
+                    original_ids, RESULTS_DIR, SETTING, DATASET, DATA_DIR)
 from step3_embed import ENCODERS, emb_file
 
 SEEDS = [0, 1, 2]
 EPOCHS = 300
 PATIENCE = 50
+GRAPH = os.environ.get("GRAPH", "labelled")
+assert GRAPH == "labelled" or (GRAPH == "bridges" and DATASET == "twibot20"), "GRAPH=bridges is TwiBot-20 only"
 
 
 class NoGraph(torch.nn.Module):
@@ -120,10 +130,33 @@ def structure_features(edge_index_np, n, train):
     return torch.as_tensor((f - mu) / sd)
 
 
+def add_bridge_edges(edge_index_np):
+    # Link two labelled users when they share a support-user neighbour: S = B B^T, where
+    # B[labelled, support] = 1 for any friend/follow link. Then renumber to this setting.
+    c = np.load(DATA_DIR / "support_edges.npz")
+    n_all = len(np.load(DATA_DIR / "y.npy"))
+    B = sp.csr_matrix((np.ones(len(c["lab"]), dtype=np.float32), (c["lab"], c["sup"])),
+                      shape=(n_all, int(c["sup"].max()) + 1))
+    B.data[:] = 1                                         # friend + follow to one user -> 1
+    S = (B @ B.T).tocoo()                                 # symmetric, so both directions included
+    e = np.stack([S.row, S.col])[:, S.row != S.col]
+    keep = original_ids()
+    new_id = np.full(n_all, -1)
+    new_id[keep] = np.arange(len(keep))
+    e = new_id[e]
+    e = e[:, (e >= 0).all(0)]                             # setting B: both ends must be kept
+    merged = np.unique(np.hstack([edge_index_np, e]), axis=1)
+    print(f"GRAPH=bridges: {edge_index_np.shape[1]:,} edge rows + {e.shape[1]:,} bridge rows "
+          f"-> {merged.shape[1]:,} (isolated {isolated_mask(merged, len(keep)).sum():,})")
+    return merged
+
+
 def main():
     _, edge_index_np, y_np = load()
     train, val, test = get_splits(y_np)
-    iso_test = isolated_mask(edge_index_np, len(y_np))[test]
+    iso_test = isolated_mask(edge_index_np, len(y_np))[test]   # labelled-only graph, for every GRAPH
+    if GRAPH == "bridges":
+        edge_index_np = add_bridge_edges(edge_index_np)
 
     edge_index = torch.as_tensor(edge_index_np, dtype=torch.long)
     y = torch.as_tensor(y_np, dtype=torch.long)
@@ -147,7 +180,8 @@ def main():
         for conv_name, conv in [("MLP", NoGraph), ("GCN", GCNConv), ("SAGE", SAGEConv)]:
             results.append(run_seeds(f"{name} + {conv_name}", conv, x, *args))
 
-    with open(RESULTS_DIR / "step4_gnn.json", "w") as f:
+    out = "step4_gnn.json" if GRAPH == "labelled" else f"step4_gnn_{GRAPH}.json"
+    with open(RESULTS_DIR / out, "w") as f:
         json.dump(results, f, indent=2)
     print(f"\nSetting {SETTING} done. Full table: python my_build/compare.py")
 
