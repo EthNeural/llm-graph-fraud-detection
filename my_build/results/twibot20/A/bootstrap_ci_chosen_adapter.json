@@ -1,0 +1,225 @@
+{
+  "learning_curve": [
+    {
+      "train_users": 325,
+      "lr": 0.7139,
+      "mlp": 0.6965,
+      "mlp_std": 0.0017
+    },
+    {
+      "train_users": 650,
+      "lr": 0.7195,
+      "mlp": 0.7132,
+      "mlp_std": 0.0067
+    },
+    {
+      "train_users": 1300,
+      "lr": 0.7252,
+      "mlp": 0.7259,
+      "mlp_std": 0.0008
+    },
+    {
+      "train_users": 2600,
+      "lr": 0.7428,
+      "mlp": 0.7508,
+      "mlp_std": 0.0051
+    },
+    {
+      "train_users": 5200,
+      "lr": 0.7539,
+      "mlp": 0.7538,
+      "mlp_std": 0.0055
+    },
+    {
+      "train_users": 8278,
+      "lr": 0.7565,
+      "mlp": 0.7656,
+      "mlp_std": 0.0026
+    }
+  ],
+  "paired_bootstrap": [
+    {
+      "a": "GCN (all train)",
+      "b": "MLP (all train)",
+      "diff": -0.0588,
+      "ci_low": -0.082,
+      "ci_high": -0.0369,
+      "significant": true,
+      "auroc_diff": -0.0647,
+      "auroc_ci": [
+        -0.0847,
+        -0.0462
+      ],
+      "pr_auc_diff": -0.0563,
+      "pr_auc_ci": [
+        -0.0807,
+        -0.0313
+      ]
+    },
+    {
+      "a": "SAGE (all train)",
+      "b": "MLP (all train)",
+      "diff": -0.0153,
+      "ci_low": -0.0313,
+      "ci_high": 0.0002,
+      "significant": false,
+      "auroc_diff": -0.011,
+      "auroc_ci": [
+        -0.0219,
+        -0.0005
+      ],
+      "pr_auc_diff": -0.0109,
+      "pr_auc_ci": [
+        -0.0253,
+        0.0022
+      ]
+    },
+    {
+      "a": "FAGCN (all train)",
+      "b": "MLP (all train)",
+      "diff": -0.0211,
+      "ci_low": -0.0387,
+      "ci_high": -0.0039,
+      "significant": true,
+      "auroc_diff": -0.0285,
+      "auroc_ci": [
+        -0.0414,
+        -0.0164
+      ],
+      "pr_auc_diff": -0.02,
+      "pr_auc_ci": [
+        -0.0356,
+        -0.0038
+      ]
+    },
+    {
+      "a": "FAGCN (all train)",
+      "b": "GCN (all train)",
+      "diff": 0.0377,
+      "ci_low": 0.0216,
+      "ci_high": 0.0547,
+      "significant": true,
+      "auroc_diff": 0.0362,
+      "auroc_ci": [
+        0.024,
+        0.0493
+      ],
+      "pr_auc_diff": 0.0362,
+      "pr_auc_ci": [
+        0.0219,
+        0.05
+      ]
+    },
+    {
+      "a": "MLP (1,300)",
+      "b": "MLP (all train)",
+      "diff": -0.0397,
+      "ci_low": -0.0554,
+      "ci_high": -0.0228,
+      "significant": true,
+      "auroc_diff": -0.0434,
+      "auroc_ci": [
+        -0.0554,
+        -0.0307
+      ],
+      "pr_auc_diff": -0.0448,
+      "pr_auc_ci": [
+        -0.0625,
+        -0.0263
+      ]
+    },
+    {
+      "a": "LoRA dgp (1,300)",
+      "b": "MLP (1,300)",
+      "diff": 0.0012,
+      "ci_low": -0.0229,
+      "ci_high": 0.0263,
+      "significant": false,
+      "auroc_diff": 0.0193,
+      "auroc_ci": [
+        -0.0013,
+        0.041
+      ],
+      "pr_auc_diff": 0.0409,
+      "pr_auc_ci": [
+        0.0161,
+        0.0656
+      ]
+    },
+    {
+      "a": "LoRA dgp (1,300)",
+      "b": "LR (1,300)",
+      "diff": 0.0019,
+      "ci_low": -0.0229,
+      "ci_high": 0.0286,
+      "significant": false,
+      "auroc_diff": 0.0289,
+      "auroc_ci": [
+        0.0068,
+        0.0522
+      ],
+      "pr_auc_diff": 0.0552,
+      "pr_auc_ci": [
+        0.0275,
+        0.0848
+      ]
+    },
+    {
+      "a": "LoRA dgp (1,300)",
+      "b": "MLP (all train)",
+      "diff": -0.0385,
+      "ci_low": -0.0605,
+      "ci_high": -0.0141,
+      "significant": true,
+      "auroc_diff": -0.0241,
+      "auroc_ci": [
+        -0.0441,
+        -0.0029
+      ],
+      "pr_auc_diff": -0.0039,
+      "pr_auc_ci": [
+        -0.026,
+        0.0198
+      ]
+    },
+    {
+      "a": "LoRA target (1,300)",
+      "b": "MLP (1,300)",
+      "diff": 0.0019,
+      "ci_low": -0.0236,
+      "ci_high": 0.028,
+      "significant": false,
+      "auroc_diff": 0.0154,
+      "auroc_ci": [
+        -0.0073,
+        0.0373
+      ],
+      "pr_auc_diff": 0.0292,
+      "pr_auc_ci": [
+        0.0015,
+        0.0563
+      ]
+    },
+    {
+      "a": "LoRA dgp (1,300)",
+      "b": "LoRA target (1,300)",
+      "diff": -0.0006,
+      "ci_low": -0.0226,
+      "ci_high": 0.0217,
+      "significant": false,
+      "auroc_diff": 0.0039,
+      "auroc_ci": [
+        -0.0116,
+        0.0186
+      ],
+      "pr_auc_diff": 0.0117,
+      "pr_auc_ci": [
+        -0.0032,
+        0.0256
+      ]
+    }
+  ],
+  "n_boot": 2000,
+  "test_users": 1183,
+  "lora_adapter": "chosen"
+}

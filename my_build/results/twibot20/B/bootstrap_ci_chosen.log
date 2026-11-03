@@ -1,0 +1,23 @@
+  best C = 0.01 (val macroF1 0.624)
+{'train_users': 325, 'lr': 0.583, 'mlp': 0.622, 'mlp_std': 0.0096}
+  best C = 0.01 (val macroF1 0.680)
+{'train_users': 650, 'lr': 0.5847, 'mlp': 0.6155, 'mlp_std': 0.0121}
+  best C = 0.001 (val macroF1 0.682)
+{'train_users': 1300, 'lr': 0.6219, 'mlp': 0.6188, 'mlp_std': 0.0047}
+  best C = 0.001 (val macroF1 0.680)
+{'train_users': 2600, 'lr': 0.6294, 'mlp': 0.6361, 'mlp_std': 0.0183}
+  best C = 0.001 (val macroF1 0.685)
+{'train_users': 4000, 'lr': 0.6335, 'mlp': 0.6127, 'mlp_std': 0.0151}
+  best C = 0.001 (val macroF1 0.685)
+  best C = 0.001 (val macroF1 0.682)
+GCN (all train)        - MLP (all train)    F1 -0.036 [-0.087, +0.012]   AUROC -0.072 [-0.1286, -0.0177]  PR-AUC -0.059 [-0.1457, 0.0176]
+SAGE (all train)       - MLP (all train)    F1 +0.012 [-0.034, +0.058]   AUROC -0.039 [-0.0917, 0.0115]  PR-AUC -0.018 [-0.0995, 0.0618]
+FAGCN (all train)      - MLP (all train)    F1 -0.058 [-0.112, -0.002]*  AUROC -0.141 [-0.1962, -0.0896]  PR-AUC -0.105 [-0.1961, -0.0282]
+FAGCN (all train)      - GCN (all train)    F1 -0.022 [-0.062, +0.015]   AUROC -0.069 [-0.1135, -0.0271]  PR-AUC -0.046 [-0.1021, -0.002]
+MLP (1,300)            - MLP (all train)    F1 +0.006 [-0.037, +0.048]   AUROC -0.029 [-0.0707, 0.009]  PR-AUC -0.031 [-0.0943, 0.0259]
+LoRA dgp (1,300)       - MLP (1,300)        F1 +0.009 [-0.056, +0.075]   AUROC -0.035 [-0.0961, 0.0218]  PR-AUC +0.058 [-0.0475, 0.1706]
+LoRA dgp (1,300)       - LR (1,300)         F1 +0.006 [-0.055, +0.066]   AUROC -0.020 [-0.0765, 0.0346]  PR-AUC +0.051 [-0.0308, 0.1526]
+LoRA dgp (1,300)       - MLP (all train)    F1 +0.015 [-0.051, +0.081]   AUROC -0.064 [-0.1239, -0.0078]  PR-AUC +0.027 [-0.0796, 0.1426]
+LoRA target (1,300)    - MLP (1,300)        F1 +0.025 [-0.051, +0.100]   AUROC -0.019 [-0.0904, 0.0532]  PR-AUC +0.052 [-0.0584, 0.1683]
+LoRA dgp (1,300)       - LoRA target (1,300) F1 -0.017 [-0.078, +0.045]   AUROC -0.016 [-0.0795, 0.0487]  PR-AUC +0.006 [-0.0851, 0.0995]
+saved /Users/pj/Desktop/Macquarie - Sem 4/PROJECT/Graph-based-fraud-detection-system/my_build/results/twibot20/B/bootstrap_ci_chosen_adapter.json

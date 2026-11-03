@@ -175,6 +175,42 @@
         -0.0796,
         0.1426
       ]
+    },
+    {
+      "a": "LoRA target (1,300)",
+      "b": "MLP (1,300)",
+      "diff": -0.0007,
+      "ci_low": -0.0616,
+      "ci_high": 0.058,
+      "significant": false,
+      "auroc_diff": -0.0753,
+      "auroc_ci": [
+        -0.1541,
+        0.0005
+      ],
+      "pr_auc_diff": -0.0503,
+      "pr_auc_ci": [
+        -0.1295,
+        0.0162
+      ]
+    },
+    {
+      "a": "LoRA dgp (1,300)",
+      "b": "LoRA target (1,300)",
+      "diff": 0.0095,
+      "ci_low": -0.0513,
+      "ci_high": 0.068,
+      "significant": false,
+      "auroc_diff": 0.0399,
+      "auroc_ci": [
+        -0.0433,
+        0.1282
+      ],
+      "pr_auc_diff": 0.1082,
+      "pr_auc_ci": [
+        0.02,
+        0.2207
+      ]
     }
   ],
   "n_boot": 2000,

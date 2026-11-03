@@ -1,0 +1,121 @@
+{
+  "friend: out-degree median / p90 / max": [
+    1,
+    9,
+    10
+  ],
+  "friend: mutual share": 0.0119,
+  "follow: out-degree median / p90 / max": [
+    1,
+    9,
+    10
+  ],
+  "follow: mutual share": 0.0383,
+  "has out-friend: bots / humans": [
+    0.387,
+    0.358
+  ],
+  "out-friend: test AUROC of the count": 0.517,
+  "has in-friend: bots / humans": [
+    0.388,
+    0.634
+  ],
+  "in-friend: test AUROC of the count": 0.306,
+  "has out-follow: bots / humans": [
+    0.118,
+    0.088
+  ],
+  "out-follow: test AUROC of the count": 0.509,
+  "has in-follow: bots / humans": [
+    0.499,
+    0.238
+  ],
+  "in-follow: test AUROC of the count": 0.64,
+  "in-follow minus in-friend: test AUROC (no training)": 0.713,
+  "Spearman(in-friend, followers_count)": 0.594,
+  "Spearman(in-friend, followers_count), humans": 0.694,
+  "Spearman(in-follow, followers_count)": -0.435,
+  "Spearman(in-follow, followers_count), humans": -0.5,
+  "own friend list recorded (any support link): bots / humans": [
+    0.95,
+    0.88
+  ],
+  "own follow list recorded (any support link): bots / humans": [
+    0.958,
+    0.814
+  ],
+  "AUROC within flag groups (dgp vs target)": {
+    "no friend (330 users)": {
+      "dgp": 0.832,
+      "target": 0.778
+    },
+    "has friend (853 users)": {
+      "dgp": 0.794,
+      "target": 0.81
+    },
+    "no follow (666 users)": {
+      "dgp": 0.789,
+      "target": 0.81
+    },
+    "has follow (517 users)": {
+      "dgp": 0.8,
+      "target": 0.766
+    },
+    "no friend-of-friend (348 users)": {
+      "dgp": 0.839,
+      "target": 0.791
+    },
+    "has friend-of-friend (835 users)": {
+      "dgp": 0.791,
+      "target": 0.807
+    }
+  },
+  "target LoRA + flags (LR fitted on validation)": {
+    "macro_f1": 0.7317,
+    "auroc": 0.8092,
+    "minus_dgp": {
+      "diff": 0.0046,
+      "ci": [
+        -0.0185,
+        0.0266
+      ]
+    },
+    "minus_target": {
+      "diff": 0.004,
+      "ci": [
+        -0.0071,
+        0.0151
+      ]
+    }
+  },
+  "dgp LoRA": {
+    "macro_f1": 0.7271,
+    "auroc": 0.8154
+  },
+  "text + 3 link flags - text (LR)": {
+    "diff": 0.0131,
+    "ci": [
+      -0.0032,
+      0.0293
+    ],
+    "auroc": 0.8333,
+    "auroc_text": 0.8222
+  },
+  "text + 4 log in/out degrees - text (LR)": {
+    "diff": 0.0192,
+    "ci": [
+      0.0011,
+      0.0375
+    ],
+    "auroc": 0.8446,
+    "auroc_text": 0.8222
+  },
+  "4 log in/out degrees only": {
+    "macro_f1": 0.6597,
+    "auroc": 0.7168
+  },
+  "3 link flags only": {
+    "macro_f1": 0.6327,
+    "auroc": 0.6554
+  }
+}

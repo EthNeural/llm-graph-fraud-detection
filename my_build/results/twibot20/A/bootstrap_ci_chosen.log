@@ -1,0 +1,25 @@
+  best C = 0.01 (val macroF1 0.714)
+{'train_users': 325, 'lr': 0.7139, 'mlp': 0.6965, 'mlp_std': 0.0017}
+  best C = 0.01 (val macroF1 0.719)
+{'train_users': 650, 'lr': 0.7195, 'mlp': 0.7132, 'mlp_std': 0.0067}
+  best C = 0.01 (val macroF1 0.731)
+{'train_users': 1300, 'lr': 0.7252, 'mlp': 0.7259, 'mlp_std': 0.0008}
+  best C = 0.01 (val macroF1 0.747)
+{'train_users': 2600, 'lr': 0.7428, 'mlp': 0.7508, 'mlp_std': 0.0051}
+  best C = 0.01 (val macroF1 0.755)
+{'train_users': 5200, 'lr': 0.7539, 'mlp': 0.7538, 'mlp_std': 0.0055}
+  best C = 0.01 (val macroF1 0.759)
+{'train_users': 8278, 'lr': 0.7565, 'mlp': 0.7656, 'mlp_std': 0.0026}
+  best C = 0.01 (val macroF1 0.759)
+  best C = 0.01 (val macroF1 0.731)
+GCN (all train)        - MLP (all train)    F1 -0.059 [-0.082, -0.037]*  AUROC -0.065 [-0.0847, -0.0462]  PR-AUC -0.056 [-0.0807, -0.0313]
+SAGE (all train)       - MLP (all train)    F1 -0.015 [-0.031, +0.000]   AUROC -0.011 [-0.0219, -0.0005]  PR-AUC -0.011 [-0.0253, 0.0022]
+FAGCN (all train)      - MLP (all train)    F1 -0.021 [-0.039, -0.004]*  AUROC -0.029 [-0.0414, -0.0164]  PR-AUC -0.020 [-0.0356, -0.0038]
+FAGCN (all train)      - GCN (all train)    F1 +0.038 [+0.022, +0.055]*  AUROC +0.036 [0.024, 0.0493]  PR-AUC +0.036 [0.0219, 0.05]
+MLP (1,300)            - MLP (all train)    F1 -0.040 [-0.055, -0.023]*  AUROC -0.043 [-0.0554, -0.0307]  PR-AUC -0.045 [-0.0625, -0.0263]
+LoRA dgp (1,300)       - MLP (1,300)        F1 +0.001 [-0.023, +0.026]   AUROC +0.019 [-0.0013, 0.041]  PR-AUC +0.041 [0.0161, 0.0656]
+LoRA dgp (1,300)       - LR (1,300)         F1 +0.002 [-0.023, +0.029]   AUROC +0.029 [0.0068, 0.0522]  PR-AUC +0.055 [0.0275, 0.0848]
+LoRA dgp (1,300)       - MLP (all train)    F1 -0.038 [-0.061, -0.014]*  AUROC -0.024 [-0.0441, -0.0029]  PR-AUC -0.004 [-0.026, 0.0198]
+LoRA target (1,300)    - MLP (1,300)        F1 +0.002 [-0.024, +0.028]   AUROC +0.015 [-0.0073, 0.0373]  PR-AUC +0.029 [0.0015, 0.0563]
+LoRA dgp (1,300)       - LoRA target (1,300) F1 -0.001 [-0.023, +0.022]   AUROC +0.004 [-0.0116, 0.0186]  PR-AUC +0.012 [-0.0032, 0.0256]
+saved /Users/pj/Desktop/Macquarie - Sem 4/PROJECT/Graph-based-fraud-detection-system/my_build/results/twibot20/A/bootstrap_ci_chosen_adapter.json

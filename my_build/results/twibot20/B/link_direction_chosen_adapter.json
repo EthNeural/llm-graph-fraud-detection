@@ -1,0 +1,76 @@
+{
+  "AUROC within flag groups (dgp vs target)": {
+    "no friend (207 users)": {
+      "dgp": 0.718,
+      "target": 0.716
+    },
+    "has friend (390 users)": {
+      "dgp": 0.704,
+      "target": 0.757
+    },
+    "no follow (477 users)": {
+      "dgp": 0.702,
+      "target": 0.709
+    },
+    "has follow (120 users)": {
+      "dgp": 0.77,
+      "target": 0.779
+    },
+    "no friend-of-friend (237 users)": {
+      "dgp": 0.722,
+      "target": 0.71
+    },
+    "has friend-of-friend (360 users)": {
+      "dgp": 0.715,
+      "target": 0.766
+    }
+  },
+  "target LoRA + flags (LR fitted on validation)": {
+    "macro_f1": 0.6059,
+    "auroc": 0.7051,
+    "minus_dgp": {
+      "diff": -0.0217,
+      "ci": [
+        -0.0748,
+        0.0302
+      ]
+    },
+    "minus_target": {
+      "diff": -0.0384,
+      "ci": [
+        -0.1023,
+        0.0284
+      ]
+    }
+  },
+  "dgp LoRA": {
+    "macro_f1": 0.6275,
+    "auroc": 0.7233
+  },
+  "text + 3 link flags - text (LR)": {
+    "diff": 0.0226,
+    "ci": [
+      0.0016,
+      0.0491
+    ],
+    "auroc": 0.8049,
+    "auroc_text": 0.7986
+  },
+  "text + 4 log in/out degrees - text (LR)": {
+    "diff": -0.004,
+    "ci": [
+      -0.0154,
+      0.0074
+    ],
+    "auroc": 0.8147,
+    "auroc_text": 0.7986
+  },
+  "4 log in/out degrees only": {
+    "macro_f1": 0.546,
+    "auroc": 0.6809
+  },
+  "3 link flags only": {
+    "macro_f1": 0.5612,
+    "auroc": 0.6321
+  }
+}
