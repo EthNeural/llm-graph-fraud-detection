@@ -1,0 +1,50 @@
+
+=== graph-only + GCN ===
+  seed 0           acc 0.573  macroF1 0.548  F1_1 0.442  AUROC 0.579  PR-AUC 0.418  | conn 0.536  iso 0.305
+  seed 1           acc 0.574  macroF1 0.547  F1_1 0.438  AUROC 0.578  PR-AUC 0.418  | conn 0.534  iso 0.305
+  seed 2           acc 0.572  macroF1 0.547  F1_1 0.442  AUROC 0.577  PR-AUC 0.417  | conn 0.536  iso 0.305
+  -> mean macroF1 0.548 ± 0.000
+
+=== graph-only + SAGE ===
+  seed 0           acc 0.607  macroF1 0.560  F1_1 0.418  AUROC 0.586  PR-AUC 0.419  | conn 0.533  iso 0.305
+  seed 1           acc 0.602  macroF1 0.546  F1_1 0.386  AUROC 0.577  PR-AUC 0.415  | conn 0.505  iso 0.305
+  seed 2           acc 0.544  macroF1 0.526  F1_1 0.435  AUROC 0.553  PR-AUC 0.401  | conn 0.515  iso 0.305
+  -> mean macroF1 0.544 ± 0.014
+
+=== minilm + GCN ===
+  seed 0           acc 0.638  macroF1 0.606  F1_1 0.495  AUROC 0.642  PR-AUC 0.511  | conn 0.604  iso 0.579
+  seed 1           acc 0.646  macroF1 0.608  F1_1 0.486  AUROC 0.640  PR-AUC 0.516  | conn 0.607  iso 0.576
+  seed 2           acc 0.644  macroF1 0.606  F1_1 0.485  AUROC 0.636  PR-AUC 0.512  | conn 0.602  iso 0.589
+  -> mean macroF1 0.607 ± 0.001
+
+=== minilm + SAGE ===
+  seed 0           acc 0.634  macroF1 0.589  F1_1 0.453  AUROC 0.617  PR-AUC 0.493  | conn 0.577  iso 0.568
+  seed 1           acc 0.629  macroF1 0.589  F1_1 0.462  AUROC 0.623  PR-AUC 0.495  | conn 0.578  iso 0.570
+  seed 2           acc 0.639  macroF1 0.584  F1_1 0.432  AUROC 0.608  PR-AUC 0.467  | conn 0.573  iso 0.604
+  -> mean macroF1 0.588 ± 0.003
+
+=== e5 + GCN ===
+  seed 0           acc 0.641  macroF1 0.609  F1_1 0.498  AUROC 0.640  PR-AUC 0.521  | conn 0.601  iso 0.615
+  seed 1           acc 0.636  macroF1 0.600  F1_1 0.481  AUROC 0.640  PR-AUC 0.524  | conn 0.594  iso 0.599
+  seed 2           acc 0.636  macroF1 0.607  F1_1 0.500  AUROC 0.642  PR-AUC 0.517  | conn 0.606  iso 0.586
+  -> mean macroF1 0.606 ± 0.004
+
+=== e5 + SAGE ===
+  seed 0           acc 0.636  macroF1 0.602  F1_1 0.487  AUROC 0.629  PR-AUC 0.523  | conn 0.597  iso 0.589
+  seed 1           acc 0.642  macroF1 0.606  F1_1 0.487  AUROC 0.639  PR-AUC 0.526  | conn 0.600  iso 0.597
+  seed 2           acc 0.638  macroF1 0.597  F1_1 0.469  AUROC 0.631  PR-AUC 0.520  | conn 0.592  iso 0.598
+  -> mean macroF1 0.602 ± 0.003
+
+=== qwen + GCN ===
+  seed 0           acc 0.655  macroF1 0.607  F1_1 0.471  AUROC 0.650  PR-AUC 0.543  | conn 0.601  iso 0.598
+  seed 1           acc 0.657  macroF1 0.611  F1_1 0.479  AUROC 0.644  PR-AUC 0.540  | conn 0.607  iso 0.602
+  seed 2           acc 0.648  macroF1 0.609  F1_1 0.486  AUROC 0.633  PR-AUC 0.517  | conn 0.611  iso 0.570
+  -> mean macroF1 0.609 ± 0.002
+
+=== qwen + SAGE ===
+  seed 0           acc 0.669  macroF1 0.600  F1_1 0.434  AUROC 0.640  PR-AUC 0.550  | conn 0.584  iso 0.646
+  seed 1           acc 0.651  macroF1 0.608  F1_1 0.480  AUROC 0.642  PR-AUC 0.556  | conn 0.600  iso 0.607
+  seed 2           acc 0.642  macroF1 0.604  F1_1 0.481  AUROC 0.639  PR-AUC 0.533  | conn 0.603  iso 0.582
+  -> mean macroF1 0.604 ± 0.003
+
+Setting A done. Full table: python my_build/compare.py

@@ -14,7 +14,7 @@ section. For how everything works, see [TEAM_GUIDE.md](TEAM_GUIDE.md).
 | Step 1: homophily | ✅ | ✅ | ✅ | ✅ |
 | Step 2: baselines | ✅ | ✅ | ✅ | ✅ |
 | Step 3: encoders | ✅ 6 encoders | ✅ 6 encoders | ✅ 3 encoders | ✅ 3 encoders |
-| Step 4: MLP / GCN / SAGE / FAGCN | ✅ + bridge graph | ✅ (FAGCN ⏳) | ✅ | ✅ |
+| Step 4: MLP / GCN / SAGE / FAGCN | ✅ + bridge graph | ✅ | ✅ | ✅ |
 | Step 5: zero-shot reasoner | ✅ | ✅ | ✅ | ✅ |
 | Step 6: DGP (LoRA), dgp | ✅ 1 seed | ⏳ | not in scope | not in scope |
 | Step 6: DGP (LoRA), target | 🔄 running | ⏳ | not in scope | not in scope |
@@ -34,17 +34,17 @@ section. For how everything works, see [TEAM_GUIDE.md](TEAM_GUIDE.md).
 
 ### TwiBot-20, encoder ladder (full test set, mean of 3 seeds)
 
-| Encoder | A: MLP | A: GCN | A: SAGE | A: FAGCN | B: MLP | B: GCN | B: SAGE |
-|---|---|---|---|---|---|---|---|
-| MiniLM | 0.726 | 0.686 | 0.721 | 0.722 | 0.588 | 0.550 | 0.565 |
-| E5-base (English) | 0.760 | 0.700 | 0.740 | 0.733 | 0.564 | 0.589 | 0.567 |
-| Twitter-RoBERTa | 0.749 | 0.692 | 0.743 | 0.722 | 0.612 | 0.579 | 0.609 |
-| multilingual-E5 | 0.747 | 0.699 | 0.741 | 0.726 | 0.606 | 0.585 | 0.589 |
-| Qwen3-Embedding | 0.727 | 0.691 | 0.707 | 0.710 | 0.599 | 0.574 | 0.558 |
-| Qwen2.5-1.5B | **0.766** | 0.707 | 0.750 | 0.744 | 0.613 | 0.577 | **0.624** |
-| Graph only | – | 0.577 | 0.568 | 0.562 | – | 0.497 | 0.497 |
+| Encoder | A: MLP | A: GCN | A: SAGE | A: FAGCN | B: MLP | B: GCN | B: SAGE | B: FAGCN |
+|---|---|---|---|---|---|---|---|---|
+| MiniLM | 0.726 | 0.686 | 0.721 | 0.722 | 0.588 | 0.550 | 0.565 | 0.584 |
+| E5-base (English) | 0.760 | 0.700 | 0.740 | 0.733 | 0.564 | 0.589 | 0.567 | 0.542 |
+| Twitter-RoBERTa | 0.749 | 0.692 | 0.743 | 0.722 | 0.612 | 0.579 | 0.609 | 0.571 |
+| multilingual-E5 | 0.747 | 0.699 | 0.741 | 0.726 | 0.606 | 0.585 | 0.589 | 0.567 |
+| Qwen3-Embedding | 0.727 | 0.691 | 0.707 | 0.710 | 0.599 | 0.574 | 0.558 | 0.579 |
+| Qwen2.5-1.5B | **0.766** | 0.707 | 0.750 | 0.744 | 0.613 | 0.577 | **0.624** | 0.554 |
+| Graph only | – | 0.577 | 0.568 | 0.562 | – | 0.497 | 0.497 | 0.492 |
 
-FAGCN (Bo et al., AAAI 2021; PyG `FAConv`, eps 0.3) is built for heterophily: each edge gets a learned weight in [−1, 1], so a neighbour can be subtracted as well as added. It has two propagation layers between an input and an output linear layer, the same hidden size (128) and about the same parameter count as GCN (197k). It also uses the same learning rate, weight decay, early stopping and seeds. Its own settings (eps 0.3, dropout 0.5) are fixed, not tuned, like every GNN here. FAGCN on setting B is still to run.
+FAGCN (Bo et al., AAAI 2021; PyG `FAConv`, eps 0.3) is built for heterophily: each edge gets a learned weight in [−1, 1], so a neighbour can be subtracted as well as added. It has two propagation layers between an input and an output linear layer, the same hidden size (128) and about the same parameter count as GCN (197k). It also uses the same learning rate, weight decay, early stopping and seeds. Its own settings (eps 0.3, dropout 0.5) are fixed, not tuned, like every GNN here. In setting B (1:10), FAGCN is below MLP for every encoder (by 0.006–0.059), and its seeds vary more (std up to 0.02).
 
 References for TwiBot-20 A: TF-IDF 0.702; metadata without "verified" 0.755 (not a valid model).
 
@@ -55,7 +55,7 @@ References for TwiBot-20 A: TF-IDF 0.702; metadata without "verified" 0.755 (not
 | MiniLM | 0.588 | 0.585 | 0.607 | 0.588 | 0.596 | 0.546 | 0.536 | 0.552 | 0.543 | 0.566 |
 | multilingual-E5 | **0.612** | 0.605 | 0.606 | 0.602 | **0.613** | 0.563 | 0.561 | 0.555 | 0.572 | 0.560 |
 | Qwen2.5-1.5B | 0.608 | 0.607 | 0.609 | 0.604 | 0.606 | **0.578** | 0.575 | 0.549 | 0.562 | 0.534 |
-| Graph only | – | – | – | – | 0.522 | – | – | – | – | 0.494 |
+| Graph only | – | – | 0.548 | 0.544 | 0.522 | – | – | 0.500 | 0.498 | 0.494 |
 
 References: TF-IDF (balanced) 0.578 (A), 0.552 (B). On Instagram, every model sits within about 0.03 of LR. No graph model is consistently better or worse than text alone.
 
@@ -174,6 +174,7 @@ Step 4 rerun with the bridge edges added (`GRAPH=bridges`, `results/twibot20/A/s
 
 ## Changelog
 
+- **3 Nov 2026 (14:30):** FAGCN on TwiBot-20 B; Instagram graph-only GCN/SAGE rows. Rerunning Instagram GCN/SAGE reproduced every earlier number exactly.
 - **3 Nov 2026 (14:15):** FAGCN results on TwiBot-20 A (both graphs) and Instagram A and B. Instagram step 4 now has MLP rows and the full MLP / GCN / SAGE / FAGCN table. Corrected the claim that DGP ranks best: on the full test set its AUROC is 0.794, against 0.822 for LR and 0.840 for MLP. Added a note on validation samples.
 - **3 Nov 2026 (14:00):** TwiBot-20 made the main dataset, Instagram the secondary one (steps 1–5); every LLM row now names its model. FAGCN added to step 4.
 - **3 Nov 2026 (afternoon):** Step 4 robustness check on the bridge graph: GCN drops 0.02–0.04 on every encoder, SAGE gains up to 0.012. Steps 5 and 6 stay on the labelled-only graph. Started step 6 `VARIANT=target` on TwiBot-20 A.
