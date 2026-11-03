@@ -1,0 +1,108 @@
+{
+  "learning_curve": [
+    {
+      "train_users": 325,
+      "lr": 0.7139,
+      "mlp": 0.6965,
+      "mlp_std": 0.0017
+    },
+    {
+      "train_users": 650,
+      "lr": 0.7195,
+      "mlp": 0.7132,
+      "mlp_std": 0.0067
+    },
+    {
+      "train_users": 1300,
+      "lr": 0.7252,
+      "mlp": 0.7259,
+      "mlp_std": 0.0008
+    },
+    {
+      "train_users": 2600,
+      "lr": 0.7428,
+      "mlp": 0.7508,
+      "mlp_std": 0.0051
+    },
+    {
+      "train_users": 5200,
+      "lr": 0.7539,
+      "mlp": 0.7538,
+      "mlp_std": 0.0055
+    },
+    {
+      "train_users": 8278,
+      "lr": 0.7565,
+      "mlp": 0.7656,
+      "mlp_std": 0.0026
+    }
+  ],
+  "paired_bootstrap": [
+    {
+      "a": "GCN (all train)",
+      "b": "MLP (all train)",
+      "diff": -0.0588,
+      "ci_low": -0.082,
+      "ci_high": -0.0369,
+      "significant": true
+    },
+    {
+      "a": "SAGE (all train)",
+      "b": "MLP (all train)",
+      "diff": -0.0153,
+      "ci_low": -0.0313,
+      "ci_high": 0.0002,
+      "significant": false
+    },
+    {
+      "a": "FAGCN (all train)",
+      "b": "MLP (all train)",
+      "diff": -0.0211,
+      "ci_low": -0.0387,
+      "ci_high": -0.0039,
+      "significant": true
+    },
+    {
+      "a": "FAGCN (all train)",
+      "b": "GCN (all train)",
+      "diff": 0.0377,
+      "ci_low": 0.0216,
+      "ci_high": 0.0547,
+      "significant": true
+    },
+    {
+      "a": "MLP (1,300)",
+      "b": "MLP (all train)",
+      "diff": -0.0397,
+      "ci_low": -0.0554,
+      "ci_high": -0.0228,
+      "significant": true
+    },
+    {
+      "a": "LoRA dgp (1,300)",
+      "b": "MLP (1,300)",
+      "diff": -0.0144,
+      "ci_low": -0.0412,
+      "ci_high": 0.0133,
+      "significant": false
+    },
+    {
+      "a": "LoRA dgp (1,300)",
+      "b": "LR (1,300)",
+      "diff": -0.0138,
+      "ci_low": -0.042,
+      "ci_high": 0.0159,
+      "significant": false
+    },
+    {
+      "a": "LoRA dgp (1,300)",
+      "b": "MLP (all train)",
+      "diff": -0.0541,
+      "ci_low": -0.08,
+      "ci_high": -0.027,
+      "significant": true
+    }
+  ],
+  "n_boot": 2000,
+  "test_users": 1183
+}

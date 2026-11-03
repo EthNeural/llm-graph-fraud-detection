@@ -82,6 +82,22 @@ The two "zero-shot: DGP summaries" rows (0.550 and 0.562) differ in the LLM and 
 
 LoRA dgp is one seed (42). On the full TwiBot-20 A test set (1,183 users) it scores 0.711 macro-F1, AUROC 0.794. Every model picks its own cut-off by the same rule: the one that maximises macro-F1 on validation, applied unchanged to test. On the 400-user step 5 sample its AUROC (0.828) is the highest, but that does not hold on the full test set: AUROC 0.794, against 0.822 for Qwen2.5 + LR and 0.840 for MLP. So it is behind on ranking too, not just on the cut-off. Even the best cut-off chosen on test itself (not a valid model) gives only 0.726.
 
+### How much label signal do the edges carry? (all graphs)
+
+Plain edge homophily is misleading when classes are unbalanced, so this table also gives two measures from Platonov et al. ([arXiv 2209.06177](https://arxiv.org/abs/2209.06177)) that correct for chance. **Adjusted homophily** is 0 when edges join same-label users no more often than chance. **Label informativeness** (0 to 1) says how much a neighbour's label tells you about yours. Both use all labels, test included: they describe the data and are never a model input. From `my_build/graph_stats.py` (`results/graph_stats.json`).
+
+| Graph | Edges | Edge homophily | Chance level | Adjusted homophily | Label informativeness |
+|---|---|---|---|---|---|
+| TwiBot-20 A, all edges | 16,349 | 0.532 | 0.501 | 0.062 | 0.003 |
+| TwiBot-20 A, friend only | 11,819 | 0.508 | 0.515 | −0.015 | 0.000 |
+| TwiBot-20 A, follow only | 4,922 | 0.591 | 0.554 | 0.081 | 0.005 |
+| TwiBot-20 A, + bridge edges | 46,362 | 0.588 | 0.501 | 0.175 | 0.022 |
+| TwiBot-20 B, all edges | 5,274 | 0.879 | 0.878 | 0.014 | 0.000 |
+| Instagram A, all edges | 72,005 | 0.586 | 0.551 | 0.078 | 0.005 |
+| Instagram B, all edges | 38,193 | 0.861 | 0.856 | 0.033 | 0.002 |
+
+Every graph sits near zero once chance is removed. Setting B's high edge homophily (0.86–0.88) only reflects the 1:10 ratio: almost every edge touches the large class. Friend links on TwiBot-20 carry no label signal at all. The bridge edges raise adjusted homophily to 0.175, yet GCN still gets worse on them (robustness check below).
+
 ### TwiBot-20 graph: dropped support users
 
 Our TwiBot-20 graph keeps only the 11,826 labelled users. The benchmark also ships 217,754 unlabelled support users, and its own GCN/GAT code keeps them as neighbours. `my_build/playground_bridges.py` counts what we lost (`results/twibot20/support_bridges.json`).
@@ -112,6 +128,30 @@ Step 6 fine-tunes on **1,300** training users (the DGP paper's size); the text-o
 
 With the same 1,300 users, the text-only models lose about 0.03–0.04, and the gap to LoRA + DGP shrinks from 0.055 to 0.015 on the full test set. On the step 5 sample LoRA is level with them. The full-train rows reproduce steps 3 and 4 exactly, which checks the setup.
 
+**Learning curve** (Qwen2.5-1.5B embeddings, full test set, MLP mean of 3 seeds; `my_build/bootstrap_ci.py`):
+
+| Training users | 325 | 650 | 1,300 | 2,600 | 5,200 | 8,278 |
+|---|---|---|---|---|---|---|
+| LR | 0.714 | 0.720 | 0.725 | 0.743 | 0.754 | 0.757 |
+| MLP | 0.697 | 0.713 | 0.726 | 0.751 | 0.754 | 0.766 |
+
+LoRA + DGP at 1,300 users (0.711) sits between the 650- and 1,300-user text-only points.
+
+### Are the gaps real? Paired bootstrap 95% CIs (TwiBot-20 A, full test set)
+
+Each pair is scored on the same 2,000 resamples of the 1,183 test users; seeded models count as the mean of their 3 seeds. A CI that excludes 0 means the gap is larger than test-set noise. LoRA is one seed, so its CI covers test-set noise only, not seed noise.
+
+| Comparison (Qwen2.5-1.5B embeddings unless LoRA) | Difference | 95% CI | Excludes 0? |
+|---|---|---|---|
+| GCN − MLP (all train) | −0.059 | [−0.082, −0.037] | yes |
+| FAGCN − MLP (all train) | −0.021 | [−0.039, −0.004] | yes |
+| SAGE − MLP (all train) | −0.015 | [−0.031, +0.000] | no (borderline) |
+| FAGCN − GCN (all train) | +0.038 | [+0.022, +0.055] | yes |
+| MLP: 1,300 − all train | −0.040 | [−0.055, −0.023] | yes |
+| LoRA + DGP − MLP (both 1,300) | −0.014 | [−0.041, +0.013] | no |
+| LoRA + DGP − LR (both 1,300) | −0.014 | [−0.042, +0.016] | no |
+| LoRA + DGP (1,300) − MLP (all train) | −0.054 | [−0.080, −0.027] | yes |
+
 ### Robustness check: step 4 on the bridge graph (TwiBot-20 A, full test set)
 
 Step 4 rerun with the bridge edges added (`GRAPH=bridges`, `results/twibot20/A/step4_gnn_bridges.json`): 92,724 edge rows instead of 32,698, and 137 isolated users instead of 923. **This is a robustness check only. Steps 5 and 6 and all tables above stay on the labelled-only graph.** "Isolated" still means isolated in the labelled-only graph, so the groups are the same users in both runs. Macro-F1, mean of 3 seeds:
@@ -135,16 +175,18 @@ Step 4 rerun with the bridge edges added (`GRAPH=bridges`, `results/twibot20/A/s
 ## Findings so far
 
 1. **The encoder matters most.** On TwiBot-20 A, Qwen2.5 + MLP (0.766) beats TF-IDF (0.702) by more than any graph model adds.
-2. **GCN hurts under heterophily; a heterophily GNN only recovers the loss.** GCN is below MLP for every encoder on TwiBot-20 A, by 0.04–0.06. FAGCN, built for heterophily, beats GCN on every encoder (by 0.02–0.04) but stays 0.02–0.03 below MLP. So on this graph, no GNN we tried beats ignoring the edges, with the same fixed, untuned hyperparameters for all of them. SAGE stays within about 0.02 of MLP. In B, Qwen2.5 + SAGE edges past MLP (0.624 vs 0.613), but the gap is within about one standard deviation. *Robustness:* this is on the labelled-only graph, whose edges are barely above random (homophily 0.532 vs 0.507). Adding the more homophilous bridge edges (0.619) makes GCN worse on every encoder, by 0.02–0.04, while SAGE gains up to 0.012. So the GCN result is not an artifact of dropping the support users. On Instagram, all graph models stay within about 0.03 of text-only LR in both settings.
-3. **The graph alone is weak:** 0.577 (TwiBot-20 A), and 0.497 in B, near the floor. On the bridge graph it drops further, to 0.538.
-4. **The zero-shot LLM reasoner (Qwen2.5-1.5B-Instruct, step 5) loses to trained classifiers** on every dataset and setting. Adding neighbours (raw or summaries) does not reliably help.
-5. **Size is not everything.** Twitter-RoBERTa (125M) beats Qwen3-Embedding (0.6B). Multilingual-E5 is the best text-only encoder on multilingual Instagram A.
-6. **Fine-tuning helps a lot; the gap to text-only models is mostly training data.** On TwiBot-20 A (step 5 sample), Qwen3-1.7B with DGP summaries goes from 0.562 zero-shot to 0.726 with LoRA. Against text-only models trained on all 8,278 users it is behind (full test set: 0.711 vs 0.756 LR, 0.766 MLP). Trained on the same 1,300 users as LoRA, those models drop to 0.725–0.726, so the remaining gap is only 0.015 (see "Control: training-set size"). One seed; the DGP trimming had little to trim on this sparse graph (mean 0.8–1.8 neighbours kept per 1-hop metapath, limit 8). Still open: the `target` variant, to see if the summaries help at all.
+2. **GCN hurts under heterophily; a heterophily GNN only recovers the loss.** GCN is below MLP for every encoder on TwiBot-20 A, by 0.04–0.06. FAGCN, built for heterophily, beats GCN on every encoder (by 0.02–0.04) but stays 0.02–0.03 below MLP. So on this graph, no GNN we tried beats ignoring the edges, with the same fixed, untuned hyperparameters for all of them. The GCN and FAGCN gaps are outside test-set noise (paired bootstrap); SAGE's is borderline. SAGE stays within about 0.02 of MLP. In B, Qwen2.5 + SAGE edges past MLP (0.624 vs 0.613), but the gap is within about one standard deviation. *Robustness:* this is on the labelled-only graph, whose edges are barely above random (homophily 0.532 vs 0.507). Adding the more homophilous bridge edges (0.619) makes GCN worse on every encoder, by 0.02–0.04, while SAGE gains up to 0.012. So the GCN result is not an artifact of dropping the support users. On Instagram, all graph models stay within about 0.03 of text-only LR in both settings.
+3. **The edges carry almost no label signal.** Adjusted homophily is −0.015 to 0.08 on every original graph, and label informativeness is at most 0.005. This explains findings 2 and 3: averaging neighbours mostly adds noise.
+4. **The graph alone is weak:** 0.577 (TwiBot-20 A), and 0.497 in B, near the floor. On the bridge graph it drops further, to 0.538.
+5. **The zero-shot LLM reasoner (Qwen2.5-1.5B-Instruct, step 5) loses to trained classifiers** on every dataset and setting. Adding neighbours (raw or summaries) does not reliably help.
+6. **Size is not everything.** Twitter-RoBERTa (125M) beats Qwen3-Embedding (0.6B). Multilingual-E5 is the best text-only encoder on multilingual Instagram A.
+7. **Fine-tuning helps a lot; the gap to text-only models is mostly training data.** On TwiBot-20 A (step 5 sample), Qwen3-1.7B with DGP summaries goes from 0.562 zero-shot to 0.726 with LoRA. Against text-only models trained on all 8,278 users it is behind (full test set: 0.711 vs 0.756 LR, 0.766 MLP). Trained on the same 1,300 users as LoRA, those models drop to 0.725–0.726, so the remaining gap is only 0.014, and its 95% CI [−0.041, +0.013] includes 0 (see "Control: training-set size" and the bootstrap table). One seed; the DGP trimming had little to trim on this sparse graph (mean 0.8–1.8 neighbours kept per 1-hop metapath, limit 8). Still open: the `target` variant, to see if the summaries help at all.
 
 ## Decision log
 
 | Date | Decision | Why |
 |---|---|---|
+| 3 Nov | Report adjusted homophily and label informativeness next to edge homophily | Plain homophily is inflated by class imbalance (0.88 in setting B, 0.014 adjusted); the standard fix from the heterophily literature |
 | 3 Nov | Training-set size control: LR / MLP retrained on step 6's 1,300 users | LoRA trains on 1,300 users and the text-only models on 8,278, which confounds "encoder vs predictor" with data size |
 | 3 Nov | Qwen3-1.7B added as a step 3 encoder (same checkpoint as step 6, mean-pooled like Qwen2.5) | Removes the model-version confound between the encoder rows (Qwen2.5) and the LoRA rows (Qwen3) |
 | 3 Nov | TwiBot-20 = main dataset (steps 1–6); Instagram = secondary (steps 1–5) | TwiBot-20 has the benchmark split, typed friend/follow relations and real bot labels. Step 6 costs 3–6 h per run, so it goes to the main dataset |
@@ -174,6 +216,7 @@ Step 4 rerun with the bridge edges added (`GRAPH=bridges`, `results/twibot20/A/s
 
 ## Changelog
 
+- **3 Nov 2026 (15:00):** Adjusted homophily and label informativeness for every graph (near 0 everywhere). Learning curve and paired bootstrap CIs on TwiBot-20 A: the LoRA vs MLP gap at equal training size is not significant.
 - **3 Nov 2026 (14:30):** FAGCN on TwiBot-20 B; Instagram graph-only GCN/SAGE rows. Rerunning Instagram GCN/SAGE reproduced every earlier number exactly.
 - **3 Nov 2026 (14:15):** FAGCN results on TwiBot-20 A (both graphs) and Instagram A and B. Instagram step 4 now has MLP rows and the full MLP / GCN / SAGE / FAGCN table. Corrected the claim that DGP ranks best: on the full test set its AUROC is 0.794, against 0.822 for LR and 0.840 for MLP. Added a note on validation samples.
 - **3 Nov 2026 (14:00):** TwiBot-20 made the main dataset, Instagram the secondary one (steps 1–5); every LLM row now names its model. FAGCN added to step 4.

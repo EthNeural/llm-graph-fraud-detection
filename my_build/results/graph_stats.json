@@ -1,0 +1,80 @@
+{
+  "twibot20 A": {
+    "all edges": {
+      "edges": 16349,
+      "edge_homophily": 0.532,
+      "chance": 0.501,
+      "adjusted_homophily": 0.062,
+      "label_informativeness": 0.0028
+    },
+    "friend": {
+      "edges": 11819,
+      "edge_homophily": 0.508,
+      "chance": 0.515,
+      "adjusted_homophily": -0.015,
+      "label_informativeness": 0.0002
+    },
+    "follow": {
+      "edges": 4922,
+      "edge_homophily": 0.591,
+      "chance": 0.554,
+      "adjusted_homophily": 0.081,
+      "label_informativeness": 0.0051
+    },
+    "all + bridge edges": {
+      "edges": 46362,
+      "edge_homophily": 0.588,
+      "chance": 0.501,
+      "adjusted_homophily": 0.175,
+      "label_informativeness": 0.0223
+    }
+  },
+  "twibot20 B": {
+    "all edges": {
+      "edges": 5274,
+      "edge_homophily": 0.879,
+      "chance": 0.878,
+      "adjusted_homophily": 0.014,
+      "label_informativeness": 0.0004
+    },
+    "friend": {
+      "edges": 4519,
+      "edge_homophily": 0.896,
+      "chance": 0.897,
+      "adjusted_homophily": -0.011,
+      "label_informativeness": 0.0003
+    },
+    "follow": {
+      "edges": 831,
+      "edge_homophily": 0.793,
+      "chance": 0.781,
+      "adjusted_homophily": 0.055,
+      "label_informativeness": 0.0037
+    },
+    "all + bridge edges": {
+      "edges": 14443,
+      "edge_homophily": 0.889,
+      "chance": 0.884,
+      "adjusted_homophily": 0.039,
+      "label_informativeness": 0.0029
+    }
+  },
+  "instagram A": {
+    "all edges": {
+      "edges": 72005,
+      "edge_homophily": 0.586,
+      "chance": 0.551,
+      "adjusted_homophily": 0.078,
+      "label_informativeness": 0.0047
+    }
+  },
+  "instagram B": {
+    "all edges": {
+      "edges": 38193,
+      "edge_homophily": 0.861,
+      "chance": 0.856,
+      "adjusted_homophily": 0.033,
+      "label_informativeness": 0.0018
+    }
+  }
+}

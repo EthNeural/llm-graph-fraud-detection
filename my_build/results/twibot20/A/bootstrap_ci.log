@@ -1,0 +1,23 @@
+  best C = 0.01 (val macroF1 0.714)
+{'train_users': 325, 'lr': 0.7139, 'mlp': 0.6965, 'mlp_std': 0.0017}
+  best C = 0.01 (val macroF1 0.719)
+{'train_users': 650, 'lr': 0.7195, 'mlp': 0.7132, 'mlp_std': 0.0067}
+  best C = 0.01 (val macroF1 0.731)
+{'train_users': 1300, 'lr': 0.7252, 'mlp': 0.7259, 'mlp_std': 0.0008}
+  best C = 0.01 (val macroF1 0.747)
+{'train_users': 2600, 'lr': 0.7428, 'mlp': 0.7508, 'mlp_std': 0.0051}
+  best C = 0.01 (val macroF1 0.755)
+{'train_users': 5200, 'lr': 0.7539, 'mlp': 0.7538, 'mlp_std': 0.0055}
+  best C = 0.01 (val macroF1 0.759)
+{'train_users': 8278, 'lr': 0.7565, 'mlp': 0.7656, 'mlp_std': 0.0026}
+  best C = 0.01 (val macroF1 0.759)
+  best C = 0.01 (val macroF1 0.731)
+GCN (all train)        - MLP (all train)    -0.059  [-0.082, -0.037]  *
+SAGE (all train)       - MLP (all train)    -0.015  [-0.031, +0.000]
+FAGCN (all train)      - MLP (all train)    -0.021  [-0.039, -0.004]  *
+FAGCN (all train)      - GCN (all train)    +0.038  [+0.022, +0.055]  *
+MLP (1,300)            - MLP (all train)    -0.040  [-0.055, -0.023]  *
+LoRA dgp (1,300)       - MLP (1,300)        -0.014  [-0.041, +0.013]
+LoRA dgp (1,300)       - LR (1,300)         -0.014  [-0.042, +0.016]
+LoRA dgp (1,300)       - MLP (all train)    -0.054  [-0.080, -0.027]  *
+saved /Users/pj/Desktop/Macquarie - Sem 4/PROJECT/Graph-based-fraud-detection-system/my_build/results/twibot20/A/bootstrap_ci.json
