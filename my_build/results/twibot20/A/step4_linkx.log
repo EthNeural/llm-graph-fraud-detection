@@ -1,0 +1,20 @@
+
+=== graph-only + LINKX ===
+  seed 0           acc 0.610  macroF1 0.607  F1_1 0.645  AUROC 0.650  PR-AUC 0.665  | conn 0.615  iso 0.315
+  seed 1           acc 0.581  macroF1 0.573  F1_1 0.630  AUROC 0.605  PR-AUC 0.627  | conn 0.576  iso 0.315
+  seed 2           acc 0.604  macroF1 0.604  F1_1 0.616  AUROC 0.643  PR-AUC 0.664  | conn 0.614  iso 0.315
+  -> mean macroF1 0.595 ± 0.015
+
+=== e5 + LINKX ===
+  seed 0           acc 0.735  macroF1 0.733  F1_1 0.760  AUROC 0.804  PR-AUC 0.827  | conn 0.735  iso 0.705
+  seed 1           acc 0.735  macroF1 0.734  F1_1 0.750  AUROC 0.802  PR-AUC 0.812  | conn 0.740  iso 0.665
+  seed 2           acc 0.724  macroF1 0.723  F1_1 0.742  AUROC 0.775  PR-AUC 0.768  | conn 0.728  iso 0.665
+  -> mean macroF1 0.730 ± 0.005
+
+=== qwen + LINKX ===
+  seed 0           acc 0.749  macroF1 0.749  F1_1 0.756  AUROC 0.826  PR-AUC 0.839  | conn 0.751  iso 0.724
+  seed 1           acc 0.757  macroF1 0.756  F1_1 0.770  AUROC 0.822  PR-AUC 0.836  | conn 0.758  iso 0.723
+  seed 2           acc 0.752  macroF1 0.752  F1_1 0.759  AUROC 0.831  PR-AUC 0.841  | conn 0.753  iso 0.747
+  -> mean macroF1 0.752 ± 0.003
+
+Setting A done. Full table: python my_build/compare.py

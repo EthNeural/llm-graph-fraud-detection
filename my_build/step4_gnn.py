@@ -24,6 +24,16 @@ FAGCN (Bo et al., AAAI 2021) is built for heterophily: each edge learns a weight
 so a neighbour can be added (low-frequency, homophily) or SUBTRACTED (high-frequency,
 heterophily), and the layer input is mixed back in (eps). Same 2 layers, hidden size, dropout.
 
+FLAG-lite (FLAG, Yang et al., KDD 2025, without its LLM): SKIPGCN is FLAG's skip-GNN,
+GCN(X, A) + Linear(X) (its eq. 6), and GRAPH=similar10 keeps, for each user, the 10 neighbours
+whose text embedding is most similar (cosine > 0 on train-standardised vectors; FLAG's top-10,
+threshold 0, here over 1-hop neighbours). The pruning uses each encoder's own embeddings.
+  e.g.  DATASET=twibot20 GRAPH=similar10 MODELS=GCN,SKIPGCN python my_build/step4_gnn.py
+
+LINKX (Lim et al., NeurIPS 2021; PyG `LINKX`) is a non-homophilous baseline that never averages
+neighbours: one MLP reads each user's adjacency row (who it links to), another its features,
+and a third combines them. Same hidden size (128), 2 layers, dropout 0.5, training as above.
+
 MODELS=FAGCN (comma-separated) runs only those models and merges their rows into the existing
 results file, e.g.  DATASET=twibot20 MODELS=FAGCN python my_build/step4_gnn.py
 
@@ -39,6 +49,7 @@ import scipy.sparse as sp
 import torch
 import torch.nn.functional as F
 from torch_geometric.nn import GCNConv, SAGEConv, FAConv
+from torch_geometric.nn.models import LINKX
 from sklearn.metrics import f1_score
 
 from common import (load, load_embeddings, get_splits, isolated_mask, evaluate, best_threshold,
@@ -50,10 +61,10 @@ EPOCHS = 300
 PATIENCE = 50
 FAGCN_EPS = 0.3                 # share of the layer input kept each layer (FAGCN paper, heterophilous graphs)
 MODELS = os.environ.get("MODELS", "MLP,GCN,SAGE,FAGCN").split(",")
-assert set(MODELS) <= {"MLP", "GCN", "SAGE", "FAGCN"}, f"unknown name in MODELS={MODELS}"
+assert set(MODELS) <= {"MLP", "GCN", "SAGE", "FAGCN", "SKIPGCN", "LINKX"}, f"unknown name in MODELS={MODELS}"
 GRAPH = os.environ.get("GRAPH", "labelled")
 SHUFFLE_SEED = int(os.environ.get("SHUFFLE_SEED", 0))     # GRAPH=shuffled: which random rewiring
-assert GRAPH in ("labelled", "shuffled") or (GRAPH == "bridges" and DATASET == "twibot20"), \
+assert GRAPH in ("labelled", "shuffled", "similar10") or (GRAPH == "bridges" and DATASET == "twibot20"), \
     "GRAPH must be labelled, shuffled, or bridges (TwiBot-20 only)"
 
 
@@ -98,9 +109,29 @@ class FAGCN(torch.nn.Module):
         return self.lin_out(F.dropout(x, self.dropout, self.training))
 
 
+class SkipGCN(torch.nn.Module):
+    # FLAG's skip-GNN (eq. 6): the 2-layer GCN's output plus a linear map of the node's own input.
+    def __init__(self, in_dim, out_dim=2, dropout=0.5):
+        super().__init__()
+        self.gnn = GNN(GCNConv, in_dim, dropout=dropout)
+        self.skip = torch.nn.Linear(in_dim, out_dim)
+        self.dropout = dropout
+
+    def forward(self, x, edge_index):
+        return self.gnn(x, edge_index) + self.skip(F.dropout(x, self.dropout, self.training))
+
+
 def train_one(conv, x, edge_index, y, train, val, seed):
     torch.manual_seed(seed)
-    model = FAGCN(x.shape[1]) if conv is FAConv else GNN(conv, x.shape[1])
+    if conv is FAConv:
+        model = FAGCN(x.shape[1])
+    elif conv is SkipGCN:
+        model = SkipGCN(x.shape[1])
+    elif conv is LINKX:
+        model = LINKX(num_nodes=x.shape[0], in_channels=x.shape[1], hidden_channels=128, out_channels=2,
+                      num_layers=2, dropout=0.5)
+    else:
+        model = GNN(conv, x.shape[1])
     opt = torch.optim.Adam(model.parameters(), lr=0.01, weight_decay=5e-4)
     # Class weights = inverse frequency, same idea as class_weight="balanced" in step 2/3.
     counts = torch.bincount(y[train])
@@ -197,6 +228,21 @@ def shuffle_edges(edge_index_np, n, seed=0):
     return out
 
 
+def similar_topk(edge_index_np, x, k=10):
+    # FLAG's semantic-similarity sampling: per user, keep up to k neighbours with cosine > 0,
+    # most similar first. x is train-standardised, so cosines are centred. Kept both ways.
+    u = x / (np.linalg.norm(x, axis=1, keepdims=True) + 1e-12)
+    src, dst = edge_index_np
+    cos = (u[src] * u[dst]).sum(1)
+    order = np.lexsort((-cos, src))                       # by source, most similar first
+    src, dst, cos = src[order], dst[order], cos[order]
+    rank = np.arange(len(src)) - np.searchsorted(src, src)
+    keep = (rank < k) & (cos > 0)
+    pairs = np.stack([src[keep], dst[keep]])
+    out = np.unique(np.hstack([pairs, pairs[::-1]]), axis=1)
+    return out
+
+
 def main():
     _, edge_index_np, y_np = load()
     train, val, test = get_splits(y_np)
@@ -213,8 +259,9 @@ def main():
     args = (edge_index, y, y_np, train_t, val_t, val, test, iso_test)
     results = []
     x_struct = structure_features(edge_index_np, len(y_np), train)
-    for conv_name, conv in [("GCN", GCNConv), ("SAGE", SAGEConv), ("FAGCN", FAConv)]:
-        if conv_name in MODELS:
+    for conv_name, conv in [("GCN", GCNConv), ("SAGE", SAGEConv), ("FAGCN", FAConv), ("SKIPGCN", SkipGCN),
+                            ("LINKX", LINKX)]:
+        if conv_name in MODELS and GRAPH != "similar10":          # similar10 needs text embeddings
             results.append(run_seeds(f"graph-only + {conv_name}", conv, x_struct, *args))
 
     for name in ENCODERS:
@@ -225,10 +272,16 @@ def main():
         # Standardise with TRAIN statistics only (no test leakage).
         mu, sd = emb[train].mean(0), emb[train].std(0) + 1e-6
         x = torch.as_tensor((emb - mu) / sd)
+        enc_args = args
+        if GRAPH == "similar10":
+            ei = similar_topk(edge_index_np, x.numpy())
+            print(f"\nGRAPH=similar10 ({name}): {edge_index_np.shape[1]:,} edge rows -> {ei.shape[1]:,}")
+            enc_args = (torch.as_tensor(ei, dtype=torch.long),) + args[1:]
 
-        for conv_name, conv in [("MLP", NoGraph), ("GCN", GCNConv), ("SAGE", SAGEConv), ("FAGCN", FAConv)]:
+        for conv_name, conv in [("MLP", NoGraph), ("GCN", GCNConv), ("SAGE", SAGEConv), ("FAGCN", FAConv),
+                                ("SKIPGCN", SkipGCN), ("LINKX", LINKX)]:
             if conv_name in MODELS:
-                results.append(run_seeds(f"{name} + {conv_name}", conv, x, *args))
+                results.append(run_seeds(f"{name} + {conv_name}", conv, x, *enc_args))
 
     tag = f"{GRAPH}_s{SHUFFLE_SEED}" if GRAPH == "shuffled" and SHUFFLE_SEED else GRAPH
     out = RESULTS_DIR / ("step4_gnn.json" if GRAPH == "labelled" else f"step4_gnn_{tag}.json")

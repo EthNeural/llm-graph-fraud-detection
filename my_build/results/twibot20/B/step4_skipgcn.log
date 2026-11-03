@@ -1,0 +1,20 @@
+
+=== graph-only + SKIPGCN ===
+  seed 0           acc 0.697  macroF1 0.497  F1_1 0.181  AUROC 0.578  PR-AUC 0.112  | conn 0.479  iso 0.107
+  seed 1           acc 0.697  macroF1 0.497  F1_1 0.181  AUROC 0.578  PR-AUC 0.113  | conn 0.479  iso 0.107
+  seed 2           acc 0.697  macroF1 0.497  F1_1 0.181  AUROC 0.562  PR-AUC 0.109  | conn 0.479  iso 0.107
+  -> mean macroF1 0.497 ± 0.000
+
+=== e5 + SKIPGCN ===
+  seed 0           acc 0.863  macroF1 0.614  F1_1 0.305  AUROC 0.780  PR-AUC 0.327  | conn 0.601  iso 0.624
+  seed 1           acc 0.858  macroF1 0.615  F1_1 0.309  AUROC 0.760  PR-AUC 0.279  | conn 0.648  iso 0.553
+  seed 2           acc 0.844  macroF1 0.639  F1_1 0.367  AUROC 0.767  PR-AUC 0.269  | conn 0.658  iso 0.599
+  -> mean macroF1 0.623 ± 0.012
+
+=== qwen + SKIPGCN ===
+  seed 0           acc 0.874  macroF1 0.633  F1_1 0.336  AUROC 0.746  PR-AUC 0.240  | conn 0.642  iso 0.613
+  seed 1           acc 0.869  macroF1 0.603  F1_1 0.278  AUROC 0.793  PR-AUC 0.255  | conn 0.557  iso 0.673
+  seed 2           acc 0.873  macroF1 0.600  F1_1 0.269  AUROC 0.788  PR-AUC 0.264  | conn 0.576  iso 0.637
+  -> mean macroF1 0.612 ± 0.015
+
+Setting B done. Full table: python my_build/compare.py

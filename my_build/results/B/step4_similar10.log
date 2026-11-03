@@ -1,0 +1,30 @@
+
+GRAPH=similar10 (e5): 76,386 edge rows -> 46,456
+
+=== e5 + GCN ===
+  seed 0           acc 0.858  macroF1 0.563  F1_1 0.204  AUROC 0.631  PR-AUC 0.164  | conn 0.559  iso 0.568
+  seed 1           acc 0.823  macroF1 0.552  F1_1 0.203  AUROC 0.633  PR-AUC 0.159  | conn 0.552  iso 0.547
+  seed 2           acc 0.872  macroF1 0.582  F1_1 0.234  AUROC 0.641  PR-AUC 0.188  | conn 0.574  iso 0.581
+  -> mean macroF1 0.566 ± 0.013
+
+=== e5 + SKIPGCN ===
+  seed 0           acc 0.819  macroF1 0.560  F1_1 0.222  AUROC 0.600  PR-AUC 0.169  | conn 0.564  iso 0.545
+  seed 1           acc 0.814  macroF1 0.566  F1_1 0.237  AUROC 0.641  PR-AUC 0.184  | conn 0.556  iso 0.598
+  seed 2           acc 0.845  macroF1 0.568  F1_1 0.222  AUROC 0.619  PR-AUC 0.185  | conn 0.571  iso 0.552
+  -> mean macroF1 0.565 ± 0.003
+
+GRAPH=similar10 (qwen): 76,386 edge rows -> 44,448
+
+=== qwen + GCN ===
+  seed 0           acc 0.875  macroF1 0.561  F1_1 0.189  AUROC 0.635  PR-AUC 0.186  | conn 0.546  iso 0.573
+  seed 1           acc 0.849  macroF1 0.558  F1_1 0.200  AUROC 0.620  PR-AUC 0.174  | conn 0.552  iso 0.554
+  seed 2           acc 0.869  macroF1 0.567  F1_1 0.205  AUROC 0.626  PR-AUC 0.165  | conn 0.554  iso 0.587
+  -> mean macroF1 0.562 ± 0.004
+
+=== qwen + SKIPGCN ===
+  seed 0           acc 0.829  macroF1 0.552  F1_1 0.200  AUROC 0.585  PR-AUC 0.157  | conn 0.549  iso 0.556
+  seed 1           acc 0.862  macroF1 0.570  F1_1 0.215  AUROC 0.595  PR-AUC 0.170  | conn 0.554  iso 0.627
+  seed 2           acc 0.881  macroF1 0.582  F1_1 0.229  AUROC 0.606  PR-AUC 0.180  | conn 0.554  iso 0.669
+  -> mean macroF1 0.568 ± 0.012
+
+Setting B done. Full table: python my_build/compare.py
