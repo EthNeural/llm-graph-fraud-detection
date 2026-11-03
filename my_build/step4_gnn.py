@@ -48,6 +48,7 @@ EPOCHS = 300
 PATIENCE = 50
 FAGCN_EPS = 0.3                 # share of the layer input kept each layer (FAGCN paper, heterophilous graphs)
 MODELS = os.environ.get("MODELS", "MLP,GCN,SAGE,FAGCN").split(",")
+assert set(MODELS) <= {"MLP", "GCN", "SAGE", "FAGCN"}, f"unknown name in MODELS={MODELS}"
 GRAPH = os.environ.get("GRAPH", "labelled")
 assert GRAPH == "labelled" or (GRAPH == "bridges" and DATASET == "twibot20"), "GRAPH=bridges is TwiBot-20 only"
 

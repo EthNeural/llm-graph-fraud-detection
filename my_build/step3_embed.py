@@ -48,8 +48,9 @@ if DATASET == "twibot20":
         "e5": "intfloat/multilingual-e5-base",                   # multilingual-E5, 278M (192M is vocabulary)
         "qwen3emb": "Qwen/Qwen3-Embedding-0.6B",                 # 0.6B, LLM-based embedder
         "qwen": "Qwen/Qwen2.5-1.5B",                             # 1.5B decoder LLM
+        "qwen3": "Qwen/Qwen3-1.7B",                              # 1.7B, the step 6 LLM, same checkpoint
     }
-DECODERS = {"qwen", "twroberta"}      # give one vector per token -> need mean pooling, see below
+DECODERS = {"qwen", "qwen3", "twroberta"}      # give one vector per token -> need mean pooling, see below
 _skip = set(os.environ.get("SKIP_ENCODERS", "").split(","))
 ENCODERS = {k: v for k, v in ENCODERS.items() if k not in _skip}
 DEVICE = "mps" if torch.backends.mps.is_available() else "cpu"
