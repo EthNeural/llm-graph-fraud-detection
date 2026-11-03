@@ -255,7 +255,7 @@ TwiBot-20 stored, for each labelled user, a sample of about 10 accounts they fol
 - **It tracks follower count**, a metadata field we exclude as a shortcut: Spearman ρ between in-friend count and `followers_count` is 0.59 (0.69 among humans), and −0.44 for in-follow.
 - **Whether a user's own lists were recorded also depends on the label**: 95.8% of bots have a recorded follow list against 81.4% of humans (friend lists 95.0% vs 88.0%).
 
-We read this as a property of how the dataset was collected (who appeared in whose sample, and how popular they are), not as relational signal a deployed detector would have. It explains why graph-only models still score 0.577 although neighbour labels are uninformative.
+We read this as a property of how the dataset was collected (who appeared in whose sample, and how popular they are), not as relational signal a deployed detector would have. It fits Hays et al. (WWW 2023, §4.1): TwiBot-20 was collected "starting from well-known (verified) seed users" by breadth-first traversal, and its verified accounts were labelled human automatically, so a user's position in the crawl is tied to its label. It explains why graph-only models still score 0.577 although neighbour labels are uninformative.
 
 **How much do these cues add to text?** LR on Qwen2.5-1.5B embeddings, full test set, paired bootstrap 95% CIs:
 
@@ -336,7 +336,7 @@ Step 4 rerun with the bridge edges added (`GRAPH=bridges`, `results/twibot20/A/s
 | 2 Nov | Diffusion features X = multilingual-E5 embeddings | The paper says "raw node features"; our raw features are text |
 | 1 Nov | TwiBot-20 graph = labelled users only; the 217,754 support users dropped | No labels and no text needed for them, so prep stays small. The effect on the graph was not checked then (see 3 Nov) |
 | 1 Nov | Added TwiBot-20 (official split, bio + 20 tweets) | A second, larger heterophilous dataset with real text |
-| 1 Nov | Excluded TwiBot-20 metadata | "Verified" alone gives macro-F1 0.803: a shortcut, not text or graph signal |
+| 1 Nov | Excluded TwiBot-20 metadata | "Verified" alone gives macro-F1 0.803: a shortcut, not text or graph signal. Hays et al. (WWW 2023, §4.1, Table 2) find the same: a depth-1 decision tree on "verified" reaches accuracy 0.82 / F1 0.86 on TwiBot-20, 0.05 / 0.03 below the best published model, because collection started from verified seed users and "verified accounts were automatically labeled human" |
 | 1 Nov | Encoder ladder: six encoders, everything else fixed | To separate encoder size and type from the graph's effect |
 | 30 Oct | Threshold chosen on validation for every model | Scores are not calibrated; 0.5 is badly placed when class 1 is rare |
 | 30 Oct | Settings A (natural) and B (1:10, FLAG-style) | Tests both the data as it is and rare fraud. FLAG (Yang et al., KDD 2025, §4.1.1) builds its text-rich fraud datasets the same way: the minority class "randomly selected so that the final ratio … is about 1:10" |
@@ -352,6 +352,7 @@ Step 4 rerun with the bridge edges added (`GRAPH=bridges`, `results/twibot20/A/s
 
 ## Changelog
 
+- **4 Nov 2026 (04:40):** Cited Hays et al. (WWW 2023) for the metadata exclusion and the crawl artefact.
 - **4 Nov 2026 (04:15):** FLAG (KDD 2025) read: setting B's 1:10 protocol and the validation-F1 model selection both match it; Instagram comparison with its Table 4; FLAG-lite baseline and per-class homophily histograms (FLAG Fig. 5) started.
 - **4 Nov 2026 (03:30):** Rescoring done: the full-validation rule keeps the last-check adapter in A (both) and B `target`, and the lowest-loss one in B `dgp`. Under it `dgp` − `target` is −0.001 (A) and −0.016 (B). New section with both adapters; main tables unchanged pending a decision.
 - **4 Nov 2026 (01:40):** After review 6 (QA): B MLP baseline quoted as the 3-seed mean the CIs use; checkpoint-rule wording covers B (B target like A; B dgp ended on a collapsed check); "target + flags matches dgp" limited to A; finding 8 adds B's AUROC CIs.
