@@ -22,7 +22,7 @@ section. For how everything works, see [TEAM_GUIDE.md](TEAM_GUIDE.md).
 
 ✅ done · 🔄 running · ⏳ to do
 
-**Current run (GPU):** rescoring of the last-check LoRA adapters (started 4 Nov 01:12; step 6 `dgp` on B ran 19:14–23:02 and `target` on B 23:02–01:09), then of the epoch-2 LoRA adapters (`step6_rescore.py`). Expected to end about 04:00–05:00 on 4 Nov.
+**Current run (GPU, from 4 Nov 04:26):** step 6 LoRA seeds 1 and 2 for `dgp` and `target` on TwiBot-20 A (`LORA_SEED`), each rescored right after; about 11 h in total. CPU alongside: the semi-synthetic heterophily sweep.
 - Done today: step 6 `target` on TwiBot-20 A (13:30–15:42); Qwen3-1.7B embeddings (15:42–19:14, 3.5 h).
 - On CPU after the chain: the setting B training-size control and bootstrap.
 
@@ -316,7 +316,7 @@ Step 4 rerun with the bridge edges added (`GRAPH=bridges`, `results/twibot20/A/s
 
 ## Limitations (so far)
 
-- **One seed for step 6** (the DGP paper uses 5), and Qwen3-1.7B instead of the paper's Qwen3-8B. The LoRA CIs cover test-set noise only.
+- **One seed for step 6 so far, and that run was unseeded on the LoRA side.** The first `dgp` and `target` runs fixed the training users (SEED=42) and batch order, but not the LoRA start weights or dropout (no `torch.manual_seed`), so they cannot be reproduced exactly. Seeded runs (`LORA_SEED=1, 2`, same 1,300 users and summaries) are running on TwiBot-20 A; the unseeded run will be the third. Qwen3-1.7B instead of the paper's Qwen3-8B; the paper uses 5 seeds.
 - **LoRA reads less text than the encoders.** Its prompt caps the user's own text at 480 tokens of whole lines, which cuts 81% of TwiBot-20 users short (13.2 of 16.6 lines kept on average, 800-user sample). The encoders read every line. This biases LoRA vs MLP against LoRA; dgp vs target is unaffected (same cap).
 - **LoRA and the other models choose their checkpoint differently.** LoRA keeps the lowest validation loss on a validation sample (200 users in A, 400 in B); MLP and GNNs keep the best full-validation macro-F1. In both TwiBot-20 A runs and in B `target` the loss was lowest at epoch 1 while validation AUROC kept rising (A dgp 0.748 → 0.772, A target 0.765 → 0.781, B target 0.699 → 0.773). In B `dgp` loss and AUROC agreed (best at epoch 2.0), and the run ended on a collapsed check (epoch 3.0: AUROC 0.624). The last-check adapters (epoch 2 in A and B `target`, epoch 3 in B `dgp`) are being scored with the full-validation rule (`my_build/step6_rescore.py`).
 - **GNN hyperparameters are fixed and shared, not tuned.**
@@ -324,6 +324,7 @@ Step 4 rerun with the bridge edges added (`GRAPH=bridges`, `results/twibot20/A/s
 - **TwiBot-20's links reflect how it was collected.** Each user stores a sample of about 10 followers and 10 followings; incoming links track follower count (excluded metadata), and whether a user's own lists were recorded depends on the label (95.8% of bots vs 81.4% of humans for follow lists).
 - **Step 5's neighbour ranking uses multilingual-E5 vectors with the two 0/1 "no bio" / "no tweets" flags still attached** (`step5_llm_reason.py:180`), so a shared flag can outweigh text similarity when a user has more than 8 neighbours. Step 6's diffusion drops the flags (`step6_dgp.py:441`).
 - **Setting B is small and changes the graph.** Its test set has 54 bots; one random bot subsample (seed 42); 29% of users are isolated in B against 7.8% in A (37% of B's test bots). Its paired bootstrap CIs are about ±0.05: GCN − MLP −0.036 [−0.087, +0.012], SAGE − MLP +0.012 [−0.034, +0.058], FAGCN − MLP −0.058 [−0.112, −0.002]. Only the FAGCN gap is outside noise. B's MLP learning curve is flat and noisy (0.622 at 325 users, 0.613 at 4,000); LR rises from 0.583 to 0.634. B cannot separate most models. B also has almost no bot–bot edges (54 rows), so its "no edge signal" result reflects the subsampling, not rare fraud as such. `results/twibot20/B/bootstrap_ci.json`.
+- **No duplicate-text leakage.** 1 of 1,183 TwiBot-20 A test users (12 of 2,268 on Instagram A) has exactly the same normalised text as a training user; dropping them changes Qwen2.5 + LR by at most 0.001 (`my_build/duplicate_text.py`).
 - **TwiBot-20 graph = labelled users only** (see "dropped support users"; bridge check below).
 - **Edge signal near zero**, so these results speak to near-random edges, not to strongly heterophilous graphs (see the adjusted-homophily table).
 
@@ -375,6 +376,7 @@ Step 4 rerun with the bridge edges added (`GRAPH=bridges`, `results/twibot20/A/s
 
 ## Changelog
 
+- **4 Nov 2026 (04:40):** `LORA_SEED` added to step 6; seeds 1 and 2 started on TwiBot-20 A. Duplicate-text check: 1 TwiBot-20 test user and 12 Instagram test users share a training user's text; removing them changes Qwen2.5 + LR by at most 0.001. Heterophily sweep started.
 - **4 Nov 2026 (05:30):** FLAG-lite (similar-10 graph + skip-GCN) and LINKX on all four settings: neither beats MLP on TwiBot-20 A; the skip connection recovers most of GCN's loss.
 - **4 Nov 2026 (04:40):** Cited Hays et al. (WWW 2023) for the metadata exclusion and the crawl artefact.
 - **4 Nov 2026 (04:15):** FLAG (KDD 2025) read: setting B's 1:10 protocol and the validation-F1 model selection both match it; Instagram comparison with its Table 4; FLAG-lite baseline and per-class homophily histograms (FLAG Fig. 5) started.
