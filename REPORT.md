@@ -18,7 +18,7 @@ section. For how everything works, see [TEAM_GUIDE.md](TEAM_GUIDE.md).
 | Step 5: zero-shot reasoner | ✅ | ✅ | ✅ | ✅ |
 | Step 6: DGP (LoRA), dgp | ✅ 1 seed | ✅ 1 seed | not in scope | not in scope |
 | Step 6: DGP (LoRA), target | ✅ 1 seed | ✅ 1 seed | not in scope | not in scope |
-| FLAG-lite baseline (similarity top-10 + skip-GNN) | 🔄 | 🔄 | not in scope | not in scope |
+| FLAG-lite and LINKX baselines (step 4) | ✅ | ✅ | ✅ | ✅ |
 
 ✅ done · 🔄 running · ⏳ to do
 
@@ -46,6 +46,29 @@ section. For how everything works, see [TEAM_GUIDE.md](TEAM_GUIDE.md).
 FAGCN (Bo et al., AAAI 2021; PyG `FAConv`, eps 0.3) is built for heterophily: each edge gets a learned weight in [−1, 1], so a neighbour can be subtracted as well as added. It has two propagation layers between an input and an output linear layer, the same hidden size (128) and about the same parameter count as GCN (197k). It also uses the same learning rate, weight decay, early stopping and seeds. Its own settings (eps 0.3, dropout 0.5) are fixed, not tuned, like every GNN here. In setting B (1:10), FAGCN is below MLP for every encoder (by 0.004–0.058), and its seeds vary more (std up to 0.02).
 
 References for TwiBot-20 A: TF-IDF 0.702; metadata without "verified" 0.755 (not a valid model).
+
+### Heterophily and fraud baselines: FLAG-lite and LINKX (full test set, mean of 3 seeds)
+
+Two more graph baselines, run with the same training, seeds and validation cut-off rule as step 4 (`my_build/step4_gnn.py`):
+- **FLAG-lite**: FLAG (Yang et al., KDD 2025) without its LLM. Its skip-GNN, `GCN(X, A) + Linear(X)` (eq. 6), on a graph pruned by its semantic-similarity sampling: each user keeps up to its 10 most text-similar neighbours with cosine > 0 (`GRAPH=similar10`, 1-hop). FLAG's own ablation (Table 5) credits these two parts with most of its gain. The pruning drops about 25% of TwiBot-20's edges and 48% of Instagram's.
+- **LINKX** (Lim et al., NeurIPS 2021; PyG `LINKX`): a non-homophilous baseline that never averages neighbours. One MLP reads each user's adjacency row, one its features, and a third combines them.
+
+| Encoder + model | TwiBot-20 A | TwiBot-20 B | Instagram A | Instagram B |
+|---|---|---|---|---|
+| Qwen2.5 + MLP (no edges) | **0.766** | 0.613 | 0.607 | **0.575** |
+| Qwen2.5 + GCN | 0.707 | 0.577 | **0.609** | 0.549 |
+| Qwen2.5 + skip-GCN | 0.752 | 0.612 | 0.604 | 0.558 |
+| Qwen2.5 + GCN, similar-10 graph | 0.719 | 0.585 | 0.607 | 0.562 |
+| Qwen2.5 + FLAG-lite (skip-GCN, similar-10) | 0.754 | **0.615** | 0.602 | 0.568 |
+| Qwen2.5 + LINKX | 0.752 | 0.607 | 0.598 | 0.562 |
+| multilingual-E5 + MLP | **0.747** | 0.606 | 0.605 | 0.561 |
+| multilingual-E5 + FLAG-lite | 0.731 | **0.635** | **0.613** | **0.565** |
+| multilingual-E5 + LINKX | 0.730 | 0.615 | 0.602 | 0.557 |
+| Graph only: GCN / skip-GCN / LINKX | 0.577 / 0.578 / **0.595** | 0.497 / 0.497 / 0.488 | 0.548 / 0.547 / 0.532 | 0.500 / 0.498 / 0.521 |
+
+- **The skip connection does most of the work.** It lifts GCN from 0.707 to 0.752 on TwiBot-20 A, the same "keep your own features" effect as SAGE and FAGCN. Similarity pruning adds about 0.01 to GCN.
+- **On TwiBot-20 A neither FLAG-lite (0.754) nor LINKX (0.752) beats MLP (0.766)**, matching every other GNN here. Setting B's best (multilingual-E5 + FLAG-lite 0.635 ± 0.018 vs MLP 0.606) is inside B's ±0.05 noise.
+- **LINKX graph-only (0.595) beats GCN graph-only (0.577) in A**: reading who links to whom helps more than averaging. It is still far below the untrained in/out link-direction score (AUROC 0.713 vs LINKX's 0.633), because our adjacency is undirected.
 
 ### Instagram (secondary dataset, steps 1–5): full test set; LR one fit, MLP and GNNs mean of 3 seeds
 
@@ -309,7 +332,7 @@ Step 4 rerun with the bridge edges added (`GRAPH=bridges`, `results/twibot20/A/s
 **In one line:** on TwiBot-20 a strong text encoder does the work. Neighbour labels carry almost no signal, so no GNN and no neighbour-summary prompt is significantly better than a text-only model; the label signal that the links do carry comes from how the dataset was collected (who appears in whose follower sample) and tracks follower count. A fine-tuned LLM roughly matches text-only models trained on the same 1,300 users but stays below them when those use all 8,278.
 
 1. **A good text encoder is where the gains are.** On TwiBot-20 A, Qwen3-1.7B + MLP (0.769) and Qwen2.5-1.5B + MLP (0.766) beat TF-IDF (0.702) by about 0.065. The neural encoders span 0.726–0.769, and no graph model improves on its encoder's MLP.
-2. **Neighbour averaging (GCN) hurts; models that keep a user's own features lose less; none beats MLP on TwiBot-20.** GCN is 0.036–0.064 below MLP for every encoder in A (Qwen2.5: −0.059, 95% CI [−0.082, −0.037]). SAGE (own features kept separate) is within about 0.02 (−0.015, borderline). FAGCN is 0.003–0.030 below MLP and beats GCN by 0.02–0.04, but it beats GCN by as much on shuffled edges (Qwen2.5 0.725 vs 0.670), so its gain comes from mixing its input back in at every layer (eps), not from signed edge weights. All GNNs use the same fixed, untuned hyperparameters. Even on the bridge graph, the only one with clear label signal (adjusted homophily 0.175), GCN gets worse by 0.02–0.04. On Instagram A, where text alone is weak (AUROC about 0.63), GCN is level with MLP (+0.002, CI [−0.016, +0.020]). This is consistent with averaging hurting when a user's own text is strong and being neutral when it is weak, though the two datasets also differ in language, label meaning and density.
+2. **Neighbour averaging (GCN) hurts; models that keep a user's own features lose less; none beats MLP on TwiBot-20.** GCN is 0.036–0.064 below MLP for every encoder in A (Qwen2.5: −0.059, 95% CI [−0.082, −0.037]). SAGE (own features kept separate) is within about 0.02 (−0.015, borderline). FAGCN is 0.003–0.030 below MLP and beats GCN by 0.02–0.04, but it beats GCN by as much on shuffled edges (Qwen2.5 0.725 vs 0.670), so its gain comes from mixing its input back in at every layer (eps), not from signed edge weights. All GNNs use the same fixed, untuned hyperparameters. Two more baselines built for this problem also stay below MLP on TwiBot-20 A: FLAG-lite (FLAG's skip-GNN on its similarity-pruned graph, 0.754) and LINKX (0.752). Even on the bridge graph, the only one with clear label signal (adjusted homophily 0.175), GCN gets worse by 0.02–0.04. On Instagram A, where text alone is weak (AUROC about 0.63), GCN is level with MLP (+0.002, CI [−0.016, +0.020]). This is consistent with averaging hurting when a user's own text is strong and being neutral when it is weak, though the two datasets also differ in language, label meaning and density.
 3. **Neighbour labels carry almost no signal; neighbours write alike; who lists whom is a crawl artefact.** Adjusted homophily is −0.015 to 0.08 on every original graph and label informativeness at most 0.005. Real edges join users with similar text whatever their labels (centred cosine 0.26 vs 0.05 for shuffled edges), so on TwiBot-20 A real edges are less harmful than random ones (GCN +0.037 over 5 rewirings) but never better than no edges. The links do carry label signal in their direction: being in other users' follower samples vs their following samples gives an untrained AUROC of 0.713, and it tracks follower count. We read it as an artefact of how TwiBot-20 was collected. Our undirected pipelines discard it.
 4. **The graph alone is weak:** 0.577 (TwiBot-20 A) and 0.497 (B). On the bridge graph it drops to 0.538.
 5. **The zero-shot LLM reasoner (Qwen2.5-1.5B-Instruct, step 5) loses to trained classifiers on TwiBot-20 A and B and Instagram A.** On Instagram B it roughly ties the weak trained baselines on its 600-user sample (zero-shot DGP summaries 0.538 vs LR 0.546; zero-shot target AUROC 0.567 vs LR 0.524). Adding neighbours (raw or summaries) does not reliably help.
@@ -352,6 +375,7 @@ Step 4 rerun with the bridge edges added (`GRAPH=bridges`, `results/twibot20/A/s
 
 ## Changelog
 
+- **4 Nov 2026 (05:30):** FLAG-lite (similar-10 graph + skip-GCN) and LINKX on all four settings: neither beats MLP on TwiBot-20 A; the skip connection recovers most of GCN's loss.
 - **4 Nov 2026 (04:40):** Cited Hays et al. (WWW 2023) for the metadata exclusion and the crawl artefact.
 - **4 Nov 2026 (04:15):** FLAG (KDD 2025) read: setting B's 1:10 protocol and the validation-F1 model selection both match it; Instagram comparison with its Table 4; FLAG-lite baseline and per-class homophily histograms (FLAG Fig. 5) started.
 - **4 Nov 2026 (03:30):** Rescoring done: the full-validation rule keeps the last-check adapter in A (both) and B `target`, and the lowest-loss one in B `dgp`. Under it `dgp` − `target` is −0.001 (A) and −0.016 (B). New section with both adapters; main tables unchanged pending a decision.
