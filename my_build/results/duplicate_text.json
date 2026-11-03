@@ -1,0 +1,49 @@
+{
+  "twibot20": {
+    "full text: val users with an exact train duplicate": [
+      3,
+      2365,
+      0.0013
+    ],
+    "full text: val duplicates sharing the label": 0.5,
+    "full text: test users with an exact train duplicate": [
+      1,
+      1183,
+      0.0008
+    ],
+    "full text: test duplicates sharing the label": 0.5,
+    "full text: empty texts (all users)": 37,
+    "bio only: val users with an exact train duplicate": [
+      10,
+      2365,
+      0.0042
+    ],
+    "bio only: val duplicates sharing the label": 0.583,
+    "bio only: test users with an exact train duplicate": [
+      12,
+      1183,
+      0.0101
+    ],
+    "bio only: test duplicates sharing the label": 0.806,
+    "bio only: empty texts (all users)": 1523,
+    "Qwen2.5 + LR macro-F1, full test": 0.7565,
+    "Qwen2.5 + LR macro-F1, test without full-text duplicates": 0.7564
+  },
+  "instagram": {
+    "full text: val users with an exact train duplicate": [
+      7,
+      2268,
+      0.0031
+    ],
+    "full text: val duplicates sharing the label": 0.61,
+    "full text: test users with an exact train duplicate": [
+      12,
+      2268,
+      0.0053
+    ],
+    "full text: test duplicates sharing the label": 0.517,
+    "full text: empty texts (all users)": 99,
+    "Qwen2.5 + LR macro-F1, full test": 0.6083,
+    "Qwen2.5 + LR macro-F1, test without full-text duplicates": 0.6075
+  }
+}
