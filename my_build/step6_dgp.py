@@ -9,6 +9,10 @@ Run (one script for every run; each phase is cached, so re-running resumes where
   caffeinate -ims env DATASET=twibot20 SETTING=A VARIANT=dgp python -u my_build/step6_dgp.py
   ... VARIANT=target ...                      the same LLM fine-tuned on the target's text alone
   ... PROBE=1 ...                             20 training steps only: prints speed and memory, saves nothing
+  ... LORA_SEED=1 ...                         seeds the LoRA start weights, dropout and batch order (torch,
+                                              numpy, random). The 1,300 users, samples and summaries stay on
+                                              SEED=42. Without LORA_SEED a run behaves as before (the first
+                                              runs were unseeded on the LoRA side). Results get a "seed1" tag.
 
 Pipeline (paper section in brackets):
   1. Metapaths [3.2]  TwiBot-20 has two edge types, friend and follow, so the metapaths are
@@ -37,6 +41,7 @@ set AND on the step 5 test sample, next to zero-shot and Qwen2.5 + LR / MLP / GC
 import json
 import math
 import os
+import random
 import sys
 import time
 import zipfile
@@ -59,6 +64,7 @@ MODEL_ID = os.environ.get("MODEL", "Qwen/Qwen3-1.7B")
 VARIANT = os.environ.get("VARIANT", "dgp")
 assert VARIANT in ("target", "dgp"), "VARIANT must be target or dgp"
 PROBE = os.environ.get("PROBE") == "1"
+LORA_SEED = os.environ.get("LORA_SEED")                # None = the original, unseeded LoRA runs
 FORCE = os.environ.get("FORCE") == "1"           # run even if the estimate is over MAX_HOURS
 FP32 = os.environ.get("FP32") == "1"             # fallback if fp16 training goes NaN
 
@@ -78,8 +84,9 @@ MAX_HOURS = 10
 TARGET_TOKENS = 480 if DATASET == "twibot20" else 256
 
 SHORT = MODEL_ID.split("/")[-1]
-NAME = f"{SHORT} LoRA {VARIANT}"
-TAG = f"{SHORT}_{VARIANT}"
+NAME = f"{SHORT} LoRA {VARIANT}" + (f" seed{LORA_SEED}" if LORA_SEED else "")
+ZS_TAG = f"{SHORT}_{VARIANT}"                          # zero-shot scores do not depend on LORA_SEED
+TAG = ZS_TAG + (f"_s{LORA_SEED}" if LORA_SEED else "")
 CKPT = RESULTS_DIR / f"step6_{TAG}"
 SUMMARY_PROMPT = "Summarize the text within {b} tokens.\n\nText: {text}"
 NODE_SUMMARY_FILE = SHARED_DIR / f"summaries_b{B}_{SHORT}.json"      # keyed by original id, A and B
@@ -287,7 +294,7 @@ def score(model, seqs, pad_id, yes, no, labels=None, batch_size=4, desc="scoring
 def make_batches(lengths, epoch):
     # Shuffle each epoch (seeded by the epoch, so a resumed run continues the same order), sort
     # within chunks of 100 by length to cut padding, then shuffle the batch order.
-    rng = np.random.default_rng(SEED + epoch)
+    rng = np.random.default_rng(SEED + epoch + (1000 * int(LORA_SEED) if LORA_SEED else 0))
     perm = rng.permutation(len(lengths))
     batches = []
     for c in range(0, len(perm), 100):
@@ -415,7 +422,7 @@ def save_rows(rows):
 
 
 def main():
-    print(f"Step 6 | {DATASET} setting {SETTING} | {NAME} | 1 seed (seed {SEED})")
+    print(f"Step 6 | {DATASET} setting {SETTING} | {NAME} | data seed {SEED}, LoRA seed {LORA_SEED or 'unset'}")
     print("Before a long run: caffeinate, charger in, Chrome and VS Code closed, and no shutdown "
           "timer (pgrep -l shutdown prints nothing).\n")
     x_text, edge_index, y = load()
@@ -460,13 +467,17 @@ def main():
     print("\n--- example prompt ---\n" + tok.decode(tr_seqs[0]) + "\n----------------------")
 
     # Zero-shot rows (same model, no training), on the step 5 samples. Cached.
-    zs_file = RESULTS_DIR / f"step6_{TAG}_zeroshot.npz"
+    zs_file = RESULTS_DIR / f"step6_{ZS_TAG}_zeroshot.npz"
     if not PROBE and not zs_file.exists():
         p_val = score(model, valcheck_seqs, tok.pad_token_id, yes, no, desc="zero-shot val")
         p_test = score(model, enc(test_s), tok.pad_token_id, yes, no, desc="zero-shot test")
         np.savez(zs_file, val=p_val, test=p_test)
 
     from peft import LoraConfig, get_peft_model, set_peft_model_state_dict
+    if LORA_SEED:                                          # LoRA start weights and dropout
+        random.seed(int(LORA_SEED))
+        np.random.seed(int(LORA_SEED))
+        torch.manual_seed(int(LORA_SEED))
     model = get_peft_model(model, LoraConfig(task_type="CAUSAL_LM", **LORA))
     model.gradient_checkpointing_enable(gradient_checkpointing_kwargs={"use_reentrant": False})
     model.enable_input_require_grads()
