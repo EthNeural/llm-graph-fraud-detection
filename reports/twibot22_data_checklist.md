@@ -20,11 +20,11 @@ Status: ✅ done and checked · 🟡 partly done · ⬜ to do · ➖ not needed 
 | B1 | Our split: stratified 70/20/10, seed 42, 14.0% bots in each part | ✅ | `split_ours.npy` |
 | B2 | All 986 expert-labelled users forced into test | ✅ | |
 | B3 | Official split kept for comparison only (non-random: all 95k verified users in train) | ✅ | |
-| B4 | **Untouched confirmation test set**, scored once at the end (lesson 22). Carve it out **before** drawing the sample (B5) | ⬜ | Proposal: split our test part in two, half for working comparisons and half kept sealed |
-| B5 | **Sample for text and LLM steps**: 100k stratified random (natural 14% bots) + all 986 experts; seed 42; drawn from our split, so each sampled user keeps its train/val/test role. The 10,039 hub users get tweet embeddings **only as neighbour-feature providers**; they are not added as training or test users unless the random draw picks them (otherwise hubs would be ~10% of the sample instead of ~1%) | ⬜ | Must be fixed before any score |
+| B4 | **Sealed test set** (decided by the builder 4 Nov ~22:05: 50% of test + all experts) | ✅ | `twibot22_sealed_sample.py` → `roles.npy`: test_work 49,951 (14.0% bots), test_sealed 50,937 (49,951 + 986 experts). Drawn before the sample |
+| B5 | **100k study sample** | ✅ | `sample_idx.npy`: 100,000 drawn stratified by role and label (70k train, 20k val, 5k test_work, 5k sealed; 14.0% bots each) + the 986 experts = 100,986 users |
 | B6 | Weak labels documented: dataset "bot" matches experts for 56 of 101 | ✅ | |
 | B7 | **Only train-split labels are ever used for training**, including DEC's stage 1 ("1M weak labels" in the plan means the train part only) | ⬜ | Write into every training script |
-| B8 | **Expert users have one role: test.** DEC stage 2 (fine-tune on experts with 5-fold rotation) is the one exception: there each expert is scored only in the fold where it was held out, and that run is reported separately | ⬜ | |
+| B8 | **Expert users have one role: test_sealed.** DEC stage 2 on experts only as the very last step | ✅ | All 986 in test_sealed |
 
 ## C. Tweets
 
@@ -90,14 +90,14 @@ Status: ✅ done and checked · 🟡 partly done · ⬜ to do · ➖ not needed 
 
 | # | Item | Status | Note |
 |---|---|---|---|
-| H1 | Hub users (10,039 with an outgoing edge) get bio + tweet embeddings as neighbour-feature providers; flagged, not added as study users | ⬜ | Tweets come from the all-1M extraction (C3) |
+| H1 | Hub users (10,039 with an outgoing edge) get bio + tweet embeddings as neighbour-feature providers; flagged, not added as study users | ✅ | `hub_idx.npy`; 968 are also in the random sample. Users to embed (sample ∪ hubs): 110,057 |
 | H2 | **The 814-feature table uses MiniLM bio PCA** (`twibot22_features.py`). Record the embedder in `features_info.json`; if multilingual-E5 is the headline (F6), rebuild the table with it (~10 min) | ⬜ | Depends on F6 |
 | H3 | **Model-input contract, step 1 fixed by the builder 4 Nov ~21:25, before any score.** Profile fields (all except `verified`) are kept as inputs. **Cheap models** (MLP, trees, XGB-Graph, DEC-lite, links-only and profile-only baselines): run **both** versions, with profile and without profile (text + graph only). **Expensive models** (GNNs on 1M users, LLM + LoRA): run **with profile** only, so no information is left out (LLM: profile as numbers in the prompt, as TwiBot-20's `dgp_num`). The "what does the graph add without profile" question is answered by the cheap models. If TwiBot-22 finishes early: rerun TwiBot-20's GNN and LLM with profile too, so the two datasets match. **Step 2 (4 Nov ~21:30): all 7 relations** (following, followers, mention, retweet, reply, quote, like) as model edges and neighbour features; co-list reported only | ✅ | Every new tweet feature passes the shortcut rule before use |
 | H4 | Tweet script checks each file's completeness itself (ends with `]`, size stable) before marking it done (lesson T1) | ✅ | `complete()` asserts the closing `]` before indexing |
 | H5 | Parse tweet dates with `pd.to_datetime(utc=True)` before "most recent" (X6), checked on a sample | ✅ | Selection uses parsed seconds; checked against a full JSON parse of a 600 MB slice (532,984 tweets, all authors and dates match) |
 | H6 | Results naming that cannot overwrite: one folder per design and seed; seeds fixed per model (lessons 18–20) | ⬜ | With F3 |
 | H7 | GPU-time estimate for the LLM sample (embedding + LoRA) and a pre-set fallback sample size if it does not fit by Sat | ⬜ | Before B5 is final |
-| H8 | Sealed users: ids saved to disk before the sample draw; every selection script asserts it never reads their labels | ⬜ | With B4 |
+| H8 | Sealed users: ids saved to disk before the sample draw; every scoring script refuses them before the final run | ✅ | `twibot22_guard.score_mask()` returns test_work unless `FINAL_RUN=1`; `assert_not_sealed()` stops otherwise (tested) |
 | H9 | Extraction time | ✅ | 7 min in total (index 2.5 min at ~900 MB/s, select 1 min, decode 4 min) |
 
 Simplified (descriptive only, not gates): C6 language mix, C8 date range (folded into the C1 counts), C4 zero-tweet counts. G5 reweighted PR-AUC is computed from saved scores after the runs; it changes no model.

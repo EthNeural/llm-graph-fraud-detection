@@ -56,3 +56,31 @@ def migrate():
 
 if __name__ == "__main__":
     migrate()
+
+
+# --- Sealed test set (checklist B4, B8, H8) ------------------------------------------------------
+# roles.npy: 'train' / 'val' / 'test_work' / 'test_sealed' (twibot22_sealed_sample.py, seed 42).
+# Sealed users are scored ONCE, at the very end. Any script that scores test users must call
+# score_mask(); it returns the working-test mask unless FINAL_RUN=1 is set explicitly.
+def roles():
+    return np.load(DATA / "roles.npy")
+
+
+def score_mask(final=None):
+    import os
+    r = roles()
+    final = os.environ.get("FINAL_RUN") == "1" if final is None else final
+    if final:
+        print("FINAL RUN: scoring the SEALED test set (do this once, after the freeze)")
+        return r == "test_sealed"
+    return r == "test_work"
+
+
+def assert_not_sealed(idx):
+    # Stop if any index points at a sealed user (use before printing or saving any test metric).
+    import os
+    if os.environ.get("FINAL_RUN") == "1":
+        return
+    bad = np.isin(np.asarray(idx), np.where(roles() == "test_sealed")[0])
+    if bad.any():
+        raise RuntimeError(f"{int(bad.sum())} sealed test users would be scored before the final run")

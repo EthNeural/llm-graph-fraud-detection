@@ -1,0 +1,47 @@
+{
+ "seed": 42,
+ "seal_share": 0.5,
+ "sample_size": 100000,
+ "all_users": {
+  "train": {
+   "users": 699309,
+   "bot_share": 0.14
+  },
+  "val": {
+   "users": 199803,
+   "bot_share": 0.14
+  },
+  "test_work": {
+   "users": 49951,
+   "bot_share": 0.14
+  },
+  "test_sealed": {
+   "users": 50937,
+   "bot_share": 0.1393
+  }
+ },
+ "sample": {
+  "train": {
+   "users": 70000,
+   "bot_share": 0.14
+  },
+  "val": {
+   "users": 20000,
+   "bot_share": 0.14
+  },
+  "test_work": {
+   "users": 5000,
+   "bot_share": 0.14
+  },
+  "test_sealed": {
+   "users": 5986,
+   "bot_share": 0.1338
+  }
+ },
+ "sample_total": 100986,
+ "sample_bot_share": 0.1396,
+ "experts_in_sealed": 986,
+ "hubs": 10039,
+ "hubs_in_sample": 968,
+ "embed_users_sample_or_hub": 110057
+}
