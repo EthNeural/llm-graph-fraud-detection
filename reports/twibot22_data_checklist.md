@@ -32,7 +32,7 @@ Status: ✅ done and checked · 🟡 partly done · ⬜ to do · ➖ not needed 
 |---|---|---|---|
 | C1 | Extraction counts: tweets read, kept, regex misses, JSON decode errors, per file (lesson T2) | ⬜ | Fix `twibot22_tweets.py` to log these |
 | C2 | **Most recent by date, not first met in file order** (T3). The current script stops at 200 per user in file order | ⬜ | Keep a per-user top-N by `created_at` across all 9 files; parse dates with `pd.to_datetime` (X6) |
-| C3 | Wanted users = sample (B5), not the sub-communities (T4) | ⬜ | |
+| C3 | Wanted users = all 1M labelled users (top 20 each by date); the sample and hubs are subsets of that file | ⬜ | Changed 4 Nov 21:30 (F6) |
 | C4 | Users with 0 tweets: count by class; text = bio only, with a flag | ⬜ | Plan's earlier check (from `post` edges): 82.4% of bots and 95.2% of humans have ≥1 tweet. Re-check on the files |
 | C5 | **Text rules**: N = 20 most recent; retweets kept or dropped?; character cap; URLs and @-mentions normalised? | ⬜ | Decide and write down before embedding. TwiBot-20 used bio + 20 tweets |
 | C6 | Language mix by class (multilingual-E5 handles non-English; MiniLM does not) | ⬜ | |
@@ -72,7 +72,7 @@ Status: ✅ done and checked · 🟡 partly done · ⬜ to do · ➖ not needed 
 | F3 | Output folders per design (sample, text recipe), so no stale cache is reused (X1, lesson 20) | ⬜ | Do before the first tweet embedding |
 | F4 | Bio-only and bio + tweets embeddings saved as separate feature sets (E3) | ⬜ | |
 | F5 | Neighbour features use neighbours' features only, never their labels | ✅ | |
-| F6 | **Headline text model, fixed by the builder 4 Nov ~21:05, before any score.** multilingual-E5 is the headline. Text = bio + 20 most recent tweets **if** tweet embeddings for **all 1M users** finish by **Fri 6 Nov 18:00**; otherwise the headline is multilingual-E5 on **bio only**. MiniLM is reported as a check. Qwen2.5-1.5B is used only on the sample, not all 1M. Before embedding tweets: a 10k-user timing test, the estimated total hours, and the builder's go. Not while a TwiBot-20 LoRA seed run is on the GPU (that queue starts Thu night, ~12 h) | ✅ decided | Consequence: tweet extraction covers all 1M users (top-20 each), not only the sample (updates C3, H1) |
+| F6 | **Headline text model and comparison, fixed by the builder 4 Nov ~21:30, before any score (replaces the ~21:05 rule).** Option B: headline text model = multilingual-E5. **Headline comparison = the 100k stratified sample** (natural 14% bots), text = bio + 20 most recent tweets, neighbour features from the full 1M graph (hub users' tweets embedded as neighbour providers). **Full-graph models on all 1M users use bio only** (reported as the full-scale check). Option A (bio + tweets for all 1M) is run afterwards as an extra check if time allows; it never replaces the headline. MiniLM = check; Qwen2.5-1.5B on the sample only. Before any tweet embedding: a 10k-user timing test, the estimate, and the builder's go; not while a TwiBot-20 LoRA seed run is on the GPU. Report limit: "with tweets" results are for a 100k random sample, not all 1M users | ✅ decided | Tweet extraction covers all 1M users (top 20 each), so it serves B and A |
 | F7 | Users with no neighbours in a direction get a mean of 0 (= the train mean after standardisation); the separate log-count column (0) tells models it is missing | ✅ | `twibot22_features.py` `mean_agg`. GNNs need the same flag |
 
 ## G. Run hygiene
@@ -89,7 +89,7 @@ Status: ✅ done and checked · 🟡 partly done · ⬜ to do · ➖ not needed 
 
 | # | Item | Status | Note |
 |---|---|---|---|
-| H1 | **Wanted users for tweet extraction = sample ∪ the 10,039 hub users**, hubs flagged as neighbour-feature providers only (resolves the B5 vs C3 conflict; the current script still defaults to sub-communities) | ⬜ | Part of C3 |
+| H1 | Hub users (10,039 with an outgoing edge) get bio + tweet embeddings as neighbour-feature providers; flagged, not added as study users | ⬜ | Tweets come from the all-1M extraction (C3) |
 | H2 | **The 814-feature table uses MiniLM bio PCA** (`twibot22_features.py`). Record the embedder in `features_info.json`; if multilingual-E5 is the headline (F6), rebuild the table with it (~10 min) | ⬜ | Depends on F6 |
 | H3 | **Model-input contract**, written before any run: which feature blocks each model gets (profile, bio, tweets, degrees, neighbour means), and whether quote and like are neighbour features (the features use 7 relations; the plan's model edges are 5) | ⬜ | |
 | H4 | Tweet script checks each file's completeness itself (ends with `]`, size stable) before marking it done (lesson T1) | ⬜ | Part of C1 |
