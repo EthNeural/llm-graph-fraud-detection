@@ -10,8 +10,8 @@ Users: sample_idx.npy (100,986) union hub_idx.npy (10,039) = 110,057, sorted (la
   TIMING=10000   timing test only: a random 10,000 of those users (seed 0); prints the measured speed
                  and the estimated total time; saves nothing.
 
-Output: results/twibot22/emb_text_<ENC>_sample_hubs.npy (float16, rows = emb_text_idx.npy)
-        results/twibot22/emb_text_idx.npy (label.csv row numbers of those rows)
+Output: data/twibot-22/sample110k_<ENC>_bio20tw_raw/emb.npy  (float16, one row per user)
+        .../ids.npy (label.csv row numbers of those rows) and .../user_ids.npy; row order asserted after saving (F2, F3)
 Run:    TIMING=10000 ENC=e5 python my_build/twibot22_embed_text.py      (GPU, a few minutes)
         ENC=e5 python my_build/twibot22_embed_text.py                   (GPU, only after the builder's go)
 """
@@ -57,9 +57,9 @@ def main():
     total_users = len(rows)
     if TIMING:
         rows = np.sort(np.random.default_rng(0).choice(rows, TIMING, replace=False))
-    out = RES / f"emb_text_{ENC}_sample_hubs.npy"
+    outdir = DATA / f"sample110k_{ENC}_bio20tw_raw"          # named by the text recipe (F3)
     if not TIMING:
-        assert not out.exists(), f"{out.name} exists: never overwritten (H6)"
+        assert not outdir.exists(), f"{outdir.name} exists: never overwritten (H6)"
     t0 = time.time()
     texts = build_texts(rows, lab_ids)
     pieces, owner = s3.split_pieces(texts)
@@ -75,9 +75,17 @@ def main():
         print(f"TIMING: {len(pieces):,} pieces in {secs / 60:.1f} min ({len(pieces) / secs:.0f} pieces/s). "
               f"Estimated total for {total_users:,} users: {est / 3600:.1f} h (encoding only). Nothing saved.", flush=True)
         return
-    np.save(out, user_emb)
-    np.save(RES / "emb_text_idx.npy", rows)
-    print(f"saved {out.name} {user_emb.shape} in {(time.time() - t0) / 60:.1f} min", flush=True)
+    outdir.mkdir(parents=True)
+    np.save(outdir / "emb.npy", user_emb)
+    np.save(outdir / "ids.npy", rows)
+    np.save(outdir / "user_ids.npy", lab_ids[rows].astype(str))
+    # F2: re-read and assert the row order: same length, same ids, users without text are zero rows
+    e, i, u = np.load(outdir / "emb.npy"), np.load(outdir / "ids.npy"), np.load(outdir / "user_ids.npy")
+    assert len(e) == len(i) == len(u) == total_users and (i == rows).all() and (u == lab_ids[rows]).all()
+    no_text = np.array([t == "" for t in texts])
+    assert ((~e.any(1)) == no_text).all(), "zero rows do not match users without text"
+    print(f"saved {outdir.name}/emb.npy {e.shape}; row order asserted ({int(no_text.sum())} users without text = zero rows); "
+          f"{(time.time() - t0) / 60:.1f} min", flush=True)
 
 
 if __name__ == "__main__":
