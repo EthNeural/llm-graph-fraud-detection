@@ -9,7 +9,7 @@ Status: ✅ done and checked · 🟡 partly done · ⬜ to do · ➖ not needed 
 | # | Item | Status | Note |
 |---|---|---|---|
 | A1 | `user.json`, `label.csv`, `split.csv`, `edge.csv` complete | ✅ | `edge.csv` 6,642,968,601 bytes; `user.json` matched byte for byte against a second download |
-| A2 | 9 tweet files, each complete (ends with `]`) | 🟡 | 8 of 9 in (0, 2–8, 10.0–12.5 GB each). `tweet_1` downloading (ETA ~20:10) |
+| A2 | 9 tweet files, each complete (ends with `]`) | ✅ | All 9 in `tweets/` (10.0–12.5 GB, 104.4 GB total), each ends with `}]`. Decode errors are counted during extraction (C1) |
 | A3 | Tweet count per file and in total, against the paper's ~88M | ⬜ | Count while extracting (C1) |
 | A4 | No dataset file in git (CC BY-NC-ND 4.0) | ✅ | `data/` is git-ignored |
 
@@ -58,8 +58,8 @@ Status: ✅ done and checked · 🟡 partly done · ⬜ to do · ➖ not needed 
 | E1 | Relations fixed: following, followers, mention, retweet, reply | ✅ | Fixed 4 Nov 14:25 |
 | E2 | Homophily, adjusted homophily, label informativeness for all 8 relations | ✅ | All near zero (0.011–0.038) |
 | E3 | Star-shape check: only 10,039 users have outgoing edges | ✅ | |
-| E4 | Degree AUROC on **test users only** (R3); out-degree caps and reciprocity (R5) | ⬜ | Quick |
-| E5 | Train–test neighbour leakage: share of test users whose neighbours are same-label train users, vs chance | ⬜ | Quick |
+| E4 | Degree AUROC on held-out users (R3); out-degree caps and reciprocity (R5) | ✅ | `twibot22_graph_checks.py`, on **val** users (no test label read): in-degree AUROC 0.36–0.49, out-degree 0.50; no cap (max out-degree 907); reciprocity 0.3–1% |
+| E5 | Train-to-held-out neighbour leakage vs chance | ✅ | On val users: a bot's train neighbours are 11.6% bots (chance 14.0%), a human's 92.5% human (chance 86.0%). Edges do not give away bot labels |
 | E6 | co-list counts use int8, so they can overflow above 127 shared lists (R2) | ➖ | co-list is reported only and never used as model edges. Note it in the report |
 | E7 | Relation names in `edge.csv` all present and non-empty (R4) | ✅ | Every relation in the heterophily table has edges |
 
@@ -68,7 +68,7 @@ Status: ✅ done and checked · 🟡 partly done · ⬜ to do · ➖ not needed 
 | # | Item | Status | Note |
 |---|---|---|---|
 | F1 | Standardisation and PCA fitted on train only | ✅ | `twibot22_features.py` |
-| F2 | Rows kept in `label.csv` order everywhere; any join by id, never by position (X2) | 🟡 | True for the new scripts; `prep_twibot22.py` sorts by id, so it must reindex |
+| F2 | Rows kept in `label.csv` order everywhere; any join by id, never by position (X2) | ✅ | `twibot22_graph_checks.py`: all artefacts 1M rows; the 124,231 zero embedding rows equal the 124,231 empty bios exactly. Keep this assertion in every new script. Earlier note: | True for the new scripts; `prep_twibot22.py` sorts by id, so it must reindex |
 | F3 | Output folders per design (sample, text recipe), so no stale cache is reused (X1, lesson 20) | ⬜ | Do before the first tweet embedding |
 | F4 | Bio-only and bio + tweets embeddings saved as separate feature sets (E3) | ⬜ | |
 | F5 | Neighbour features use neighbours' features only, never their labels | ✅ | |
@@ -84,6 +84,22 @@ Status: ✅ done and checked · 🟡 partly done · ⬜ to do · ➖ not needed 
 | G3 | Selection rule, seeds (3), metrics (macro-F1, AUROC, AUPRC, bootstrap CIs) written into the scripts | ⬜ | Plan step 1 |
 | G4 | Every result also scored on non-verified test users and with-bio users | ⬜ | |
 | G5 | **No artificial setting B on TwiBot-22.** The natural 14% bot share is already within graph-fraud benchmark rates (1.3–21.8% in GADBench), and TwiBot-20's 1:10 subsample removed 8,108 of 8,162 bot–bot edges. For rarer rates, report **PR-AUC with test users reweighted to 5% and 1% bots** (bots weighted so they make up 5% or 1% of the test weight; graph, training and cut-off unchanged). Wording in the report: "fraud-like rare class", not "fraud" | ⬜ | Evaluation only; add to the shared metrics code with G3 |
+
+## H. Added after the step-list review and its sceptic pass (4 Nov, 21:00)
+
+| # | Item | Status | Note |
+|---|---|---|---|
+| H1 | **Wanted users for tweet extraction = sample ∪ the 10,039 hub users**, hubs flagged as neighbour-feature providers only (resolves the B5 vs C3 conflict; the current script still defaults to sub-communities) | ⬜ | Part of C3 |
+| H2 | **The 814-feature table uses MiniLM bio PCA** (`twibot22_features.py`). Record the embedder in `features_info.json`; if multilingual-E5 is the headline (F6), rebuild the table with it (~10 min) | ⬜ | Depends on F6 |
+| H3 | **Model-input contract**, written before any run: which feature blocks each model gets (profile, bio, tweets, degrees, neighbour means), and whether quote and like are neighbour features (the features use 7 relations; the plan's model edges are 5) | ⬜ | |
+| H4 | Tweet script checks each file's completeness itself (ends with `]`, size stable) before marking it done (lesson T1) | ⬜ | Part of C1 |
+| H5 | Parse tweet dates with `pd.to_datetime(utc=True)` before "most recent" (X6), checked on a sample | ⬜ | Part of C2 |
+| H6 | Results naming that cannot overwrite: one folder per design and seed; seeds fixed per model (lessons 18–20) | ⬜ | With F3 |
+| H7 | GPU-time estimate for the LLM sample (embedding + LoRA) and a pre-set fallback sample size if it does not fit by Sat | ⬜ | Before B5 is final |
+| H8 | Sealed users: ids saved to disk before the sample draw; every selection script asserts it never reads their labels | ⬜ | With B4 |
+| H9 | Extraction time: ~104 GB, budget **1–1.5 h**, not 30–40 min (regex first, decode only wanted users) | ⬜ | Revised estimate |
+
+Simplified (descriptive only, not gates): C6 language mix, C8 date range (folded into the C1 counts), C4 zero-tweet counts. G5 reweighted PR-AUC is computed from saved scores after the runs; it changes no model.
 
 ## Freeze
 
