@@ -109,7 +109,7 @@ Deadline: experiments finished by Sat 7 Nov night; Sun 8 Nov is writing only.
 3. **GNNs on the full graph (CPU).** GCN, SAGE, FAGCN, LINKX, plus an RGCN over the 7 relations. With profile fields (H3). Fall back to neighbour sampling if memory runs out.
 4. **Tweets.** Extracted (done). Next: tweet checks (C6, C7, D4), text rules (C5), 10k timing test, the builder's go, then multilingual-E5 on bio + 20 tweets for the sample + hubs.
 5. **LLM sample (GPU).** A stratified random sample at 14% bots, neighbours taken from the full graph. LLM embeddings, then DGP with LoRA. Score the graph models on the same test users so the comparison is paired.
-6. **Optional:** DEC's noisy-then-clean training (weak labels → expert labels), only if time is left.
+6. **Planned, last step (light version, checklist G7):** weak labels → recalibration on the 986 sealed experts with 5-fold rotation, trees and MLP only, after the freeze. Two-stage idea from Facebook DEC; light because 986 experts (105 bots) are too few for full fine-tuning.
 7. **Script fixes still open:** per-design output folders; `DATASET=twibot22` in `common.py`; TwiBot-22 field names and dates in `metadata_check.py` and `step6_dgp.py`.
 8. **After TwiBot-22:** resume the paused TwiBot-20 GPU queue (LoRA seed 2, `dgp_num`), and rerun the TwiBot-20 tree baseline.
 9. **Report (Sun):** update REPORT.md, then write the submission (7 pages, template sections, 4–5 diagrams). Every claim gets a sceptic pass.
