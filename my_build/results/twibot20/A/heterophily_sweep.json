@@ -1,0 +1,509 @@
+{
+  "mlp": {
+    "macro_f1": 0.7656,
+    "macro_f1_std": 0.0026,
+    "auroc": 0.8395
+  },
+  "rows": [
+    {
+      "graph": "real",
+      "model": "GCN",
+      "adjusted_homophily": 0.062,
+      "edge_homophily": 0.532,
+      "edges": 16349,
+      "macro_f1": 0.7068,
+      "macro_f1_std": 0.0031,
+      "auroc": 0.7748
+    },
+    {
+      "graph": "real",
+      "model": "SAGE",
+      "adjusted_homophily": 0.062,
+      "edge_homophily": 0.532,
+      "edges": 16349,
+      "macro_f1": 0.7503,
+      "macro_f1_std": 0.0021,
+      "auroc": 0.8285
+    },
+    {
+      "graph": "real",
+      "model": "FAGCN",
+      "adjusted_homophily": 0.062,
+      "edge_homophily": 0.532,
+      "edges": 16349,
+      "macro_f1": 0.7444,
+      "macro_f1_std": 0.0067,
+      "auroc": 0.811
+    },
+    {
+      "graph": "real",
+      "model": "skip-GCN",
+      "adjusted_homophily": 0.062,
+      "edge_homophily": 0.532,
+      "edges": 16349,
+      "macro_f1": 0.7517,
+      "macro_f1_std": 0.0051,
+      "auroc": 0.8197
+    },
+    {
+      "graph": "real",
+      "model": "LINKX",
+      "adjusted_homophily": 0.062,
+      "edge_homophily": 0.532,
+      "edges": 16349,
+      "macro_f1": 0.7522,
+      "macro_f1_std": 0.0028,
+      "auroc": 0.8265
+    },
+    {
+      "graph": "target -0.8",
+      "model": "GCN",
+      "adjusted_homophily": -0.798,
+      "edge_homophily": 0.101,
+      "edges": 16314,
+      "macro_f1": 0.7233,
+      "macro_f1_std": 0.0082,
+      "auroc": 0.7735
+    },
+    {
+      "graph": "target -0.8",
+      "model": "SAGE",
+      "adjusted_homophily": -0.798,
+      "edge_homophily": 0.101,
+      "edges": 16314,
+      "macro_f1": 0.8544,
+      "macro_f1_std": 0.0025,
+      "auroc": 0.9282
+    },
+    {
+      "graph": "target -0.8",
+      "model": "FAGCN",
+      "adjusted_homophily": -0.798,
+      "edge_homophily": 0.101,
+      "edges": 16314,
+      "macro_f1": 0.7797,
+      "macro_f1_std": 0.0057,
+      "auroc": 0.8514
+    },
+    {
+      "graph": "target -0.8",
+      "model": "skip-GCN",
+      "adjusted_homophily": -0.798,
+      "edge_homophily": 0.101,
+      "edges": 16314,
+      "macro_f1": 0.7572,
+      "macro_f1_std": 0.0054,
+      "auroc": 0.8178
+    },
+    {
+      "graph": "target -0.8",
+      "model": "LINKX",
+      "adjusted_homophily": -0.798,
+      "edge_homophily": 0.101,
+      "edges": 16314,
+      "macro_f1": 0.8117,
+      "macro_f1_std": 0.0027,
+      "auroc": 0.8873
+    },
+    {
+      "graph": "target -0.6",
+      "model": "GCN",
+      "adjusted_homophily": -0.609,
+      "edge_homophily": 0.195,
+      "edges": 16315,
+      "macro_f1": 0.6836,
+      "macro_f1_std": 0.0076,
+      "auroc": 0.7425
+    },
+    {
+      "graph": "target -0.6",
+      "model": "SAGE",
+      "adjusted_homophily": -0.609,
+      "edge_homophily": 0.195,
+      "edges": 16315,
+      "macro_f1": 0.8194,
+      "macro_f1_std": 0.0013,
+      "auroc": 0.8955
+    },
+    {
+      "graph": "target -0.6",
+      "model": "FAGCN",
+      "adjusted_homophily": -0.609,
+      "edge_homophily": 0.195,
+      "edges": 16315,
+      "macro_f1": 0.7598,
+      "macro_f1_std": 0.005,
+      "auroc": 0.8296
+    },
+    {
+      "graph": "target -0.6",
+      "model": "skip-GCN",
+      "adjusted_homophily": -0.609,
+      "edge_homophily": 0.195,
+      "edges": 16315,
+      "macro_f1": 0.7515,
+      "macro_f1_std": 0.001,
+      "auroc": 0.8129
+    },
+    {
+      "graph": "target -0.6",
+      "model": "LINKX",
+      "adjusted_homophily": -0.609,
+      "edge_homophily": 0.195,
+      "edges": 16315,
+      "macro_f1": 0.7936,
+      "macro_f1_std": 0.0036,
+      "auroc": 0.8663
+    },
+    {
+      "graph": "target -0.4",
+      "model": "GCN",
+      "adjusted_homophily": -0.42,
+      "edge_homophily": 0.29,
+      "edges": 16311,
+      "macro_f1": 0.6679,
+      "macro_f1_std": 0.0043,
+      "auroc": 0.7252
+    },
+    {
+      "graph": "target -0.4",
+      "model": "SAGE",
+      "adjusted_homophily": -0.42,
+      "edge_homophily": 0.29,
+      "edges": 16311,
+      "macro_f1": 0.7907,
+      "macro_f1_std": 0.0034,
+      "auroc": 0.8596
+    },
+    {
+      "graph": "target -0.4",
+      "model": "FAGCN",
+      "adjusted_homophily": -0.42,
+      "edge_homophily": 0.29,
+      "edges": 16311,
+      "macro_f1": 0.7516,
+      "macro_f1_std": 0.0016,
+      "auroc": 0.8242
+    },
+    {
+      "graph": "target -0.4",
+      "model": "skip-GCN",
+      "adjusted_homophily": -0.42,
+      "edge_homophily": 0.29,
+      "edges": 16311,
+      "macro_f1": 0.7482,
+      "macro_f1_std": 0.006,
+      "auroc": 0.8128
+    },
+    {
+      "graph": "target -0.4",
+      "model": "LINKX",
+      "adjusted_homophily": -0.42,
+      "edge_homophily": 0.29,
+      "edges": 16311,
+      "macro_f1": 0.7696,
+      "macro_f1_std": 0.0012,
+      "auroc": 0.8316
+    },
+    {
+      "graph": "target -0.2",
+      "model": "GCN",
+      "adjusted_homophily": -0.221,
+      "edge_homophily": 0.389,
+      "edges": 16326,
+      "macro_f1": 0.6827,
+      "macro_f1_std": 0.0038,
+      "auroc": 0.7379
+    },
+    {
+      "graph": "target -0.2",
+      "model": "SAGE",
+      "adjusted_homophily": -0.221,
+      "edge_homophily": 0.389,
+      "edges": 16326,
+      "macro_f1": 0.7581,
+      "macro_f1_std": 0.0025,
+      "auroc": 0.8342
+    },
+    {
+      "graph": "target -0.2",
+      "model": "FAGCN",
+      "adjusted_homophily": -0.221,
+      "edge_homophily": 0.389,
+      "edges": 16326,
+      "macro_f1": 0.7376,
+      "macro_f1_std": 0.0061,
+      "auroc": 0.8056
+    },
+    {
+      "graph": "target -0.2",
+      "model": "skip-GCN",
+      "adjusted_homophily": -0.221,
+      "edge_homophily": 0.389,
+      "edges": 16326,
+      "macro_f1": 0.7542,
+      "macro_f1_std": 0.0013,
+      "auroc": 0.8072
+    },
+    {
+      "graph": "target -0.2",
+      "model": "LINKX",
+      "adjusted_homophily": -0.221,
+      "edge_homophily": 0.389,
+      "edges": 16326,
+      "macro_f1": 0.7592,
+      "macro_f1_std": 0.0009,
+      "auroc": 0.8279
+    },
+    {
+      "graph": "target +0.0",
+      "model": "GCN",
+      "adjusted_homophily": -0.007,
+      "edge_homophily": 0.497,
+      "edges": 16321,
+      "macro_f1": 0.692,
+      "macro_f1_std": 0.0009,
+      "auroc": 0.759
+    },
+    {
+      "graph": "target +0.0",
+      "model": "SAGE",
+      "adjusted_homophily": -0.007,
+      "edge_homophily": 0.497,
+      "edges": 16321,
+      "macro_f1": 0.7495,
+      "macro_f1_std": 0.0055,
+      "auroc": 0.8232
+    },
+    {
+      "graph": "target +0.0",
+      "model": "FAGCN",
+      "adjusted_homophily": -0.007,
+      "edge_homophily": 0.497,
+      "edges": 16321,
+      "macro_f1": 0.7327,
+      "macro_f1_std": 0.0084,
+      "auroc": 0.7982
+    },
+    {
+      "graph": "target +0.0",
+      "model": "skip-GCN",
+      "adjusted_homophily": -0.007,
+      "edge_homophily": 0.497,
+      "edges": 16321,
+      "macro_f1": 0.7556,
+      "macro_f1_std": 0.0026,
+      "auroc": 0.813
+    },
+    {
+      "graph": "target +0.0",
+      "model": "LINKX",
+      "adjusted_homophily": -0.007,
+      "edge_homophily": 0.497,
+      "edges": 16321,
+      "macro_f1": 0.7539,
+      "macro_f1_std": 0.0038,
+      "auroc": 0.8252
+    },
+    {
+      "graph": "target +0.2",
+      "model": "GCN",
+      "adjusted_homophily": 0.192,
+      "edge_homophily": 0.596,
+      "edges": 16324,
+      "macro_f1": 0.7223,
+      "macro_f1_std": 0.0055,
+      "auroc": 0.7911
+    },
+    {
+      "graph": "target +0.2",
+      "model": "SAGE",
+      "adjusted_homophily": 0.192,
+      "edge_homophily": 0.596,
+      "edges": 16324,
+      "macro_f1": 0.747,
+      "macro_f1_std": 0.0021,
+      "auroc": 0.8191
+    },
+    {
+      "graph": "target +0.2",
+      "model": "FAGCN",
+      "adjusted_homophily": 0.192,
+      "edge_homophily": 0.596,
+      "edges": 16324,
+      "macro_f1": 0.7541,
+      "macro_f1_std": 0.0038,
+      "auroc": 0.8195
+    },
+    {
+      "graph": "target +0.2",
+      "model": "skip-GCN",
+      "adjusted_homophily": 0.192,
+      "edge_homophily": 0.596,
+      "edges": 16324,
+      "macro_f1": 0.7662,
+      "macro_f1_std": 0.001,
+      "auroc": 0.8183
+    },
+    {
+      "graph": "target +0.2",
+      "model": "LINKX",
+      "adjusted_homophily": 0.192,
+      "edge_homophily": 0.596,
+      "edges": 16324,
+      "macro_f1": 0.757,
+      "macro_f1_std": 0.0065,
+      "auroc": 0.8233
+    },
+    {
+      "graph": "target +0.4",
+      "model": "GCN",
+      "adjusted_homophily": 0.396,
+      "edge_homophily": 0.698,
+      "edges": 16308,
+      "macro_f1": 0.7762,
+      "macro_f1_std": 0.0016,
+      "auroc": 0.8319
+    },
+    {
+      "graph": "target +0.4",
+      "model": "SAGE",
+      "adjusted_homophily": 0.396,
+      "edge_homophily": 0.698,
+      "edges": 16308,
+      "macro_f1": 0.7706,
+      "macro_f1_std": 0.0049,
+      "auroc": 0.8501
+    },
+    {
+      "graph": "target +0.4",
+      "model": "FAGCN",
+      "adjusted_homophily": 0.396,
+      "edge_homophily": 0.698,
+      "edges": 16308,
+      "macro_f1": 0.7604,
+      "macro_f1_std": 0.0056,
+      "auroc": 0.8328
+    },
+    {
+      "graph": "target +0.4",
+      "model": "skip-GCN",
+      "adjusted_homophily": 0.396,
+      "edge_homophily": 0.698,
+      "edges": 16308,
+      "macro_f1": 0.7869,
+      "macro_f1_std": 0.0039,
+      "auroc": 0.8415
+    },
+    {
+      "graph": "target +0.4",
+      "model": "LINKX",
+      "adjusted_homophily": 0.396,
+      "edge_homophily": 0.698,
+      "edges": 16308,
+      "macro_f1": 0.7558,
+      "macro_f1_std": 0.0081,
+      "auroc": 0.8322
+    },
+    {
+      "graph": "target +0.6",
+      "model": "GCN",
+      "adjusted_homophily": 0.601,
+      "edge_homophily": 0.801,
+      "edges": 16311,
+      "macro_f1": 0.8163,
+      "macro_f1_std": 0.004,
+      "auroc": 0.8763
+    },
+    {
+      "graph": "target +0.6",
+      "model": "SAGE",
+      "adjusted_homophily": 0.601,
+      "edge_homophily": 0.801,
+      "edges": 16311,
+      "macro_f1": 0.8134,
+      "macro_f1_std": 0.0035,
+      "auroc": 0.8863
+    },
+    {
+      "graph": "target +0.6",
+      "model": "FAGCN",
+      "adjusted_homophily": 0.601,
+      "edge_homophily": 0.801,
+      "edges": 16311,
+      "macro_f1": 0.8006,
+      "macro_f1_std": 0.0038,
+      "auroc": 0.8697
+    },
+    {
+      "graph": "target +0.6",
+      "model": "skip-GCN",
+      "adjusted_homophily": 0.601,
+      "edge_homophily": 0.801,
+      "edges": 16311,
+      "macro_f1": 0.8124,
+      "macro_f1_std": 0.0015,
+      "auroc": 0.8716
+    },
+    {
+      "graph": "target +0.6",
+      "model": "LINKX",
+      "adjusted_homophily": 0.601,
+      "edge_homophily": 0.801,
+      "edges": 16311,
+      "macro_f1": 0.7844,
+      "macro_f1_std": 0.0041,
+      "auroc": 0.8572
+    },
+    {
+      "graph": "target +0.8",
+      "model": "GCN",
+      "adjusted_homophily": 0.805,
+      "edge_homophily": 0.903,
+      "edges": 16307,
+      "macro_f1": 0.8672,
+      "macro_f1_std": 0.0076,
+      "auroc": 0.9117
+    },
+    {
+      "graph": "target +0.8",
+      "model": "SAGE",
+      "adjusted_homophily": 0.805,
+      "edge_homophily": 0.903,
+      "edges": 16307,
+      "macro_f1": 0.8534,
+      "macro_f1_std": 0.0066,
+      "auroc": 0.9255
+    },
+    {
+      "graph": "target +0.8",
+      "model": "FAGCN",
+      "adjusted_homophily": 0.805,
+      "edge_homophily": 0.903,
+      "edges": 16307,
+      "macro_f1": 0.8341,
+      "macro_f1_std": 0.0018,
+      "auroc": 0.8979
+    },
+    {
+      "graph": "target +0.8",
+      "model": "skip-GCN",
+      "adjusted_homophily": 0.805,
+      "edge_homophily": 0.903,
+      "edges": 16307,
+      "macro_f1": 0.8637,
+      "macro_f1_std": 0.0019,
+      "auroc": 0.9079
+    },
+    {
+      "graph": "target +0.8",
+      "model": "LINKX",
+      "adjusted_homophily": 0.805,
+      "edge_homophily": 0.903,
+      "edges": 16307,
+      "macro_f1": 0.8174,
+      "macro_f1_std": 0.0079,
+      "auroc": 0.8891
+    }
+  ]
+}

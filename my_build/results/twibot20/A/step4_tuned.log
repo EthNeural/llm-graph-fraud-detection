@@ -1,0 +1,89 @@
+  MLP {'lr': 0.001, 'hidden': 64, 'dropout': 0.2, 'eps': 0.3} val macro-F1 0.7727
+  MLP {'lr': 0.001, 'hidden': 64, 'dropout': 0.5, 'eps': 0.3} val macro-F1 0.7721
+  MLP {'lr': 0.001, 'hidden': 128, 'dropout': 0.2, 'eps': 0.3} val macro-F1 0.7738
+  MLP {'lr': 0.001, 'hidden': 128, 'dropout': 0.5, 'eps': 0.3} val macro-F1 0.7729
+  MLP {'lr': 0.001, 'hidden': 256, 'dropout': 0.2, 'eps': 0.3} val macro-F1 0.7718
+  MLP {'lr': 0.001, 'hidden': 256, 'dropout': 0.5, 'eps': 0.3} val macro-F1 0.7743
+  MLP {'lr': 0.01, 'hidden': 64, 'dropout': 0.2, 'eps': 0.3} val macro-F1 0.7719
+  MLP {'lr': 0.01, 'hidden': 64, 'dropout': 0.5, 'eps': 0.3} val macro-F1 0.7743
+  MLP {'lr': 0.01, 'hidden': 128, 'dropout': 0.2, 'eps': 0.3} val macro-F1 0.7675
+  MLP {'lr': 0.01, 'hidden': 128, 'dropout': 0.5, 'eps': 0.3} val macro-F1 0.7736
+  MLP {'lr': 0.01, 'hidden': 256, 'dropout': 0.2, 'eps': 0.3} val macro-F1 0.7693
+  MLP {'lr': 0.01, 'hidden': 256, 'dropout': 0.5, 'eps': 0.3} val macro-F1 0.7724
+  seed 1           acc 0.769  macroF1 0.769  F1_1 0.777  AUROC 0.838  PR-AUC 0.848  | conn 0.770  iso 0.758
+  seed 2           acc 0.766  macroF1 0.765  F1_1 0.775  AUROC 0.837  PR-AUC 0.848  | conn 0.766  iso 0.758
+  seed 3           acc 0.768  macroF1 0.768  F1_1 0.774  AUROC 0.840  PR-AUC 0.851  | conn 0.770  iso 0.747
+== MLP: best {'lr': 0.001, 'hidden': 256, 'dropout': 0.5, 'eps': 0.3} (val 0.7743, default val 0.7736) -> test 0.767 ± 0.002  (untuned 0.766)
+  GCN {'lr': 0.001, 'hidden': 64, 'dropout': 0.2, 'eps': 0.3} val macro-F1 0.7395
+  GCN {'lr': 0.001, 'hidden': 64, 'dropout': 0.5, 'eps': 0.3} val macro-F1 0.7437
+  GCN {'lr': 0.001, 'hidden': 128, 'dropout': 0.2, 'eps': 0.3} val macro-F1 0.7381
+  GCN {'lr': 0.001, 'hidden': 128, 'dropout': 0.5, 'eps': 0.3} val macro-F1 0.7390
+  GCN {'lr': 0.001, 'hidden': 256, 'dropout': 0.2, 'eps': 0.3} val macro-F1 0.7421
+  GCN {'lr': 0.001, 'hidden': 256, 'dropout': 0.5, 'eps': 0.3} val macro-F1 0.7447
+  GCN {'lr': 0.01, 'hidden': 64, 'dropout': 0.2, 'eps': 0.3} val macro-F1 0.7420
+  GCN {'lr': 0.01, 'hidden': 64, 'dropout': 0.5, 'eps': 0.3} val macro-F1 0.7441
+  GCN {'lr': 0.01, 'hidden': 128, 'dropout': 0.2, 'eps': 0.3} val macro-F1 0.7395
+  GCN {'lr': 0.01, 'hidden': 128, 'dropout': 0.5, 'eps': 0.3} val macro-F1 0.7487
+  GCN {'lr': 0.01, 'hidden': 256, 'dropout': 0.2, 'eps': 0.3} val macro-F1 0.7437
+  GCN {'lr': 0.01, 'hidden': 256, 'dropout': 0.5, 'eps': 0.3} val macro-F1 0.7446
+  seed 1           acc 0.713  macroF1 0.710  F1_1 0.740  AUROC 0.780  PR-AUC 0.799  | conn 0.702  iso 0.815
+  seed 2           acc 0.708  macroF1 0.707  F1_1 0.719  AUROC 0.773  PR-AUC 0.798  | conn 0.703  iso 0.758
+  seed 3           acc 0.700  macroF1 0.700  F1_1 0.709  AUROC 0.776  PR-AUC 0.797  | conn 0.696  iso 0.747
+== GCN: best {'lr': 0.01, 'hidden': 128, 'dropout': 0.5, 'eps': 0.3} (val 0.7487, default val 0.7487) -> test 0.706 ± 0.004  (untuned 0.707)
+  SAGE {'lr': 0.001, 'hidden': 64, 'dropout': 0.2, 'eps': 0.3} val macro-F1 0.7685
+  SAGE {'lr': 0.001, 'hidden': 64, 'dropout': 0.5, 'eps': 0.3} val macro-F1 0.7724
+  SAGE {'lr': 0.001, 'hidden': 128, 'dropout': 0.2, 'eps': 0.3} val macro-F1 0.7696
+  SAGE {'lr': 0.001, 'hidden': 128, 'dropout': 0.5, 'eps': 0.3} val macro-F1 0.7735
+  SAGE {'lr': 0.001, 'hidden': 256, 'dropout': 0.2, 'eps': 0.3} val macro-F1 0.7698
+  SAGE {'lr': 0.001, 'hidden': 256, 'dropout': 0.5, 'eps': 0.3} val macro-F1 0.7681
+  SAGE {'lr': 0.01, 'hidden': 64, 'dropout': 0.2, 'eps': 0.3} val macro-F1 0.7644
+  SAGE {'lr': 0.01, 'hidden': 64, 'dropout': 0.5, 'eps': 0.3} val macro-F1 0.7778
+  SAGE {'lr': 0.01, 'hidden': 128, 'dropout': 0.2, 'eps': 0.3} val macro-F1 0.7659
+  SAGE {'lr': 0.01, 'hidden': 128, 'dropout': 0.5, 'eps': 0.3} val macro-F1 0.7710
+  SAGE {'lr': 0.01, 'hidden': 256, 'dropout': 0.2, 'eps': 0.3} val macro-F1 0.7676
+  SAGE {'lr': 0.01, 'hidden': 256, 'dropout': 0.5, 'eps': 0.3} val macro-F1 0.7782
+  seed 1           acc 0.762  macroF1 0.760  F1_1 0.786  AUROC 0.830  PR-AUC 0.841  | conn 0.762  iso 0.733
+  seed 2           acc 0.756  macroF1 0.754  F1_1 0.776  AUROC 0.830  PR-AUC 0.842  | conn 0.754  iso 0.745
+  seed 3           acc 0.752  macroF1 0.750  F1_1 0.772  AUROC 0.828  PR-AUC 0.841  | conn 0.751  iso 0.745
+== SAGE: best {'lr': 0.01, 'hidden': 256, 'dropout': 0.5, 'eps': 0.3} (val 0.7782, default val 0.7710) -> test 0.755 ± 0.004  (untuned 0.750)
+  FAGCN {'lr': 0.001, 'hidden': 64, 'dropout': 0.2, 'eps': 0.1} val macro-F1 0.7736
+  FAGCN {'lr': 0.001, 'hidden': 64, 'dropout': 0.2, 'eps': 0.3} val macro-F1 0.7770
+  FAGCN {'lr': 0.001, 'hidden': 64, 'dropout': 0.2, 'eps': 0.5} val macro-F1 0.7689
+  FAGCN {'lr': 0.001, 'hidden': 64, 'dropout': 0.5, 'eps': 0.1} val macro-F1 0.7645
+  FAGCN {'lr': 0.001, 'hidden': 64, 'dropout': 0.5, 'eps': 0.3} val macro-F1 0.7729
+  FAGCN {'lr': 0.001, 'hidden': 64, 'dropout': 0.5, 'eps': 0.5} val macro-F1 0.7749
+  FAGCN {'lr': 0.001, 'hidden': 128, 'dropout': 0.2, 'eps': 0.1} val macro-F1 0.7704
+  FAGCN {'lr': 0.001, 'hidden': 128, 'dropout': 0.2, 'eps': 0.3} val macro-F1 0.7749
+  FAGCN {'lr': 0.001, 'hidden': 128, 'dropout': 0.2, 'eps': 0.5} val macro-F1 0.7770
+  FAGCN {'lr': 0.001, 'hidden': 128, 'dropout': 0.5, 'eps': 0.1} val macro-F1 0.7712
+  FAGCN {'lr': 0.001, 'hidden': 128, 'dropout': 0.5, 'eps': 0.3} val macro-F1 0.7755
+  FAGCN {'lr': 0.001, 'hidden': 128, 'dropout': 0.5, 'eps': 0.5} val macro-F1 0.7760
+  FAGCN {'lr': 0.001, 'hidden': 256, 'dropout': 0.2, 'eps': 0.1} val macro-F1 0.7625
+  FAGCN {'lr': 0.001, 'hidden': 256, 'dropout': 0.2, 'eps': 0.3} val macro-F1 0.7741
+  FAGCN {'lr': 0.001, 'hidden': 256, 'dropout': 0.2, 'eps': 0.5} val macro-F1 0.7726
+  FAGCN {'lr': 0.001, 'hidden': 256, 'dropout': 0.5, 'eps': 0.1} val macro-F1 0.7710
+  FAGCN {'lr': 0.001, 'hidden': 256, 'dropout': 0.5, 'eps': 0.3} val macro-F1 0.7795
+  FAGCN {'lr': 0.001, 'hidden': 256, 'dropout': 0.5, 'eps': 0.5} val macro-F1 0.7777
+  FAGCN {'lr': 0.01, 'hidden': 64, 'dropout': 0.2, 'eps': 0.1} val macro-F1 0.7599
+  FAGCN {'lr': 0.01, 'hidden': 64, 'dropout': 0.2, 'eps': 0.3} val macro-F1 0.7702
+  FAGCN {'lr': 0.01, 'hidden': 64, 'dropout': 0.2, 'eps': 0.5} val macro-F1 0.7787
+  FAGCN {'lr': 0.01, 'hidden': 64, 'dropout': 0.5, 'eps': 0.1} val macro-F1 0.7398
+  FAGCN {'lr': 0.01, 'hidden': 64, 'dropout': 0.5, 'eps': 0.3} val macro-F1 0.7582
+  FAGCN {'lr': 0.01, 'hidden': 64, 'dropout': 0.5, 'eps': 0.5} val macro-F1 0.7670
+  FAGCN {'lr': 0.01, 'hidden': 128, 'dropout': 0.2, 'eps': 0.1} val macro-F1 0.7522
+  FAGCN {'lr': 0.01, 'hidden': 128, 'dropout': 0.2, 'eps': 0.3} val macro-F1 0.7795
+  FAGCN {'lr': 0.01, 'hidden': 128, 'dropout': 0.2, 'eps': 0.5} val macro-F1 0.7744
+  FAGCN {'lr': 0.01, 'hidden': 128, 'dropout': 0.5, 'eps': 0.1} val macro-F1 0.7412
+  FAGCN {'lr': 0.01, 'hidden': 128, 'dropout': 0.5, 'eps': 0.3} val macro-F1 0.7625
+  FAGCN {'lr': 0.01, 'hidden': 128, 'dropout': 0.5, 'eps': 0.5} val macro-F1 0.7675
+  FAGCN {'lr': 0.01, 'hidden': 256, 'dropout': 0.2, 'eps': 0.1} val macro-F1 0.7612
+  FAGCN {'lr': 0.01, 'hidden': 256, 'dropout': 0.2, 'eps': 0.3} val macro-F1 0.7701
+  FAGCN {'lr': 0.01, 'hidden': 256, 'dropout': 0.2, 'eps': 0.5} val macro-F1 0.7761
+  FAGCN {'lr': 0.01, 'hidden': 256, 'dropout': 0.5, 'eps': 0.1} val macro-F1 0.7493
+  FAGCN {'lr': 0.01, 'hidden': 256, 'dropout': 0.5, 'eps': 0.3} val macro-F1 0.7604
+  FAGCN {'lr': 0.01, 'hidden': 256, 'dropout': 0.5, 'eps': 0.5} val macro-F1 0.7701
+  seed 1           acc 0.748  macroF1 0.747  F1_1 0.762  AUROC 0.812  PR-AUC 0.826  | conn 0.750  iso 0.712
+  seed 2           acc 0.754  macroF1 0.753  F1_1 0.766  AUROC 0.818  PR-AUC 0.832  | conn 0.754  iso 0.747
+  seed 3           acc 0.758  macroF1 0.757  F1_1 0.776  AUROC 0.824  PR-AUC 0.840  | conn 0.759  iso 0.723
+== FAGCN: best {'lr': 0.01, 'hidden': 128, 'dropout': 0.2, 'eps': 0.3} (val 0.7795, default val 0.7625) -> test 0.752 ± 0.004  (untuned 0.744)
+saved /Users/pj/Desktop/Macquarie - Sem 4/PROJECT/Graph-based-fraud-detection-system/my_build/results/twibot20/A/step4_tuned.json
