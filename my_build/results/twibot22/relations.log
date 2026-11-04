@@ -1,0 +1,42 @@
+14:09:47 1,000,000 labelled users, 139,943 bots (0.140)
+14:10:01   20,346,179 rows read
+14:10:05   40,312,055 rows read
+14:10:09   60,426,102 rows read
+14:10:13   80,427,783 rows read
+14:10:15   100,752,909 rows read
+14:10:16   122,886,739 rows read
+14:10:16   145,018,622 rows read
+14:10:17   166,028,262 rows read
+14:10:18 edge.csv: 170,185,937 rows; relation counts: {"followers": 1116655, "following": 2626979, "own": 21870, "pinned": 347131, "post": 88217457, "contain": 1998788, "discuss": 66000633, "mentioned": 4759388, "like": 595794, "followed": 493556, "replied_to": 1114980, "retweeted": 1580643, "quoted": 289476, "membership": 1022587}
+14:11:21 post: 88,217,457 tweets by labelled users
+14:11:51 co_list: 21,280 lists with labelled members -> 61,415,493 member pairs
+14:11:53 following  1.000 of rows kept -> 2,626,979 distinct directed edges
+14:11:54 followers  1.000 of rows kept -> 1,116,655 distinct directed edges
+14:11:57 mention    0.953 of rows kept -> 1,460,910 distinct directed edges
+14:11:58 retweet    0.976 of rows kept -> 654,642 distinct directed edges
+14:11:58 quote      0.893 of rows kept -> 171,226 distinct directed edges
+14:11:59 reply      0.788 of rows kept -> 364,190 distinct directed edges
+14:11:59 like       0.978 of rows kept -> 339,480 distinct directed edges
+14:12:48 co_list    1.000 of rows kept -> 61,415,493 distinct directed edges
+14:13:11 saved /Users/pj/Desktop/Macquarie - Sem 4/PROJECT/Graph-based-fraud-detection-system/data/twibot-22/relations_uu.npz
+14:13:11 all 1M users:
+14:13:12   following  edges   2,614,941  h 0.879  chance 0.876  h_adj 0.022  LI 0.0009  with-edge bot/human 0.323/0.564  AUROC in/out {'in_degree': 0.353, 'out_degree': 0.5}
+14:13:12   followers  edges   1,111,113  h 0.83  chance 0.826  h_adj 0.026  LI 0.001  with-edge bot/human 0.436/0.433  AUROC in/out {'in_degree': 0.492, 'out_degree': 0.5}
+14:13:12   mention    edges   1,455,155  h 0.91  chance 0.908  h_adj 0.017  LI 0.0007  with-edge bot/human 0.211/0.418  AUROC in/out {'in_degree': 0.384, 'out_degree': 0.499}
+14:13:12   retweet    edges     653,086  h 0.912  chance 0.91  h_adj 0.023  LI 0.0012  with-edge bot/human 0.093/0.256  AUROC in/out {'in_degree': 0.416, 'out_degree': 0.499}
+14:13:13   quote      edges     170,942  h 0.928  chance 0.926  h_adj 0.024  LI 0.0015  with-edge bot/human 0.029/0.105  AUROC in/out {'in_degree': 0.463, 'out_degree': 0.498}
+14:13:13   reply      edges     362,470  h 0.911  chance 0.909  h_adj 0.018  LI 0.0008  with-edge bot/human 0.086/0.21  AUROC in/out {'in_degree': 0.437, 'out_degree': 0.499}
+14:13:13   like       edges     338,922  h 0.87  chance 0.868  h_adj 0.011  LI 0.0002  with-edge bot/human 0.073/0.185  AUROC in/out {'in_degree': 0.442, 'out_degree': 0.5}
+14:13:20   co_list    edges  61,415,493  h 0.923  chance 0.92  h_adj 0.038  LI 0.0034  with-edge bot/human 0.152/0.369  AUROC in/out None
+14:13:21   follow_any edges   3,301,025  h 0.865  chance 0.862  h_adj 0.019  LI 0.0007  with-edge bot/human 0.582/0.712  AUROC in/out {'in_degree': 0.356, 'out_degree': 0.492}
+14:13:25 sub-communities (10k users, 50% bots): mean over the 10 of h_adj / LI / edges
+14:13:25   following  edges      1,750  h_adj +0.037  LI 0.0050
+14:13:25   followers  edges        745  h_adj -0.035  LI 0.0147
+14:13:25   mention    edges        846  h_adj +0.020  LI 0.0042
+14:13:25   retweet    edges        394  h_adj +0.041  LI 0.0094
+14:13:25   quote      edges        102  h_adj +0.125  LI 0.0469
+14:13:25   reply      edges        168  h_adj -0.003  LI 0.0149
+14:13:25   like       edges        198  h_adj +0.035  LI 0.0142
+14:13:25   co_list    edges     16,879  h_adj +0.123  LI 0.0152
+14:13:25   follow_any edges      2,207  h_adj +0.019  LI 0.0055
+14:13:25 saved /Users/pj/Desktop/Macquarie - Sem 4/PROJECT/Graph-based-fraud-detection-system/my_build/results/twibot22/relations_heterophily.json

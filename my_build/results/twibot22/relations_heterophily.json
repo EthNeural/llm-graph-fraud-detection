@@ -1,0 +1,2275 @@
+{
+ "edge_csv_relation_counts": {
+  "followers": 1116655,
+  "following": 2626979,
+  "own": 21870,
+  "pinned": 347131,
+  "post": 88217457,
+  "contain": 1998788,
+  "discuss": 66000633,
+  "mentioned": 4759388,
+  "like": 595794,
+  "followed": 493556,
+  "replied_to": 1114980,
+  "retweeted": 1580643,
+  "quoted": 289476,
+  "membership": 1022587
+ },
+ "all_users": {
+  "following": {
+   "edges": 2614941,
+   "edge_homophily": 0.879,
+   "chance": 0.876,
+   "adjusted_homophily": 0.022,
+   "label_informativeness": 0.0009,
+   "per_class": {
+    "bot": {
+     "mean_node_homophily": 0.167,
+     "chance": 0.066,
+     "share_with_edge": 0.323
+    },
+    "human": {
+     "mean_node_homophily": 0.915,
+     "chance": 0.934,
+     "share_with_edge": 0.564
+    }
+   },
+   "auroc_from_degree": {
+    "in_degree": 0.353,
+    "out_degree": 0.5
+   }
+  },
+  "followers": {
+   "edges": 1111113,
+   "edge_homophily": 0.83,
+   "chance": 0.826,
+   "adjusted_homophily": 0.026,
+   "label_informativeness": 0.001,
+   "per_class": {
+    "bot": {
+     "mean_node_homophily": 0.115,
+     "chance": 0.096,
+     "share_with_edge": 0.436
+    },
+    "human": {
+     "mean_node_homophily": 0.93,
+     "chance": 0.904,
+     "share_with_edge": 0.433
+    }
+   },
+   "auroc_from_degree": {
+    "in_degree": 0.492,
+    "out_degree": 0.5
+   }
+  },
+  "mention": {
+   "edges": 1455155,
+   "edge_homophily": 0.91,
+   "chance": 0.908,
+   "adjusted_homophily": 0.017,
+   "label_informativeness": 0.0007,
+   "per_class": {
+    "bot": {
+     "mean_node_homophily": 0.096,
+     "chance": 0.048,
+     "share_with_edge": 0.211
+    },
+    "human": {
+     "mean_node_homophily": 0.939,
+     "chance": 0.952,
+     "share_with_edge": 0.418
+    }
+   },
+   "auroc_from_degree": {
+    "in_degree": 0.384,
+    "out_degree": 0.499
+   }
+  },
+  "retweet": {
+   "edges": 653086,
+   "edge_homophily": 0.912,
+   "chance": 0.91,
+   "adjusted_homophily": 0.023,
+   "label_informativeness": 0.0012,
+   "per_class": {
+    "bot": {
+     "mean_node_homophily": 0.113,
+     "chance": 0.047,
+     "share_with_edge": 0.093
+    },
+    "human": {
+     "mean_node_homophily": 0.936,
+     "chance": 0.953,
+     "share_with_edge": 0.256
+    }
+   },
+   "auroc_from_degree": {
+    "in_degree": 0.416,
+    "out_degree": 0.499
+   }
+  },
+  "quote": {
+   "edges": 170942,
+   "edge_homophily": 0.928,
+   "chance": 0.926,
+   "adjusted_homophily": 0.024,
+   "label_informativeness": 0.0015,
+   "per_class": {
+    "bot": {
+     "mean_node_homophily": 0.092,
+     "chance": 0.038,
+     "share_with_edge": 0.029
+    },
+    "human": {
+     "mean_node_homophily": 0.951,
+     "chance": 0.962,
+     "share_with_edge": 0.105
+    }
+   },
+   "auroc_from_degree": {
+    "in_degree": 0.463,
+    "out_degree": 0.498
+   }
+  },
+  "reply": {
+   "edges": 362470,
+   "edge_homophily": 0.911,
+   "chance": 0.909,
+   "adjusted_homophily": 0.018,
+   "label_informativeness": 0.0008,
+   "per_class": {
+    "bot": {
+     "mean_node_homophily": 0.083,
+     "chance": 0.048,
+     "share_with_edge": 0.086
+    },
+    "human": {
+     "mean_node_homophily": 0.945,
+     "chance": 0.952,
+     "share_with_edge": 0.21
+    }
+   },
+   "auroc_from_degree": {
+    "in_degree": 0.437,
+    "out_degree": 0.499
+   }
+  },
+  "like": {
+   "edges": 338922,
+   "edge_homophily": 0.87,
+   "chance": 0.868,
+   "adjusted_homophily": 0.011,
+   "label_informativeness": 0.0002,
+   "per_class": {
+    "bot": {
+     "mean_node_homophily": 0.138,
+     "chance": 0.071,
+     "share_with_edge": 0.073
+    },
+    "human": {
+     "mean_node_homophily": 0.909,
+     "chance": 0.929,
+     "share_with_edge": 0.185
+    }
+   },
+   "auroc_from_degree": {
+    "in_degree": 0.442,
+    "out_degree": 0.5
+   }
+  },
+  "co_list": {
+   "edges": 61415493,
+   "edge_homophily": 0.923,
+   "chance": 0.92,
+   "adjusted_homophily": 0.038,
+   "label_informativeness": 0.0034,
+   "per_class": {
+    "bot": {
+     "mean_node_homophily": 0.091,
+     "chance": 0.042,
+     "share_with_edge": 0.152
+    },
+    "human": {
+     "mean_node_homophily": 0.956,
+     "chance": 0.958,
+     "share_with_edge": 0.369
+    }
+   }
+  },
+  "follow_any": {
+   "edges": 3301025,
+   "edge_homophily": 0.865,
+   "chance": 0.862,
+   "adjusted_homophily": 0.019,
+   "label_informativeness": 0.0007,
+   "per_class": {
+    "bot": {
+     "mean_node_homophily": 0.126,
+     "chance": 0.075,
+     "share_with_edge": 0.582
+    },
+    "human": {
+     "mean_node_homophily": 0.921,
+     "chance": 0.925,
+     "share_with_edge": 0.712
+    }
+   },
+   "auroc_from_degree": {
+    "in_degree": 0.356,
+    "out_degree": 0.492
+   }
+  }
+ },
+ "sub_communities": {
+  "0": {
+   "following": {
+    "edges": 219,
+    "edge_homophily": 0.653,
+    "chance": 0.602,
+    "adjusted_homophily": 0.128,
+    "label_informativeness": 0.0134,
+    "per_class": {
+     "bot": {
+      "mean_node_homophily": 0.435,
+      "chance": 0.274,
+      "share_with_edge": 0.014
+     },
+     "human": {
+      "mean_node_homophily": 0.736,
+      "chance": 0.726,
+      "share_with_edge": 0.04
+     }
+    },
+    "auroc_from_degree": {
+     "in_degree": 0.489,
+     "out_degree": 0.498
+    }
+   },
+   "followers": {
+    "edges": 104,
+    "edge_homophily": 0.548,
+    "chance": 0.529,
+    "adjusted_homophily": 0.041,
+    "label_informativeness": 0.0012,
+    "per_class": {
+     "bot": {
+      "mean_node_homophily": 0.4,
+      "chance": 0.38,
+      "share_with_edge": 0.013
+     },
+     "human": {
+      "mean_node_homophily": 0.663,
+      "chance": 0.62,
+      "share_with_edge": 0.019
+     }
+    },
+    "auroc_from_degree": {
+     "in_degree": 0.499,
+     "out_degree": 0.498
+    }
+   },
+   "mention": {
+    "edges": 190,
+    "edge_homophily": 0.642,
+    "chance": 0.633,
+    "adjusted_homophily": 0.025,
+    "label_informativeness": 0.0005,
+    "per_class": {
+     "bot": {
+      "mean_node_homophily": 0.268,
+      "chance": 0.242,
+      "share_with_edge": 0.013
+     },
+     "human": {
+      "mean_node_homophily": 0.765,
+      "chance": 0.758,
+      "share_with_edge": 0.032
+     }
+    },
+    "auroc_from_degree": {
+     "in_degree": 0.493,
+     "out_degree": 0.497
+    }
+   },
+   "retweet": {
+    "edges": 92,
+    "edge_homophily": 0.663,
+    "chance": 0.654,
+    "adjusted_homophily": 0.027,
+    "label_informativeness": 0.0007,
+    "per_class": {
+     "bot": {
+      "mean_node_homophily": 0.271,
+      "chance": 0.223,
+      "share_with_edge": 0.006
+     },
+     "human": {
+      "mean_node_homophily": 0.787,
+      "chance": 0.777,
+      "share_with_edge": 0.019
+     }
+    },
+    "auroc_from_degree": {
+     "in_degree": 0.496,
+     "out_degree": 0.498
+    }
+   },
+   "quote": {
+    "edges": 20,
+    "edge_homophily": 0.85,
+    "chance": 0.711,
+    "adjusted_homophily": 0.481,
+    "label_informativeness": 0.2003,
+    "per_class": {
+     "bot": {
+      "mean_node_homophily": 0.571,
+      "chance": 0.175,
+      "share_with_edge": 0.001
+     },
+     "human": {
+      "mean_node_homophily": 0.949,
+      "chance": 0.825,
+      "share_with_edge": 0.005
+     }
+    },
+    "auroc_from_degree": {
+     "in_degree": 0.499,
+     "out_degree": 0.499
+    }
+   },
+   "reply": {
+    "edges": 24,
+    "edge_homophily": 0.542,
+    "chance": 0.605,
+    "adjusted_homophily": -0.16,
+    "label_informativeness": 0.0238,
+    "per_class": {
+     "bot": {
+      "mean_node_homophily": 0.154,
+      "chance": 0.271,
+      "share_with_edge": 0.003
+     },
+     "human": {
+      "mean_node_homophily": 0.678,
+      "chance": 0.729,
+      "share_with_edge": 0.006
+     }
+    },
+    "auroc_from_degree": {
+     "in_degree": 0.499,
+     "out_degree": 0.499
+    }
+   },
+   "like": {
+    "edges": 36,
+    "edge_homophily": 0.5,
+    "chance": 0.525,
+    "adjusted_homophily": -0.052,
+    "label_informativeness": 0.002,
+    "per_class": {
+     "bot": {
+      "mean_node_homophily": 0.38,
+      "chance": 0.389,
+      "share_with_edge": 0.005
+     },
+     "human": {
+      "mean_node_homophily": 0.602,
+      "chance": 0.611,
+      "share_with_edge": 0.007
+     }
+    },
+    "auroc_from_degree": {
+     "in_degree": 0.499,
+     "out_degree": 0.5
+    }
+   },
+   "co_list": {
+    "edges": 5412,
+    "edge_homophily": 0.714,
+    "chance": 0.645,
+    "adjusted_homophily": 0.193,
+    "label_informativeness": 0.0321,
+    "per_class": {
+     "bot": {
+      "mean_node_homophily": 0.354,
+      "chance": 0.23,
+      "share_with_edge": 0.128
+     },
+     "human": {
+      "mean_node_homophily": 0.791,
+      "chance": 0.77,
+      "share_with_edge": 0.299
+     }
+    }
+   },
+   "follow_any": {
+    "edges": 288,
+    "edge_homophily": 0.632,
+    "chance": 0.587,
+    "adjusted_homophily": 0.109,
+    "label_informativeness": 0.0096,
+    "per_class": {
+     "bot": {
+      "mean_node_homophily": 0.388,
+      "chance": 0.292,
+      "share_with_edge": 0.02
+     },
+     "human": {
+      "mean_node_homophily": 0.726,
+      "chance": 0.708,
+      "share_with_edge": 0.05
+     }
+    },
+    "auroc_from_degree": {
+     "in_degree": 0.487,
+     "out_degree": 0.497
+    }
+   }
+  },
+  "1": {
+   "following": {
+    "edges": 461,
+    "edge_homophily": 0.579,
+    "chance": 0.586,
+    "adjusted_homophily": -0.016,
+    "label_informativeness": 0.0002,
+    "per_class": {
+     "bot": {
+      "mean_node_homophily": 0.308,
+      "chance": 0.293,
+      "share_with_edge": 0.03
+     },
+     "human": {
+      "mean_node_homophily": 0.727,
+      "chance": 0.707,
+      "share_with_edge": 0.063
+     }
+    },
+    "auroc_from_degree": {
+     "in_degree": 0.486,
+     "out_degree": 0.497
+    }
+   },
+   "followers": {
+    "edges": 315,
+    "edge_homophily": 0.527,
+    "chance": 0.509,
+    "adjusted_homophily": 0.037,
+    "label_informativeness": 0.001,
+    "per_class": {
+     "bot": {
+      "mean_node_homophily": 0.438,
+      "chance": 0.433,
+      "share_with_edge": 0.034
+     },
+     "human": {
+      "mean_node_homophily": 0.621,
+      "chance": 0.567,
+      "share_with_edge": 0.043
+     }
+    },
+    "auroc_from_degree": {
+     "in_degree": 0.498,
+     "out_degree": 0.497
+    }
+   },
+   "mention": {
+    "edges": 226,
+    "edge_homophily": 0.642,
+    "chance": 0.643,
+    "adjusted_homophily": -0.005,
+    "label_informativeness": 0.0,
+    "per_class": {
+     "bot": {
+      "mean_node_homophily": 0.225,
+      "chance": 0.232,
+      "share_with_edge": 0.016
+     },
+     "human": {
+      "mean_node_homophily": 0.772,
+      "chance": 0.768,
+      "share_with_edge": 0.038
+     }
+    },
+    "auroc_from_degree": {
+     "in_degree": 0.491,
+     "out_degree": 0.497
+    }
+   },
+   "retweet": {
+    "edges": 97,
+    "edge_homophily": 0.66,
+    "chance": 0.655,
+    "adjusted_homophily": 0.014,
+    "label_informativeness": 0.0002,
+    "per_class": {
+     "bot": {
+      "mean_node_homophily": 0.225,
+      "chance": 0.222,
+      "share_with_edge": 0.008
+     },
+     "human": {
+      "mean_node_homophily": 0.792,
+      "chance": 0.778,
+      "share_with_edge": 0.019
+     }
+    },
+    "auroc_from_degree": {
+     "in_degree": 0.497,
+     "out_degree": 0.497
+    }
+   },
+   "quote": {
+    "edges": 27,
+    "edge_homophily": 0.667,
+    "chance": 0.676,
+    "adjusted_homophily": -0.027,
+    "label_informativeness": 0.0008,
+    "per_class": {
+     "bot": {
+      "mean_node_homophily": 0.15,
+      "chance": 0.204,
+      "share_with_edge": 0.002
+     },
+     "human": {
+      "mean_node_homophily": 0.815,
+      "chance": 0.796,
+      "share_with_edge": 0.007
+     }
+    },
+    "auroc_from_degree": {
+     "in_degree": 0.498,
+     "out_degree": 0.499
+    }
+   },
+   "reply": {
+    "edges": 44,
+    "edge_homophily": 0.659,
+    "chance": 0.661,
+    "adjusted_homophily": -0.007,
+    "label_informativeness": 0.0,
+    "per_class": {
+     "bot": {
+      "mean_node_homophily": 0.25,
+      "chance": 0.216,
+      "share_with_edge": 0.003
+     },
+     "human": {
+      "mean_node_homophily": 0.781,
+      "chance": 0.784,
+      "share_with_edge": 0.012
+     }
+    },
+    "auroc_from_degree": {
+     "in_degree": 0.497,
+     "out_degree": 0.498
+    }
+   },
+   "like": {
+    "edges": 60,
+    "edge_homophily": 0.567,
+    "chance": 0.505,
+    "adjusted_homophily": 0.125,
+    "label_informativeness": 0.0113,
+    "per_class": {
+     "bot": {
+      "mean_node_homophily": 0.5,
+      "chance": 0.45,
+      "share_with_edge": 0.009
+     },
+     "human": {
+      "mean_node_homophily": 0.622,
+      "chance": 0.55,
+      "share_with_edge": 0.011
+     }
+    },
+    "auroc_from_degree": {
+     "in_degree": 0.499,
+     "out_degree": 0.5
+    }
+   },
+   "co_list": {
+    "edges": 11481,
+    "edge_homophily": 0.605,
+    "chance": 0.551,
+    "adjusted_homophily": 0.12,
+    "label_informativeness": 0.0112,
+    "per_class": {
+     "bot": {
+      "mean_node_homophily": 0.399,
+      "chance": 0.341,
+      "share_with_edge": 0.198
+     },
+     "human": {
+      "mean_node_homophily": 0.746,
+      "chance": 0.659,
+      "share_with_edge": 0.343
+     }
+    }
+   },
+   "follow_any": {
+    "edges": 643,
+    "edge_homophily": 0.563,
+    "chance": 0.552,
+    "adjusted_homophily": 0.024,
+    "label_informativeness": 0.0004,
+    "per_class": {
+     "bot": {
+      "mean_node_homophily": 0.36,
+      "chance": 0.338,
+      "share_with_edge": 0.046
+     },
+     "human": {
+      "mean_node_homophily": 0.693,
+      "chance": 0.662,
+      "share_with_edge": 0.08
+     }
+    },
+    "auroc_from_degree": {
+     "in_degree": 0.484,
+     "out_degree": 0.495
+    }
+   }
+  },
+  "2": {
+   "following": {
+    "edges": 574,
+    "edge_homophily": 0.606,
+    "chance": 0.572,
+    "adjusted_homophily": 0.08,
+    "label_informativeness": 0.0051,
+    "per_class": {
+     "bot": {
+      "mean_node_homophily": 0.44,
+      "chance": 0.31,
+      "share_with_edge": 0.034
+     },
+     "human": {
+      "mean_node_homophily": 0.684,
+      "chance": 0.69,
+      "share_with_edge": 0.086
+     }
+    },
+    "auroc_from_degree": {
+     "in_degree": 0.476,
+     "out_degree": 0.497
+    }
+   },
+   "followers": {
+    "edges": 292,
+    "edge_homophily": 0.524,
+    "chance": 0.516,
+    "adjusted_homophily": 0.016,
+    "label_informativeness": 0.0002,
+    "per_class": {
+     "bot": {
+      "mean_node_homophily": 0.419,
+      "chance": 0.409,
+      "share_with_edge": 0.031
+     },
+     "human": {
+      "mean_node_homophily": 0.604,
+      "chance": 0.591,
+      "share_with_edge": 0.042
+     }
+    },
+    "auroc_from_degree": {
+     "in_degree": 0.496,
+     "out_degree": 0.498
+    }
+   },
+   "mention": {
+    "edges": 423,
+    "edge_homophily": 0.615,
+    "chance": 0.572,
+    "adjusted_homophily": 0.101,
+    "label_informativeness": 0.008,
+    "per_class": {
+     "bot": {
+      "mean_node_homophily": 0.467,
+      "chance": 0.311,
+      "share_with_edge": 0.025
+     },
+     "human": {
+      "mean_node_homophily": 0.711,
+      "chance": 0.689,
+      "share_with_edge": 0.063
+     }
+    },
+    "auroc_from_degree": {
+     "in_degree": 0.483,
+     "out_degree": 0.497
+    }
+   },
+   "retweet": {
+    "edges": 259,
+    "edge_homophily": 0.591,
+    "chance": 0.544,
+    "adjusted_homophily": 0.102,
+    "label_informativeness": 0.008,
+    "per_class": {
+     "bot": {
+      "mean_node_homophily": 0.491,
+      "chance": 0.351,
+      "share_with_edge": 0.018
+     },
+     "human": {
+      "mean_node_homophily": 0.681,
+      "chance": 0.649,
+      "share_with_edge": 0.042
+     }
+    },
+    "auroc_from_degree": {
+     "in_degree": 0.49,
+     "out_degree": 0.497
+    }
+   },
+   "quote": {
+    "edges": 49,
+    "edge_homophily": 0.633,
+    "chance": 0.575,
+    "adjusted_homophily": 0.135,
+    "label_informativeness": 0.0145,
+    "per_class": {
+     "bot": {
+      "mean_node_homophily": 0.513,
+      "chance": 0.306,
+      "share_with_edge": 0.004
+     },
+     "human": {
+      "mean_node_homophily": 0.716,
+      "chance": 0.694,
+      "share_with_edge": 0.012
+     }
+    },
+    "auroc_from_degree": {
+     "in_degree": 0.497,
+     "out_degree": 0.499
+    }
+   },
+   "reply": {
+    "edges": 73,
+    "edge_homophily": 0.671,
+    "chance": 0.602,
+    "adjusted_homophily": 0.174,
+    "label_informativeness": 0.0246,
+    "per_class": {
+     "bot": {
+      "mean_node_homophily": 0.422,
+      "chance": 0.274,
+      "share_with_edge": 0.006
+     },
+     "human": {
+      "mean_node_homophily": 0.753,
+      "chance": 0.726,
+      "share_with_edge": 0.015
+     }
+    },
+    "auroc_from_degree": {
+     "in_degree": 0.497,
+     "out_degree": 0.499
+    }
+   },
+   "like": {
+    "edges": 88,
+    "edge_homophily": 0.534,
+    "chance": 0.515,
+    "adjusted_homophily": 0.04,
+    "label_informativeness": 0.0012,
+    "per_class": {
+     "bot": {
+      "mean_node_homophily": 0.478,
+      "chance": 0.415,
+      "share_with_edge": 0.011
+     },
+     "human": {
+      "mean_node_homophily": 0.594,
+      "chance": 0.585,
+      "share_with_edge": 0.017
+     }
+    },
+    "auroc_from_degree": {
+     "in_degree": 0.497,
+     "out_degree": 0.5
+    }
+   },
+   "co_list": {
+    "edges": 4983,
+    "edge_homophily": 0.693,
+    "chance": 0.638,
+    "adjusted_homophily": 0.151,
+    "label_informativeness": 0.0196,
+    "per_class": {
+     "bot": {
+      "mean_node_homophily": 0.343,
+      "chance": 0.237,
+      "share_with_edge": 0.093
+     },
+     "human": {
+      "mean_node_homophily": 0.81,
+      "chance": 0.763,
+      "share_with_edge": 0.259
+     }
+    }
+   },
+   "follow_any": {
+    "edges": 725,
+    "edge_homophily": 0.586,
+    "chance": 0.555,
+    "adjusted_homophily": 0.07,
+    "label_informativeness": 0.0038,
+    "per_class": {
+     "bot": {
+      "mean_node_homophily": 0.42,
+      "chance": 0.334,
+      "share_with_edge": 0.048
+     },
+     "human": {
+      "mean_node_homophily": 0.671,
+      "chance": 0.666,
+      "share_with_edge": 0.099
+     }
+    },
+    "auroc_from_degree": {
+     "in_degree": 0.475,
+     "out_degree": 0.493
+    }
+   }
+  },
+  "3": {
+   "following": {
+    "edges": 440,
+    "edge_homophily": 0.643,
+    "chance": 0.572,
+    "adjusted_homophily": 0.166,
+    "label_informativeness": 0.0217,
+    "per_class": {
+     "bot": {
+      "mean_node_homophily": 0.458,
+      "chance": 0.31,
+      "share_with_edge": 0.03
+     },
+     "human": {
+      "mean_node_homophily": 0.712,
+      "chance": 0.69,
+      "share_with_edge": 0.058
+     }
+    },
+    "auroc_from_degree": {
+     "in_degree": 0.486,
+     "out_degree": 0.498
+    }
+   },
+   "followers": {
+    "edges": 238,
+    "edge_homophily": 0.517,
+    "chance": 0.519,
+    "adjusted_homophily": -0.006,
+    "label_informativeness": 0.0,
+    "per_class": {
+     "bot": {
+      "mean_node_homophily": 0.374,
+      "chance": 0.401,
+      "share_with_edge": 0.024
+     },
+     "human": {
+      "mean_node_homophily": 0.623,
+      "chance": 0.599,
+      "share_with_edge": 0.031
+     }
+    },
+    "auroc_from_degree": {
+     "in_degree": 0.499,
+     "out_degree": 0.497
+    }
+   },
+   "mention": {
+    "edges": 261,
+    "edge_homophily": 0.72,
+    "chance": 0.665,
+    "adjusted_homophily": 0.165,
+    "label_informativeness": 0.0242,
+    "per_class": {
+     "bot": {
+      "mean_node_homophily": 0.374,
+      "chance": 0.213,
+      "share_with_edge": 0.013
+     },
+     "human": {
+      "mean_node_homophily": 0.817,
+      "chance": 0.787,
+      "share_with_edge": 0.042
+     }
+    },
+    "auroc_from_degree": {
+     "in_degree": 0.488,
+     "out_degree": 0.496
+    }
+   },
+   "retweet": {
+    "edges": 129,
+    "edge_homophily": 0.752,
+    "chance": 0.669,
+    "adjusted_homophily": 0.251,
+    "label_informativeness": 0.0547,
+    "per_class": {
+     "bot": {
+      "mean_node_homophily": 0.407,
+      "chance": 0.209,
+      "share_with_edge": 0.008
+     },
+     "human": {
+      "mean_node_homophily": 0.83,
+      "chance": 0.791,
+      "share_with_edge": 0.026
+     }
+    },
+    "auroc_from_degree": {
+     "in_degree": 0.493,
+     "out_degree": 0.497
+    }
+   },
+   "quote": {
+    "edges": 30,
+    "edge_homophily": 0.8,
+    "chance": 0.58,
+    "adjusted_homophily": 0.524,
+    "label_informativeness": 0.2174,
+    "per_class": {
+     "bot": {
+      "mean_node_homophily": 0.7,
+      "chance": 0.3,
+      "share_with_edge": 0.003
+     },
+     "human": {
+      "mean_node_homophily": 0.838,
+      "chance": 0.7,
+      "share_with_edge": 0.007
+     }
+    },
+    "auroc_from_degree": {
+     "in_degree": 0.499,
+     "out_degree": 0.499
+    }
+   },
+   "reply": {
+    "edges": 40,
+    "edge_homophily": 0.55,
+    "chance": 0.58,
+    "adjusted_homophily": -0.071,
+    "label_informativeness": 0.0043,
+    "per_class": {
+     "bot": {
+      "mean_node_homophily": 0.286,
+      "chance": 0.3,
+      "share_with_edge": 0.004
+     },
+     "human": {
+      "mean_node_homophily": 0.663,
+      "chance": 0.7,
+      "share_with_edge": 0.009
+     }
+    },
+    "auroc_from_degree": {
+     "in_degree": 0.499,
+     "out_degree": 0.499
+    }
+   },
+   "like": {
+    "edges": 45,
+    "edge_homophily": 0.711,
+    "chance": 0.58,
+    "adjusted_homophily": 0.312,
+    "label_informativeness": 0.0766,
+    "per_class": {
+     "bot": {
+      "mean_node_homophily": 0.519,
+      "chance": 0.3,
+      "share_with_edge": 0.005
+     },
+     "human": {
+      "mean_node_homophily": 0.796,
+      "chance": 0.7,
+      "share_with_edge": 0.011
+     }
+    },
+    "auroc_from_degree": {
+     "in_degree": 0.498,
+     "out_degree": 0.499
+    }
+   },
+   "co_list": {
+    "edges": 6482,
+    "edge_homophily": 0.62,
+    "chance": 0.577,
+    "adjusted_homophily": 0.102,
+    "label_informativeness": 0.0083,
+    "per_class": {
+     "bot": {
+      "mean_node_homophily": 0.368,
+      "chance": 0.303,
+      "share_with_edge": 0.16
+     },
+     "human": {
+      "mean_node_homophily": 0.755,
+      "chance": 0.697,
+      "share_with_edge": 0.309
+     }
+    }
+   },
+   "follow_any": {
+    "edges": 591,
+    "edge_homophily": 0.604,
+    "chance": 0.557,
+    "adjusted_homophily": 0.107,
+    "label_informativeness": 0.0089,
+    "per_class": {
+     "bot": {
+      "mean_node_homophily": 0.392,
+      "chance": 0.332,
+      "share_with_edge": 0.043
+     },
+     "human": {
+      "mean_node_homophily": 0.702,
+      "chance": 0.668,
+      "share_with_edge": 0.068
+     }
+    },
+    "auroc_from_degree": {
+     "in_degree": 0.485,
+     "out_degree": 0.497
+    }
+   }
+  },
+  "4": {
+   "following": {
+    "edges": 391,
+    "edge_homophily": 0.596,
+    "chance": 0.561,
+    "adjusted_homophily": 0.079,
+    "label_informativeness": 0.0049,
+    "per_class": {
+     "bot": {
+      "mean_node_homophily": 0.443,
+      "chance": 0.325,
+      "share_with_edge": 0.028
+     },
+     "human": {
+      "mean_node_homophily": 0.665,
+      "chance": 0.675,
+      "share_with_edge": 0.063
+     }
+    },
+    "auroc_from_degree": {
+     "in_degree": 0.483,
+     "out_degree": 0.498
+    }
+   },
+   "followers": {
+    "edges": 213,
+    "edge_homophily": 0.563,
+    "chance": 0.51,
+    "adjusted_homophily": 0.109,
+    "label_informativeness": 0.0087,
+    "per_class": {
+     "bot": {
+      "mean_node_homophily": 0.534,
+      "chance": 0.43,
+      "share_with_edge": 0.024
+     },
+     "human": {
+      "mean_node_homophily": 0.62,
+      "chance": 0.57,
+      "share_with_edge": 0.032
+     }
+    },
+    "auroc_from_degree": {
+     "in_degree": 0.497,
+     "out_degree": 0.499
+    }
+   },
+   "mention": {
+    "edges": 271,
+    "edge_homophily": 0.601,
+    "chance": 0.606,
+    "adjusted_homophily": -0.012,
+    "label_informativeness": 0.0001,
+    "per_class": {
+     "bot": {
+      "mean_node_homophily": 0.307,
+      "chance": 0.269,
+      "share_with_edge": 0.016
+     },
+     "human": {
+      "mean_node_homophily": 0.677,
+      "chance": 0.731,
+      "share_with_edge": 0.046
+     }
+    },
+    "auroc_from_degree": {
+     "in_degree": 0.487,
+     "out_degree": 0.498
+    }
+   },
+   "retweet": {
+    "edges": 118,
+    "edge_homophily": 0.661,
+    "chance": 0.638,
+    "adjusted_homophily": 0.063,
+    "label_informativeness": 0.0036,
+    "per_class": {
+     "bot": {
+      "mean_node_homophily": 0.299,
+      "chance": 0.237,
+      "share_with_edge": 0.008
+     },
+     "human": {
+      "mean_node_homophily": 0.751,
+      "chance": 0.763,
+      "share_with_edge": 0.026
+     }
+    },
+    "auroc_from_degree": {
+     "in_degree": 0.493,
+     "out_degree": 0.497
+    }
+   },
+   "quote": {
+    "edges": 34,
+    "edge_homophily": 0.676,
+    "chance": 0.625,
+    "adjusted_homophily": 0.137,
+    "label_informativeness": 0.016,
+    "per_class": {
+     "bot": {
+      "mean_node_homophily": 0.357,
+      "chance": 0.25,
+      "share_with_edge": 0.003
+     },
+     "human": {
+      "mean_node_homophily": 0.767,
+      "chance": 0.75,
+      "share_with_edge": 0.009
+     }
+    },
+    "auroc_from_degree": {
+     "in_degree": 0.498,
+     "out_degree": 0.499
+    }
+   },
+   "reply": {
+    "edges": 44,
+    "edge_homophily": 0.614,
+    "chance": 0.637,
+    "adjusted_homophily": -0.063,
+    "label_informativeness": 0.0038,
+    "per_class": {
+     "bot": {
+      "mean_node_homophily": 0.25,
+      "chance": 0.239,
+      "share_with_edge": 0.003
+     },
+     "human": {
+      "mean_node_homophily": 0.733,
+      "chance": 0.761,
+      "share_with_edge": 0.012
+     }
+    },
+    "auroc_from_degree": {
+     "in_degree": 0.497,
+     "out_degree": 0.499
+    }
+   },
+   "like": {
+    "edges": 49,
+    "edge_homophily": 0.612,
+    "chance": 0.553,
+    "adjusted_homophily": 0.132,
+    "label_informativeness": 0.0134,
+    "per_class": {
+     "bot": {
+      "mean_node_homophily": 0.417,
+      "chance": 0.337,
+      "share_with_edge": 0.006
+     },
+     "human": {
+      "mean_node_homophily": 0.694,
+      "chance": 0.663,
+      "share_with_edge": 0.012
+     }
+    },
+    "auroc_from_degree": {
+     "in_degree": 0.497,
+     "out_degree": 0.5
+    }
+   },
+   "co_list": {
+    "edges": 4946,
+    "edge_homophily": 0.646,
+    "chance": 0.58,
+    "adjusted_homophily": 0.157,
+    "label_informativeness": 0.0196,
+    "per_class": {
+     "bot": {
+      "mean_node_homophily": 0.407,
+      "chance": 0.301,
+      "share_with_edge": 0.124
+     },
+     "human": {
+      "mean_node_homophily": 0.783,
+      "chance": 0.699,
+      "share_with_edge": 0.276
+     }
+    }
+   },
+   "follow_any": {
+    "edges": 509,
+    "edge_homophily": 0.593,
+    "chance": 0.547,
+    "adjusted_homophily": 0.102,
+    "label_informativeness": 0.008,
+    "per_class": {
+     "bot": {
+      "mean_node_homophily": 0.472,
+      "chance": 0.347,
+      "share_with_edge": 0.038
+     },
+     "human": {
+      "mean_node_homophily": 0.659,
+      "chance": 0.653,
+      "share_with_edge": 0.074
+     }
+    },
+    "auroc_from_degree": {
+     "in_degree": 0.482,
+     "out_degree": 0.496
+    }
+   }
+  },
+  "5": {
+   "following": {
+    "edges": 2381,
+    "edge_homophily": 0.916,
+    "chance": 0.918,
+    "adjusted_homophily": -0.024,
+    "label_informativeness": 0.002,
+    "per_class": {
+     "bot": {
+      "mean_node_homophily": 0.012,
+      "chance": 0.043,
+      "share_with_edge": 0.037
+     },
+     "human": {
+      "mean_node_homophily": 0.976,
+      "chance": 0.957,
+      "share_with_edge": 0.291
+     }
+    },
+    "auroc_from_degree": {
+     "in_degree": 0.392,
+     "out_degree": 0.469
+    }
+   },
+   "followers": {
+    "edges": 988,
+    "edge_homophily": 0.715,
+    "chance": 0.75,
+    "adjusted_homophily": -0.14,
+    "label_informativeness": 0.0318,
+    "per_class": {
+     "bot": {
+      "mean_node_homophily": 0.024,
+      "chance": 0.147,
+      "share_with_edge": 0.056
+     },
+     "human": {
+      "mean_node_homophily": 0.873,
+      "chance": 0.853,
+      "share_with_edge": 0.146
+     }
+    },
+    "auroc_from_degree": {
+     "in_degree": 0.474,
+     "out_degree": 0.477
+    }
+   },
+   "mention": {
+    "edges": 1178,
+    "edge_homophily": 0.947,
+    "chance": 0.947,
+    "adjusted_homophily": 0.004,
+    "label_informativeness": 0.0001,
+    "per_class": {
+     "bot": {
+      "mean_node_homophily": 0.032,
+      "chance": 0.027,
+      "share_with_edge": 0.012
+     },
+     "human": {
+      "mean_node_homophily": 0.985,
+      "chance": 0.973,
+      "share_with_edge": 0.176
+     }
+    },
+    "auroc_from_degree": {
+     "in_degree": 0.436,
+     "out_degree": 0.476
+    }
+   },
+   "retweet": {
+    "edges": 508,
+    "edge_homophily": 0.961,
+    "chance": 0.961,
+    "adjusted_homophily": -0.02,
+    "label_informativeness": 0.0041,
+    "per_class": {
+     "bot": {
+      "mean_node_homophily": 0.0,
+      "chance": 0.02,
+      "share_with_edge": 0.004
+     },
+     "human": {
+      "mean_node_homophily": 0.983,
+      "chance": 0.98,
+      "share_with_edge": 0.1
+     }
+    },
+    "auroc_from_degree": {
+     "in_degree": 0.467,
+     "out_degree": 0.483
+    }
+   },
+   "quote": {
+    "edges": 140,
+    "edge_homophily": 0.971,
+    "chance": 0.972,
+    "adjusted_homophily": -0.014,
+    "label_informativeness": 0.0028,
+    "per_class": {
+     "bot": {
+      "mean_node_homophily": 0.0,
+      "chance": 0.014,
+      "share_with_edge": 0.001
+     },
+     "human": {
+      "mean_node_homophily": 0.989,
+      "chance": 0.986,
+      "share_with_edge": 0.039
+     }
+    },
+    "auroc_from_degree": {
+     "in_degree": 0.489,
+     "out_degree": 0.492
+    }
+   },
+   "reply": {
+    "edges": 257,
+    "edge_homophily": 0.969,
+    "chance": 0.962,
+    "adjusted_homophily": 0.184,
+    "label_informativeness": 0.0652,
+    "per_class": {
+     "bot": {
+      "mean_node_homophily": 0.2,
+      "chance": 0.019,
+      "share_with_edge": 0.002
+     },
+     "human": {
+      "mean_node_homophily": 0.992,
+      "chance": 0.981,
+      "share_with_edge": 0.062
+     }
+    },
+    "auroc_from_degree": {
+     "in_degree": 0.479,
+     "out_degree": 0.49
+    }
+   },
+   "like": {
+    "edges": 254,
+    "edge_homophily": 0.933,
+    "chance": 0.935,
+    "adjusted_homophily": -0.035,
+    "label_informativeness": 0.0079,
+    "per_class": {
+     "bot": {
+      "mean_node_homophily": 0.0,
+      "chance": 0.033,
+      "share_with_edge": 0.003
+     },
+     "human": {
+      "mean_node_homophily": 0.964,
+      "chance": 0.967,
+      "share_with_edge": 0.067
+     }
+    },
+    "auroc_from_degree": {
+     "in_degree": 0.482,
+     "out_degree": 0.485
+    }
+   },
+   "co_list": {
+    "edges": 23949,
+    "edge_homophily": 0.839,
+    "chance": 0.822,
+    "adjusted_homophily": 0.093,
+    "label_informativeness": 0.0114,
+    "per_class": {
+     "bot": {
+      "mean_node_homophily": 0.208,
+      "chance": 0.099,
+      "share_with_edge": 0.114
+     },
+     "human": {
+      "mean_node_homophily": 0.9,
+      "chance": 0.901,
+      "share_with_edge": 0.486
+     }
+    }
+   },
+   "follow_any": {
+    "edges": 3010,
+    "edge_homophily": 0.861,
+    "chance": 0.867,
+    "adjusted_homophily": -0.047,
+    "label_informativeness": 0.0054,
+    "per_class": {
+     "bot": {
+      "mean_node_homophily": 0.022,
+      "chance": 0.071,
+      "share_with_edge": 0.08
+     },
+     "human": {
+      "mean_node_homophily": 0.967,
+      "chance": 0.929,
+      "share_with_edge": 0.337
+     }
+    },
+    "auroc_from_degree": {
+     "in_degree": 0.377,
+     "out_degree": 0.446
+    }
+   }
+  },
+  "6": {
+   "following": {
+    "edges": 6328,
+    "edge_homophily": 0.503,
+    "chance": 0.52,
+    "adjusted_homophily": -0.034,
+    "label_informativeness": 0.0009,
+    "per_class": {
+     "bot": {
+      "mean_node_homophily": 0.487,
+      "chance": 0.401,
+      "share_with_edge": 0.285
+     },
+     "human": {
+      "mean_node_homophily": 0.559,
+      "chance": 0.599,
+      "share_with_edge": 0.399
+     }
+    },
+    "auroc_from_degree": {
+     "in_degree": 0.412,
+     "out_degree": 0.519
+    }
+   },
+   "followers": {
+    "edges": 2660,
+    "edge_homophily": 0.514,
+    "chance": 0.5,
+    "adjusted_homophily": 0.028,
+    "label_informativeness": 0.0006,
+    "per_class": {
+     "bot": {
+      "mean_node_homophily": 0.495,
+      "chance": 0.504,
+      "share_with_edge": 0.256
+     },
+     "human": {
+      "mean_node_homophily": 0.575,
+      "chance": 0.496,
+      "share_with_edge": 0.19
+     }
+    },
+    "auroc_from_degree": {
+     "in_degree": 0.529,
+     "out_degree": 0.505
+    }
+   },
+   "mention": {
+    "edges": 2398,
+    "edge_homophily": 0.552,
+    "chance": 0.572,
+    "adjusted_homophily": -0.049,
+    "label_informativeness": 0.0019,
+    "per_class": {
+     "bot": {
+      "mean_node_homophily": 0.351,
+      "chance": 0.31,
+      "share_with_edge": 0.114
+     },
+     "human": {
+      "mean_node_homophily": 0.645,
+      "chance": 0.69,
+      "share_with_edge": 0.23
+     }
+    },
+    "auroc_from_degree": {
+     "in_degree": 0.434,
+     "out_degree": 0.502
+    }
+   },
+   "retweet": {
+    "edges": 1068,
+    "edge_homophily": 0.541,
+    "chance": 0.546,
+    "adjusted_homophily": -0.011,
+    "label_informativeness": 0.0001,
+    "per_class": {
+     "bot": {
+      "mean_node_homophily": 0.385,
+      "chance": 0.348,
+      "share_with_edge": 0.072
+     },
+     "human": {
+      "mean_node_homophily": 0.614,
+      "chance": 0.652,
+      "share_with_edge": 0.138
+     }
+    },
+    "auroc_from_degree": {
+     "in_degree": 0.464,
+     "out_degree": 0.501
+    }
+   },
+   "quote": {
+    "edges": 252,
+    "edge_homophily": 0.647,
+    "chance": 0.619,
+    "adjusted_homophily": 0.073,
+    "label_informativeness": 0.0045,
+    "per_class": {
+     "bot": {
+      "mean_node_homophily": 0.347,
+      "chance": 0.256,
+      "share_with_edge": 0.019
+     },
+     "human": {
+      "mean_node_homophily": 0.747,
+      "chance": 0.744,
+      "share_with_edge": 0.051
+     }
+    },
+    "auroc_from_degree": {
+     "in_degree": 0.487,
+     "out_degree": 0.497
+    }
+   },
+   "reply": {
+    "edges": 459,
+    "edge_homophily": 0.597,
+    "chance": 0.586,
+    "adjusted_homophily": 0.027,
+    "label_informativeness": 0.0006,
+    "per_class": {
+     "bot": {
+      "mean_node_homophily": 0.358,
+      "chance": 0.293,
+      "share_with_edge": 0.034
+     },
+     "human": {
+      "mean_node_homophily": 0.702,
+      "chance": 0.707,
+      "share_with_edge": 0.08
+     }
+    },
+    "auroc_from_degree": {
+     "in_degree": 0.478,
+     "out_degree": 0.498
+    }
+   },
+   "like": {
+    "edges": 676,
+    "edge_homophily": 0.485,
+    "chance": 0.514,
+    "adjusted_homophily": -0.059,
+    "label_informativeness": 0.0025,
+    "per_class": {
+     "bot": {
+      "mean_node_homophily": 0.407,
+      "chance": 0.417,
+      "share_with_edge": 0.069
+     },
+     "human": {
+      "mean_node_homophily": 0.564,
+      "chance": 0.583,
+      "share_with_edge": 0.097
+     }
+    },
+    "auroc_from_degree": {
+     "in_degree": 0.477,
+     "out_degree": 0.508
+    }
+   },
+   "co_list": {
+    "edges": 38241,
+    "edge_homophily": 0.65,
+    "chance": 0.588,
+    "adjusted_homophily": 0.15,
+    "label_informativeness": 0.018,
+    "per_class": {
+     "bot": {
+      "mean_node_homophily": 0.371,
+      "chance": 0.29,
+      "share_with_edge": 0.211
+     },
+     "human": {
+      "mean_node_homophily": 0.805,
+      "chance": 0.71,
+      "share_with_edge": 0.499
+     }
+    }
+   },
+   "follow_any": {
+    "edges": 7937,
+    "edge_homophily": 0.495,
+    "chance": 0.513,
+    "adjusted_homophily": -0.036,
+    "label_informativeness": 0.0009,
+    "per_class": {
+     "bot": {
+      "mean_node_homophily": 0.454,
+      "chance": 0.42,
+      "share_with_edge": 0.395
+     },
+     "human": {
+      "mean_node_homophily": 0.558,
+      "chance": 0.58,
+      "share_with_edge": 0.455
+     }
+    },
+    "auroc_from_degree": {
+     "in_degree": 0.42,
+     "out_degree": 0.546
+    }
+   }
+  },
+  "7": {
+   "following": {
+    "edges": 2248,
+    "edge_homophily": 0.915,
+    "chance": 0.917,
+    "adjusted_homophily": -0.024,
+    "label_informativeness": 0.002,
+    "per_class": {
+     "bot": {
+      "mean_node_homophily": 0.019,
+      "chance": 0.044,
+      "share_with_edge": 0.037
+     },
+     "human": {
+      "mean_node_homophily": 0.975,
+      "chance": 0.956,
+      "share_with_edge": 0.27
+     }
+    },
+    "auroc_from_degree": {
+     "in_degree": 0.402,
+     "out_degree": 0.473
+    }
+   },
+   "followers": {
+    "edges": 894,
+    "edge_homophily": 0.739,
+    "chance": 0.77,
+    "adjusted_homophily": -0.133,
+    "label_informativeness": 0.0328,
+    "per_class": {
+     "bot": {
+      "mean_node_homophily": 0.018,
+      "chance": 0.133,
+      "share_with_edge": 0.045
+     },
+     "human": {
+      "mean_node_homophily": 0.886,
+      "chance": 0.867,
+      "share_with_edge": 0.135
+     }
+    },
+    "auroc_from_degree": {
+     "in_degree": 0.473,
+     "out_degree": 0.479
+    }
+   },
+   "mention": {
+    "edges": 1108,
+    "edge_homophily": 0.949,
+    "chance": 0.949,
+    "adjusted_homophily": 0.009,
+    "label_informativeness": 0.0003,
+    "per_class": {
+     "bot": {
+      "mean_node_homophily": 0.027,
+      "chance": 0.026,
+      "share_with_edge": 0.011
+     },
+     "human": {
+      "mean_node_homophily": 0.983,
+      "chance": 0.974,
+      "share_with_edge": 0.16
+     }
+    },
+    "auroc_from_degree": {
+     "in_degree": 0.442,
+     "out_degree": 0.48
+    }
+   },
+   "retweet": {
+    "edges": 564,
+    "edge_homophily": 0.956,
+    "chance": 0.953,
+    "adjusted_homophily": 0.051,
+    "label_informativeness": 0.0077,
+    "per_class": {
+     "bot": {
+      "mean_node_homophily": 0.06,
+      "chance": 0.024,
+      "share_with_edge": 0.005
+     },
+     "human": {
+      "mean_node_homophily": 0.985,
+      "chance": 0.976,
+      "share_with_edge": 0.102
+     }
+    },
+    "auroc_from_degree": {
+     "in_degree": 0.465,
+     "out_degree": 0.484
+    }
+   },
+   "quote": {
+    "edges": 144,
+    "edge_homophily": 0.951,
+    "chance": 0.953,
+    "adjusted_homophily": -0.025,
+    "label_informativeness": 0.0053,
+    "per_class": {
+     "bot": {
+      "mean_node_homophily": 0.0,
+      "chance": 0.024,
+      "share_with_edge": 0.001
+     },
+     "human": {
+      "mean_node_homophily": 0.982,
+      "chance": 0.976,
+      "share_with_edge": 0.035
+     }
+    },
+    "auroc_from_degree": {
+     "in_degree": 0.49,
+     "out_degree": 0.493
+    }
+   },
+   "reply": {
+    "edges": 236,
+    "edge_homophily": 0.932,
+    "chance": 0.935,
+    "adjusted_homophily": -0.035,
+    "label_informativeness": 0.008,
+    "per_class": {
+     "bot": {
+      "mean_node_homophily": 0.0,
+      "chance": 0.034,
+      "share_with_edge": 0.003
+     },
+     "human": {
+      "mean_node_homophily": 0.973,
+      "chance": 0.966,
+      "share_with_edge": 0.055
+     }
+    },
+    "auroc_from_degree": {
+     "in_degree": 0.483,
+     "out_degree": 0.489
+    }
+   },
+   "like": {
+    "edges": 234,
+    "edge_homophily": 0.953,
+    "chance": 0.954,
+    "adjusted_homophily": -0.024,
+    "label_informativeness": 0.0051,
+    "per_class": {
+     "bot": {
+      "mean_node_homophily": 0.0,
+      "chance": 0.024,
+      "share_with_edge": 0.002
+     },
+     "human": {
+      "mean_node_homophily": 0.979,
+      "chance": 0.976,
+      "share_with_edge": 0.062
+     }
+    },
+    "auroc_from_degree": {
+     "in_degree": 0.482,
+     "out_degree": 0.487
+    }
+   },
+   "co_list": {
+    "edges": 22921,
+    "edge_homophily": 0.866,
+    "chance": 0.852,
+    "adjusted_homophily": 0.097,
+    "label_informativeness": 0.0134,
+    "per_class": {
+     "bot": {
+      "mean_node_homophily": 0.205,
+      "chance": 0.081,
+      "share_with_edge": 0.11
+     },
+     "human": {
+      "mean_node_homophily": 0.916,
+      "chance": 0.919,
+      "share_with_edge": 0.484
+     }
+    }
+   },
+   "follow_any": {
+    "edges": 2783,
+    "edge_homophily": 0.869,
+    "chance": 0.876,
+    "adjusted_homophily": -0.054,
+    "label_informativeness": 0.0083,
+    "per_class": {
+     "bot": {
+      "mean_node_homophily": 0.016,
+      "chance": 0.067,
+      "share_with_edge": 0.069
+     },
+     "human": {
+      "mean_node_homophily": 0.968,
+      "chance": 0.933,
+      "share_with_edge": 0.31
+     }
+    },
+    "auroc_from_degree": {
+     "in_degree": 0.388,
+     "out_degree": 0.448
+    }
+   }
+  },
+  "8": {
+   "following": {
+    "edges": 2052,
+    "edge_homophily": 0.899,
+    "chance": 0.898,
+    "adjusted_homophily": 0.01,
+    "label_informativeness": 0.0002,
+    "per_class": {
+     "bot": {
+      "mean_node_homophily": 0.059,
+      "chance": 0.054,
+      "share_with_edge": 0.038
+     },
+     "human": {
+      "mean_node_homophily": 0.967,
+      "chance": 0.946,
+      "share_with_edge": 0.258
+     }
+    },
+    "auroc_from_degree": {
+     "in_degree": 0.407,
+     "out_degree": 0.475
+    }
+   },
+   "followers": {
+    "edges": 816,
+    "edge_homophily": 0.683,
+    "chance": 0.725,
+    "adjusted_homophily": -0.153,
+    "label_informativeness": 0.0342,
+    "per_class": {
+     "bot": {
+      "mean_node_homophily": 0.029,
+      "chance": 0.165,
+      "share_with_edge": 0.051
+     },
+     "human": {
+      "mean_node_homophily": 0.866,
+      "chance": 0.835,
+      "share_with_edge": 0.129
+     }
+    },
+    "auroc_from_degree": {
+     "in_degree": 0.478,
+     "out_degree": 0.479
+    }
+   },
+   "mention": {
+    "edges": 1173,
+    "edge_homophily": 0.928,
+    "chance": 0.929,
+    "adjusted_homophily": -0.014,
+    "label_informativeness": 0.0007,
+    "per_class": {
+     "bot": {
+      "mean_node_homophily": 0.019,
+      "chance": 0.037,
+      "share_with_edge": 0.016
+     },
+     "human": {
+      "mean_node_homophily": 0.977,
+      "chance": 0.963,
+      "share_with_edge": 0.172
+     }
+    },
+    "auroc_from_degree": {
+     "in_degree": 0.438,
+     "out_degree": 0.479
+    }
+   },
+   "retweet": {
+    "edges": 521,
+    "edge_homophily": 0.929,
+    "chance": 0.932,
+    "adjusted_homophily": -0.037,
+    "label_informativeness": 0.0085,
+    "per_class": {
+     "bot": {
+      "mean_node_homophily": 0.0,
+      "chance": 0.036,
+      "share_with_edge": 0.007
+     },
+     "human": {
+      "mean_node_homophily": 0.966,
+      "chance": 0.964,
+      "share_with_edge": 0.096
+     }
+    },
+    "auroc_from_degree": {
+     "in_degree": 0.469,
+     "out_degree": 0.485
+    }
+   },
+   "quote": {
+    "edges": 155,
+    "edge_homophily": 0.968,
+    "chance": 0.968,
+    "adjusted_homophily": -0.016,
+    "label_informativeness": 0.0032,
+    "per_class": {
+     "bot": {
+      "mean_node_homophily": 0.0,
+      "chance": 0.016,
+      "share_with_edge": 0.001
+     },
+     "human": {
+      "mean_node_homophily": 0.99,
+      "chance": 0.984,
+      "share_with_edge": 0.041
+     }
+    },
+    "auroc_from_degree": {
+     "in_degree": 0.488,
+     "out_degree": 0.491
+    }
+   },
+   "reply": {
+    "edges": 242,
+    "edge_homophily": 0.905,
+    "chance": 0.909,
+    "adjusted_homophily": -0.05,
+    "label_informativeness": 0.0124,
+    "per_class": {
+     "bot": {
+      "mean_node_homophily": 0.0,
+      "chance": 0.048,
+      "share_with_edge": 0.005
+     },
+     "human": {
+      "mean_node_homophily": 0.955,
+      "chance": 0.952,
+      "share_with_edge": 0.06
+     }
+    },
+    "auroc_from_degree": {
+     "in_degree": 0.482,
+     "out_degree": 0.489
+    }
+   },
+   "like": {
+    "edges": 237,
+    "edge_homophily": 0.911,
+    "chance": 0.915,
+    "adjusted_homophily": -0.046,
+    "label_informativeness": 0.0113,
+    "per_class": {
+     "bot": {
+      "mean_node_homophily": 0.0,
+      "chance": 0.044,
+      "share_with_edge": 0.004
+     },
+     "human": {
+      "mean_node_homophily": 0.96,
+      "chance": 0.956,
+      "share_with_edge": 0.06
+     }
+    },
+    "auroc_from_degree": {
+     "in_degree": 0.484,
+     "out_degree": 0.487
+    }
+   },
+   "co_list": {
+    "edges": 24915,
+    "edge_homophily": 0.828,
+    "chance": 0.81,
+    "adjusted_homophily": 0.097,
+    "label_informativeness": 0.0119,
+    "per_class": {
+     "bot": {
+      "mean_node_homophily": 0.23,
+      "chance": 0.106,
+      "share_with_edge": 0.132
+     },
+     "human": {
+      "mean_node_homophily": 0.892,
+      "chance": 0.894,
+      "share_with_edge": 0.492
+     }
+    }
+   },
+   "follow_any": {
+    "edges": 2559,
+    "edge_homophily": 0.842,
+    "chance": 0.848,
+    "adjusted_homophily": -0.039,
+    "label_informativeness": 0.0031,
+    "per_class": {
+     "bot": {
+      "mean_node_homophily": 0.038,
+      "chance": 0.083,
+      "share_with_edge": 0.075
+     },
+     "human": {
+      "mean_node_homophily": 0.958,
+      "chance": 0.917,
+      "share_with_edge": 0.301
+     }
+    },
+    "auroc_from_degree": {
+     "in_degree": 0.393,
+     "out_degree": 0.455
+    }
+   }
+  },
+  "9": {
+   "following": {
+    "edges": 2410,
+    "edge_homophily": 0.923,
+    "chance": 0.923,
+    "adjusted_homophily": 0.001,
+    "label_informativeness": 0.0,
+    "per_class": {
+     "bot": {
+      "mean_node_homophily": 0.031,
+      "chance": 0.04,
+      "share_with_edge": 0.035
+     },
+     "human": {
+      "mean_node_homophily": 0.982,
+      "chance": 0.96,
+      "share_with_edge": 0.276
+     }
+    },
+    "auroc_from_degree": {
+     "in_degree": 0.398,
+     "out_degree": 0.474
+    }
+   },
+   "followers": {
+    "edges": 932,
+    "edge_homophily": 0.697,
+    "chance": 0.737,
+    "adjusted_homophily": -0.152,
+    "label_informativeness": 0.0362,
+    "per_class": {
+     "bot": {
+      "mean_node_homophily": 0.022,
+      "chance": 0.156,
+      "share_with_edge": 0.053
+     },
+     "human": {
+      "mean_node_homophily": 0.879,
+      "chance": 0.844,
+      "share_with_edge": 0.138
+     }
+    },
+    "auroc_from_degree": {
+     "in_degree": 0.475,
+     "out_degree": 0.479
+    }
+   },
+   "mention": {
+    "edges": 1234,
+    "edge_homophily": 0.947,
+    "chance": 0.948,
+    "adjusted_homophily": -0.027,
+    "label_informativeness": 0.006,
+    "per_class": {
+     "bot": {
+      "mean_node_homophily": 0.0,
+      "chance": 0.027,
+      "share_with_edge": 0.012
+     },
+     "human": {
+      "mean_node_homophily": 0.987,
+      "chance": 0.973,
+      "share_with_edge": 0.164
+     }
+    },
+    "auroc_from_degree": {
+     "in_degree": 0.44,
+     "out_degree": 0.479
+    }
+   },
+   "retweet": {
+    "edges": 582,
+    "edge_homophily": 0.945,
+    "chance": 0.947,
+    "adjusted_homophily": -0.028,
+    "label_informativeness": 0.0062,
+    "per_class": {
+     "bot": {
+      "mean_node_homophily": 0.0,
+      "chance": 0.027,
+      "share_with_edge": 0.006
+     },
+     "human": {
+      "mean_node_homophily": 0.983,
+      "chance": 0.973,
+      "share_with_edge": 0.102
+     }
+    },
+    "auroc_from_degree": {
+     "in_degree": 0.465,
+     "out_degree": 0.484
+    }
+   },
+   "quote": {
+    "edges": 168,
+    "edge_homophily": 0.958,
+    "chance": 0.959,
+    "adjusted_homophily": -0.021,
+    "label_informativeness": 0.0044,
+    "per_class": {
+     "bot": {
+      "mean_node_homophily": 0.0,
+      "chance": 0.021,
+      "share_with_edge": 0.001
+     },
+     "human": {
+      "mean_node_homophily": 0.977,
+      "chance": 0.979,
+      "share_with_edge": 0.045
+     }
+    },
+    "auroc_from_degree": {
+     "in_degree": 0.487,
+     "out_degree": 0.49
+    }
+   },
+   "reply": {
+    "edges": 260,
+    "edge_homophily": 0.946,
+    "chance": 0.948,
+    "adjusted_homophily": -0.028,
+    "label_informativeness": 0.006,
+    "per_class": {
+     "bot": {
+      "mean_node_homophily": 0.0,
+      "chance": 0.027,
+      "share_with_edge": 0.003
+     },
+     "human": {
+      "mean_node_homophily": 0.972,
+      "chance": 0.973,
+      "share_with_edge": 0.057
+     }
+    },
+    "auroc_from_degree": {
+     "in_degree": 0.482,
+     "out_degree": 0.489
+    }
+   },
+   "like": {
+    "edges": 301,
+    "edge_homophily": 0.914,
+    "chance": 0.917,
+    "adjusted_homophily": -0.045,
+    "label_informativeness": 0.011,
+    "per_class": {
+     "bot": {
+      "mean_node_homophily": 0.0,
+      "chance": 0.043,
+      "share_with_edge": 0.004
+     },
+     "human": {
+      "mean_node_homophily": 0.952,
+      "chance": 0.957,
+      "share_with_edge": 0.071
+     }
+    },
+    "auroc_from_degree": {
+     "in_degree": 0.481,
+     "out_degree": 0.484
+    }
+   },
+   "co_list": {
+    "edges": 25462,
+    "edge_homophily": 0.834,
+    "chance": 0.822,
+    "adjusted_homophily": 0.068,
+    "label_informativeness": 0.0062,
+    "per_class": {
+     "bot": {
+      "mean_node_homophily": 0.2,
+      "chance": 0.099,
+      "share_with_edge": 0.133
+     },
+     "human": {
+      "mean_node_homophily": 0.891,
+      "chance": 0.901,
+      "share_with_edge": 0.492
+     }
+    }
+   },
+   "follow_any": {
+    "edges": 3022,
+    "edge_homophily": 0.863,
+    "chance": 0.87,
+    "adjusted_homophily": -0.05,
+    "label_informativeness": 0.0064,
+    "per_class": {
+     "bot": {
+      "mean_node_homophily": 0.019,
+      "chance": 0.07,
+      "share_with_edge": 0.076
+     },
+     "human": {
+      "mean_node_homophily": 0.973,
+      "chance": 0.93,
+      "share_with_edge": 0.323
+     }
+    },
+    "auroc_from_degree": {
+     "in_degree": 0.383,
+     "out_degree": 0.45
+    }
+   }
+  }
+ }
+}
