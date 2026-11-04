@@ -44,8 +44,8 @@ Status: ✅ done and checked · 🟡 partly done · ⬜ to do · ➖ not needed 
 | # | Item | Status | Note |
 |---|---|---|---|
 | D1 | Shortcut rule run; only `verified` fails, so it is excluded | ✅ | |
-| D2 | Shortcut rule re-run on **our** split's train (it was run on the official split) | ⬜ | Quick |
-| D3 | Leaf-size rule uses a count (≥200 users), not 10% (P2) | ⬜ | Quick |
+| D2 | Shortcut rule re-run on **our** split's train (it was run on the official split) | ✅ | `twibot22_shortcuts.py`: only `verified` fails. 17 profile fields + 28 graph cues (has-edge, degree per relation) |
+| D3 | Leaf-size rule uses a count (≥200 users), not 10% (P2) | ✅ | Plus a stricter every-cut-off tail scan: 5 tiny pure-human tails (≤1.2% of users: very high followers, listed, tweets, following; oldest accounts). The followers and listed tails are 80–90% verified and not pure without them; the tweet-count, following and age tails stay ~99% human but cover ≤0.3%. Reported, not excluded |
 | D4 | **Labelling-function leakage**: spam keywords in bios and tweets, by class (the labels were made partly from them) | ⬜ | A model that finds these is partly re-learning the labelling machine |
 | D5 | Account age parsed from ISO dates, not zero for everyone (X3) | ✅ | `twibot22_profile_check.py` uses `pd.to_datetime`. The TwiBot-20 parsers in `metadata_check.py` and `step6_dgp.py` are still wrong for TwiBot-22 |
 | D7 | **Labels were partly made by graph models** (GCN, GAT, R-GCN were labelling functions). Graph models may re-learn the labeller. Check: compare each graph model's gain on weak-label test users vs on expert-labelled users | ⬜ | Planned as DEC question 3; applies to every graph model |

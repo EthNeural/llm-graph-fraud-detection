@@ -1,0 +1,636 @@
+{
+ "split": "ours (70/20/10, seed 42, experts in test)",
+ "n_train": 699309,
+ "n_val": 199803,
+ "train_bot_share": 0.14,
+ "rule": "documented artefact, or depth-1 leaf with >= 200 train users at >= 99% purity",
+ "fields": {
+  "profile: verified": {
+   "val_auroc": 0.555,
+   "val_macro_f1": 0.233,
+   "purest_leaf": {
+    "users": 66537,
+    "share": 0.095,
+    "purity": 1.0,
+    "majority": "human"
+   },
+   "bot_mean": 0.0,
+   "human_mean": 0.111,
+   "verdict": "SHORTCUT (documented): labelling function in TwiBot-22 (paper \u00a73.2): 0 verified bots"
+  },
+  "profile: protected": {
+   "val_auroc": 0.529,
+   "val_macro_f1": 0.526,
+   "purest_leaf": {
+    "users": 678087,
+    "share": 0.97,
+    "purity": 0.8672,
+    "majority": "human"
+   },
+   "bot_mean": 0.08,
+   "human_mean": 0.022,
+   "verdict": "allowed"
+  },
+  "profile: withheld": {
+   "val_auroc": 0.5,
+   "val_macro_f1": 0.123,
+   "purest_leaf": {
+    "users": 699263,
+    "share": 1.0,
+    "purity": 0.86,
+    "majority": "human"
+   },
+   "bot_mean": 0.0,
+   "human_mean": 0.0,
+   "verdict": "allowed"
+  },
+  "profile: has pinned tweet": {
+   "val_auroc": 0.612,
+   "val_macro_f1": 0.439,
+   "purest_leaf": {
+    "users": 272741,
+    "share": 0.39,
+    "purity": 0.9306,
+    "majority": "human"
+   },
+   "bot_mean": 0.194,
+   "human_mean": 0.422,
+   "verdict": "allowed"
+  },
+  "profile: default profile image": {
+   "val_auroc": 0.558,
+   "val_macro_f1": 0.571,
+   "purest_leaf": {
+    "users": 676627,
+    "share": 0.968,
+    "purity": 0.8741,
+    "majority": "human"
+   },
+   "bot_mean": 0.13,
+   "human_mean": 0.017,
+   "verdict": "allowed"
+  },
+  "profile: has url": {
+   "val_auroc": 0.62,
+   "val_macro_f1": 0.499,
+   "purest_leaf": {
+    "users": 361751,
+    "share": 0.517,
+    "purity": 0.9165,
+    "majority": "human"
+   },
+   "bot_mean": 0.309,
+   "human_mean": 0.551,
+   "verdict": "allowed"
+  },
+  "profile: has location": {
+   "val_auroc": 0.619,
+   "val_macro_f1": 0.567,
+   "purest_leaf": {
+    "users": 495819,
+    "share": 0.709,
+    "purity": 0.8998,
+    "majority": "human"
+   },
+   "bot_mean": 0.506,
+   "human_mean": 0.741,
+   "verdict": "allowed"
+  },
+  "profile: bio empty": {
+   "val_auroc": 0.665,
+   "val_macro_f1": 0.672,
+   "purest_leaf": {
+    "users": 612835,
+    "share": 0.876,
+    "purity": 0.905,
+    "majority": "human"
+   },
+   "bot_mean": 0.406,
+   "human_mean": 0.078,
+   "verdict": "allowed"
+  },
+  "profile: bio length": {
+   "val_auroc": 0.675,
+   "val_macro_f1": 0.669,
+   "purest_leaf": {
+    "users": 594019,
+    "share": 0.849,
+    "purity": 0.9093,
+    "majority": "human"
+   },
+   "bot_mean": 50.585,
+   "human_mean": 94.107,
+   "verdict": "allowed"
+  },
+  "profile: urls in bio": {
+   "val_auroc": 0.527,
+   "val_macro_f1": 0.214,
+   "purest_leaf": {
+    "users": 60577,
+    "share": 0.087,
+    "purity": 0.9343,
+    "majority": "human"
+   },
+   "bot_mean": 0.05,
+   "human_mean": 0.118,
+   "verdict": "allowed"
+  },
+  "profile: name length": {
+   "val_auroc": 0.549,
+   "val_macro_f1": 0.341,
+   "purest_leaf": {
+    "users": 180888,
+    "share": 0.259,
+    "purity": 0.9055,
+    "majority": "human"
+   },
+   "bot_mean": 12.22,
+   "human_mean": 14.294,
+   "verdict": "allowed"
+  },
+  "profile: username digits": {
+   "val_auroc": 0.561,
+   "val_macro_f1": 0.543,
+   "purest_leaf": {
+    "users": 540747,
+    "share": 0.773,
+    "purity": 0.8788,
+    "majority": "human"
+   },
+   "bot_mean": 1.208,
+   "human_mean": 0.618,
+   "verdict": "allowed"
+  },
+  "profile: log followers": {
+   "val_auroc": 0.733,
+   "val_macro_f1": 0.619,
+   "purest_leaf": {
+    "users": 449810,
+    "share": 0.643,
+    "purity": 0.947,
+    "majority": "human"
+   },
+   "bot_mean": 4.373,
+   "human_mean": 7.144,
+   "verdict": "allowed"
+  },
+  "profile: log following": {
+   "val_auroc": 0.668,
+   "val_macro_f1": 0.58,
+   "purest_leaf": {
+    "users": 455261,
+    "share": 0.651,
+    "purity": 0.9213,
+    "majority": "human"
+   },
+   "bot_mean": 5.21,
+   "human_mean": 6.447,
+   "verdict": "allowed"
+  },
+  "profile: log tweet count": {
+   "val_auroc": 0.695,
+   "val_macro_f1": 0.552,
+   "purest_leaf": {
+    "users": 380280,
+    "share": 0.544,
+    "purity": 0.9459,
+    "majority": "human"
+   },
+   "bot_mean": 5.187,
+   "human_mean": 7.917,
+   "verdict": "allowed"
+  },
+  "profile: log listed count": {
+   "val_auroc": 0.689,
+   "val_macro_f1": 0.539,
+   "purest_leaf": {
+    "users": 363367,
+    "share": 0.52,
+    "purity": 0.9478,
+    "majority": "human"
+   },
+   "bot_mean": 1.064,
+   "human_mean": 2.836,
+   "verdict": "allowed"
+  },
+  "profile: account age (days)": {
+   "val_auroc": 0.607,
+   "val_macro_f1": 0.49,
+   "purest_leaf": {
+    "users": 359338,
+    "share": 0.514,
+    "purity": 0.9089,
+    "majority": "human"
+   },
+   "bot_mean": 1999.607,
+   "human_mean": 2796.055,
+   "verdict": "allowed"
+  },
+  "graph: following has incoming edge": {
+   "val_auroc": 0.621,
+   "val_macro_f1": 0.503,
+   "purest_leaf": {
+    "users": 368737,
+    "share": 0.527,
+    "purity": 0.9159,
+    "majority": "human"
+   },
+   "bot_mean": 0.318,
+   "human_mean": 0.562,
+   "verdict": "allowed"
+  },
+  "graph: following has outgoing edge": {
+   "val_auroc": 0.5,
+   "val_macro_f1": 0.469,
+   "purest_leaf": {
+    "users": 692416,
+    "share": 0.99,
+    "purity": 0.8601,
+    "majority": "human"
+   },
+   "bot_mean": 0.01,
+   "human_mean": 0.01,
+   "verdict": "allowed"
+  },
+  "graph: following log in-degree": {
+   "val_auroc": 0.607,
+   "val_macro_f1": 0.386,
+   "purest_leaf": {
+    "users": 202346,
+    "share": 0.289,
+    "purity": 0.9501,
+    "majority": "human"
+   },
+   "bot_mean": 0.311,
+   "human_mean": 0.744,
+   "verdict": "allowed"
+  },
+  "graph: following log out-degree": {
+   "val_auroc": 0.502,
+   "val_macro_f1": 0.128,
+   "purest_leaf": {
+    "users": 3281,
+    "share": 0.005,
+    "purity": 0.922,
+    "majority": "human"
+   },
+   "bot_mean": 0.047,
+   "human_mean": 0.052,
+   "verdict": "allowed"
+  },
+  "graph: followers has incoming edge": {
+   "val_auroc": 0.5,
+   "val_macro_f1": 0.448,
+   "purest_leaf": {
+    "users": 398006,
+    "share": 0.569,
+    "purity": 0.8608,
+    "majority": "human"
+   },
+   "bot_mean": 0.434,
+   "human_mean": 0.431,
+   "verdict": "allowed"
+  },
+  "graph: followers has outgoing edge": {
+   "val_auroc": 0.501,
+   "val_macro_f1": 0.133,
+   "purest_leaf": {
+    "users": 6679,
+    "share": 0.01,
+    "purity": 0.8629,
+    "majority": "human"
+   },
+   "bot_mean": 0.009,
+   "human_mean": 0.01,
+   "verdict": "allowed"
+  },
+  "graph: followers log in-degree": {
+   "val_auroc": 0.523,
+   "val_macro_f1": 0.273,
+   "purest_leaf": {
+    "users": 119095,
+    "share": 0.17,
+    "purity": 0.8892,
+    "majority": "human"
+   },
+   "bot_mean": 0.418,
+   "human_mean": 0.452,
+   "verdict": "allowed"
+  },
+  "graph: followers log out-degree": {
+   "val_auroc": 0.502,
+   "val_macro_f1": 0.13,
+   "purest_leaf": {
+    "users": 4365,
+    "share": 0.006,
+    "purity": 0.9352,
+    "majority": "human"
+   },
+   "bot_mean": 0.031,
+   "human_mean": 0.042,
+   "verdict": "allowed"
+  },
+  "graph: mention has incoming edge": {
+   "val_auroc": 0.603,
+   "val_macro_f1": 0.433,
+   "purest_leaf": {
+    "users": 268492,
+    "share": 0.384,
+    "purity": 0.9255,
+    "majority": "human"
+   },
+   "bot_mean": 0.205,
+   "human_mean": 0.414,
+   "verdict": "allowed"
+  },
+  "graph: mention has outgoing edge": {
+   "val_auroc": 0.501,
+   "val_macro_f1": 0.132,
+   "purest_leaf": {
+    "users": 6196,
+    "share": 0.009,
+    "purity": 0.878,
+    "majority": "human"
+   },
+   "bot_mean": 0.008,
+   "human_mean": 0.009,
+   "verdict": "allowed"
+  },
+  "graph: mention log in-degree": {
+   "val_auroc": 0.576,
+   "val_macro_f1": 0.308,
+   "purest_leaf": {
+    "users": 128372,
+    "share": 0.184,
+    "purity": 0.9609,
+    "majority": "human"
+   },
+   "bot_mean": 0.181,
+   "human_mean": 0.492,
+   "verdict": "allowed"
+  },
+  "graph: mention log out-degree": {
+   "val_auroc": 0.502,
+   "val_macro_f1": 0.129,
+   "purest_leaf": {
+    "users": 3809,
+    "share": 0.005,
+    "purity": 0.9383,
+    "majority": "human"
+   },
+   "bot_mean": 0.027,
+   "human_mean": 0.041,
+   "verdict": "allowed"
+  },
+  "graph: retweet has incoming edge": {
+   "val_auroc": 0.58,
+   "val_macro_f1": 0.338,
+   "purest_leaf": {
+    "users": 158799,
+    "share": 0.227,
+    "purity": 0.947,
+    "majority": "human"
+   },
+   "bot_mean": 0.087,
+   "human_mean": 0.251,
+   "verdict": "allowed"
+  },
+  "graph: retweet has outgoing edge": {
+   "val_auroc": 0.501,
+   "val_macro_f1": 0.132,
+   "purest_leaf": {
+    "users": 5721,
+    "share": 0.008,
+    "purity": 0.8881,
+    "majority": "human"
+   },
+   "bot_mean": 0.007,
+   "human_mean": 0.009,
+   "verdict": "allowed"
+  },
+  "graph: retweet log in-degree": {
+   "val_auroc": 0.58,
+   "val_macro_f1": 0.338,
+   "purest_leaf": {
+    "users": 158799,
+    "share": 0.227,
+    "purity": 0.947,
+    "majority": "human"
+   },
+   "bot_mean": 0.076,
+   "human_mean": 0.271,
+   "verdict": "allowed"
+  },
+  "graph: retweet log out-degree": {
+   "val_auroc": 0.502,
+   "val_macro_f1": 0.128,
+   "purest_leaf": {
+    "users": 3309,
+    "share": 0.005,
+    "purity": 0.9347,
+    "majority": "human"
+   },
+   "bot_mean": 0.019,
+   "human_mean": 0.032,
+   "verdict": "allowed"
+  },
+  "graph: reply has incoming edge": {
+   "val_auroc": 0.563,
+   "val_macro_f1": 0.304,
+   "purest_leaf": {
+    "users": 130529,
+    "share": 0.187,
+    "purity": 0.939,
+    "majority": "human"
+   },
+   "bot_mean": 0.081,
+   "human_mean": 0.204,
+   "verdict": "allowed"
+  },
+  "graph: reply has outgoing edge": {
+   "val_auroc": 0.501,
+   "val_macro_f1": 0.131,
+   "purest_leaf": {
+    "users": 5429,
+    "share": 0.008,
+    "purity": 0.89,
+    "majority": "human"
+   },
+   "bot_mean": 0.006,
+   "human_mean": 0.008,
+   "verdict": "allowed"
+  },
+  "graph: reply log in-degree": {
+   "val_auroc": 0.563,
+   "val_macro_f1": 0.304,
+   "purest_leaf": {
+    "users": 130529,
+    "share": 0.187,
+    "purity": 0.939,
+    "majority": "human"
+   },
+   "bot_mean": 0.063,
+   "human_mean": 0.193,
+   "verdict": "allowed"
+  },
+  "graph: reply log out-degree": {
+   "val_auroc": 0.501,
+   "val_macro_f1": 0.127,
+   "purest_leaf": {
+    "users": 2765,
+    "share": 0.004,
+    "purity": 0.9425,
+    "majority": "human"
+   },
+   "bot_mean": 0.014,
+   "human_mean": 0.026,
+   "verdict": "allowed"
+  },
+  "graph: quote has incoming edge": {
+   "val_auroc": 0.537,
+   "val_macro_f1": 0.221,
+   "purest_leaf": {
+    "users": 62214,
+    "share": 0.089,
+    "purity": 0.9602,
+    "majority": "human"
+   },
+   "bot_mean": 0.025,
+   "human_mean": 0.1,
+   "verdict": "allowed"
+  },
+  "graph: quote has outgoing edge": {
+   "val_auroc": 0.502,
+   "val_macro_f1": 0.13,
+   "purest_leaf": {
+    "users": 4657,
+    "share": 0.007,
+    "purity": 0.9137,
+    "majority": "human"
+   },
+   "bot_mean": 0.004,
+   "human_mean": 0.007,
+   "verdict": "allowed"
+  },
+  "graph: quote log in-degree": {
+   "val_auroc": 0.537,
+   "val_macro_f1": 0.221,
+   "purest_leaf": {
+    "users": 62214,
+    "share": 0.089,
+    "purity": 0.9602,
+    "majority": "human"
+   },
+   "bot_mean": 0.02,
+   "human_mean": 0.091,
+   "verdict": "allowed"
+  },
+  "graph: quote log out-degree": {
+   "val_auroc": 0.502,
+   "val_macro_f1": 0.128,
+   "purest_leaf": {
+    "users": 2912,
+    "share": 0.004,
+    "purity": 0.9478,
+    "majority": "human"
+   },
+   "bot_mean": 0.008,
+   "human_mean": 0.019,
+   "verdict": "allowed"
+  },
+  "graph: like has incoming edge": {
+   "val_auroc": 0.556,
+   "val_macro_f1": 0.284,
+   "purest_leaf": {
+    "users": 113907,
+    "share": 0.163,
+    "purity": 0.9439,
+    "majority": "human"
+   },
+   "bot_mean": 0.065,
+   "human_mean": 0.179,
+   "verdict": "allowed"
+  },
+  "graph: like has outgoing edge": {
+   "val_auroc": 0.501,
+   "val_macro_f1": 0.132,
+   "purest_leaf": {
+    "users": 6367,
+    "share": 0.009,
+    "purity": 0.8676,
+    "majority": "human"
+   },
+   "bot_mean": 0.009,
+   "human_mean": 0.009,
+   "verdict": "allowed"
+  },
+  "graph: like log in-degree": {
+   "val_auroc": 0.556,
+   "val_macro_f1": 0.284,
+   "purest_leaf": {
+    "users": 113907,
+    "share": 0.163,
+    "purity": 0.9439,
+    "majority": "human"
+   },
+   "bot_mean": 0.055,
+   "human_mean": 0.172,
+   "verdict": "allowed"
+  },
+  "graph: like log out-degree": {
+   "val_auroc": 0.501,
+   "val_macro_f1": 0.128,
+   "purest_leaf": {
+    "users": 3256,
+    "share": 0.005,
+    "purity": 0.9128,
+    "majority": "human"
+   },
+   "bot_mean": 0.026,
+   "human_mean": 0.032,
+   "verdict": "allowed"
+  }
+ },
+ "tail_scan": {
+  "profile: log followers high >= 13.51": {
+   "users": 6327,
+   "share": 0.009,
+   "bot_share": 0.01,
+   "verified_share": 0.903,
+   "non_verified_users": 615,
+   "non_verified_bot_share": 0.1024
+  },
+  "profile: log following high >= 12.58": {
+   "users": 248,
+   "share": 0.0004,
+   "bot_share": 0.0081,
+   "verified_share": 0.423,
+   "non_verified_users": 143,
+   "non_verified_bot_share": 0.014
+  },
+  "profile: log tweet count high >= 13.13": {
+   "users": 2230,
+   "share": 0.0032,
+   "bot_share": 0.0099,
+   "verified_share": 0.139,
+   "non_verified_users": 1919,
+   "non_verified_bot_share": 0.0115
+  },
+  "profile: log listed count high >= 7.749": {
+   "users": 8575,
+   "share": 0.0123,
+   "bot_share": 0.0099,
+   "verified_share": 0.799,
+   "non_verified_users": 1722,
+   "non_verified_bot_share": 0.0494
+  },
+  "profile: account age (days) high >= 5596": {
+   "users": 316,
+   "share": 0.0005,
+   "bot_share": 0.0063,
+   "verified_share": 0.263,
+   "non_verified_users": 233,
+   "non_verified_bot_share": 0.0086
+  }
+ }
+}
