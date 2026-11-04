@@ -183,8 +183,8 @@ We have a million Twitter accounts, and about one in seven is a bot. We want to 
 - **Next:**
   1. a final check of the outputs;
     3. the first models on Thursday;
-  4. the language model on Thursday night;
-  5. the sealed test and the comparison with TwiBot-20 on Friday;
-  6. TwiBot-20's open items afterwards, if time allows;
-  7. the report on Sunday.
+  3. the language model on Thursday night;
+  4. the sealed test and the comparison with TwiBot-20 on Friday;
+  5. TwiBot-20's open items afterwards, if time allows;
+  6. the report on Sunday.
 - **No model has been scored yet.** That is on purpose: every rule had to be fixed first.
