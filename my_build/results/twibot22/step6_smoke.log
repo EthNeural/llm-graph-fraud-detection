@@ -1,0 +1,100 @@
+Step 6 | twibot22 setting A | Qwen3-1.7B LoRA dgp | data seed 42, LoRA seed unset
+Before a long run: caffeinate, charger in, Chrome and VS Code closed, and no shutdown timer (pgrep -l shutdown prints nothing).
+
+train 20 (of 70000), val 20000 (check sample 50), test 20 (step 5 sample 20)
+Loading weights:   0%|          | 0/311 [00:00<?, ?it/s]Loading weights:   0%|          | 1/311 [00:00<05:08,  1.00it/s]Loading weights:  47%|████▋     | 147/311 [00:01<00:00, 175.69it/s]Loading weights:  68%|██████▊   | 210/311 [00:01<00:00, 185.35it/s]Loading weights:  82%|████████▏ | 254/311 [00:01<00:00, 188.83it/s]Loading weights:  93%|█████████▎| 288/311 [00:02<00:00, 127.33it/s]Loading weights: 100%|██████████| 311/311 [00:02<00:00, 129.86it/s]
+Diffusion-based metapath trimming:
+  metapath follow             edges    980,102   targets with neighbours 86.7%   mean kept 5.6
+  metapath interaction        edges    529,580   targets with neighbours 70.0%   mean kept 4.3
+  metapath follow-of-follow   edges 59,172,982   targets with neighbours 86.7%   mean kept 6.9
+  node summaries: 3 cached, 1,297 to generate
+node summaries:   0%|          | 0/5 [00:00<?, ?it/s]node summaries:  20%|██        | 1/5 [05:16<21:05, 316.33s/it]node summaries:  40%|████      | 2/5 [10:18<15:24, 308.02s/it]node summaries:  60%|██████    | 3/5 [15:07<09:58, 299.46s/it]node summaries:  80%|████████  | 4/5 [19:58<04:56, 296.04s/it]node summaries: 100%|██████████| 5/5 [20:16<00:00, 195.73s/it]node summaries: 100%|██████████| 5/5 [20:16<00:00, 243.30s/it]
+  metapath summaries: 51 cached, 219 to generate
+metapath summaries:   0%|          | 0/1 [00:00<?, ?it/s]metapath summaries: 100%|██████████| 1/1 [01:41<00:00, 101.33s/it]metapath summaries: 100%|██████████| 1/1 [01:41<00:00, 101.33s/it]
+prompt tokens: median 530, max 576
+
+--- example prompt ---
+<|im_start|>user
+Target account (bio, then recent tweets):
+Writer, social worker, classical music zealot, psychology hound, moviegoer, horse racing enthusiast
+@JohnHines66 @sigg20 @thedickbutkus "And every time he hit you, he tried to put you in the cemetery, not the hospital." - Deacon Jones
+@Jester454 😂😂
+@marquardt_e Dang, Mop! That's a doozy 😂
+@Bgr8t An honor well deserved. Congratulations. #HallOfFame
+A fictional character waits idly by for an author willing to determine their next move. #PartingThought
+A little night music: Las Calles de Sevilla from La Otra Mirada by Fernando Velazquez. https://t.co/MmX62BxweX
+Rabbit hunter... https://t.co/xtveCbPz1f
+RT @ClassicFM: Remembering the legendary cellist Jacqueline du Pré, born in Oxford 77 years ago today. https://t.co/WVwiiNEnaJ
+@TaylorBisackyTV Awesome 😊
+@BeychokRacing Holy mole! They're still in business?
+Regardless of our own personal intellect, we are all students of someone else's teachings. #PartingThought
+A little night music: Une Chanson Brisse by Coeur de Pirate. https://t.co/GqIuCBTsW6
+@NinerNick_22 And I'm an old bastard who remembers all the others. Nice to hear someone younger appreciate his effort.
+@Jester454 No doubt, Max...
+@JoeT_OnTheSide Haha :)
+@JoeT_OnTheSide Great run for the place dough! #Tatanka
+@JoeT_OnTheSide Good luck, Joseph! #RyeHumor
+The world becomes a simpler place when you realize it does not revolve around you. #PartingThought
+A little night music: Teresa from the soundtrack to the series La Otra Mirada by Fernando Velasquez. https://t.co/BqdFzpqnqs
+@debbimar10 @EquinEdge @ScottyPick6 Love this :)
+
+Summaries of linked accounts:
+- Follow links: Social anthropologist explores culture, science, and mindfulness
+- Interaction links (mentions, retweets, replies, quotes, likes): none
+- Follows of follows: Bought ticket, crave Welsh cakes, need help
+
+Is this Twitter account a bot (an automated account) rather than a human? Answer Yes or No.<|im_end|>
+<|im_start|>assistant
+<think>
+
+</think>
+
+
+----------------------
+zero-shot val:   0%|          | 0/13 [00:00<?, ?it/s]zero-shot val:   8%|▊         | 1/13 [00:01<00:21,  1.77s/it]zero-shot val:  15%|█▌        | 2/13 [00:04<00:23,  2.13s/it]zero-shot val:  23%|██▎       | 3/13 [00:06<00:23,  2.33s/it]zero-shot val:  31%|███       | 4/13 [00:09<00:22,  2.46s/it]zero-shot val:  38%|███▊      | 5/13 [00:12<00:20,  2.54s/it]zero-shot val:  46%|████▌     | 6/13 [00:14<00:18,  2.59s/it]zero-shot val:  54%|█████▍    | 7/13 [00:17<00:15,  2.63s/it]zero-shot val:  62%|██████▏   | 8/13 [00:20<00:13,  2.68s/it]zero-shot val:  69%|██████▉   | 9/13 [00:23<00:10,  2.71s/it]zero-shot val:  77%|███████▋  | 10/13 [00:25<00:08,  2.75s/it]zero-shot val:  85%|████████▍ | 11/13 [00:28<00:05,  2.77s/it]zero-shot val:  92%|█████████▏| 12/13 [00:31<00:02,  2.80s/it]zero-shot val: 100%|██████████| 13/13 [00:33<00:00,  2.40s/it]                                                              zero-shot test:   0%|          | 0/5 [00:00<?, ?it/s]zero-shot test:  20%|██        | 1/5 [00:02<00:09,  2.44s/it]zero-shot test:  40%|████      | 2/5 [00:05<00:07,  2.52s/it]zero-shot test:  60%|██████    | 3/5 [00:07<00:05,  2.61s/it]zero-shot test:  80%|████████  | 4/5 [00:10<00:02,  2.64s/it]zero-shot test: 100%|██████████| 5/5 [00:13<00:00,  2.73s/it]                                                             trainable params: 6,422,528 || all params: 1,726,997,504 || trainable%: 0.3719
+epoch 1:   0%|          | 0/5 [00:00<?, ?it/s]epoch 1:  20%|██        | 1/5 [00:09<00:37,  9.43s/it]epoch 1:  20%|██        | 1/5 [00:09<00:37,  9.43s/it, loss=9.283]epoch 1:  40%|████      | 2/5 [00:19<00:28,  9.53s/it, loss=9.283]epoch 1:  40%|████      | 2/5 [00:19<00:28,  9.53s/it, loss=0.779]
+val check:   0%|          | 0/13 [00:00<?, ?it/s][A
+val check:   8%|▊         | 1/13 [00:01<00:23,  1.92s/it][A
+val check:  15%|█▌        | 2/13 [00:04<00:25,  2.28s/it][A
+val check:  23%|██▎       | 3/13 [00:07<00:25,  2.51s/it][A
+val check:  31%|███       | 4/13 [00:10<00:23,  2.64s/it][A
+val check:  38%|███▊      | 5/13 [00:12<00:21,  2.73s/it][A
+val check:  46%|████▌     | 6/13 [00:15<00:19,  2.79s/it][A
+val check:  54%|█████▍    | 7/13 [00:18<00:17,  2.84s/it][A
+val check:  62%|██████▏   | 8/13 [00:21<00:14,  2.89s/it][A
+val check:  69%|██████▉   | 9/13 [00:24<00:11,  2.92s/it][A
+val check:  77%|███████▋  | 10/13 [00:27<00:08,  2.94s/it][A
+val check:  85%|████████▍ | 11/13 [00:30<00:05,  2.97s/it][A
+val check:  92%|█████████▏| 12/13 [00:33<00:02,  2.99s/it][A
+val check: 100%|██████████| 13/13 [00:35<00:00,  2.55s/it][A
+                                                          [A
+  val check {'check': 0, 'epoch': 0.4, 'val_loss': 0.7503, 'val_macro_f1': 0.4902, 'val_auroc': np.float64(0.4578), 'check_minutes': 0.59}
+epoch 1:  60%|██████    | 3/5 [01:06<00:53, 26.75s/it, loss=0.779]epoch 1:  60%|██████    | 3/5 [01:06<00:53, 26.75s/it, loss=0.017]epoch 1:  80%|████████  | 4/5 [01:15<00:19, 19.73s/it, loss=0.017]epoch 1:  80%|████████  | 4/5 [01:15<00:19, 19.73s/it, loss=3.375]epoch 1: 100%|██████████| 5/5 [01:24<00:00, 15.81s/it, loss=3.375]epoch 1: 100%|██████████| 5/5 [01:24<00:00, 15.81s/it, loss=0.000]
+val check:   0%|          | 0/13 [00:00<?, ?it/s][A
+val check:   8%|▊         | 1/13 [00:01<00:23,  1.92s/it][A
+val check:  15%|█▌        | 2/13 [00:04<00:24,  2.27s/it][A
+val check:  23%|██▎       | 3/13 [00:07<00:24,  2.49s/it][A
+val check:  31%|███       | 4/13 [00:10<00:23,  2.63s/it][A
+val check:  38%|███▊      | 5/13 [00:12<00:21,  2.72s/it][A
+val check:  46%|████▌     | 6/13 [00:15<00:19,  2.78s/it][A
+val check:  54%|█████▍    | 7/13 [00:18<00:17,  2.83s/it][A
+val check:  62%|██████▏   | 8/13 [00:21<00:14,  2.88s/it][A
+val check:  69%|██████▉   | 9/13 [00:24<00:11,  2.91s/it][A
+val check:  77%|███████▋  | 10/13 [00:27<00:08,  2.94s/it][A
+val check:  85%|████████▍ | 11/13 [00:30<00:05,  2.97s/it][A
+val check:  92%|█████████▏| 12/13 [00:33<00:02,  2.99s/it][A
+val check: 100%|██████████| 13/13 [00:35<00:00,  2.55s/it][A
+                                                          [A
+  val check {'check': 1, 'epoch': 1.0, 'val_loss': 1.2069, 'val_macro_f1': 0.5338, 'val_auroc': np.float64(0.5178), 'check_minutes': 0.59}
+epoch 1: 100%|██████████| 5/5 [02:01<00:00, 24.32s/it, loss=0.000]
+validation checks:
+  {'check': 0, 'epoch': 0.4, 'val_loss': 0.7503, 'val_macro_f1': 0.4902, 'val_auroc': np.float64(0.4578), 'check_minutes': 0.59}
+  {'check': 1, 'epoch': 1.0, 'val_loss': 1.2069, 'val_macro_f1': 0.5338, 'val_auroc': np.float64(0.5178), 'check_minutes': 0.59}
+val:   0%|          | 0/13 [00:00<?, ?it/s]val:   8%|▊         | 1/13 [00:01<00:22,  1.86s/it]val:  15%|█▌        | 2/13 [00:04<00:24,  2.22s/it]val:  23%|██▎       | 3/13 [00:07<00:24,  2.43s/it]val:  31%|███       | 4/13 [00:09<00:23,  2.57s/it]val:  38%|███▊      | 5/13 [00:12<00:21,  2.66s/it]val:  46%|████▌     | 6/13 [00:15<00:19,  2.72s/it]val:  54%|█████▍    | 7/13 [00:18<00:16,  2.78s/it]val:  62%|██████▏   | 8/13 [00:21<00:14,  2.83s/it]val:  69%|██████▉   | 9/13 [00:24<00:11,  2.87s/it]val:  77%|███████▋  | 10/13 [00:27<00:08,  2.90s/it]val:  85%|████████▍ | 11/13 [00:30<00:05,  2.93s/it]val:  92%|█████████▏| 12/13 [00:33<00:02,  2.95s/it]val: 100%|██████████| 13/13 [00:34<00:00,  2.52s/it]                                                    full test:   0%|          | 0/5 [00:00<?, ?it/s]full test:  20%|██        | 1/5 [00:02<00:10,  2.71s/it]full test:  40%|████      | 2/5 [00:05<00:08,  2.81s/it]full test:  60%|██████    | 3/5 [00:08<00:05,  2.87s/it]full test:  80%|████████  | 4/5 [00:11<00:02,  2.91s/it]full test: 100%|██████████| 5/5 [00:14<00:00,  3.08s/it]                                                        
+SMOKE TEST PASSED (end to end). Timings:
+  node_summaries    20.28 min for 1,300 items (0.94 s each)
+  path_summaries     1.69 min for 219 items (0.46 s each)
+  fine_tune          2.05 min for 20 items (6.16 s each)
+  test_scoring       0.25 min for 20 items (0.75 s each)
+  val check         0.59 min for 50 users -> 23.6 min for 2,000 (limit 10 min: OVER, use 1,000 users or fewer checks)
+=== exit code 0
