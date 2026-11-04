@@ -2,12 +2,14 @@
 
 Written Thu 5 Nov 2026, ~00:30. It collects every open TwiBot-20 item from `twibot20_lessons_for_twibot22.md` (the 22 lessons), `twibot22_plan.md` (step 8), the TwiBot-22 checklist (H3: profile track), and the external feedback (`artifacts/google_feedback.txt`, reviewed 5 Nov). Items are grouped so they can run **in one go**: one GPU queue, one CPU batch, one round of report edits. ✅ = done, ⬜ = to do.
 
+**When (decided by the builder 5 Nov ~00:40):** TwiBot-22 is finished first (its checklist, models, sealed set), then compared with TwiBot-20's current results, and only **then** is this whole batch run. Target: TwiBot-22 done by Fri 6 Nov evening, this batch Fri night to Sat. If time runs short, GPU jobs run in this order: G1 + G2 (seeds, adapter rule), G4 (matched text), G3 (`dgp_num`).
+
 ## Already done (4 Nov)
 
 - ✅ Tree baseline rerun after the silent crash (`run_tree_baseline.sh`, A and B, exit codes logged), with PR-AUC and a non-verified slice. Lesson 17.
 - ✅ Verified-subset check from raw data: target LoRA 0.704 → 0.641 on non-verified test users (`check_verified_subset.py`). Lesson 2, LoRA part.
 
-## Batch 1: GPU queue (Thursday night, ~12 h, the slot already planned)
+## Batch 1: GPU queue (~12 h, after TwiBot-22)
 
 Run in one queue, each job logs its exit code and writes to its own named file (lessons 19-20).
 

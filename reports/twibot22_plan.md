@@ -111,7 +111,7 @@ Deadline: experiments finished by Sat 7 Nov night; Sun 8 Nov is writing only.
 5. **LLM sample (GPU).** A stratified random sample at 14% bots, neighbours taken from the full graph. LLM embeddings, then DGP with LoRA. Score the graph models on the same test users so the comparison is paired.
 6. **Planned, last step (light version, checklist G7):** weak labels → recalibration on the 986 sealed experts with 5-fold rotation, trees and MLP only, after the freeze. Two-stage idea from Facebook DEC; light because 986 experts (105 bots) are too few for full fine-tuning.
 7. **Script fixes still open:** per-design output folders; `DATASET=twibot22` in `common.py`; TwiBot-22 field names and dates in `metadata_check.py` and `step6_dgp.py`.
-8. **TwiBot-20:** every open item is in `twibot20_todo.md`, grouped into one GPU queue (Thursday night), one CPU batch and one round of report edits. The tree baseline rerun is done.
+8. **TwiBot-20, after TwiBot-22** (decided 5 Nov ~00:40): finish TwiBot-22, compare with TwiBot-20's current results, then run everything in `twibot20_todo.md` in one go (one ~12 h GPU queue, one CPU batch, one round of report edits), Fri night to Sat. The GPU is therefore free on Thursday night for the TwiBot-22 LLM step. The tree baseline rerun is done.
 9. **Report (Sun):** update REPORT.md, then write the submission (7 pages, template sections, 4–5 diagrams). Every claim gets a sceptic pass.
 
 ## Licence
