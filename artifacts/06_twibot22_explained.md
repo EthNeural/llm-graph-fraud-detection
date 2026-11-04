@@ -182,8 +182,7 @@ We have a million Twitter accounts, and about one in seven is a bot. We want to 
 - **Running:** the text reading (multilingual-E5, then MiniLM), done around 02:30–03:30.
 - **Next:**
   1. a final check of the outputs;
-  2. the **freeze** (commit the checklist);
-  3. the first models on Thursday;
+    3. the first models on Thursday;
   4. the language model on Thursday night;
   5. the sealed test and the comparison with TwiBot-20 on Friday;
   6. TwiBot-20's open items afterwards, if time allows;

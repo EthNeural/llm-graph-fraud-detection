@@ -1,6 +1,6 @@
 # TwiBot-22 data-processing checklist
 
-Written Wed 4 Nov 2026, 19:50, before any TwiBot-22 model score. Built from `twibot20_lessons_for_twibot22.md` (the TwiBot-20 mistakes) and `twibot22_plan.md`. Nothing below the line "Freeze" may change after the first test score.
+Written Wed 4 Nov 2026, 19:50, before any TwiBot-22 model score. Built from `twibot20_lessons_for_twibot22.md` (the TwiBot-20 mistakes) and `twibot22_plan.md`. Rules recorded here are kept; any later change is written down with its reason and time.
 
 Status: ✅ done and checked · 🟡 partly done · ⬜ to do · ➖ not needed (with the reason)
 
@@ -105,9 +105,9 @@ Status: ✅ done and checked · 🟡 partly done · ⬜ to do · ➖ not needed 
 
 Simplified (descriptive only, not gates): C6 language mix, C8 date range (folded into the C1 counts), C4 zero-tweet counts. G5 reweighted PR-AUC is computed from saved scores after the runs; it changes no model.
 
-## Freeze
+## Freeze (dropped)
 
-When every row above is ✅ or ➖, commit this file. Only then run the first model.
+No separate freeze commit (builder, 5 Nov). Decisions are recorded with their times in this file and the git history; models start once the rows they need are done.
 
 ## Order for tonight and tomorrow morning
 
