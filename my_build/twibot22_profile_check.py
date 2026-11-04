@@ -10,7 +10,8 @@ Data preparation section, so the two datasets can be compared line by line.
    keywords in tweets and bios. So "verified" is a labelling artefact by (a).
 3. Bio text: empty, length, duplicates across users, non-Latin script share.
 Computed on all 1M users (official split) and inside each of the paper's 10 sub-communities
-(50% bots each; a stratified 70/10/20 split of the sub-community, seed 42, as the later prep uses).
+(50% bots each; a stratified 70/20/10 train/val/test split of the sub-community, seed 42, the
+same proportions as prep_twibot22.py).
 
 Run:  python my_build/twibot22_profile_check.py      -> results/twibot22/profile_check.json
 """
@@ -149,7 +150,9 @@ def main():
         ids = json.loads((RAW / "sub-communities" / f"user{k}.json").read_text())
         idx = pos.reindex(ids).dropna().astype(int).to_numpy()
         ys = y[idx]
-        a, b = train_test_split(np.arange(len(idx)), test_size=0.2, stratify=ys, random_state=42)
+        # same proportions as prep_twibot22.py (70/20/10): train on the 70%, score on the 10% test part
+        a, rest = train_test_split(np.arange(len(idx)), train_size=0.7, stratify=ys, random_state=42)
+        _, b = train_test_split(rest, train_size=2 / 3, stratify=ys[rest], random_state=42)
         trm, tem = np.zeros(len(idx), bool), np.zeros(len(idx), bool)
         trm[a], tem[b] = True, True
         f = field_table(X.iloc[idx].reset_index(drop=True), ys, trm, tem)

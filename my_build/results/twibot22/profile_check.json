@@ -210,8 +210,8 @@
   "0": {
    "fields": {
     "verified": {
-     "macro_f1": 0.462,
-     "auroc": 0.564,
+     "macro_f1": 0.46,
+     "auroc": 0.563,
      "bot_mean": 0.0,
      "human_mean": 0.137,
      "purest_large_leaf": [
@@ -221,8 +221,8 @@
      "verdict": "SHORTCUT: labelling function in TwiBot-22 (paper \u00a73.2) and documented shortcut (Hays et al., WWW 2023)"
     },
     "protected": {
-     "macro_f1": 0.334,
-     "auroc": 0.499,
+     "macro_f1": 0.335,
+     "auroc": 0.5,
      "bot_mean": 0.002,
      "human_mean": 0.001,
      "purest_large_leaf": [
@@ -243,8 +243,8 @@
      "verdict": "allowed"
     },
     "has pinned tweet": {
-     "macro_f1": 0.595,
-     "auroc": 0.603,
+     "macro_f1": 0.587,
+     "auroc": 0.593,
      "bot_mean": 0.255,
      "human_mean": 0.454,
      "purest_large_leaf": [
@@ -254,145 +254,145 @@
      "verdict": "allowed"
     },
     "default profile image": {
-     "macro_f1": 0.408,
-     "auroc": 0.533,
+     "macro_f1": 0.389,
+     "auroc": 0.522,
      "bot_mean": 0.061,
      "human_mean": 0.008,
      "purest_large_leaf": [
-      0.967,
+      0.968,
       0.513
      ],
      "verdict": "allowed"
     },
     "has url": {
-     "macro_f1": 0.597,
-     "auroc": 0.597,
+     "macro_f1": 0.602,
+     "auroc": 0.602,
      "bot_mean": 0.429,
      "human_mean": 0.621,
      "purest_large_leaf": [
-      0.469,
-      0.602
+      0.471,
+      0.604
      ],
      "verdict": "allowed"
     },
     "has location": {
-     "macro_f1": 0.583,
-     "auroc": 0.6,
+     "macro_f1": 0.562,
+     "auroc": 0.584,
      "bot_mean": 0.61,
      "human_mean": 0.795,
      "purest_large_leaf": [
       0.297,
-      0.653
+      0.657
      ],
      "verdict": "allowed"
     },
     "bio empty": {
-     "macro_f1": 0.566,
-     "auroc": 0.616,
+     "macro_f1": 0.546,
+     "auroc": 0.604,
      "bot_mean": 0.273,
      "human_mean": 0.048,
      "purest_large_leaf": [
-      0.16,
-      0.849
+      0.162,
+      0.853
      ],
      "verdict": "allowed"
     },
     "bio length": {
-     "macro_f1": 0.604,
-     "auroc": 0.634,
+     "macro_f1": 0.584,
+     "auroc": 0.621,
      "bot_mean": 69.904,
      "human_mean": 107.929,
      "purest_large_leaf": [
-      0.218,
-      0.813
+      0.219,
+      0.817
      ],
      "verdict": "allowed"
     },
     "urls in bio": {
-     "macro_f1": 0.432,
-     "auroc": 0.534,
+     "macro_f1": 0.423,
+     "auroc": 0.529,
      "bot_mean": 0.063,
      "human_mean": 0.138,
      "purest_large_leaf": [
       0.919,
-      0.516
+      0.517
      ],
      "verdict": "allowed"
     },
     "name length": {
-     "macro_f1": 0.586,
-     "auroc": 0.587,
+     "macro_f1": 0.554,
+     "auroc": 0.576,
      "bot_mean": 13.06,
      "human_mean": 15.489,
      "purest_large_leaf": [
-      0.466,
-      0.566
+      0.281,
+      0.599
      ],
      "verdict": "allowed"
     },
     "username digits": {
-     "macro_f1": 0.526,
+     "macro_f1": 0.52,
      "auroc": 0.553,
      "bot_mean": 0.943,
      "human_mean": 0.526,
      "purest_large_leaf": [
-      0.22,
-      0.598
+      0.223,
+      0.596
      ],
      "verdict": "allowed"
     },
     "log followers": {
-     "macro_f1": 0.715,
-     "auroc": 0.716,
+     "macro_f1": 0.728,
+     "auroc": 0.728,
      "bot_mean": 5.194,
      "human_mean": 7.562,
      "purest_large_leaf": [
-      0.442,
+      0.44,
       0.746
      ],
      "verdict": "allowed"
     },
     "log following": {
-     "macro_f1": 0.676,
-     "auroc": 0.676,
+     "macro_f1": 0.672,
+     "auroc": 0.674,
      "bot_mean": 5.562,
      "human_mean": 6.764,
      "purest_large_leaf": [
-      0.453,
-      0.686
+      0.422,
+      0.702
      ],
      "verdict": "allowed"
     },
     "log tweet count": {
-     "macro_f1": 0.706,
-     "auroc": 0.706,
+     "macro_f1": 0.694,
+     "auroc": 0.694,
      "bot_mean": 6.481,
      "human_mean": 8.611,
      "purest_large_leaf": [
       0.456,
-      0.714
+      0.716
      ],
      "verdict": "allowed"
     },
     "log listed count": {
-     "macro_f1": 0.682,
-     "auroc": 0.686,
+     "macro_f1": 0.692,
+     "auroc": 0.696,
      "bot_mean": 1.497,
      "human_mean": 3.254,
      "purest_large_leaf": [
-      0.403,
-      0.725
+      0.376,
+      0.739
      ],
      "verdict": "allowed"
     },
     "account age (days)": {
-     "macro_f1": 0.608,
-     "auroc": 0.609,
+     "macro_f1": 0.616,
+     "auroc": 0.617,
      "bot_mean": 2109.586,
      "human_mean": 2967.933,
      "purest_large_leaf": [
-      0.44,
-      0.631
+      0.448,
+      0.629
      ],
      "verdict": "allowed"
     }
@@ -415,24 +415,24 @@
   "1": {
    "fields": {
     "verified": {
-     "macro_f1": 0.439,
-     "auroc": 0.551,
+     "macro_f1": 0.417,
+     "auroc": 0.54,
      "bot_mean": 0.0,
      "human_mean": 0.098,
      "purest_large_leaf": [
-      0.952,
-      0.525
+      0.951,
+      0.526
      ],
      "verdict": "SHORTCUT: labelling function in TwiBot-22 (paper \u00a73.2) and documented shortcut (Hays et al., WWW 2023)"
     },
     "protected": {
-     "macro_f1": 0.334,
+     "macro_f1": 0.333,
      "auroc": 0.5,
      "bot_mean": 0.003,
      "human_mean": 0.001,
      "purest_large_leaf": [
       0.998,
-      0.5
+      0.501
      ],
      "verdict": "allowed"
     },
@@ -448,74 +448,74 @@
      "verdict": "allowed"
     },
     "has pinned tweet": {
-     "macro_f1": 0.601,
-     "auroc": 0.609,
+     "macro_f1": 0.608,
+     "auroc": 0.618,
      "bot_mean": 0.246,
      "human_mean": 0.44,
      "purest_large_leaf": [
-      0.341,
+      0.345,
       0.638
      ],
      "verdict": "allowed"
     },
     "default profile image": {
-     "macro_f1": 0.379,
-     "auroc": 0.52,
+     "macro_f1": 0.383,
+     "auroc": 0.522,
      "bot_mean": 0.047,
      "human_mean": 0.008,
      "purest_large_leaf": [
-      0.971,
+      0.97,
       0.51
      ],
      "verdict": "allowed"
     },
     "has url": {
      "macro_f1": 0.583,
-     "auroc": 0.586,
+     "auroc": 0.589,
      "bot_mean": 0.513,
      "human_mean": 0.673,
      "purest_large_leaf": [
-      0.407,
-      0.596
+      0.41,
+      0.597
      ],
      "verdict": "allowed"
     },
     "has location": {
-     "macro_f1": 0.533,
-     "auroc": 0.557,
+     "macro_f1": 0.538,
+     "auroc": 0.562,
      "bot_mean": 0.641,
      "human_mean": 0.792,
      "purest_large_leaf": [
-      0.285,
+      0.284,
       0.641
      ],
      "verdict": "allowed"
     },
     "bio empty": {
-     "macro_f1": 0.527,
-     "auroc": 0.594,
+     "macro_f1": 0.537,
+     "auroc": 0.599,
      "bot_mean": 0.224,
      "human_mean": 0.038,
      "purest_large_leaf": [
-      0.132,
-      0.852
+      0.13,
+      0.851
      ],
      "verdict": "allowed"
     },
     "bio length": {
-     "macro_f1": 0.56,
-     "auroc": 0.61,
+     "macro_f1": 0.561,
+     "auroc": 0.608,
      "bot_mean": 78.43,
      "human_mean": 111.119,
      "purest_large_leaf": [
-      0.172,
-      0.81
+      0.168,
+      0.813
      ],
      "verdict": "allowed"
     },
     "urls in bio": {
-     "macro_f1": 0.419,
-     "auroc": 0.52,
+     "macro_f1": 0.415,
+     "auroc": 0.516,
      "bot_mean": 0.086,
      "human_mean": 0.135,
      "purest_large_leaf": [
@@ -525,79 +525,79 @@
      "verdict": "allowed"
     },
     "name length": {
-     "macro_f1": 0.488,
-     "auroc": 0.543,
+     "macro_f1": 0.502,
+     "auroc": 0.539,
      "bot_mean": 13.197,
      "human_mean": 15.205,
      "purest_large_leaf": [
-      0.181,
-      0.619
+      0.222,
+      0.605
      ],
      "verdict": "allowed"
     },
     "username digits": {
-     "macro_f1": 0.51,
-     "auroc": 0.552,
+     "macro_f1": 0.496,
+     "auroc": 0.543,
      "bot_mean": 0.701,
      "human_mean": 0.373,
      "purest_large_leaf": [
       0.184,
-      0.603
+      0.604
      ],
      "verdict": "allowed"
     },
     "log followers": {
-     "macro_f1": 0.699,
-     "auroc": 0.7,
+     "macro_f1": 0.701,
+     "auroc": 0.701,
      "bot_mean": 5.255,
      "human_mean": 7.297,
      "purest_large_leaf": [
-      0.491,
+      0.494,
       0.713
      ],
      "verdict": "allowed"
     },
     "log following": {
-     "macro_f1": 0.644,
-     "auroc": 0.647,
+     "macro_f1": 0.649,
+     "auroc": 0.652,
      "bot_mean": 5.477,
      "human_mean": 6.626,
      "purest_large_leaf": [
-      0.425,
-      0.69
+      0.417,
+      0.692
      ],
      "verdict": "allowed"
     },
     "log tweet count": {
-     "macro_f1": 0.674,
-     "auroc": 0.676,
+     "macro_f1": 0.679,
+     "auroc": 0.681,
      "bot_mean": 6.086,
      "human_mean": 8.039,
      "purest_large_leaf": [
-      0.409,
-      0.723
+      0.414,
+      0.721
      ],
      "verdict": "allowed"
     },
     "log listed count": {
-     "macro_f1": 0.667,
-     "auroc": 0.67,
+     "macro_f1": 0.658,
+     "auroc": 0.661,
      "bot_mean": 1.65,
      "human_mean": 3.203,
      "purest_large_leaf": [
-      0.402,
-      0.713
+      0.403,
+      0.715
      ],
      "verdict": "allowed"
     },
     "account age (days)": {
      "macro_f1": 0.607,
-     "auroc": 0.609,
+     "auroc": 0.607,
      "bot_mean": 2116.166,
      "human_mean": 2888.798,
      "purest_large_leaf": [
-      0.464,
-      0.62
+      0.457,
+      0.623
      ],
      "verdict": "allowed"
     }
@@ -620,19 +620,19 @@
   "2": {
    "fields": {
     "verified": {
-     "macro_f1": 0.45,
-     "auroc": 0.557,
+     "macro_f1": 0.46,
+     "auroc": 0.563,
      "bot_mean": 0.0,
      "human_mean": 0.119,
      "purest_large_leaf": [
-      0.94,
+      0.939,
       0.532
      ],
      "verdict": "SHORTCUT: labelling function in TwiBot-22 (paper \u00a73.2) and documented shortcut (Hays et al., WWW 2023)"
     },
     "protected": {
-     "macro_f1": 0.338,
-     "auroc": 0.501,
+     "macro_f1": 0.342,
+     "auroc": 0.503,
      "bot_mean": 0.003,
      "human_mean": 0.001,
      "purest_large_leaf": [
@@ -653,19 +653,19 @@
      "verdict": "allowed"
     },
     "has pinned tweet": {
-     "macro_f1": 0.601,
-     "auroc": 0.611,
+     "macro_f1": 0.598,
+     "auroc": 0.609,
      "bot_mean": 0.24,
      "human_mean": 0.456,
      "purest_large_leaf": [
-      0.349,
-      0.654
+      0.347,
+      0.653
      ],
      "verdict": "allowed"
     },
     "default profile image": {
-     "macro_f1": 0.396,
-     "auroc": 0.526,
+     "macro_f1": 0.379,
+     "auroc": 0.517,
      "bot_mean": 0.055,
      "human_mean": 0.007,
      "purest_large_leaf": [
@@ -675,134 +675,134 @@
      "verdict": "allowed"
     },
     "has url": {
-     "macro_f1": 0.625,
-     "auroc": 0.625,
+     "macro_f1": 0.626,
+     "auroc": 0.626,
      "bot_mean": 0.4,
      "human_mean": 0.613,
      "purest_large_leaf": [
-      0.49,
-      0.603
+      0.491,
+      0.605
      ],
      "verdict": "allowed"
     },
     "has location": {
-     "macro_f1": 0.628,
-     "auroc": 0.634,
+     "macro_f1": 0.622,
+     "auroc": 0.629,
      "bot_mean": 0.539,
      "human_mean": 0.763,
      "purest_large_leaf": [
       0.346,
-      0.654
+      0.653
      ],
      "verdict": "allowed"
     },
     "bio empty": {
-     "macro_f1": 0.632,
-     "auroc": 0.66,
+     "macro_f1": 0.638,
+     "auroc": 0.665,
      "bot_mean": 0.369,
      "human_mean": 0.06,
      "purest_large_leaf": [
-      0.212,
-      0.863
+      0.21,
+      0.862
      ],
      "verdict": "allowed"
     },
     "bio length": {
-     "macro_f1": 0.646,
-     "auroc": 0.668,
+     "macro_f1": 0.67,
+     "auroc": 0.686,
      "bot_mean": 59.922,
      "human_mean": 102.86,
      "purest_large_leaf": [
-      0.232,
-      0.856
+      0.257,
+      0.83
      ],
      "verdict": "allowed"
     },
     "urls in bio": {
      "macro_f1": 0.413,
-     "auroc": 0.517,
+     "auroc": 0.519,
      "bot_mean": 0.088,
      "human_mean": 0.139,
      "purest_large_leaf": [
-      0.912,
-      0.512
+      0.91,
+      0.513
      ],
      "verdict": "allowed"
     },
     "name length": {
-     "macro_f1": 0.549,
-     "auroc": 0.557,
+     "macro_f1": 0.545,
+     "auroc": 0.552,
      "bot_mean": 13.361,
      "human_mean": 15.31,
      "purest_large_leaf": [
-      0.344,
-      0.587
+      0.346,
+      0.586
      ],
      "verdict": "allowed"
     },
     "username digits": {
-     "macro_f1": 0.459,
-     "auroc": 0.54,
+     "macro_f1": 0.457,
+     "auroc": 0.542,
      "bot_mean": 1.098,
      "human_mean": 0.541,
      "purest_large_leaf": [
-      0.104,
-      0.686
+      0.103,
+      0.683
      ],
      "verdict": "allowed"
     },
     "log followers": {
-     "macro_f1": 0.722,
-     "auroc": 0.725,
+     "macro_f1": 0.727,
+     "auroc": 0.729,
      "bot_mean": 5.057,
      "human_mean": 7.668,
      "purest_large_leaf": [
       0.432,
-      0.772
+      0.771
      ],
      "verdict": "allowed"
     },
     "log following": {
-     "macro_f1": 0.671,
-     "auroc": 0.671,
+     "macro_f1": 0.681,
+     "auroc": 0.681,
      "bot_mean": 5.476,
      "human_mean": 6.707,
      "purest_large_leaf": [
       0.47,
-      0.675
+      0.673
      ],
      "verdict": "allowed"
     },
     "log tweet count": {
-     "macro_f1": 0.644,
-     "auroc": 0.67,
+     "macro_f1": 0.67,
+     "auroc": 0.69,
      "bot_mean": 6.992,
      "human_mean": 9.037,
      "purest_large_leaf": [
-      0.236,
-      0.856
+      0.238,
+      0.854
      ],
      "verdict": "allowed"
     },
     "log listed count": {
-     "macro_f1": 0.698,
-     "auroc": 0.702,
+     "macro_f1": 0.701,
+     "auroc": 0.706,
      "bot_mean": 1.306,
      "human_mean": 3.247,
      "purest_large_leaf": [
-      0.407,
-      0.75
+      0.366,
+      0.774
      ],
      "verdict": "allowed"
     },
     "account age (days)": {
-     "macro_f1": 0.613,
-     "auroc": 0.613,
+     "macro_f1": 0.63,
+     "auroc": 0.63,
      "bot_mean": 2005.983,
      "human_mean": 2955.254,
      "purest_large_leaf": [
-      0.477,
-      0.639
+      0.493,
+      0.633
      ],
      "verdict": "allowed"
     }
@@ -825,13 +825,218 @@
   "3": {
    "fields": {
     "verified": {
-     "macro_f1": 0.459,
-     "auroc": 0.562,
+     "macro_f1": 0.476,
+     "auroc": 0.572,
      "bot_mean": 0.0,
      "human_mean": 0.129,
      "purest_large_leaf": [
       0.935,
       0.535
+     ],
+     "verdict": "SHORTCUT: labelling function in TwiBot-22 (paper \u00a73.2) and documented shortcut (Hays et al., WWW 2023)"
+    },
+    "protected": {
+     "macro_f1": 0.336,
+     "auroc": 0.501,
+     "bot_mean": 0.003,
+     "human_mean": 0.001,
+     "purest_large_leaf": [
+      0.998,
+      0.501
+     ],
+     "verdict": "allowed"
+    },
+    "withheld": {
+     "macro_f1": 0.333,
+     "auroc": 0.5,
+     "bot_mean": 0.0,
+     "human_mean": 0.0,
+     "purest_large_leaf": [
+      1.0,
+      0.5
+     ],
+     "verdict": "allowed"
+    },
+    "has pinned tweet": {
+     "macro_f1": 0.579,
+     "auroc": 0.588,
+     "bot_mean": 0.258,
+     "human_mean": 0.439,
+     "purest_large_leaf": [
+      0.349,
+      0.632
+     ],
+     "verdict": "allowed"
+    },
+    "default profile image": {
+     "macro_f1": 0.388,
+     "auroc": 0.524,
+     "bot_mean": 0.049,
+     "human_mean": 0.007,
+     "purest_large_leaf": [
+      0.973,
+      0.51
+     ],
+     "verdict": "allowed"
+    },
+    "has url": {
+     "macro_f1": 0.573,
+     "auroc": 0.576,
+     "bot_mean": 0.477,
+     "human_mean": 0.649,
+     "purest_large_leaf": [
+      0.442,
+      0.602
+     ],
+     "verdict": "allowed"
+    },
+    "has location": {
+     "macro_f1": 0.573,
+     "auroc": 0.591,
+     "bot_mean": 0.611,
+     "human_mean": 0.795,
+     "purest_large_leaf": [
+      0.298,
+      0.653
+     ],
+     "verdict": "allowed"
+    },
+    "bio empty": {
+     "macro_f1": 0.548,
+     "auroc": 0.606,
+     "bot_mean": 0.249,
+     "human_mean": 0.045,
+     "purest_large_leaf": [
+      0.147,
+      0.845
+     ],
+     "verdict": "allowed"
+    },
+    "bio length": {
+     "macro_f1": 0.591,
+     "auroc": 0.628,
+     "bot_mean": 73.705,
+     "human_mean": 108.479,
+     "purest_large_leaf": [
+      0.201,
+      0.806
+     ],
+     "verdict": "allowed"
+    },
+    "urls in bio": {
+     "macro_f1": 0.443,
+     "auroc": 0.535,
+     "bot_mean": 0.083,
+     "human_mean": 0.146,
+     "purest_large_leaf": [
+      0.906,
+      0.512
+     ],
+     "verdict": "allowed"
+    },
+    "name length": {
+     "macro_f1": 0.516,
+     "auroc": 0.541,
+     "bot_mean": 13.153,
+     "human_mean": 15.248,
+     "purest_large_leaf": [
+      0.267,
+      0.601
+     ],
+     "verdict": "allowed"
+    },
+    "username digits": {
+     "macro_f1": 0.409,
+     "auroc": 0.525,
+     "bot_mean": 0.867,
+     "human_mean": 0.464,
+     "purest_large_leaf": [
+      0.933,
+      0.515
+     ],
+     "verdict": "allowed"
+    },
+    "log followers": {
+     "macro_f1": 0.723,
+     "auroc": 0.723,
+     "bot_mean": 5.202,
+     "human_mean": 7.562,
+     "purest_large_leaf": [
+      0.475,
+      0.728
+     ],
+     "verdict": "allowed"
+    },
+    "log following": {
+     "macro_f1": 0.653,
+     "auroc": 0.653,
+     "bot_mean": 5.46,
+     "human_mean": 6.673,
+     "purest_large_leaf": [
+      0.474,
+      0.671
+     ],
+     "verdict": "allowed"
+    },
+    "log tweet count": {
+     "macro_f1": 0.697,
+     "auroc": 0.698,
+     "bot_mean": 6.314,
+     "human_mean": 8.488,
+     "purest_large_leaf": [
+      0.464,
+      0.705
+     ],
+     "verdict": "allowed"
+    },
+    "log listed count": {
+     "macro_f1": 0.681,
+     "auroc": 0.681,
+     "bot_mean": 1.579,
+     "human_mean": 3.316,
+     "purest_large_leaf": [
+      0.426,
+      0.713
+     ],
+     "verdict": "allowed"
+    },
+    "account age (days)": {
+     "macro_f1": 0.607,
+     "auroc": 0.608,
+     "bot_mean": 2029.775,
+     "human_mean": 2910.042,
+     "purest_large_leaf": [
+      0.491,
+      0.622
+     ],
+     "verdict": "allowed"
+    }
+   },
+   "text": {
+    "bot": {
+     "bio_empty": 0.249,
+     "bio_median_chars": 72.0,
+     "bio_shared_with_another_user": 0.005,
+     "mostly_non_latin": 0.007
+    },
+    "human": {
+     "bio_empty": 0.045,
+     "bio_median_chars": 125.0,
+     "bio_shared_with_another_user": 0.0,
+     "mostly_non_latin": 0.014
+    }
+   }
+  },
+  "4": {
+   "fields": {
+    "verified": {
+     "macro_f1": 0.487,
+     "auroc": 0.578,
+     "bot_mean": 0.0,
+     "human_mean": 0.149,
+     "purest_large_leaf": [
+      0.927,
+      0.539
      ],
      "verdict": "SHORTCUT: labelling function in TwiBot-22 (paper \u00a73.2) and documented shortcut (Hays et al., WWW 2023)"
     },
@@ -858,235 +1063,30 @@
      "verdict": "allowed"
     },
     "has pinned tweet": {
-     "macro_f1": 0.586,
-     "auroc": 0.594,
-     "bot_mean": 0.258,
-     "human_mean": 0.439,
-     "purest_large_leaf": [
-      0.346,
-      0.629
-     ],
-     "verdict": "allowed"
-    },
-    "default profile image": {
-     "macro_f1": 0.391,
-     "auroc": 0.524,
-     "bot_mean": 0.049,
-     "human_mean": 0.007,
-     "purest_large_leaf": [
-      0.973,
-      0.51
-     ],
-     "verdict": "allowed"
-    },
-    "has url": {
      "macro_f1": 0.585,
-     "auroc": 0.587,
-     "bot_mean": 0.477,
-     "human_mean": 0.649,
-     "purest_large_leaf": [
-      0.439,
-      0.597
-     ],
-     "verdict": "allowed"
-    },
-    "has location": {
-     "macro_f1": 0.581,
-     "auroc": 0.597,
-     "bot_mean": 0.611,
-     "human_mean": 0.795,
-     "purest_large_leaf": [
-      0.296,
-      0.653
-     ],
-     "verdict": "allowed"
-    },
-    "bio empty": {
-     "macro_f1": 0.552,
-     "auroc": 0.607,
-     "bot_mean": 0.249,
-     "human_mean": 0.045,
-     "purest_large_leaf": [
-      0.146,
-      0.843
-     ],
-     "verdict": "allowed"
-    },
-    "bio length": {
-     "macro_f1": 0.59,
-     "auroc": 0.627,
-     "bot_mean": 73.705,
-     "human_mean": 108.479,
-     "purest_large_leaf": [
-      0.199,
-      0.806
-     ],
-     "verdict": "allowed"
-    },
-    "urls in bio": {
-     "macro_f1": 0.437,
-     "auroc": 0.527,
-     "bot_mean": 0.083,
-     "human_mean": 0.146,
-     "purest_large_leaf": [
-      0.91,
-      0.512
-     ],
-     "verdict": "allowed"
-    },
-    "name length": {
-     "macro_f1": 0.495,
-     "auroc": 0.536,
-     "bot_mean": 13.153,
-     "human_mean": 15.248,
-     "purest_large_leaf": [
-      0.23,
-      0.608
-     ],
-     "verdict": "allowed"
-    },
-    "username digits": {
-     "macro_f1": 0.411,
-     "auroc": 0.523,
-     "bot_mean": 0.867,
-     "human_mean": 0.464,
-     "purest_large_leaf": [
-      0.934,
-      0.514
-     ],
-     "verdict": "allowed"
-    },
-    "log followers": {
-     "macro_f1": 0.719,
-     "auroc": 0.719,
-     "bot_mean": 5.202,
-     "human_mean": 7.562,
-     "purest_large_leaf": [
-      0.472,
-      0.73
-     ],
-     "verdict": "allowed"
-    },
-    "log following": {
-     "macro_f1": 0.668,
-     "auroc": 0.668,
-     "bot_mean": 5.46,
-     "human_mean": 6.673,
-     "purest_large_leaf": [
-      0.475,
-      0.671
-     ],
-     "verdict": "allowed"
-    },
-    "log tweet count": {
-     "macro_f1": 0.689,
-     "auroc": 0.689,
-     "bot_mean": 6.314,
-     "human_mean": 8.488,
-     "purest_large_leaf": [
-      0.462,
-      0.706
-     ],
-     "verdict": "allowed"
-    },
-    "log listed count": {
-     "macro_f1": 0.685,
-     "auroc": 0.686,
-     "bot_mean": 1.579,
-     "human_mean": 3.316,
-     "purest_large_leaf": [
-      0.44,
-      0.704
-     ],
-     "verdict": "allowed"
-    },
-    "account age (days)": {
-     "macro_f1": 0.615,
-     "auroc": 0.615,
-     "bot_mean": 2029.775,
-     "human_mean": 2910.042,
-     "purest_large_leaf": [
-      0.493,
-      0.621
-     ],
-     "verdict": "allowed"
-    }
-   },
-   "text": {
-    "bot": {
-     "bio_empty": 0.249,
-     "bio_median_chars": 72.0,
-     "bio_shared_with_another_user": 0.005,
-     "mostly_non_latin": 0.007
-    },
-    "human": {
-     "bio_empty": 0.045,
-     "bio_median_chars": 125.0,
-     "bio_shared_with_another_user": 0.0,
-     "mostly_non_latin": 0.014
-    }
-   }
-  },
-  "4": {
-   "fields": {
-    "verified": {
-     "macro_f1": 0.497,
-     "auroc": 0.584,
-     "bot_mean": 0.0,
-     "human_mean": 0.149,
-     "purest_large_leaf": [
-      0.928,
-      0.539
-     ],
-     "verdict": "SHORTCUT: labelling function in TwiBot-22 (paper \u00a73.2) and documented shortcut (Hays et al., WWW 2023)"
-    },
-    "protected": {
-     "macro_f1": 0.334,
-     "auroc": 0.499,
-     "bot_mean": 0.003,
-     "human_mean": 0.001,
-     "purest_large_leaf": [
-      0.998,
-      0.501
-     ],
-     "verdict": "allowed"
-    },
-    "withheld": {
-     "macro_f1": 0.333,
-     "auroc": 0.499,
-     "bot_mean": 0.0,
-     "human_mean": 0.0,
-     "purest_large_leaf": [
-      1.0,
-      0.5
-     ],
-     "verdict": "allowed"
-    },
-    "has pinned tweet": {
-     "macro_f1": 0.584,
-     "auroc": 0.591,
+     "auroc": 0.592,
      "bot_mean": 0.275,
      "human_mean": 0.446,
      "purest_large_leaf": [
-      0.356,
-      0.619
+      0.354,
+      0.616
      ],
      "verdict": "allowed"
     },
     "default profile image": {
-     "macro_f1": 0.373,
-     "auroc": 0.515,
+     "macro_f1": 0.386,
+     "auroc": 0.521,
      "bot_mean": 0.047,
      "human_mean": 0.009,
      "purest_large_leaf": [
-      0.971,
+      0.972,
       0.51
      ],
      "verdict": "allowed"
     },
     "has url": {
-     "macro_f1": 0.558,
-     "auroc": 0.559,
+     "macro_f1": 0.564,
+     "auroc": 0.565,
      "bot_mean": 0.484,
      "human_mean": 0.613,
      "purest_large_leaf": [
@@ -1096,123 +1096,123 @@
      "verdict": "allowed"
     },
     "has location": {
-     "macro_f1": 0.552,
-     "auroc": 0.573,
+     "macro_f1": 0.576,
+     "auroc": 0.594,
      "bot_mean": 0.638,
      "human_mean": 0.79,
      "purest_large_leaf": [
-      0.287,
-      0.634
+      0.286,
+      0.632
      ],
      "verdict": "allowed"
     },
     "bio empty": {
-     "macro_f1": 0.528,
-     "auroc": 0.588,
+     "macro_f1": 0.54,
+     "auroc": 0.592,
      "bot_mean": 0.254,
      "human_mean": 0.053,
      "purest_large_leaf": [
       0.155,
-      0.835
+      0.831
      ],
      "verdict": "allowed"
     },
     "bio length": {
-     "macro_f1": 0.54,
-     "auroc": 0.593,
+     "macro_f1": 0.551,
+     "auroc": 0.598,
      "bot_mean": 74.331,
      "human_mean": 105.492,
      "purest_large_leaf": [
-      0.174,
-      0.818
+      0.175,
+      0.813
      ],
      "verdict": "allowed"
     },
     "urls in bio": {
-     "macro_f1": 0.427,
-     "auroc": 0.524,
+     "macro_f1": 0.426,
+     "auroc": 0.526,
      "bot_mean": 0.074,
      "human_mean": 0.132,
      "purest_large_leaf": [
-      0.916,
+      0.917,
       0.513
      ],
      "verdict": "allowed"
     },
     "name length": {
-     "macro_f1": 0.52,
-     "auroc": 0.536,
+     "macro_f1": 0.509,
+     "auroc": 0.527,
      "bot_mean": 13.313,
      "human_mean": 15.142,
      "purest_large_leaf": [
-      0.328,
-      0.573
+      0.327,
+      0.572
      ],
      "verdict": "allowed"
     },
     "username digits": {
-     "macro_f1": 0.41,
-     "auroc": 0.509,
+     "macro_f1": 0.511,
+     "auroc": 0.545,
      "bot_mean": 0.835,
      "human_mean": 0.536,
      "purest_large_leaf": [
-      0.912,
-      0.514
+      0.229,
+      0.582
      ],
      "verdict": "allowed"
     },
     "log followers": {
-     "macro_f1": 0.717,
-     "auroc": 0.718,
+     "macro_f1": 0.711,
+     "auroc": 0.712,
      "bot_mean": 5.307,
      "human_mean": 7.653,
      "purest_large_leaf": [
-      0.45,
-      0.736
+      0.451,
+      0.735
      ],
      "verdict": "allowed"
     },
     "log following": {
-     "macro_f1": 0.648,
-     "auroc": 0.651,
+     "macro_f1": 0.663,
+     "auroc": 0.665,
      "bot_mean": 5.535,
      "human_mean": 6.736,
      "purest_large_leaf": [
-      0.42,
-      0.691
+      0.418,
+      0.688
      ],
      "verdict": "allowed"
     },
     "log tweet count": {
-     "macro_f1": 0.691,
-     "auroc": 0.691,
+     "macro_f1": 0.684,
+     "auroc": 0.684,
      "bot_mean": 6.771,
      "human_mean": 8.79,
      "purest_large_leaf": [
-      0.475,
-      0.702
-     ],
-     "verdict": "allowed"
-    },
-    "log listed count": {
-     "macro_f1": 0.686,
-     "auroc": 0.686,
-     "bot_mean": 1.567,
-     "human_mean": 3.306,
-     "purest_large_leaf": [
-      0.435,
+      0.461,
       0.705
      ],
      "verdict": "allowed"
     },
+    "log listed count": {
+     "macro_f1": 0.668,
+     "auroc": 0.671,
+     "bot_mean": 1.567,
+     "human_mean": 3.306,
+     "purest_large_leaf": [
+      0.4,
+      0.721
+     ],
+     "verdict": "allowed"
+    },
     "account age (days)": {
-     "macro_f1": 0.616,
-     "auroc": 0.617,
+     "macro_f1": 0.614,
+     "auroc": 0.615,
      "bot_mean": 2128.556,
      "human_mean": 2961.356,
      "purest_large_leaf": [
-      0.437,
-      0.631
+      0.444,
+      0.629
      ],
      "verdict": "allowed"
     }
@@ -1235,23 +1235,23 @@
   "5": {
    "fields": {
     "verified": {
-     "macro_f1": 0.549,
-     "auroc": 0.615,
+     "macro_f1": 0.522,
+     "auroc": 0.599,
      "bot_mean": 0.0,
      "human_mean": 0.227,
      "purest_large_leaf": [
-      0.113,
+      0.112,
       1.0
      ],
      "verdict": "SHORTCUT: labelling function in TwiBot-22 (paper \u00a73.2) and documented shortcut (Hays et al., WWW 2023)"
     },
     "protected": {
-     "macro_f1": 0.408,
-     "auroc": 0.531,
+     "macro_f1": 0.406,
+     "auroc": 0.529,
      "bot_mean": 0.077,
      "human_mean": 0.017,
      "purest_large_leaf": [
-      0.952,
+      0.954,
       0.515
      ],
      "verdict": "allowed"
@@ -1268,19 +1268,19 @@
      "verdict": "allowed"
     },
     "has pinned tweet": {
-     "macro_f1": 0.647,
-     "auroc": 0.655,
+     "macro_f1": 0.638,
+     "auroc": 0.646,
      "bot_mean": 0.207,
      "human_mean": 0.495,
      "purest_large_leaf": [
-      0.352,
-      0.7
+      0.351,
+      0.699
      ],
      "verdict": "allowed"
     },
     "default profile image": {
-     "macro_f1": 0.456,
-     "auroc": 0.557,
+     "macro_f1": 0.423,
+     "auroc": 0.542,
      "bot_mean": 0.118,
      "human_mean": 0.011,
      "purest_large_leaf": [
@@ -1290,134 +1290,134 @@
      "verdict": "allowed"
     },
     "has url": {
-     "macro_f1": 0.671,
-     "auroc": 0.671,
+     "macro_f1": 0.655,
+     "auroc": 0.655,
      "bot_mean": 0.338,
      "human_mean": 0.662,
      "purest_large_leaf": [
-      0.495,
-      0.661
-     ],
-     "verdict": "allowed"
-    },
-    "has location": {
-     "macro_f1": 0.632,
-     "auroc": 0.641,
-     "bot_mean": 0.525,
-     "human_mean": 0.767,
-     "purest_large_leaf": [
-      0.355,
+      0.497,
       0.663
      ],
      "verdict": "allowed"
     },
+    "has location": {
+     "macro_f1": 0.615,
+     "auroc": 0.624,
+     "bot_mean": 0.525,
+     "human_mean": 0.767,
+     "purest_large_leaf": [
+      0.355,
+      0.659
+     ],
+     "verdict": "allowed"
+    },
     "bio empty": {
-     "macro_f1": 0.648,
-     "auroc": 0.675,
+     "macro_f1": 0.614,
+     "auroc": 0.65,
      "bot_mean": 0.364,
      "human_mean": 0.046,
      "purest_large_leaf": [
-      0.201,
-      0.886
+      0.202,
+      0.884
      ],
      "verdict": "allowed"
     },
     "bio length": {
-     "macro_f1": 0.674,
-     "auroc": 0.691,
+     "macro_f1": 0.655,
+     "auroc": 0.673,
      "bot_mean": 56.907,
      "human_mean": 104.427,
      "purest_large_leaf": [
-      0.258,
-      0.84
+      0.279,
+      0.823
      ],
      "verdict": "allowed"
     },
     "urls in bio": {
-     "macro_f1": 0.425,
-     "auroc": 0.529,
+     "macro_f1": 0.434,
+     "auroc": 0.533,
      "bot_mean": 0.052,
      "human_mean": 0.153,
      "purest_large_leaf": [
       0.918,
-      0.52
+      0.521
      ],
      "verdict": "allowed"
     },
     "name length": {
-     "macro_f1": 0.545,
-     "auroc": 0.574,
+     "macro_f1": 0.537,
+     "auroc": 0.573,
      "bot_mean": 12.46,
      "human_mean": 14.653,
      "purest_large_leaf": [
-      0.25,
+      0.251,
       0.621
      ],
      "verdict": "allowed"
     },
     "username digits": {
-     "macro_f1": 0.548,
-     "auroc": 0.581,
+     "macro_f1": 0.539,
+     "auroc": 0.575,
      "bot_mean": 1.084,
      "human_mean": 0.378,
      "purest_large_leaf": [
-      0.227,
-      0.679
+      0.228,
+      0.676
      ],
      "verdict": "allowed"
     },
     "log followers": {
-     "macro_f1": 0.763,
-     "auroc": 0.763,
+     "macro_f1": 0.744,
+     "auroc": 0.745,
      "bot_mean": 4.669,
      "human_mean": 8.439,
      "purest_large_leaf": [
-      0.461,
-      0.793
+      0.447,
+      0.803
      ],
      "verdict": "allowed"
     },
     "log following": {
-     "macro_f1": 0.676,
-     "auroc": 0.677,
+     "macro_f1": 0.666,
+     "auroc": 0.667,
      "bot_mean": 5.557,
      "human_mean": 6.852,
      "purest_large_leaf": [
-      0.454,
-      0.695
+      0.455,
+      0.696
      ],
      "verdict": "allowed"
     },
     "log tweet count": {
-     "macro_f1": 0.743,
-     "auroc": 0.746,
+     "macro_f1": 0.735,
+     "auroc": 0.737,
      "bot_mean": 4.785,
      "human_mean": 8.182,
      "purest_large_leaf": [
-      0.41,
-      0.796
+      0.409,
+      0.798
      ],
      "verdict": "allowed"
     },
     "log listed count": {
-     "macro_f1": 0.737,
-     "auroc": 0.739,
+     "macro_f1": 0.735,
+     "auroc": 0.736,
      "bot_mean": 1.132,
      "human_mean": 3.826,
      "purest_large_leaf": [
-      0.423,
-      0.79
+      0.431,
+      0.784
      ],
      "verdict": "allowed"
     },
     "account age (days)": {
-     "macro_f1": 0.631,
-     "auroc": 0.633,
+     "macro_f1": 0.63,
+     "auroc": 0.632,
      "bot_mean": 1943.077,
      "human_mean": 3010.14,
      "purest_large_leaf": [
-      0.437,
-      0.663
+      0.433,
+      0.661
      ],
      "verdict": "allowed"
     }
@@ -1440,24 +1440,24 @@
   "6": {
    "fields": {
     "verified": {
-     "macro_f1": 0.549,
-     "auroc": 0.615,
+     "macro_f1": 0.564,
+     "auroc": 0.625,
      "bot_mean": 0.0,
      "human_mean": 0.224,
      "purest_large_leaf": [
-      0.111,
+      0.109,
       1.0
      ],
      "verdict": "SHORTCUT: labelling function in TwiBot-22 (paper \u00a73.2) and documented shortcut (Hays et al., WWW 2023)"
     },
     "protected": {
-     "macro_f1": 0.389,
-     "auroc": 0.522,
+     "macro_f1": 0.388,
+     "auroc": 0.523,
      "bot_mean": 0.061,
      "human_mean": 0.012,
      "purest_large_leaf": [
-      0.963,
-      0.513
+      0.96,
+      0.514
      ],
      "verdict": "allowed"
     },
@@ -1473,19 +1473,19 @@
      "verdict": "allowed"
     },
     "has pinned tweet": {
-     "macro_f1": 0.619,
-     "auroc": 0.624,
+     "macro_f1": 0.626,
+     "auroc": 0.631,
      "bot_mean": 0.245,
      "human_mean": 0.501,
      "purest_large_leaf": [
       0.37,
-      0.675
+      0.669
      ],
      "verdict": "allowed"
     },
     "default profile image": {
-     "macro_f1": 0.453,
-     "auroc": 0.557,
+     "macro_f1": 0.429,
+     "auroc": 0.544,
      "bot_mean": 0.103,
      "human_mean": 0.009,
      "purest_large_leaf": [
@@ -1501,128 +1501,128 @@
      "human_mean": 0.677,
      "purest_large_leaf": [
       0.467,
-      0.652
+      0.653
      ],
      "verdict": "allowed"
     },
     "has location": {
      "macro_f1": 0.572,
-     "auroc": 0.585,
+     "auroc": 0.586,
      "bot_mean": 0.56,
      "human_mean": 0.777,
      "purest_large_leaf": [
-      0.334,
+      0.332,
       0.671
      ],
      "verdict": "allowed"
     },
     "bio empty": {
-     "macro_f1": 0.587,
-     "auroc": 0.63,
+     "macro_f1": 0.588,
+     "auroc": 0.633,
      "bot_mean": 0.303,
      "human_mean": 0.045,
      "purest_large_leaf": [
       0.173,
-      0.871
+      0.87
      ],
      "verdict": "allowed"
     },
     "bio length": {
-     "macro_f1": 0.616,
-     "auroc": 0.645,
+     "macro_f1": 0.603,
+     "auroc": 0.64,
      "bot_mean": 66.393,
      "human_mean": 105.28,
      "purest_large_leaf": [
-      0.219,
-      0.825
+      0.193,
+      0.851
      ],
      "verdict": "allowed"
     },
     "urls in bio": {
-     "macro_f1": 0.433,
-     "auroc": 0.525,
+     "macro_f1": 0.443,
+     "auroc": 0.529,
      "bot_mean": 0.069,
      "human_mean": 0.151,
      "purest_large_leaf": [
-      0.915,
+      0.916,
       0.518
      ],
      "verdict": "allowed"
     },
     "name length": {
-     "macro_f1": 0.524,
-     "auroc": 0.544,
+     "macro_f1": 0.53,
+     "auroc": 0.551,
      "bot_mean": 12.791,
      "human_mean": 14.756,
      "purest_large_leaf": [
-      0.297,
+      0.299,
       0.595
      ],
      "verdict": "allowed"
     },
     "username digits": {
-     "macro_f1": 0.526,
-     "auroc": 0.564,
+     "macro_f1": 0.509,
+     "auroc": 0.549,
      "bot_mean": 0.946,
      "human_mean": 0.376,
      "purest_large_leaf": [
-      0.212,
+      0.211,
       0.653
      ],
      "verdict": "allowed"
     },
     "log followers": {
-     "macro_f1": 0.728,
-     "auroc": 0.728,
+     "macro_f1": 0.729,
+     "auroc": 0.729,
      "bot_mean": 5.171,
      "human_mean": 8.416,
      "purest_large_leaf": [
       0.494,
-      0.751
+      0.753
      ],
      "verdict": "allowed"
     },
     "log following": {
-     "macro_f1": 0.631,
-     "auroc": 0.639,
+     "macro_f1": 0.636,
+     "auroc": 0.643,
      "bot_mean": 5.832,
      "human_mean": 6.848,
      "purest_large_leaf": [
       0.361,
-      0.698
+      0.694
      ],
      "verdict": "allowed"
     },
     "log tweet count": {
-     "macro_f1": 0.72,
-     "auroc": 0.721,
+     "macro_f1": 0.731,
+     "auroc": 0.732,
      "bot_mean": 4.986,
      "human_mean": 8.108,
      "purest_large_leaf": [
-      0.426,
-      0.776
+      0.427,
+      0.775
      ],
      "verdict": "allowed"
     },
     "log listed count": {
-     "macro_f1": 0.708,
-     "auroc": 0.71,
+     "macro_f1": 0.717,
+     "auroc": 0.718,
      "bot_mean": 1.394,
      "human_mean": 3.842,
      "purest_large_leaf": [
-      0.428,
-      0.764
+      0.429,
+      0.765
      ],
      "verdict": "allowed"
     },
     "account age (days)": {
-     "macro_f1": 0.638,
-     "auroc": 0.638,
+     "macro_f1": 0.63,
+     "auroc": 0.63,
      "bot_mean": 1905.375,
      "human_mean": 3018.602,
      "purest_large_leaf": [
-      0.47,
-      0.661
+      0.469,
+      0.663
      ],
      "verdict": "allowed"
     }
@@ -1645,8 +1645,8 @@
   "7": {
    "fields": {
     "verified": {
-     "macro_f1": 0.534,
-     "auroc": 0.607,
+     "macro_f1": 0.554,
+     "auroc": 0.619,
      "bot_mean": 0.0,
      "human_mean": 0.224,
      "purest_large_leaf": [
@@ -1656,8 +1656,8 @@
      "verdict": "SHORTCUT: labelling function in TwiBot-22 (paper \u00a73.2) and documented shortcut (Hays et al., WWW 2023)"
     },
     "protected": {
-     "macro_f1": 0.415,
-     "auroc": 0.533,
+     "macro_f1": 0.409,
+     "auroc": 0.531,
      "bot_mean": 0.086,
      "human_mean": 0.014,
      "purest_large_leaf": [
@@ -1678,18 +1678,18 @@
      "verdict": "allowed"
     },
     "has pinned tweet": {
-     "macro_f1": 0.621,
-     "auroc": 0.627,
+     "macro_f1": 0.624,
+     "auroc": 0.63,
      "bot_mean": 0.221,
      "human_mean": 0.499,
      "purest_large_leaf": [
       0.357,
-      0.699
+      0.7
      ],
      "verdict": "allowed"
     },
     "default profile image": {
-     "macro_f1": 0.449,
+     "macro_f1": 0.45,
      "auroc": 0.555,
      "bot_mean": 0.114,
      "human_mean": 0.01,
@@ -1700,52 +1700,52 @@
      "verdict": "allowed"
     },
     "has url": {
-     "macro_f1": 0.676,
-     "auroc": 0.676,
+     "macro_f1": 0.683,
+     "auroc": 0.683,
      "bot_mean": 0.334,
      "human_mean": 0.659,
      "purest_large_leaf": [
-      0.495,
+      0.497,
       0.661
      ],
      "verdict": "allowed"
     },
     "has location": {
-     "macro_f1": 0.627,
-     "auroc": 0.636,
+     "macro_f1": 0.625,
+     "auroc": 0.634,
      "bot_mean": 0.532,
      "human_mean": 0.777,
      "purest_large_leaf": [
       0.346,
-      0.672
+      0.671
      ],
      "verdict": "allowed"
     },
     "bio empty": {
-     "macro_f1": 0.625,
-     "auroc": 0.66,
+     "macro_f1": 0.631,
+     "auroc": 0.664,
      "bot_mean": 0.356,
      "human_mean": 0.048,
      "purest_large_leaf": [
-      0.203,
-      0.876
+      0.204,
+      0.878
      ],
      "verdict": "allowed"
     },
     "bio length": {
-     "macro_f1": 0.651,
+     "macro_f1": 0.65,
      "auroc": 0.674,
      "bot_mean": 57.826,
      "human_mean": 104.135,
      "purest_large_leaf": [
-      0.248,
-      0.843
+      0.243,
+      0.852
      ],
      "verdict": "allowed"
     },
     "urls in bio": {
-     "macro_f1": 0.441,
-     "auroc": 0.537,
+     "macro_f1": 0.432,
+     "auroc": 0.531,
      "bot_mean": 0.063,
      "human_mean": 0.146,
      "purest_large_leaf": [
@@ -1755,79 +1755,79 @@
      "verdict": "allowed"
     },
     "name length": {
-     "macro_f1": 0.537,
-     "auroc": 0.573,
+     "macro_f1": 0.536,
+     "auroc": 0.578,
      "bot_mean": 12.345,
      "human_mean": 14.464,
      "purest_large_leaf": [
-      0.206,
-      0.633
+      0.208,
+      0.631
      ],
      "verdict": "allowed"
     },
     "username digits": {
-     "macro_f1": 0.539,
-     "auroc": 0.573,
+     "macro_f1": 0.552,
+     "auroc": 0.586,
      "bot_mean": 1.113,
      "human_mean": 0.406,
      "purest_large_leaf": [
-      0.233,
-      0.661
+      0.235,
+      0.656
      ],
      "verdict": "allowed"
     },
     "log followers": {
-     "macro_f1": 0.762,
-     "auroc": 0.762,
+     "macro_f1": 0.763,
+     "auroc": 0.764,
      "bot_mean": 4.716,
      "human_mean": 8.367,
      "purest_large_leaf": [
-      0.453,
-      0.797
+      0.458,
+      0.798
      ],
      "verdict": "allowed"
     },
     "log following": {
-     "macro_f1": 0.665,
-     "auroc": 0.667,
+     "macro_f1": 0.673,
+     "auroc": 0.674,
      "bot_mean": 5.565,
      "human_mean": 6.833,
      "purest_large_leaf": [
-      0.429,
-      0.702
+      0.427,
+      0.704
      ],
      "verdict": "allowed"
     },
     "log tweet count": {
-     "macro_f1": 0.738,
-     "auroc": 0.738,
+     "macro_f1": 0.739,
+     "auroc": 0.739,
      "bot_mean": 4.908,
      "human_mean": 8.09,
      "purest_large_leaf": [
-      0.493,
-      0.731
+      0.496,
+      0.732
      ],
      "verdict": "allowed"
     },
     "log listed count": {
-     "macro_f1": 0.751,
-     "auroc": 0.752,
+     "macro_f1": 0.759,
+     "auroc": 0.76,
      "bot_mean": 1.141,
      "human_mean": 3.821,
      "purest_large_leaf": [
-      0.434,
-      0.784
+      0.435,
+      0.786
      ],
      "verdict": "allowed"
     },
     "account age (days)": {
-     "macro_f1": 0.656,
-     "auroc": 0.657,
+     "macro_f1": 0.644,
+     "auroc": 0.644,
      "bot_mean": 1982.201,
      "human_mean": 3012.565,
      "purest_large_leaf": [
-      0.462,
-      0.638
+      0.495,
+      0.629
      ],
      "verdict": "allowed"
     }
@@ -1850,23 +1850,23 @@
   "8": {
    "fields": {
     "verified": {
-     "macro_f1": 0.559,
-     "auroc": 0.622,
+     "macro_f1": 0.54,
+     "auroc": 0.61,
      "bot_mean": 0.0,
      "human_mean": 0.235,
      "purest_large_leaf": [
-      0.116,
+      0.118,
       1.0
      ],
      "verdict": "SHORTCUT: labelling function in TwiBot-22 (paper \u00a73.2) and documented shortcut (Hays et al., WWW 2023)"
     },
     "protected": {
-     "macro_f1": 0.39,
-     "auroc": 0.522,
+     "macro_f1": 0.401,
+     "auroc": 0.528,
      "bot_mean": 0.075,
      "human_mean": 0.014,
      "purest_large_leaf": [
-      0.953,
+      0.954,
       0.517
      ],
      "verdict": "allowed"
@@ -1883,156 +1883,156 @@
      "verdict": "allowed"
     },
     "has pinned tweet": {
-     "macro_f1": 0.632,
-     "auroc": 0.639,
+     "macro_f1": 0.623,
+     "auroc": 0.631,
      "bot_mean": 0.221,
      "human_mean": 0.501,
      "purest_large_leaf": [
-      0.361,
-      0.694
+      0.363,
+      0.696
      ],
      "verdict": "allowed"
     },
     "default profile image": {
-     "macro_f1": 0.451,
-     "auroc": 0.555,
+     "macro_f1": 0.454,
+     "auroc": 0.557,
      "bot_mean": 0.116,
      "human_mean": 0.011,
      "purest_large_leaf": [
-      0.936,
-      0.528
+      0.938,
+      0.527
      ],
      "verdict": "allowed"
     },
     "has url": {
-     "macro_f1": 0.655,
-     "auroc": 0.655,
+     "macro_f1": 0.661,
+     "auroc": 0.661,
      "bot_mean": 0.348,
      "human_mean": 0.669,
      "purest_large_leaf": [
-      0.493,
-      0.664
+      0.495,
+      0.663
      ],
      "verdict": "allowed"
     },
     "has location": {
-     "macro_f1": 0.63,
-     "auroc": 0.638,
+     "macro_f1": 0.632,
+     "auroc": 0.64,
      "bot_mean": 0.528,
      "human_mean": 0.783,
      "purest_large_leaf": [
       0.343,
-      0.682
+      0.681
      ],
      "verdict": "allowed"
     },
     "bio empty": {
-     "macro_f1": 0.623,
-     "auroc": 0.657,
+     "macro_f1": 0.61,
+     "auroc": 0.646,
      "bot_mean": 0.348,
      "human_mean": 0.046,
      "purest_large_leaf": [
-      0.197,
-      0.879
+      0.196,
+      0.881
      ],
      "verdict": "allowed"
     },
     "bio length": {
-     "macro_f1": 0.647,
-     "auroc": 0.671,
+     "macro_f1": 0.639,
+     "auroc": 0.663,
      "bot_mean": 59.986,
      "human_mean": 105.059,
      "purest_large_leaf": [
-      0.234,
-      0.853
+      0.236,
+      0.852
      ],
      "verdict": "allowed"
     },
     "urls in bio": {
-     "macro_f1": 0.434,
-     "auroc": 0.535,
+     "macro_f1": 0.446,
+     "auroc": 0.54,
      "bot_mean": 0.064,
      "human_mean": 0.148,
      "purest_large_leaf": [
-      0.913,
+      0.916,
       0.518
      ],
      "verdict": "allowed"
     },
     "name length": {
-     "macro_f1": 0.534,
-     "auroc": 0.565,
+     "macro_f1": 0.531,
+     "auroc": 0.559,
      "bot_mean": 12.556,
      "human_mean": 14.622,
      "purest_large_leaf": [
-      0.246,
+      0.244,
       0.616
      ],
      "verdict": "allowed"
     },
     "username digits": {
-     "macro_f1": 0.531,
-     "auroc": 0.568,
+     "macro_f1": 0.538,
+     "auroc": 0.574,
      "bot_mean": 0.988,
      "human_mean": 0.385,
      "purest_large_leaf": [
-      0.218,
-      0.664
+      0.217,
+      0.656
      ],
      "verdict": "allowed"
     },
     "log followers": {
-     "macro_f1": 0.76,
-     "auroc": 0.76,
+     "macro_f1": 0.751,
+     "auroc": 0.751,
      "bot_mean": 4.832,
      "human_mean": 8.399,
      "purest_large_leaf": [
-      0.483,
-      0.77
+      0.485,
+      0.769
      ],
      "verdict": "allowed"
     },
     "log following": {
-     "macro_f1": 0.675,
-     "auroc": 0.676,
+     "macro_f1": 0.645,
+     "auroc": 0.646,
      "bot_mean": 5.629,
      "human_mean": 6.846,
      "purest_large_leaf": [
-      0.441,
-      0.69
+      0.44,
+      0.691
      ],
      "verdict": "allowed"
     },
     "log tweet count": {
-     "macro_f1": 0.742,
-     "auroc": 0.743,
+     "macro_f1": 0.716,
+     "auroc": 0.716,
      "bot_mean": 4.924,
      "human_mean": 8.126,
      "purest_large_leaf": [
-      0.486,
-      0.741
+      0.484,
+      0.745
      ],
      "verdict": "allowed"
     },
     "log listed count": {
-     "macro_f1": 0.735,
-     "auroc": 0.735,
+     "macro_f1": 0.729,
+     "auroc": 0.73,
      "bot_mean": 1.213,
      "human_mean": 3.813,
      "purest_large_leaf": [
-      0.459,
-      0.757
+      0.458,
+      0.756
      ],
      "verdict": "allowed"
     },
     "account age (days)": {
-     "macro_f1": 0.645,
-     "auroc": 0.647,
+     "macro_f1": 0.642,
+     "auroc": 0.644,
      "bot_mean": 1959.779,
      "human_mean": 3010.467,
      "purest_large_leaf": [
-      0.424,
-      0.661
+      0.426,
+      0.659
      ],
      "verdict": "allowed"
     }
@@ -2055,8 +2055,8 @@
   "9": {
    "fields": {
     "verified": {
-     "macro_f1": 0.545,
-     "auroc": 0.613,
+     "macro_f1": 0.54,
+     "auroc": 0.61,
      "bot_mean": 0.0,
      "human_mean": 0.224,
      "purest_large_leaf": [
@@ -2066,8 +2066,8 @@
      "verdict": "SHORTCUT: labelling function in TwiBot-22 (paper \u00a73.2) and documented shortcut (Hays et al., WWW 2023)"
     },
     "protected": {
-     "macro_f1": 0.394,
-     "auroc": 0.525,
+     "macro_f1": 0.393,
+     "auroc": 0.523,
      "bot_mean": 0.073,
      "human_mean": 0.011,
      "purest_large_leaf": [
@@ -2088,156 +2088,156 @@
      "verdict": "allowed"
     },
     "has pinned tweet": {
-     "macro_f1": 0.647,
-     "auroc": 0.654,
+     "macro_f1": 0.635,
+     "auroc": 0.643,
      "bot_mean": 0.214,
      "human_mean": 0.496,
      "purest_large_leaf": [
-      0.354,
-      0.695
+      0.353,
+      0.692
      ],
      "verdict": "allowed"
     },
     "default profile image": {
-     "macro_f1": 0.443,
-     "auroc": 0.549,
+     "macro_f1": 0.44,
+     "auroc": 0.547,
      "bot_mean": 0.114,
      "human_mean": 0.013,
      "purest_large_leaf": [
-      0.937,
-      0.527
+      0.936,
+      0.528
      ],
      "verdict": "allowed"
     },
     "has url": {
-     "macro_f1": 0.651,
-     "auroc": 0.651,
+     "macro_f1": 0.654,
+     "auroc": 0.654,
      "bot_mean": 0.338,
      "human_mean": 0.661,
      "purest_large_leaf": [
-      0.499,
-      0.665
+      0.498,
+      0.664
      ],
      "verdict": "allowed"
     },
     "has location": {
-     "macro_f1": 0.599,
-     "auroc": 0.607,
+     "macro_f1": 0.617,
+     "auroc": 0.626,
      "bot_mean": 0.524,
      "human_mean": 0.768,
      "purest_large_leaf": [
-      0.353,
+      0.355,
       0.678
      ],
      "verdict": "allowed"
     },
     "bio empty": {
-     "macro_f1": 0.629,
-     "auroc": 0.66,
+     "macro_f1": 0.619,
+     "auroc": 0.653,
      "bot_mean": 0.36,
      "human_mean": 0.053,
      "purest_large_leaf": [
-      0.206,
-      0.868
+      0.208,
+      0.865
      ],
      "verdict": "allowed"
     },
     "bio length": {
-     "macro_f1": 0.653,
-     "auroc": 0.674,
+     "macro_f1": 0.646,
+     "auroc": 0.669,
      "bot_mean": 58.045,
      "human_mean": 103.852,
      "purest_large_leaf": [
-      0.261,
-      0.831
+      0.263,
+      0.83
      ],
      "verdict": "allowed"
     },
     "urls in bio": {
-     "macro_f1": 0.425,
-     "auroc": 0.528,
+     "macro_f1": 0.424,
+     "auroc": 0.527,
      "bot_mean": 0.063,
      "human_mean": 0.142,
      "purest_large_leaf": [
-      0.915,
+      0.916,
       0.517
      ],
      "verdict": "allowed"
     },
     "name length": {
-     "macro_f1": 0.516,
-     "auroc": 0.547,
+     "macro_f1": 0.501,
+     "auroc": 0.533,
      "bot_mean": 12.216,
      "human_mean": 14.664,
      "purest_large_leaf": [
-      0.262,
-      0.631
+      0.263,
+      0.628
      ],
      "verdict": "allowed"
     },
     "username digits": {
-     "macro_f1": 0.538,
-     "auroc": 0.571,
+     "macro_f1": 0.546,
+     "auroc": 0.58,
      "bot_mean": 1.1,
      "human_mean": 0.415,
      "purest_large_leaf": [
       0.234,
-      0.667
+      0.665
      ],
      "verdict": "allowed"
     },
     "log followers": {
-     "macro_f1": 0.75,
-     "auroc": 0.751,
+     "macro_f1": 0.762,
+     "auroc": 0.762,
      "bot_mean": 4.799,
      "human_mean": 8.401,
      "purest_large_leaf": [
-      0.444,
-      0.797
+      0.463,
+      0.786
      ],
      "verdict": "allowed"
     },
     "log following": {
-     "macro_f1": 0.683,
-     "auroc": 0.683,
+     "macro_f1": 0.709,
+     "auroc": 0.709,
      "bot_mean": 5.587,
      "human_mean": 6.847,
      "purest_large_leaf": [
-      0.476,
-      0.68
+      0.474,
+      0.681
      ],
      "verdict": "allowed"
     },
     "log tweet count": {
-     "macro_f1": 0.714,
-     "auroc": 0.716,
+     "macro_f1": 0.702,
+     "auroc": 0.702,
      "bot_mean": 4.99,
      "human_mean": 8.084,
      "purest_large_leaf": [
-      0.428,
-      0.769
+      0.489,
+      0.737
      ],
      "verdict": "allowed"
     },
     "log listed count": {
-     "macro_f1": 0.728,
-     "auroc": 0.728,
+     "macro_f1": 0.723,
+     "auroc": 0.723,
      "bot_mean": 1.212,
      "human_mean": 3.797,
      "purest_large_leaf": [
-      0.47,
-      0.753
+      0.469,
+      0.754
      ],
      "verdict": "allowed"
     },
     "account age (days)": {
-     "macro_f1": 0.622,
-     "auroc": 0.624,
+     "macro_f1": 0.617,
+     "auroc": 0.621,
      "bot_mean": 1969.634,
      "human_mean": 2980.992,
      "purest_large_leaf": [
-      0.421,
-      0.659
+      0.422,
+      0.657
      ],
      "verdict": "allowed"
     }

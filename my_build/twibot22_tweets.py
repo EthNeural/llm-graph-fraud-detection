@@ -7,7 +7,8 @@ hours, so we split the stream on that object marker, read author_id with a regex
 only the tweets of users we keep (~1-10% of them). About 2-4 min per file on the Mac.
 
 Users kept: the union of the paper's 10 sub-communities (91,719 users) unless IDS=<json list>.
-At most MAX_PER_USER tweets per user are kept (the first ones met). TwiBot-20 used 20 per user.
+Up to MAX_PER_USER tweets per user are kept (the first ones met); prep_twibot22.py then takes the
+most recent N_TWEETS by date. TwiBot-20 used 20 per user.
 
 Output: data/twibot-22/tweets_subset.parquet with
         user_id, tweet_id, created_at, lang, source, is_retweet, is_reply, text
@@ -27,7 +28,8 @@ import pandas as pd
 ROOT = Path(__file__).resolve().parent
 RAW = ROOT.parent / "data" / "twibot-22-raw"
 OUT = ROOT.parent / "data" / "twibot-22"
-MAX_PER_USER = 50
+MAX_PER_USER = 200       # high enough to keep (almost) every tweet, so prep can pick the most
+                         # recent ones by date; a low cap would make the choice depend on file order
 CHUNK = 64 << 20
 MARK = '{"attachments": '
 AUTHOR = re.compile(r'"author_id": (\d+),')
