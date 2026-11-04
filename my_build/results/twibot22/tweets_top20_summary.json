@@ -1,0 +1,103 @@
+{
+ "files": {
+  "tweet_0.json": {
+   "tweets": 10000000,
+   "author_misses": 0,
+   "date_misses": 0,
+   "timezone_not_utc": 0,
+   "unlabelled_author": 0,
+   "decoded": 3648545,
+   "decode_errors": 0
+  },
+  "tweet_1.json": {
+   "tweets": 10000000,
+   "author_misses": 0,
+   "date_misses": 0,
+   "timezone_not_utc": 0,
+   "unlabelled_author": 0,
+   "decoded": 1057088,
+   "decode_errors": 0
+  },
+  "tweet_2.json": {
+   "tweets": 10000000,
+   "author_misses": 0,
+   "date_misses": 0,
+   "timezone_not_utc": 0,
+   "unlabelled_author": 0,
+   "decoded": 626049,
+   "decode_errors": 0
+  },
+  "tweet_3.json": {
+   "tweets": 10000000,
+   "author_misses": 0,
+   "date_misses": 0,
+   "timezone_not_utc": 0,
+   "unlabelled_author": 0,
+   "decoded": 632935,
+   "decode_errors": 0
+  },
+  "tweet_4.json": {
+   "tweets": 10000000,
+   "author_misses": 0,
+   "date_misses": 0,
+   "timezone_not_utc": 0,
+   "unlabelled_author": 0,
+   "decoded": 2727923,
+   "decode_errors": 0
+  },
+  "tweet_5.json": {
+   "tweets": 10000000,
+   "author_misses": 0,
+   "date_misses": 0,
+   "timezone_not_utc": 0,
+   "unlabelled_author": 0,
+   "decoded": 1725422,
+   "decode_errors": 0
+  },
+  "tweet_6.json": {
+   "tweets": 10000000,
+   "author_misses": 0,
+   "date_misses": 0,
+   "timezone_not_utc": 0,
+   "unlabelled_author": 0,
+   "decoded": 2856704,
+   "decode_errors": 0
+  },
+  "tweet_7.json": {
+   "tweets": 10000000,
+   "author_misses": 0,
+   "date_misses": 0,
+   "timezone_not_utc": 0,
+   "unlabelled_author": 0,
+   "decoded": 2957512,
+   "decode_errors": 0
+  },
+  "tweet_8.json": {
+   "tweets": 8217457,
+   "author_misses": 0,
+   "date_misses": 0,
+   "timezone_not_utc": 0,
+   "unlabelled_author": 0,
+   "decoded": 1606420,
+   "decode_errors": 0
+  }
+ },
+ "total_tweets": 88217457,
+ "post_edges_in_edge_csv": 88217457,
+ "labelled_author_tweets": 88217457,
+ "dates": {
+  "min": "2006-03-21T20:50:14",
+  "max": "2022-03-15T01:16:35",
+  "after_collection_end": 0
+ },
+ "n_keep": 20,
+ "users_with_tweets": 933872,
+ "zero_tweet_share": {
+  "bot": 0.1764,
+  "human": 0.0482
+ },
+ "median_tweets_per_user": {
+  "all": 51.0,
+  "with_tweets": 53.0
+ }
+}
