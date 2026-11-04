@@ -1,0 +1,68 @@
+[
+  {
+    "features": "own only",
+    "model": "MLP (same features)",
+    "all_test": {
+      "macro_f1": 0.758,
+      "auroc": 0.8256,
+      "pr_auc": 0.8488,
+      "macro_f1_std": 0.003,
+      "auroc_std": 0.0018,
+      "pr_auc_std": 0.0013
+    },
+    "non_verified_test": {
+      "macro_f1": 0.6904,
+      "auroc": 0.7912,
+      "pr_auc": 0.9105,
+      "macro_f1_std": 0.0047,
+      "auroc_std": 0.0042,
+      "pr_auc_std": 0.0012
+    },
+    "n_test": 1183,
+    "n_non_verified_test": 857
+  },
+  {
+    "features": "own + neighbour mean + degree",
+    "model": "MLP (same features)",
+    "all_test": {
+      "macro_f1": 0.7495,
+      "auroc": 0.8199,
+      "pr_auc": 0.8442,
+      "macro_f1_std": 0.004,
+      "auroc_std": 0.0011,
+      "pr_auc_std": 0.0012
+    },
+    "non_verified_test": {
+      "macro_f1": 0.6845,
+      "auroc": 0.7785,
+      "pr_auc": 0.9037,
+      "macro_f1_std": 0.004,
+      "auroc_std": 0.0016,
+      "pr_auc_std": 0.0019
+    },
+    "n_test": 1183,
+    "n_non_verified_test": 857
+  },
+  {
+    "features": "own + neighbour mean + degree + in/out degrees (crawl artefact)",
+    "model": "MLP (same features)",
+    "all_test": {
+      "macro_f1": 0.7668,
+      "auroc": 0.8436,
+      "pr_auc": 0.859,
+      "macro_f1_std": 0.0024,
+      "auroc_std": 0.0014,
+      "pr_auc_std": 0.0009
+    },
+    "non_verified_test": {
+      "macro_f1": 0.6823,
+      "auroc": 0.775,
+      "pr_auc": 0.9022,
+      "macro_f1_std": 0.0026,
+      "auroc_std": 0.0008,
+      "pr_auc_std": 0.0012
+    },
+    "n_test": 1183,
+    "n_non_verified_test": 857
+  }
+]

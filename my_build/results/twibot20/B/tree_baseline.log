@@ -1,0 +1,25 @@
+=== 2026-11-04 20:14:51 SETTING=B MODEL=tree OMP_NUM_THREADS=1
+HistGradientBoosting  own only                                                           all 0.602±0.020 AUROC 0.735 PR 0.259 | non-verified 0.599 AUROC 0.699 PR 0.381
+HistGradientBoosting  own + neighbour mean + degree                                      all 0.614±0.036 AUROC 0.717 PR 0.258 | non-verified 0.610 AUROC 0.689 PR 0.383
+HistGradientBoosting  own + neighbour mean + degree + in/out degrees (crawl artefact)    all 0.613±0.014 AUROC 0.771 PR 0.307 | non-verified 0.625 AUROC 0.723 PR 0.423
+saved /Users/pj/Desktop/Macquarie - Sem 4/PROJECT/Graph-based-fraud-detection-system/my_build/results/twibot20/B/tree_baseline_tree.json
+=== exit code 0 (SETTING=B MODEL=tree)
+=== 2026-11-04 20:14:54 SETTING=B MODEL=mlp OMP_NUM_THREADS=1
+MLP (same features)   own only                                                           all 0.602±0.012 AUROC 0.708 PR 0.242 | non-verified 0.607 AUROC 0.698 PR 0.391
+MLP (same features)   own + neighbour mean + degree                                      all 0.575±0.031 AUROC 0.687 PR 0.213 | non-verified 0.568 AUROC 0.666 PR 0.331
+MLP (same features)   own + neighbour mean + degree + in/out degrees (crawl artefact)    all 0.633±0.029 AUROC 0.747 PR 0.255 | non-verified 0.625 AUROC 0.693 PR 0.362
+saved /Users/pj/Desktop/Macquarie - Sem 4/PROJECT/Graph-based-fraud-detection-system/my_build/results/twibot20/B/tree_baseline_mlp.json
+=== exit code 0 (SETTING=B MODEL=mlp)
+=== 2026-11-04 20:15:02 SETTING=B MODEL=table OMP_NUM_THREADS=1
+
+TwiBot-20 setting B: test set (all users | non-verified users)
+model                 features                                                               F1  AUROC PR-AUC |     F1  AUROC PR-AUC
+HistGradientBoosting  own + neighbour mean + degree                                       0.614  0.717  0.258 |  0.610  0.689  0.383
+MLP (same features)   own + neighbour mean + degree                                       0.575  0.687  0.213 |  0.568  0.666  0.331
+HistGradientBoosting  own + neighbour mean + degree + in/out degrees (crawl artefact)     0.613  0.771  0.307 |  0.625  0.723  0.423
+MLP (same features)   own + neighbour mean + degree + in/out degrees (crawl artefact)     0.633  0.747  0.255 |  0.625  0.693  0.362
+HistGradientBoosting  own only                                                            0.602  0.735  0.259 |  0.599  0.699  0.381
+MLP (same features)   own only                                                            0.602  0.708  0.242 |  0.607  0.698  0.391
+step 4 Qwen2.5 + MLP (default) full embedding (reference; non-verified not saved)                  0.613  0.787  0.269 |      –      –      –
+step 4 Qwen2.5 + MLP (tuned) (not available for this setting)                                  
+=== exit code 0 (SETTING=B MODEL=table)

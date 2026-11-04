@@ -1,0 +1,68 @@
+[
+  {
+    "features": "own only",
+    "model": "HistGradientBoosting",
+    "all_test": {
+      "macro_f1": 0.602,
+      "auroc": 0.7354,
+      "pr_auc": 0.2589,
+      "macro_f1_std": 0.0202,
+      "auroc_std": 0.0139,
+      "pr_auc_std": 0.0223
+    },
+    "non_verified_test": {
+      "macro_f1": 0.5994,
+      "auroc": 0.699,
+      "pr_auc": 0.3806,
+      "macro_f1_std": 0.0274,
+      "auroc_std": 0.0135,
+      "pr_auc_std": 0.0267
+    },
+    "n_test": 597,
+    "n_non_verified_test": 271
+  },
+  {
+    "features": "own + neighbour mean + degree",
+    "model": "HistGradientBoosting",
+    "all_test": {
+      "macro_f1": 0.6143,
+      "auroc": 0.7174,
+      "pr_auc": 0.2577,
+      "macro_f1_std": 0.0359,
+      "auroc_std": 0.0083,
+      "pr_auc_std": 0.0164
+    },
+    "non_verified_test": {
+      "macro_f1": 0.6095,
+      "auroc": 0.6894,
+      "pr_auc": 0.3826,
+      "macro_f1_std": 0.0564,
+      "auroc_std": 0.0058,
+      "pr_auc_std": 0.027
+    },
+    "n_test": 597,
+    "n_non_verified_test": 271
+  },
+  {
+    "features": "own + neighbour mean + degree + in/out degrees (crawl artefact)",
+    "model": "HistGradientBoosting",
+    "all_test": {
+      "macro_f1": 0.6132,
+      "auroc": 0.7706,
+      "pr_auc": 0.3066,
+      "macro_f1_std": 0.014,
+      "auroc_std": 0.0108,
+      "pr_auc_std": 0.0312
+    },
+    "non_verified_test": {
+      "macro_f1": 0.6252,
+      "auroc": 0.7228,
+      "pr_auc": 0.4229,
+      "macro_f1_std": 0.0164,
+      "auroc_std": 0.0137,
+      "pr_auc_std": 0.0275
+    },
+    "n_test": 597,
+    "n_non_verified_test": 271
+  }
+]
