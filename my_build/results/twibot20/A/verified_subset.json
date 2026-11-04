@@ -1,0 +1,240 @@
+{
+ "split_is_official": true,
+ "splits": {
+  "train": {
+   "n": 8278,
+   "bot_share": 0.561,
+   "verified": 2057,
+   "verified_share": 0.248,
+   "verified_bots": 1,
+   "non_verified": 6221,
+   "non_verified_bot_share": 0.747
+  },
+  "val": {
+   "n": 2365,
+   "bot_share": 0.551,
+   "verified": 581,
+   "verified_share": 0.246,
+   "verified_bots": 0,
+   "non_verified": 1784,
+   "non_verified_bot_share": 0.73
+  },
+  "test": {
+   "n": 1183,
+   "bot_share": 0.541,
+   "verified": 326,
+   "verified_share": 0.276,
+   "verified_bots": 0,
+   "non_verified": 857,
+   "non_verified_bot_share": 0.747
+  }
+ },
+ "lora": {
+  "target_run0_best_loss": {
+   "file": "step6_Qwen3-1.7B_target_scores.npz",
+   "val_cut": 0.5927,
+   "all_test": {
+    "n": 1183,
+    "bot_share": 0.541,
+    "macro_f1": 0.704,
+    "auroc": 0.782,
+    "pr_auc": 0.817
+   },
+   "non_verified_test": {
+    "n": 857,
+    "bot_share": 0.747,
+    "macro_f1": 0.641,
+    "auroc": 0.754,
+    "pr_auc": 0.897
+   }
+  },
+  "target_run0_last": {
+   "file": "step6_Qwen3-1.7B_target_last_scores.npz",
+   "val_cut": 0.6893,
+   "all_test": {
+    "n": 1183,
+    "bot_share": 0.541,
+    "macro_f1": 0.728,
+    "auroc": 0.812,
+    "pr_auc": 0.838
+   },
+   "non_verified_test": {
+    "n": 857,
+    "bot_share": 0.747,
+    "macro_f1": 0.637,
+    "auroc": 0.735,
+    "pr_auc": 0.891
+   }
+  },
+  "target_seed1_best_loss": {
+   "file": "step6_Qwen3-1.7B_target_s1_scores.npz",
+   "val_cut": 0.5078,
+   "all_test": {
+    "n": 1183,
+    "bot_share": 0.541,
+    "macro_f1": 0.728,
+    "auroc": 0.812,
+    "pr_auc": 0.846
+   },
+   "non_verified_test": {
+    "n": 857,
+    "bot_share": 0.747,
+    "macro_f1": 0.656,
+    "auroc": 0.759,
+    "pr_auc": 0.903
+   }
+  },
+  "target_seed1_last": {
+   "file": "step6_Qwen3-1.7B_target_s1_last_scores.npz",
+   "val_cut": 0.4207,
+   "all_test": {
+    "n": 1183,
+    "bot_share": 0.541,
+    "macro_f1": 0.736,
+    "auroc": 0.817,
+    "pr_auc": 0.833
+   },
+   "non_verified_test": {
+    "n": 857,
+    "bot_share": 0.747,
+    "macro_f1": 0.667,
+    "auroc": 0.754,
+    "pr_auc": 0.89
+   }
+  },
+  "dgp_run0_best_loss": {
+   "file": "step6_Qwen3-1.7B_dgp_scores.npz",
+   "val_cut": 0.5351,
+   "all_test": {
+    "n": 1183,
+    "bot_share": 0.541,
+    "macro_f1": 0.711,
+    "auroc": 0.794,
+    "pr_auc": 0.826
+   },
+   "non_verified_test": {
+    "n": 857,
+    "bot_share": 0.747,
+    "macro_f1": 0.649,
+    "auroc": 0.754,
+    "pr_auc": 0.895
+   }
+  },
+  "dgp_run0_last": {
+   "file": "step6_Qwen3-1.7B_dgp_last_scores.npz",
+   "val_cut": 0.8207,
+   "all_test": {
+    "n": 1183,
+    "bot_share": 0.541,
+    "macro_f1": 0.727,
+    "auroc": 0.815,
+    "pr_auc": 0.85
+   },
+   "non_verified_test": {
+    "n": 857,
+    "bot_share": 0.747,
+    "macro_f1": 0.658,
+    "auroc": 0.78,
+    "pr_auc": 0.914
+   }
+  },
+  "dgp_seed1_best_loss": {
+   "file": "step6_Qwen3-1.7B_dgp_s1_scores.npz",
+   "val_cut": 0.618,
+   "all_test": {
+    "n": 1183,
+    "bot_share": 0.541,
+    "macro_f1": 0.745,
+    "auroc": 0.827,
+    "pr_auc": 0.855
+   },
+   "non_verified_test": {
+    "n": 857,
+    "bot_share": 0.747,
+    "macro_f1": 0.675,
+    "auroc": 0.775,
+    "pr_auc": 0.912
+   }
+  },
+  "dgp_seed1_last": {
+   "file": "step6_Qwen3-1.7B_dgp_s1_last_scores.npz",
+   "val_cut": 0.0072,
+   "all_test": {
+    "n": 1183,
+    "bot_share": 0.541,
+    "macro_f1": 0.72,
+    "auroc": 0.79,
+    "pr_auc": 0.801
+   },
+   "non_verified_test": {
+    "n": 857,
+    "bot_share": 0.747,
+    "macro_f1": 0.626,
+    "auroc": 0.7,
+    "pr_auc": 0.865
+   }
+  }
+ },
+ "not_saved": [
+  "LR",
+  "MLP",
+  "GCN"
+ ],
+ "claims": [
+  {
+   "claim": "C1 verified test users = 326",
+   "real": 326,
+   "claimed": 326,
+   "verdict": "CONFIRMED"
+  },
+  {
+   "claim": "C2 verified test users who are bots = 0",
+   "real": 0,
+   "claimed": 0,
+   "verdict": "CONFIRMED"
+  },
+  {
+   "claim": "C3 bot share among non-verified test users ~ 0.75",
+   "real": 0.747,
+   "claimed": 0.75,
+   "verdict": "CONFIRMED"
+  },
+  {
+   "claim": "C4 target run0 macro-F1, all test = 0.704",
+   "real": 0.704,
+   "claimed": 0.704,
+   "verdict": "CONFIRMED"
+  },
+  {
+   "claim": "C4 target run0 macro-F1, non-verified = 0.641",
+   "real": 0.641,
+   "claimed": 0.641,
+   "verdict": "CONFIRMED"
+  },
+  {
+   "claim": "C4 target run0 AUROC, all test = 0.782",
+   "real": 0.782,
+   "claimed": 0.782,
+   "verdict": "CONFIRMED"
+  },
+  {
+   "claim": "C4 target run0 AUROC, non-verified = 0.754",
+   "real": 0.754,
+   "claimed": 0.754,
+   "verdict": "CONFIRMED"
+  },
+  {
+   "claim": "C5 dgp run0 macro-F1, non-verified = 0.649",
+   "real": 0.649,
+   "claimed": 0.649,
+   "verdict": "CONFIRMED"
+  },
+  {
+   "claim": "C5 dgp run0 AUROC, non-verified = 0.754",
+   "real": 0.754,
+   "claimed": 0.754,
+   "verdict": "CONFIRMED"
+  }
+ ],
+ "note": "Cut-off chosen on the full validation set and applied unchanged to both test groups. 'best_loss' = adapter with the lowest validation loss; 'last' = final check's adapter."
+}
