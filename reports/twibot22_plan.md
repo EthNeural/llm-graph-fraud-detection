@@ -65,13 +65,32 @@ Read: every relation is near random for labels (adjusted homophily 0.011–0.038
 
 **Feature table** (`twibot22_features.py`): 814 features per user. That is 47 base features (15 profile fields + 32 bio PCA dims), plus per relation and direction the log count and mean of the neighbours' base features, plus 1- and 2-hop union means.
 
-## Next
+## Done (4 Nov)
 
-1. `edge.csv`, then the 8-relation heterophily table (`twibot22_relations.py`); choose 5 relations.
-2. Fix the remaining script issues from the lessons report: per-design output folders; `DATASET=twibot22` in `common.py`; TwiBot-22 field names and dates in `metadata_check.py` and `step6_dgp.py`.
-3. Neighbour-feature build, then XGB-Graph and MLP on 1M users. Run trees with `OMP_NUM_THREADS=1` or without torch (TwiBot-20's tree baseline crashed silently).
-4. Draw the LLM sample; GPU runs.
-5. Resume the paused TwiBot-20 GPU queue (LoRA seed 2, `dgp_num`) after the TwiBot-22 experiments.
+- Raw data organised in `data/twibot-22-raw/`: `edge.csv` (complete, 6.64 GB), `user.json`, labels, split, sub-communities and expert labels.
+- Profile shortcut check, 8-relation heterophily table, star-shape and tweet-coverage checks, each checked by a sceptic pass.
+- Relations fixed; our split fixed; 814-feature full-graph table built.
+- Bio embeddings for all 1M users: MiniLM done; multilingual-E5 running; Qwen2.5-1.5B queued (GPU).
+
+## Next, in order
+
+Deadline: experiments finished by Sat 7 Nov night; Sun 8 Nov is writing only.
+
+1. **Pre-registration (before step 2).** Write the checkpoint and model-selection rule into the scripts (best validation macro-F1, cut-off chosen on validation), along with seeds (3) and metrics (macro-F1, AUROC, AUPRC, bootstrap CIs). The checklist is in `twibot20_lessons_for_twibot22.md`.
+2. **Cheap models on all 1M users (CPU).** Run each with `OMP_NUM_THREADS=1`, without torch in the same process: the TwiBot-20 tree baseline crashed silently that way.
+   - Profile-only MLP and trees.
+   - **Degree-only / "has an edge" model**: measures the crawl artefact.
+   - MLP on base features.
+   - **XGB-Graph** (GADBench recipe: own + mean 1-hop + mean 2-hop), merged graph and per relation.
+   - DEC-lite: the 814 features into gradient-boosted trees.
+   - Each scored on our test set, the expert set (all 986 and non-verified only), and the official split for comparison.
+3. **GNNs on the full graph (CPU).** GCN, SAGE, FAGCN, LINKX, plus an RGCN over the 5 relations. Fall back to neighbour sampling if memory runs out.
+4. **Tweets.** When the `tweet_*.json` files finish downloading: `twibot22_tweets.py` → text = bio + 20 most recent tweets → re-embed the LLM sample.
+5. **LLM sample (GPU).** A stratified random sample at 14% bots, neighbours taken from the full graph. LLM embeddings, then DGP with LoRA. Score the graph models on the same test users so the comparison is paired.
+6. **Optional:** DEC's noisy-then-clean training (weak labels → expert labels), only if time is left.
+7. **Script fixes still open:** per-design output folders; `DATASET=twibot22` in `common.py`; TwiBot-22 field names and dates in `metadata_check.py` and `step6_dgp.py`.
+8. **After TwiBot-22:** resume the paused TwiBot-20 GPU queue (LoRA seed 2, `dgp_num`), and rerun the TwiBot-20 tree baseline.
+9. **Report (Sun):** update REPORT.md, then write the submission (7 pages, template sections, 4–5 diagrams). Every claim gets a sceptic pass.
 
 ## Licence
 
