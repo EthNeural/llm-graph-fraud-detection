@@ -100,6 +100,7 @@ Status: ✅ done and checked · 🟡 partly done · ⬜ to do · ➖ not needed 
 | H6 | Results naming that cannot overwrite: one folder per design and seed; seeds fixed per model (lessons 18–20) | ✅ | `save_scores()` writes `runs/<design>/<model>_s<seed>.npz` and refuses to overwrite |
 | H7 | GPU-time estimate for the LLM sample (embedding + LoRA) and a pre-set fallback sample size if it does not fit by Sat | ⬜ | Before B5 is final |
 | H8 | Sealed users: ids saved to disk before the sample draw; every scoring script refuses them before the final run | ✅ | `twibot22_guard.score_mask()` returns test_work unless `FINAL_RUN=1`; `assert_not_sealed()` stops otherwise (tested) |
+| H10 | **Sample neighbour features from bio + tweet embeddings** (headline, F6): for the 100,986 sample users, the per-relation and 1-/2-hop neighbour text means are recomputed from the multilingual-E5 bio + tweet embeddings (neighbours are hubs or sample users, all embedded); profile columns unchanged. Saved as its own file next to the embeddings; shortcut rule rerun on it | ⬜ | ~5–10 min CPU, after the embedding finishes. Found missing 5 Nov 00:40 |
 | H9 | Extraction time | ✅ | 7 min in total (index 2.5 min at ~900 MB/s, select 1 min, decode 4 min) |
 
 Simplified (descriptive only, not gates): C6 language mix, C8 date range (folded into the C1 counts), C4 zero-tweet counts. G5 reweighted PR-AUC is computed from saved scores after the runs; it changes no model.
