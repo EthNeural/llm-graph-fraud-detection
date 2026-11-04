@@ -1,0 +1,148 @@
+{
+ "row_order": {
+  "users_parquet_reindexed_to_label_order": true,
+  "split_ours_len": true,
+  "features_full_rows": true,
+  "emb_minilm": {
+   "rows_ok": true,
+   "zero_rows_equal_empty_bios": true,
+   "zero_rows": 124231,
+   "empty_bios": 124231
+  },
+  "emb_e5": {
+   "rows_ok": true,
+   "zero_rows_equal_empty_bios": true,
+   "zero_rows": 124231,
+   "empty_bios": 124231
+  }
+ },
+ "crawl_design_val": {
+  "following": {
+   "val_auroc_log_in_degree": 0.355,
+   "val_auroc_log_out_degree": 0.5,
+   "val_has_in_edge_bot_human": [
+    0.319,
+    0.561
+   ],
+   "val_has_out_edge_bot_human": [
+    0.01,
+    0.01
+   ],
+   "max_out_degree": 907,
+   "max_in_degree": 2076,
+   "users_at_max_out_degree": 1,
+   "reciprocity": 0.0092
+  },
+  "followers": {
+   "val_auroc_log_in_degree": 0.491,
+   "val_auroc_log_out_degree": 0.499,
+   "val_has_in_edge_bot_human": [
+    0.432,
+    0.431
+   ],
+   "val_has_out_edge_bot_human": [
+    0.009,
+    0.01
+   ],
+   "max_out_degree": 703,
+   "max_in_degree": 313,
+   "users_at_max_out_degree": 1,
+   "reciprocity": 0.0099
+  },
+  "mention": {
+   "val_auroc_log_in_degree": 0.386,
+   "val_auroc_log_out_degree": 0.499,
+   "val_has_in_edge_bot_human": [
+    0.208,
+    0.414
+   ],
+   "val_has_out_edge_bot_human": [
+    0.007,
+    0.01
+   ],
+   "max_out_degree": 1046,
+   "max_in_degree": 2035,
+   "users_at_max_out_degree": 1,
+   "reciprocity": 0.0079
+  },
+  "retweet": {
+   "val_auroc_log_in_degree": 0.417,
+   "val_auroc_log_out_degree": 0.499,
+   "val_has_in_edge_bot_human": [
+    0.09,
+    0.251
+   ],
+   "val_has_out_edge_bot_human": [
+    0.006,
+    0.009
+   ],
+   "max_out_degree": 592,
+   "max_in_degree": 574,
+   "users_at_max_out_degree": 1,
+   "reciprocity": 0.0048
+  },
+  "reply": {
+   "val_auroc_log_in_degree": 0.436,
+   "val_auroc_log_out_degree": 0.499,
+   "val_has_in_edge_bot_human": [
+    0.08,
+    0.205
+   ],
+   "val_has_out_edge_bot_human": [
+    0.006,
+    0.008
+   ],
+   "max_out_degree": 460,
+   "max_in_degree": 317,
+   "users_at_max_out_degree": 1,
+   "reciprocity": 0.0094
+  },
+  "quote": {
+   "val_auroc_log_in_degree": 0.462,
+   "val_auroc_log_out_degree": 0.498,
+   "val_has_in_edge_bot_human": [
+    0.026,
+    0.1
+   ],
+   "val_has_out_edge_bot_human": [
+    0.003,
+    0.007
+   ],
+   "max_out_degree": 300,
+   "max_in_degree": 397,
+   "users_at_max_out_degree": 1,
+   "reciprocity": 0.0033
+  },
+  "like": {
+   "val_auroc_log_in_degree": 0.443,
+   "val_auroc_log_out_degree": 0.499,
+   "val_has_in_edge_bot_human": [
+    0.067,
+    0.179
+   ],
+   "val_has_out_edge_bot_human": [
+    0.008,
+    0.01
+   ],
+   "max_out_degree": 91,
+   "max_in_degree": 581,
+   "users_at_max_out_degree": 1,
+   "reciprocity": 0.0033
+  }
+ },
+ "neighbour_leakage": {
+  "train_bot_share": 0.14,
+  "val_bot": {
+   "users_with_train_neighbour": 14739,
+   "share_of_val_class_with_train_neighbour": 0.527,
+   "mean_same_label_share": 0.1157,
+   "chance_same_label_share": 0.14
+  },
+  "val_human": {
+   "users_with_train_neighbour": 116851,
+   "share_of_val_class_with_train_neighbour": 0.68,
+   "mean_same_label_share": 0.9252,
+   "chance_same_label_share": 0.86
+  }
+ }
+}
