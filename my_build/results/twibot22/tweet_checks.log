@@ -1,0 +1,129 @@
+22:29:42 loading tweets (train + val users)
+22:29:57 C7: duplicate tweets between val and train users
+22:30:24   {'val_bot': {'users_with_a_copy_in_train': 157, 'share_of_val_class': 0.0056, 'mean_same_label_share_of_copy_writers': 0.3099, 'chance': 0.14}, 'val_human': {'users_with_a_copy_in_train': 946, 'share_of_val_class': 0.0055, 'mean_same_label_share_of_copy_writers': 0.8526, 'chance': 0.86}}
+22:30:24 D4: word shortcuts (training users)
+22:33:22   43,469 words used by >= 200 train users; shortcuts: 8
+22:33:22 posting app (training users)
+22:33:23   app shortcuts: 3
+22:33:23 C6: language mix
+22:33:36 {
+ "train_bot_share": 0.14,
+ "tweets_checked": 16038811,
+ "c7_duplicates_val_vs_train": {
+  "val_bot": {
+   "users_with_a_copy_in_train": 157,
+   "share_of_val_class": 0.0056,
+   "mean_same_label_share_of_copy_writers": 0.3099,
+   "chance": 0.14
+  },
+  "val_human": {
+   "users_with_a_copy_in_train": 946,
+   "share_of_val_class": 0.0055,
+   "mean_same_label_share_of_copy_writers": 0.8526,
+   "chance": 0.86
+  }
+ },
+ "source_shortcuts": [
+  {
+   "item": "SocialFlow",
+   "train_users": 715,
+   "bot_share": 0.0084
+  },
+  {
+   "item": "SocialNewsDesk",
+   "train_users": 433,
+   "bot_share": 0.0069
+  },
+  {
+   "item": "Echobox",
+   "train_users": 405,
+   "bot_share": 0.0074
+  }
+ ],
+ "source_top": [
+  {
+   "source": "Twitter Web App",
+   "train_users": 311786,
+   "bot_share": 0.11
+  },
+  {
+   "source": "Twitter for iPhone",
+   "train_users": 280788,
+   "bot_share": 0.1022
+  },
+  {
+   "source": "Twitter for Android",
+   "train_users": 220444,
+   "bot_share": 0.1375
+  },
+  {
+   "source": "Twitter Web Client",
+   "train_users": 33362,
+   "bot_share": 0.246
+  },
+  {
+   "source": "Twitter for iPad",
+   "train_users": 28929,
+   "bot_share": 0.1059
+  },
+  {
+   "source": "TweetDeck",
+   "train_users": 28401,
+   "bot_share": 0.0675
+  },
+  {
+   "source": "Hootsuite Inc.",
+   "train_users": 13668,
+   "bot_share": 0.0966
+  },
+  {
+   "source": "Instagram",
+   "train_users": 12546,
+   "bot_share": 0.1443
+  },
+  {
+   "source": "Buffer",
+   "train_users": 7814,
+   "bot_share": 0.1165
+  },
+  {
+   "source": "Sprout Social",
+   "train_users": 5451,
+   "bot_share": 0.0594
+  },
+  {
+   "source": "Twitter Media Studio",
+   "train_users": 4850,
+   "bot_share": 0.0146
+  },
+  {
+   "source": "LinkedIn",
+   "train_users": 4387,
+   "bot_share": 0.1901
+  }
+ ],
+ "c6_main_language_share": {
+  "bot": {
+   "en": 0.784,
+   "es": 0.055,
+   "und": 0.034,
+   "tr": 0.017,
+   "in": 0.014,
+   "hi": 0.012,
+   "de": 0.011,
+   "ar": 0.011
+  },
+  "human": {
+   "en": 0.744,
+   "es": 0.07,
+   "fa": 0.023,
+   "und": 0.022,
+   "fr": 0.021,
+   "de": 0.017,
+   "ar": 0.016,
+   "ja": 0.015
+  }
+ }
+}
+22:33:36 word shortcuts (top 20): [{'item': '@gmgunion', 'train_users': 244, 'bot_share': 0.0082}, {'item': 'écologique', 'train_users': 244, 'bot_share': 0.0082}, {'item': '#ucustrike', 'train_users': 239, 'bot_share': 0.0084}, {'item': 'priorité', 'train_users': 228, 'bot_share': 0.0088}, {'item': 'comunità', 'train_users': 225, 'bot_share': 0.0089}, {'item': 'yavoriv', 'train_users': 215, 'bot_share': 0.0093}, {'item': 'condamne', 'train_users': 208, 'bot_share': 0.0096}, {'item': '@farhip', 'train_users': 200, 'bot_share': 0.005}]
+exit 0

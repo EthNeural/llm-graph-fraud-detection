@@ -24,7 +24,8 @@ def main():
     y = (pd.read_csv(ROOT.parent / "data" / "twibot-22-raw" / "label.csv").label.values == "bot").astype(int)
     split = np.load(DATA / "split_ours.npy")
     tr, va = split == "train", split == "val"
-    f = np.load(DATA / "features_full.npz")
+    import os
+    f = np.load(DATA / os.environ.get("FEATURES", "features_full_e5.npz"))
     X, names = f["X"], list(f["names"])
     res = Parallel(n_jobs=8)(delayed(check)(X[:, j].astype(np.float32), y, tr, va) for j in range(X.shape[1]))
     rows = {}
@@ -35,7 +36,7 @@ def main():
         rows[name] = r
     out = dict(rule=f"depth-1 leaf with >= {MIN_LEAF_USERS} train users at >= {PURITY:.0%} purity; scored on val",
                n_columns=len(names), shortcuts=[k for k, r in rows.items() if r["verdict"] != "allowed"], columns=rows)
-    (ROOT / "results" / "twibot22" / "shortcuts_features.json").write_text(json.dumps(out, indent=1))
+    (ROOT / "results" / "twibot22" / f"shortcuts_{os.environ.get('FEATURES', 'features_full_e5.npz').replace('.npz', '')}.json").write_text(json.dumps(out, indent=1))
     top = sorted(rows.items(), key=lambda kv: -abs(kv[1]["val_auroc"] - 0.5))[:15]
     print(f"{len(names)} columns; shortcuts: {out['shortcuts'] or 'none'}\nstrongest single columns (val AUROC):")
     for k, r in top:

@@ -1,0 +1,20 @@
+{
+ "bio_encoder": "e5",
+ "n_users": 1000000,
+ "n_features": 814,
+ "base_dim": 47,
+ "relations": [
+  "following",
+  "followers",
+  "mention",
+  "retweet",
+  "reply",
+  "quote",
+  "like"
+ ],
+ "split_counts": {
+  "train": 699309,
+  "val": 199803,
+  "test": 100888
+ }
+}

@@ -1,0 +1,17 @@
+814 columns; shortcuts: none
+strongest single columns (val AUROC):
+  self:log followers                                      0.733  purest big leaf {'users': 449810, 'share': np.float64(0.643), 'purity': 0.947, 'majority': 'human'}
+  self:log tweet count                                    0.695  purest big leaf {'users': 380280, 'share': np.float64(0.544), 'purity': 0.9459, 'majority': 'human'}
+  self:log listed count                                   0.689  purest big leaf {'users': 363367, 'share': np.float64(0.52), 'purity': 0.9478, 'majority': 'human'}
+  self:bio length                                         0.675  purest big leaf {'users': 594019, 'share': np.float64(0.849), 'purity': 0.9093, 'majority': 'human'}
+  self:log following                                      0.668  purest big leaf {'users': 455261, 'share': np.float64(0.651), 'purity': 0.9213, 'majority': 'human'}
+  self:bio empty                                          0.665  purest big leaf {'users': 612835, 'share': np.float64(0.876), 'purity': 0.905, 'majority': 'human'}
+  self:bio_pc0                                            0.665  purest big leaf {'users': 612835, 'share': np.float64(0.876), 'purity': 0.905, 'majority': 'human'}
+  following_in:mean_protected                             0.621  purest big leaf {'users': 368359, 'share': np.float64(0.527), 'purity': 0.9158, 'majority': 'human'}
+  self:has url                                            0.620  purest big leaf {'users': 361751, 'share': np.float64(0.517), 'purity': 0.9165, 'majority': 'human'}
+  self:has location                                       0.619  purest big leaf {'users': 495819, 'share': np.float64(0.709), 'purity': 0.8998, 'majority': 'human'}
+  union:log_count                                         0.619  purest big leaf {'users': 306627, 'share': np.float64(0.438), 'purity': 0.9248, 'majority': 'human'}
+  self:bio_pc2                                            0.618  purest big leaf {'users': 295672, 'share': np.float64(0.423), 'purity': 0.9271, 'majority': 'human'}
+  following_in:mean_log following                         0.617  purest big leaf {'users': 307010, 'share': np.float64(0.439), 'purity': 0.924, 'majority': 'human'}
+  self:has pinned tweet                                   0.612  purest big leaf {'users': 272741, 'share': np.float64(0.39), 'purity': 0.9306, 'majority': 'human'}
+  self:bio_pc1                                            0.610  purest big leaf {'users': 329184, 'share': np.float64(0.471), 'purity': 0.916, 'majority': 'human'}

@@ -12,7 +12,7 @@ No model is trained here and no test score is computed: this only prepares data.
    profile: protected, has pinned tweet, default profile image, has url, has location, bio empty,
             bio length, urls in bio, name length, username digits, log followers, log following,
             log tweet count, log listed count, account age (days)        (twibot22_profile_check.py)
-   text:    MiniLM bio embedding (emb_bio_minilm_all.npy) reduced to 32 dims with PCA fitted on TRAIN
+   text:    bio embedding of ENC (default multilingual-E5, emb_bio_{ENC}_all.npy), PCA to 32 dims fitted on TRAIN
    Numeric columns are standardised with TRAIN statistics only.
 
 3. NEIGHBOUR FEATURES (DEC / GADBench XGB-Graph style), computed on the FULL graph
@@ -40,6 +40,8 @@ RAW = ROOT.parent / "data" / "twibot-22-raw"
 RELATIONS = ["following", "followers", "mention", "retweet", "reply", "quote", "like"]
 SEED = 42
 PCA_DIMS = 32
+import os
+ENC = os.environ.get("ENC", "e5")         # bio encoder for the base features; e5 = multilingual-E5 (headline, F6)
 
 
 def log(*a):
@@ -79,7 +81,7 @@ def base_features(lab, split):
     P = prof.to_numpy(np.float32)
     mu, sd = P[tr].mean(0), P[tr].std(0) + 1e-6
     P = (P - mu) / sd
-    emb = np.load(ROOT / "results" / "twibot22" / "emb_bio_minilm_all.npy").astype(np.float32)
+    emb = np.load(ROOT / "results" / "twibot22" / f"emb_bio_{ENC}_all.npy").astype(np.float32)
     pca = PCA(n_components=PCA_DIMS, random_state=SEED).fit(emb[tr][::5])   # 1/5 of train is plenty
     E = pca.transform(emb).astype(np.float32)
     E = (E - E[tr].mean(0)) / (E[tr].std(0) + 1e-6)
@@ -97,8 +99,8 @@ def mean_agg(A, X):
 def main():
     lab = pd.read_csv(RAW / "label.csv")
     n = len(lab)
-    log("split")
-    split = make_split(lab)
+    log("split (reused, fixed 4 Nov 14:22)")
+    split = np.load(DATA / "split_ours.npy", allow_pickle=True)
     log("base features")
     X, base_names = base_features(lab, split)
     rels = np.load(DATA / "relations_uu.npz")
@@ -121,10 +123,12 @@ def main():
     names += ["union:log_count"] + [f"union_hop1:mean_{b}" for b in base_names] + [f"union_hop2:mean_{b}" for b in base_names]
     F = np.hstack(blocks).astype(np.float16)
     check_columns(names)                                              # final guard on all column names
-    np.savez(DATA / "features_full.npz", X=F, names=np.array(names), base_dim=X.shape[1])
-    log(f"saved features_full.npz: {F.shape[0]:,} users x {F.shape[1]} features ({F.nbytes / 1e9:.1f} GB)")
-    (ROOT / "results" / "twibot22" / "features_info.json").write_text(json.dumps(dict(
-        n_users=n, n_features=F.shape[1], base_dim=X.shape[1], relations=RELATIONS,
+    out = DATA / f"features_full_{ENC}.npz"
+    assert not out.exists(), f"{out.name} exists: never overwritten (H6)"
+    np.savez(out, X=F, names=np.array(names), base_dim=X.shape[1], bio_encoder=ENC)
+    log(f"saved {out.name}: {F.shape[0]:,} users x {F.shape[1]} features ({F.nbytes / 1e9:.1f} GB)")
+    (ROOT / "results" / "twibot22" / f"features_info_{ENC}.json").write_text(json.dumps(dict(
+        bio_encoder=ENC, n_users=n, n_features=F.shape[1], base_dim=X.shape[1], relations=RELATIONS,
         split_counts={s: int((split == s).sum()) for s in ("train", "val", "test")}), indent=1))
 
 

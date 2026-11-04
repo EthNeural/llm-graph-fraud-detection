@@ -1,0 +1,12 @@
+22:34:50 split (reused, fixed 4 Nov 14:22)
+22:34:50 base features
+22:34:57   profile 15 cols, bio PCA 32 dims (explained 0.53)
+22:34:57   following  done (2,626,979 edges)
+22:34:57   followers  done (1,116,655 edges)
+22:34:58   mention    done (1,460,910 edges)
+22:34:58   retweet    done (654,642 edges)
+22:34:58   reply      done (364,190 edges)
+22:34:58   quote      done (171,226 edges)
+22:34:58   like       done (339,480 edges)
+22:35:03 saved features_full_e5.npz: 1,000,000 users x 814 features (1.6 GB)
+exit 0
