@@ -1,4 +1,4 @@
-> **Snapshot** of the whole project as of Wed 4 Nov 2026, 22:45. **Part A** is the full working report (`REPORT.md`): Instagram and TwiBot-20, every result, caveat, decision log and changelog. **Part B** is TwiBot-22: data, sealed set and sample, every check, the decisions fixed before any score, and next steps, with the full data checklist as an appendix. Reasons for decisions: `04_decisions_and_reasons.md`. Live versions: `REPORT.md` and `reports/`.
+> **Snapshot** of the whole project as of Thu 5 Nov 2026, 00:30. **Part A**: the full working report (`REPORT.md`), Instagram and TwiBot-20. **Part B**: TwiBot-22 data, sealed set and sample, every check, the decisions fixed before any score, status and next steps. **Part C**: external feedback and the TwiBot-20 to-do. **Appendices**: the TwiBot-22 checklist and the TwiBot-20 to-do list. Reasons for decisions: `04_decisions_and_reasons.md`; a plain-language explainer: `06_twibot22_explained.md`. Live versions: `REPORT.md` and `reports/`.
 
 # Part A: working report (Instagram, TwiBot-20)
 
@@ -468,7 +468,7 @@ Step 4 rerun with the bridge edges added (`GRAPH=bridges`, `results/twibot20/A/s
 
 ---
 
-# Part B: TwiBot-22 (status Wed 4 Nov 2026, 22:45)
+# Part B: TwiBot-22 (status Thu 5 Nov 2026, 00:30)
 
 No TwiBot-22 model has been trained or scored yet. Everything below is data preparation, checks and decisions fixed **before** any score (the lesson from TwiBot-20). Reasons for each decision: `artifacts/04_decisions_and_reasons.md`. Row-by-row status: the checklist in the appendix.
 
@@ -480,7 +480,7 @@ No TwiBot-22 model has been trained or scored yet. Everything below is data prep
 | Labels | Weak (Snorkel over labelling functions incl. `verified`, spam keywords and GCN/GAT/R-GCN models). Experts: 986 users; dataset "bot" labels match the experts for 56 of 101 |
 | Relations used (7) | following 2.61M, followers 1.11M, mention 1.46M, retweet 0.65M, reply 0.36M, quote 0.17M, like 0.34M undirected edges. Co-list (61M pairs) reported only |
 | Tweets | 9 files, 104.4 GB; 88,217,457 tweets (= the `post` edges in `edge.csv`), 0 decode errors, dated 21 Mar 2006 – 15 Mar 2022 |
-| Text per user | bio + the 20 most recent tweets (17.8M tweets for 933,872 users); retweets kept; links and @mentions raw; no total length cap; each piece ≤ 128 tokens |
+| Text per user | bio + the 20 most recent tweets (17.8M tweets for 933,872 users); retweets kept; links and @mentions raw; no total length cap; each piece ≤ 128 tokens (text rules fixed 4 Nov ~22:45, as TwiBot-20 except the cap) |
 | Licence | CC BY-NC-ND 4.0: no data in the repository |
 
 ## B2. Splits, sealed set and sample
@@ -531,18 +531,47 @@ No TwiBot-22 model has been trained or scored yet. Everything below is data prep
 - Tweets: `tweets_top20/`.
 - Roles, sample and hubs: `roles.npy`, `sample_idx.npy`, `hub_idx.npy`.
 
-## B6. Next
+## B6. Status and next (Thu 5 Nov, 00:30)
 
-1. **Embedding:** 10k-user timing test (running), the builder's go, then multilingual-E5 on bio + tweets for 110,057 users.
-2. **Freeze:** commit the checklist.
-3. **Cheap models:** MLP, trees, XGB-Graph, DEC-lite, links-only and profile-only baselines, with and without profile.
-4. **GNNs:** GCN, SAGE, FAGCN, LINKX, RGCN.
-5. **LLM on the sample:** Qwen + LoRA, DGP.
-6. **Final steps:** scoring the sealed set, then expert recalibration.
+**Checklist: 48 rows done, 9 to do, 1 not needed.** No model has been scored yet.
+
+- **Running:** multilingual-E5 on bio + 20 tweets for 110,057 users. It started 4 Nov 22:56 with the builder's go after a 10k timing test (213 pieces/s, 2.7 h estimated), and was 43% done at 00:26. The MiniLM check follows automatically; output goes to `data/twibot-22/sample110k_<enc>_bio20tw_raw/`.
+- **Left before the freeze:**
+  - B7, G1, G2: train labels only and run safety, written into the model launchers.
+  - F4: the embeddings.
+  - G8: the LLM reads the same text as the encoders.
+  - H7: the LLM GPU budget and fallback size (needs the builder's decision).
+- **Planned after the runs:** D6 (flag-only baselines), D7 (weak vs expert check), G7 (expert recalibration, light version).
+- **Order (decided 5 Nov ~00:40):**
+  1. Finish TwiBot-22: freeze, cheap models, GNNs, the LLM on Thursday night, the sealed set.
+  2. Compare it with TwiBot-20's current results.
+  3. Then run the TwiBot-20 batch in one go (Part C).
+- **If time runs out,** TwiBot-20's current results are used as they are, with their caveats stated.
 
 ---
 
-# Appendix: TwiBot-22 data checklist (copy of `reports/twibot22_data_checklist.md`, 4 Nov 22:45)
+# Part C: external feedback (5 Nov) and the TwiBot-20 to-do
+
+External feedback (`artifacts/google_feedback.txt`) raised three TwiBot-20 points. Each was checked against our own files:
+
+1. **Checkpoint confound.**
+   - It is real: LoRA picked its checkpoint on a 200-user validation loss, while the MLP and GNNs picked on full-validation macro-F1.
+   - The matching rule is "choose by full-validation macro-F1", not "always use the last adapter". It picks the last adapter in setting A, but the lowest-loss one for setting B's `dgp`.
+   - Under it, dgp − target is about 0 (0.727 vs 0.728). Seed noise (0.02–0.03) is larger than any dgp − target gap.
+2. **Prompt cap.**
+   - It is real: LoRA reads 480 tokens, and 81% of users are cut; the encoders read up to 2,000 characters.
+   - It weakens the "frozen encoder vs fine-tuning" claim but does not make it invalid. The training-size confound (1,300 vs 8,278) is controlled separately.
+   - Fix planned: a matched-text control.
+3. **Setting B noise.**
+   - It is real: 54 test bots, macro-F1 CIs about ±0.05.
+   - But noise cannot create "no difference". On AUROC the gaps are clear and favour text models (GCN − MLP −0.072, FAGCN − MLP −0.141, LoRA dgp − MLP −0.064).
+   - Fix: lead setting B with AUROC and PR-AUC.
+
+TwiBot-22 takes the lesson as checklist row G8: the LLM reads the same text as the encoders. Every TwiBot-20 item is in the appendix below.
+
+---
+
+# Appendix 1: TwiBot-22 data checklist (copy of `reports/twibot22_data_checklist.md`, 5 Nov 00:30)
 
 ## TwiBot-22 data-processing checklist
 
@@ -615,7 +644,7 @@ Status: ✅ done and checked · 🟡 partly done · ⬜ to do · ➖ not needed 
 |---|---|---|---|
 | F1 | Standardisation and PCA fitted on train only | ✅ | `twibot22_features.py` |
 | F2 | Rows kept in `label.csv` order everywhere; any join by id, never by position (X2) | ✅ | `twibot22_graph_checks.py`: all artefacts 1M rows; the 124,231 zero embedding rows equal the 124,231 empty bios exactly. Keep this assertion in every new script. `prep_twibot22.py` (superseded) sorts by id and would need a reindex if reused |
-| F3 | Output folders per design (sample, text recipe), so no stale cache is reused (X1, lesson 20) | ⬜ | Do before the first tweet embedding |
+| F3 | Output folders per design (sample, text recipe), so no stale cache is reused (X1, lesson 20) | ✅ | `twibot22_embed_text.py` writes `data/twibot-22/sample110k_<enc>_bio20tw_raw/{emb,ids,user_ids}.npy`, asserts the row order after saving, refuses to overwrite. Timing test (10k users): 213 pieces/s, 2.7 h estimated for 110,057 users. Full run started 4 Nov 22:56 with the builder's go (E5, then MiniLM) |
 | F4 | Bio-only and bio + tweets embeddings saved as separate feature sets (E3) | ⬜ | |
 | F5 | Neighbour features use neighbours' features only, never their labels | ✅ | |
 | F6 | **Headline text model and comparison, fixed by the builder 4 Nov 20:58, before any score (replaces the 20:38 rule).** Option B: headline text model = multilingual-E5. **Headline comparison = the 100k stratified sample** (natural 14% bots), text = bio + 20 most recent tweets, neighbour features from the full 1M graph (hub users' tweets embedded as neighbour providers). **Full-graph models on all 1M users use bio only** (reported as the full-scale check). Option A (bio + tweets for all 1M) is run afterwards as an extra check if time allows; it never replaces the headline. MiniLM = check; Qwen2.5-1.5B on the sample only. Before any tweet embedding: a 10k-user timing test, the estimate, and the builder's go; not while a TwiBot-20 LoRA seed run is on the GPU. Report limit: "with tweets" results are for a 100k random sample, not all 1M users | ✅ decided | Tweet extraction covers all 1M users (top 20 each), so it serves B and A |
@@ -628,6 +657,7 @@ Status: ✅ done and checked · 🟡 partly done · ⬜ to do · ➖ not needed 
 | G1 | `OMP_NUM_THREADS=1` and no torch import with sklearn boosting (the TwiBot-20 silent segfault) | ⬜ | In the CPU model scripts |
 | G2 | Every launcher logs each job's exit code | ⬜ | |
 | G7 | **Weak → expert recalibration, light version** (decided by the builder 4 Nov, before any score): at the very end, after the freeze, for trees and MLP only. Keep each trained model; fit a small logistic regression on its score + a few profile fields, on the 986 experts with **5-fold rotation** (each expert scored once, by a model that never saw it). Report next to the weak-label-only score on the same experts, as a check, not a headline (~105 bots, CI about ±0.05). No full fine-tuning (≈790 users per fold is too few); no LLM (too costly to rotate). Also answers D7 | ⬜ | Replaces DEC stage 4 |
+| G8 | **The LLM reads the same text as the encoders it is compared with** (same pieces, same token limit), so "frozen encoder vs fine-tuned LLM" is like for like. Lesson from TwiBot-20 (LoRA 480 tokens vs encoders 2,000 characters; external feedback #2, 5 Nov) | ⬜ | Set when the LLM step is configured |
 | G6 | **Label and `verified` out of every model input** (step 3, builder 4 Nov ~21:40) | ✅ | `twibot22_guard.py`: `users.parquet` now has profile fields only (no verified, no label/y/split); verified in `eval_only/verified.parquet` (95,398), read only for the non-verified slice and checks; `check_columns()` stops any model input named verified/label/y/split (tested). Shortcut results identical after the move. `withheld` is 59 users, not 0 (comment fixed); near-constant, left out |
 | G3 | Selection rule, seeds (3), metrics (macro-F1, AUROC, AUPRC, bootstrap CIs) written into the scripts | ✅ | `twibot22_metrics.py`: val-only cut-off and selection, seeds 0–2, paired bootstrap CIs (2,000), self-tested |
 | G4 | Every result also scored on non-verified test users and with-bio users | ✅ | Slices in `twibot22_metrics.slices()`: all, non-verified, with bio, with tweets; optionally restricted to the 100k sample |
@@ -661,3 +691,58 @@ When every row above is ✅ or ➖, commit this file. Only then run the first mo
 4. Tweet checks: C4, C6, C7, D4. Decide the text rules (C5).
 5. F3, then a 5-minute embedding timing test, then the full embedding.
 6. G1–G3, freeze, first model runs.
+
+
+---
+
+# Appendix 2: TwiBot-20 to-do (copy of `reports/twibot20_todo.md`)
+
+## TwiBot-20: everything still to do, in one place
+
+Written Thu 5 Nov 2026, ~00:30. It collects every open TwiBot-20 item from `twibot20_lessons_for_twibot22.md` (the 22 lessons), `twibot22_plan.md` (step 8), the TwiBot-22 checklist (H3: profile track), and the external feedback (`artifacts/google_feedback.txt`, reviewed 5 Nov). Items are grouped so they can run **in one go**: one GPU queue, one CPU batch, one round of report edits. ✅ = done, ⬜ = to do.
+
+**When (decided by the builder 5 Nov ~00:40):** TwiBot-22 is finished first (its checklist, models, sealed set), then compared with TwiBot-20's current results, and only **then** is this whole batch run. Target: TwiBot-22 done by Fri 6 Nov evening, this batch Fri night to Sat. If time runs short, GPU jobs run in this order: G1 + G2 (seeds, adapter rule), G4 (matched text), G3 (`dgp_num`). **If time runs out, TwiBot-20's current results are used as they are** (builder, 5 Nov) and compared with TwiBot-22; the report then states the open caveats from this list (adapter rule, text cap, setting B on macro-F1, verified slice for non-LLM models).
+
+## Already done (4 Nov)
+
+- ✅ Tree baseline rerun after the silent crash (`run_tree_baseline.sh`, A and B, exit codes logged), with PR-AUC and a non-verified slice. Lesson 17.
+- ✅ Verified-subset check from raw data: target LoRA 0.704 → 0.641 on non-verified test users (`check_verified_subset.py`). Lesson 2, LoRA part.
+
+## Batch 1: GPU queue (~12 h, after TwiBot-22)
+
+Run in one queue, each job logs its exit code and writes to its own named file (lessons 19-20).
+
+| # | Job | Why | Source |
+|---|---|---|---|
+| G1 | **LoRA seed 2** for `target` and `dgp` (A), seeds 1 and 2 so no headline rests on the unseeded run | Seed noise (0.02-0.03) is larger than every dgp − target gap | lessons 7, 8; plan step 8 |
+| G2 | In those runs: **save the adapter at every check** and select by **full-validation macro-F1** (not the 200-user validation loss) | Same selection rule as the MLP; Google feedback #1; lessons 8, 11 | feedback #1 |
+| G3 | **`dgp_num`** (DGP with numeric profile summaries, the 5 allowed fields) | The profile track for the LLM, matching TwiBot-22's "expensive models with profile" (H3) | plan step 8; H3 |
+| G4 | **Matched-text control**: re-embed TwiBot-20 with the encoders reading exactly LoRA's 480-token strings (Qwen tokenizer), then MLP / LR on them | LoRA reads 480 tokens, encoders up to 2,000 characters; 81% of users are cut for LoRA. Equal text answers "frozen encoder vs fine-tuning" fairly | lesson 10; feedback #2 |
+
+Check before queueing: the step 6 launcher accepts the selection rule and saves every check (`step6_dgp.py:416-418` saved only 2 adapters).
+
+## Batch 2: CPU (can run while the GPU queue runs)
+
+| # | Job | Why | Source |
+|---|---|---|---|
+| C1 | **Save test scores** for LR, MLP and the GNNs (they are retrained inside `bootstrap_ci.py` and never saved), then score them on **non-verified test users** | Every TwiBot-20 headline must also be shown without the 326 verified (all human) test users | lesson 2; top-10 #3 |
+| C2 | **GNNs with profile** (the 5 allowed fields added to the input): GCN, SAGE, FAGCN, LINKX | Match TwiBot-22's design (H3), so the two datasets compare like for like | H3 |
+| C3 | `bootstrap_ci.py` and `link_direction.py`: read the **seeded** LoRA score files (seeds 1, 2) and average over seeds | They hard-code the unseeded file | lesson 18 |
+| C4 | **Bootstrap CIs on the tree baseline's crawl-artefact result** (+0.025 on all test users, −0.009 on non-verified) plus a sceptic check | New finding from 4 Nov; must be tested before it goes in the report | 4 Nov tree rerun |
+| C5 | Step 5 neighbour ranking: use unit-length vectors without the 2 flags | A shared "no text" flag can outrank text similarity | lesson 9 |
+
+## Batch 3: report edits (`REPORT.md`, after batches 1-2)
+
+| # | Edit | Source |
+|---|---|---|
+| R1 | Main LoRA tables use the **full-validation adapter rule**, with both adapters shown and a note that the rule was fixed after some test scores were known | feedback #1; lesson 8 |
+| R2 | Setting B finding: **lead with AUROC and PR-AUC** (macro-F1 cannot separate models with 54 test bots). On AUROC the gaps are clear and favour text models (GCN − MLP −0.072, FAGCN − MLP −0.141, LoRA dgp − MLP −0.064). Word it as "B cannot separate models on macro-F1", not "no difference" | feedback #3; finding 8 |
+| R3 | Every headline also on non-verified test users (from C1) | lesson 2 |
+| R4 | Text-cap and training-size caveats next to every "encoder vs LoRA" claim, with the G4 result | lessons 10, 12 |
+| R5 | Note: TwiBot-20 used each user's first 20 tweets in file order; TwiBot-22 uses the 20 most recent | TwiBot-22 checklist C5 |
+| R6 | Note: many comparisons on one test set and no sealed set on TwiBot-20 (cannot be fixed now; TwiBot-22 has one) | lesson 22 |
+
+## Not doing (and why)
+
+- Raising LoRA's token cap to 2,000 characters: too much GPU memory for a 16 GB Mac; G4 equalises from the other side instead.
+- A sealed test set for TwiBot-20 after the fact: every test number has already been seen.
