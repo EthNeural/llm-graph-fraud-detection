@@ -60,7 +60,7 @@ from tqdm import tqdm
 from transformers import AutoTokenizer, AutoModelForCausalLM
 
 from common import (load, load_embeddings, original_ids, get_splits, isolated_mask, evaluate,
-                    best_threshold, RESULTS_DIR, SHARED_DIR, DATA_DIR, SEED, SETTING, DATASET)
+                    best_threshold, RESULTS_DIR, SHARED_DIR, DATA_DIR, SEED, SETTING, DATASET, TWITTER)
 from step3_embed import DEVICE
 from step5_llm_reason import (sample, same_sample_baselines, QUESTION, TARGET_LABEL, EMPTY,
                               N_TEST, N_VAL, SUMMARY_CHARS)
@@ -74,35 +74,49 @@ PROBE = os.environ.get("PROBE") == "1"
 LORA_SEED = os.environ.get("LORA_SEED")                # None = the original, unseeded LoRA runs
 FORCE = os.environ.get("FORCE") == "1"           # run even if the estimate is over MAX_HOURS
 FP32 = os.environ.get("FP32") == "1"             # fallback if fp16 training goes NaN
+SMOKE = os.environ.get("SMOKE") == "1"           # tiny end-to-end run (20 train users): times every phase, keeps nothing
+# Checkpoint rule. "loss": lowest validation loss on the check sample (the original TwiBot-20 runs).
+# "f1": macro-F1 (validation cut-off) on the check sample, adapter saved at EVERY check, the same
+# rule as the MLP / GNNs (TwiBot-22 H7, external feedback #1). Default: f1 on TwiBot-22.
+SELECT = os.environ.get("SELECT", "f1" if DATASET == "twibot22" else "loss")
+assert SELECT in ("loss", "f1")
 
 B = 10                       # B_node = B_meta, the paper's best summary budget
 K_HOPS = 2                   # diffusion steps K
 M = 8                        # neighbours kept per metapath
-N_TRAIN = 1300               # labelled training users, as in the paper (Table 1)
+N_TRAIN = 20 if SMOKE else 1300   # labelled training users, as in the paper (Table 1)
 LORA = dict(r=16, lora_alpha=32, lora_dropout=0.05,
             target_modules=["q_proj", "k_proj", "v_proj", "o_proj"])
 LR = 1e-4
 BATCH = 4
-MAX_EPOCHS = int(os.environ.get("MAX_EPOCHS", 10))
+MAX_EPOCHS = 1 if SMOKE else int(os.environ.get("MAX_EPOCHS", 10))
 PATIENCE = 2                 # evaluations (= 1 epoch) without a lower validation loss
 EXPECTED_EPOCHS = 3          # used only for the time estimate; early stopping decides
 SAVE_EVERY = 50              # optimizer steps between checkpoints
 MAX_HOURS = 10
-TARGET_TOKENS = 480 if DATASET == "twibot20" else 256
+TARGET_TOKENS = 480 if TWITTER else 256
 
 SHORT = MODEL_ID.split("/")[-1]
 NAME = f"{SHORT} LoRA {VARIANT}" + (f" seed{LORA_SEED}" if LORA_SEED else "")
 ZS_TAG = f"{SHORT}_{VARIANT}"                          # zero-shot scores do not depend on LORA_SEED
-TAG = ZS_TAG + (f"_s{LORA_SEED}" if LORA_SEED else "")
+TAG = ZS_TAG + (f"_s{LORA_SEED}" if LORA_SEED else "") + ("_smoke" if SMOKE else "")
+ZS_TAG += "_smoke" if SMOKE else ""
 CKPT = RESULTS_DIR / f"step6_{TAG}"
 SUMMARY_PROMPT = "Summarize the text within {b} tokens.\n\nText: {text}"
-NODE_SUMMARY_FILE = SHARED_DIR / f"summaries_b{B}_{SHORT}.json"      # keyed by original id, A and B
-PATH_SUMMARY_FILE = RESULTS_DIR / f"metapath_summaries_b{B}_{SHORT}.json"   # per setting
+_sm = "_smoke" if SMOKE else ""
+NODE_SUMMARY_FILE = SHARED_DIR / f"summaries_b{B}_{SHORT}{_sm}.json"      # keyed by original id, A and B
+PATH_SUMMARY_FILE = RESULTS_DIR / f"metapath_summaries_b{B}_{SHORT}{_sm}.json"   # per setting
 
 if DATASET == "twibot20":
     METAPATHS = {"friend": ["friend"], "follow": ["follow"], "friend-of-friend": ["friend", "friend"]}
     PATH_TEXT = {"friend": "Friend links", "follow": "Follow links",
                  "friend-of-friend": "Friends of friends"}
+elif DATASET == "twibot22":
+    # 7 relations in 2 groups (H7, 5 Nov): follow = following + followers; interaction = mention +
+    # retweet + reply + quote + like. Same 3 path types as TwiBot-20's friend / follow / friend-of-friend.
+    METAPATHS = {"follow": ["follow"], "interaction": ["interaction"], "follow-of-follow": ["follow", "follow"]}
+    PATH_TEXT = {"follow": "Follow links", "interaction": "Interaction links (mentions, retweets, replies, quotes, likes)",
+                 "follow-of-follow": "Follows of follows"}
 else:
     METAPATHS = {"neighbour": ["link"], "2-hop": ["link", "link"]}
     PATH_TEXT = {"neighbour": "Connected accounts", "2-hop": "Accounts two steps away"}
@@ -203,7 +217,7 @@ def chat(tok, user_msg):
 
 
 @torch.no_grad()
-def generate(tok, model, prompts, batch_size=4 if DATASET == "twibot20" else 16):
+def generate(tok, model, prompts, batch_size=4 if TWITTER else 16):
     # Greedy, at most B new tokens. Sorted by length so batches carry little padding.
     # Batch 4 on TwiBot-20 (as in step 5): at 16, the MPS memory cache grew to 16 GB and swapped.
     model.eval()
@@ -346,7 +360,7 @@ def fine_tune(model, seqs, y_tr, val_seqs, y_val, pad_id, yes, no, probe=False):
     CKPT.mkdir(parents=True, exist_ok=True)
     params = [p for p in model.parameters() if p.requires_grad]
     opt = torch.optim.AdamW(params, lr=LR)
-    st = dict(epoch=0, batch=0, step=0, best_loss=float("inf"), wait=0, history=[], done=False)
+    st = dict(epoch=0, batch=0, step=0, best_loss=float("inf"), best_f1=-1.0, wait=0, history=[], done=False)
     if not probe and (CKPT / "state.pt").exists():
         saved = torch.load(CKPT / "state.pt", weights_only=False)
         st = saved["state"]
@@ -407,20 +421,27 @@ def fine_tune(model, seqs, y_tr, val_seqs, y_val, pad_id, yes, no, probe=False):
             if st["step"] % SAVE_EVERY == 0:
                 save()
             if st["batch"] in evals:
+                tc = time.time()
                 p, vloss = score(model, val_seqs, pad_id, yes, no, labels=y_val, desc="val check")
-                from sklearn.metrics import roc_auc_score
-                st["history"].append(dict(epoch=st["epoch"] + st["batch"] / steps_per_epoch,
-                                          val_loss=round(vloss, 4),
-                                          val_auroc=round(roc_auc_score(y_val, p), 4)))
+                from sklearn.metrics import roc_auc_score, f1_score
+                vf1 = f1_score(y_val, p > best_threshold(y_val, p), average="macro")
+                k = len(st["history"])
+                st["history"].append(dict(check=k, epoch=st["epoch"] + st["batch"] / steps_per_epoch,
+                                          val_loss=round(vloss, 4), val_macro_f1=round(float(vf1), 4),
+                                          val_auroc=round(roc_auc_score(y_val, p), 4),
+                                          check_minutes=round((time.time() - tc) / 60, 2)))
                 print(f"\n  val check {st['history'][-1]}")
-                if vloss < st["best_loss"]:
-                    st["best_loss"], st["wait"] = vloss, 0
+                if SELECT == "f1":
+                    torch.save(adapter_state(model), CKPT / f"adapter_check{k}.pt")   # every check kept
+                better = vloss < st["best_loss"] if SELECT == "loss" else vf1 > st["best_f1"]
+                if better:
+                    st["best_loss"], st["best_f1"], st["wait"] = vloss, float(vf1), 0
                     torch.save(adapter_state(model), CKPT / "best_adapter.pt")
                 else:
                     st["wait"] += 1
                 save()
                 if st["wait"] >= PATIENCE:
-                    print(f"  early stopping: no lower validation loss for {PATIENCE} checks")
+                    print(f"  early stopping: no better validation {SELECT} for {PATIENCE} checks")
                     st["done"] = True
                     save()
                     return
@@ -463,6 +484,12 @@ def main():
     train, val, test = get_splits(y)
     train_s = sample(train, y, N_TRAIN)
     val_s, test_s = sample(val, y, N_VAL), sample(test, y, N_TEST)    # the step 5 samples
+    if SMOKE:
+        val_s, test, test_s = val_s[:50], test[:20], test_s[:20]
+    if DATASET == "twibot22":                                  # never score a sealed user (B4, H8)
+        import twibot22_guard
+        twibot22_guard.assert_not_sealed(np.load(DATA_DIR / "rows.npy")[np.concatenate([train_s, val_s, test])])
+    timer = {}
     iso = isolated_mask(edge_index, n)
     orig = original_ids()
     print(f"train {len(train_s)} (of {len(train)}), val {len(val)} (check sample {len(val_s)}), "
@@ -475,21 +502,27 @@ def main():
 
     path_sum = {}
     if GRAPH_PROMPT and not PROBE:
-        targets = np.concatenate([train_s, val, test])
+        # TwiBot-22: summaries only for the users actually scored (train sample, validation check
+        # subset, working test); all 20k validation users would need ~79k LLM summaries (H7).
+        targets = np.concatenate([train_s, val_s, test]) if DATASET == "twibot22" else np.concatenate([train_s, val, test])
         X = load_embeddings("e5").astype(np.float32)
-        if DATASET == "twibot20":
+        if TWITTER:
             X = X[:, :-2]                                      # drop the 0/1 "no text" flags
         print("Diffusion-based metapath trimming:")
         chosen = trim_neighbours(targets, X, typed_relations(), n)
         need = sorted({u for nb in chosen.values() for u in nb})
         cut = lambda t: t[:SUMMARY_CHARS] if SUMMARY_CHARS else t
         node_prompt = lambda t: chat(tok, SUMMARY_PROMPT.format(b=B, text=cut(t)))
+        t_ns = time.time()
         node_sum = cached_summaries(NODE_SUMMARY_FILE, {str(orig[u]): x_text[u] for u in need},
                                     node_prompt, tok, model, "node summaries")
         items = {f"{orig[v]}|{name}": ("\n".join(node_sum[str(orig[u])] for u in nb) if nb else None)
                  for (v, name), nb in chosen.items()}
+        timer["node_summaries"] = (time.time() - t_ns, len(need))
+        t_ps = time.time()
         path_sum = cached_summaries(PATH_SUMMARY_FILE, items, node_prompt, tok, model,
                                     "metapath summaries")
+        timer["path_summaries"] = (time.time() - t_ps, sum(1 for v in items.values() if v))
         if VARIANT == "dgp_num":
             assert DATASET == "twibot20", "numerical summaries use TwiBot-20 profile fields"
             NUM_SUM.update(numeric_summaries(chosen, orig))
@@ -524,7 +557,9 @@ def main():
     if PROBE:
         fine_tune(model, tr_seqs, y[train_s], valcheck_seqs, y[val_s], tok.pad_token_id, yes, no, probe=True)
         return
+    t_ft = time.time()
     fine_tune(model, tr_seqs, y[train_s], valcheck_seqs, y[val_s], tok.pad_token_id, yes, no)
+    timer["fine_tune"] = (time.time() - t_ft, len(tr_seqs))
     hist = torch.load(CKPT / "state.pt", weights_only=False)["state"]["history"]
     print("validation checks:", *hist, sep="\n  ")
 
@@ -532,15 +567,33 @@ def main():
     sc_file = RESULTS_DIR / f"step6_{TAG}_scores.npz"
     if not sc_file.exists():
         set_peft_model_state_dict(model, torch.load(CKPT / "best_adapter.pt"))
-        p_val = score(model, enc(val), tok.pad_token_id, yes, no, desc="full val")
+        val_final = val_s if DATASET == "twibot22" else val            # TwiBot-22: the check subset
+        p_val = score(model, enc(val_final), tok.pad_token_id, yes, no, desc="val")
+        t_te = time.time()
         p_test = score(model, enc(test), tok.pad_token_id, yes, no, desc="full test")
-        np.savez(sc_file, val=p_val, test=p_test, test_nodes=test)
+        timer["test_scoring"] = (time.time() - t_te, len(test))
+        extra = dict(val_nodes=val_final)
+        if DATASET == "twibot22":
+            r = np.load(DATA_DIR / "rows.npy")
+            extra.update(val_rows=r[val_final], test_rows=r[test])     # label.csv rows, for twibot22_metrics
+        np.savez(sc_file, val=p_val, test=p_test, test_nodes=test, **extra)
     sc, zs = np.load(sc_file), np.load(zs_file)
     del model
     torch.mps.empty_cache() if DEVICE == "mps" else None
 
+    if SMOKE:
+        ckeck = [h.get("check_minutes", 0) for h in hist]
+        print("\nSMOKE TEST PASSED (end to end). Timings:")
+        for k_, (secs, n_) in timer.items():
+            print(f"  {k_:16s} {secs / 60:6.2f} min for {n_:,} items ({secs / max(n_, 1):.2f} s each)")
+        if ckeck:
+            per_user = max(ckeck) * 60 / len(val_s)
+            print(f"  val check       {max(ckeck):6.2f} min for {len(val_s)} users -> {per_user * 2000 / 60:.1f} min for 2,000 "
+                  f"(limit 10 min: {'OK' if per_user * 2000 / 60 <= 10 else 'OVER, use 1,000 users or fewer checks'})")
+        return
     rows = []
-    t = best_threshold(y[val], sc["val"])
+    vnodes = sc["val_nodes"] if "val_nodes" in sc.files else val
+    t = best_threshold(y[vnodes], sc["val"])
     rows.append(evaluate(f"{NAME} (full test)", y[test], (sc["test"] > t).astype(int),
                          sc["test"], iso[test]))
     pos = {v: i for i, v in enumerate(test)}
@@ -550,6 +603,9 @@ def main():
     tz = best_threshold(y[val_s], zs["val"])                   # zero-shot: as in step 5
     rows.append(evaluate(f"{SHORT} zero-shot {VARIANT}", y[test_s], (zs["test"] > tz).astype(int),
                          zs["test"], iso[test_s]))
+    if DATASET == "twibot22":                                  # baselines come from the cheap-model runs
+        save_rows(rows)
+        return
     base = same_sample_baselines(y, train, val_s, test_s, edge_index, iso[test_s])
     base.append(mlp_same_sample(y, train, val, test_s, edge_index, iso[test_s]))
     save_rows(rows + base)

@@ -30,8 +30,10 @@ from sklearn.metrics import accuracy_score, f1_score, roc_auc_score, average_pre
 
 ROOT = Path(__file__).resolve().parents[1]
 DATASET = os.environ.get("DATASET", "instagram")
-assert DATASET in ("instagram", "twibot20"), "DATASET must be instagram or twibot20"
-DATA_DIR = ROOT / "data" / ("instagram" if DATASET == "instagram" else "twibot-20")
+assert DATASET in ("instagram", "twibot20", "twibot22"), "DATASET must be instagram, twibot20 or twibot22"
+# twibot22: the LLM-step folder built by twibot22_llm_prep.py (100k sample + hubs, sealed users excluded)
+DATA_DIR = ROOT / "data" / {"instagram": "instagram", "twibot20": "twibot-20", "twibot22": "twibot-22-llm"}[DATASET]
+TWITTER = DATASET in ("twibot20", "twibot22")       # bot or human; text = bio + tweets, one per line
 SETTING = os.environ.get("SETTING", "A")
 assert SETTING in ("A", "B"), "SETTING must be A or B"
 MINORITY_RATIO = 0.1                                  # setting B: class 1 = 10% of class 0
@@ -88,7 +90,7 @@ def missing_text_flags():
 def load_embeddings(name):
     # Cached embeddings are for ALL users; pick the rows for this setting.
     emb = np.load(SHARED_DIR / f"emb_{name}.npy")
-    if DATASET == "twibot20":
+    if TWITTER:
         emb = np.hstack([emb, missing_text_flags()])   # zero vector + flags, nobody dropped
     return emb[original_ids()]
 
@@ -100,8 +102,9 @@ def make_splits(y, seed=SEED):
     #   2nd: rest -> val (50%) and test (50%), stratify=y[rest]
     # Use random_state=seed both times.
     # Then np.savez(SPLIT_FILE, train=..., val=..., test=...)
-    if DATASET == "twibot20":
-        # The official split, restricted to the users kept in this setting.
+    if TWITTER:
+        # TwiBot-20: the official split; TwiBot-22: split.npy of twibot22_llm_prep.py (sealed users
+        # are marked "sealed" and so never enter train, val or test). Restricted to the users kept in this setting.
         s = np.load(DATA_DIR / "split.npy")[original_ids()]
         train, val, test = (np.where(s == part)[0] for part in ("train", "val", "test"))
         np.savez(SPLIT_FILE, train=train, val=val, test=test)

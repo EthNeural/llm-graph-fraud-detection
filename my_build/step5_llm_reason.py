@@ -24,6 +24,7 @@ LLMs are slow, so we evaluate on a stratified sample of the test set, and compar
 the step 3/4 models on exactly the same sample.
 """
 import json
+import os
 import numpy as np
 import torch
 from tqdm import tqdm
@@ -31,7 +32,7 @@ from transformers import AutoTokenizer, AutoModelForCausalLM
 from sklearn.model_selection import train_test_split
 
 from common import (load, load_embeddings, original_ids, get_splits, isolated_mask, evaluate,
-                    best_threshold, RESULTS_DIR, SHARED_DIR, SEED, SETTING, DATASET)
+                    best_threshold, RESULTS_DIR, SHARED_DIR, SEED, SETTING, DATASET, TWITTER)
 from step3_embed import make_clf, tune_C, DEVICE
 
 MODEL_ID = "Qwen/Qwen2.5-1.5B-Instruct"
@@ -40,6 +41,9 @@ N_TEST, N_VAL = (300, 150) if SETTING == "A" else (600, 300)
 if DATASET == "twibot20":
     # B's whole official test set is 597 users (54 bots), so B uses all of it.
     N_TEST, N_VAL = (400, 200) if SETTING == "A" else (597, 400)
+if DATASET == "twibot22":
+    # H7 (5 Nov): validation checks on a fixed 2,000-user stratified subset (VAL_CHECK to change it)
+    N_TEST, N_VAL = 400, int(os.environ.get("VAL_CHECK", 2000))
 K_NEIGH = 8                  # neighbours shown in the prompt
 B_NODE = 32                  # token budget per neighbour summary
 SUMMARY_FILE = SHARED_DIR / "summaries.json"     # keyed by ORIGINAL user id, shared by A and B
@@ -48,12 +52,12 @@ SUMMARY_PROMPT = "Summarise the following text in at most 25 words.\n\nText: {te
 QUESTION = ("Is this Instagram account a business, brand or media account "
             "(rather than a personal account)? Answer Yes or No.")
 TARGET_LABEL, NBR_LABEL, EMPTY, RAW_CHARS = "Target account bio", "Bios", "(empty bio)", None
-if DATASET == "twibot20":
+if TWITTER:
     QUESTION = ("Is this Twitter account a bot (an automated account) rather than a human? "
                 "Answer Yes or No.")
     TARGET_LABEL, NBR_LABEL, EMPTY, RAW_CHARS = ("Target account (bio, then recent tweets)",
                                                  "Texts", "(no text)", 400)
-SUMMARY_CHARS = 1000 if DATASET == "twibot20" else None
+SUMMARY_CHARS = 1000 if TWITTER else None
 
 
 def sample(idx, y, n):
