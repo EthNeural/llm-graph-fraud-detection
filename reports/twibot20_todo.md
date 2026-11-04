@@ -2,7 +2,7 @@
 
 Written Thu 5 Nov 2026, ~00:30. It collects every open TwiBot-20 item from `twibot20_lessons_for_twibot22.md` (the 22 lessons), `twibot22_plan.md` (step 8), the TwiBot-22 checklist (H3: profile track), and the external feedback (`artifacts/google_feedback.txt`, reviewed 5 Nov). Items are grouped so they can run **in one go**: one GPU queue, one CPU batch, one round of report edits. ✅ = done, ⬜ = to do.
 
-**When (decided by the builder 5 Nov ~00:40):** TwiBot-22 is finished first (its checklist, models, sealed set), then compared with TwiBot-20's current results, and only **then** is this whole batch run. Target: TwiBot-22 done by Fri 6 Nov evening, this batch Fri night to Sat. If time runs short, GPU jobs run in this order: G1 + G2 (seeds, adapter rule), G4 (matched text), G3 (`dgp_num`).
+**When (decided by the builder 5 Nov ~00:40):** TwiBot-22 is finished first (its checklist, models, sealed set), then compared with TwiBot-20's current results, and only **then** is this whole batch run. Target: TwiBot-22 done by Fri 6 Nov evening, this batch Fri night to Sat. If time runs short, GPU jobs run in this order: G1 + G2 (seeds, adapter rule), G4 (matched text), G3 (`dgp_num`). **If time runs out, TwiBot-20's current results are used as they are** (builder, 5 Nov) and compared with TwiBot-22; the report then states the open caveats from this list (adapter rule, text cap, setting B on macro-F1, verified slice for non-LLM models).
 
 ## Already done (4 Nov)
 
