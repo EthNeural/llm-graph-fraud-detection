@@ -65,6 +65,27 @@ Read: every relation is near random for labels (adjusted homophily 0.011–0.038
 
 **Feature table** (`twibot22_features.py`): 814 features per user. That is 47 base features (15 profile fields + 32 bio PCA dims), plus per relation and direction the log count and mean of the neighbours' base features, plus 1- and 2-hop union means.
 
+## Facebook DEC-lite plan
+
+Based on Xu et al., "Deep Entity Classification" (Facebook, USENIX Security 2021): neighbour-aggregated features into a tree model, trained on many noisy labels and then on a few clean ones.
+
+TwiBot-22 fits DEC's setting closely:
+- 1M weak labels: Snorkel over labelling functions and models.
+- 986 expert labels: clean but few, and **not a random sample**. 39.6% are verified vs 9.5% overall; selection is undocumented.
+
+| Stage | What we do | Status | Time |
+|---|---|---|---|
+| 1. Base features | 15 allowed profile fields (no `verified`) + 32-dim bio PCA, standardised on train | **done** (`twibot22_features.py`) | – |
+| 2. Neighbour fan-out | Per relation (5 + quote, like) × direction (in, out): log count + mean of neighbours' base features; 1- and 2-hop union means. 814 features. DEC uses over 20,000, with more statistics (max, percentiles) and more entity types | **done** (mean only). Max and percentiles: optional | +30 min if added |
+| 3. Tree model | Gradient-boosted trees (sklearn `HistGradientBoosting`, `OMP_NUM_THREADS=1`, no torch import) on our split, cut-off chosen on validation | to do | ~1 h incl. runs |
+| 4. Noisy-then-clean (DEC's MS-MTL) | Stage 1: train on the 1M weak labels. Stage 2: recalibrate or fine-tune on part of the expert labels with 5-fold rotation; test on the held-out fold | optional, last | ~1–2 h; noisy (about 21 expert bots per fold) |
+| 5. Evaluation | Our test set; expert set (all 986, and non-verified only); official split. Ablations: with and without degree counts (crawl artefact), with and without neighbour features (what the graph adds) | to do | ~1 h |
+
+**Questions DEC-lite answers for the report:**
+1. Do neighbour statistics add anything over a user's own features on TwiBot-22? On TwiBot-20, graph models never beat text-only ones.
+2. How much of any gain is the crawl artefact, i.e. who received an edge from the ~10k crawled users?
+3. Does the gain survive on the expert labels, or does it partly reproduce the labelling machine (which used GCN, GAT and R-GCN)?
+
 ## Done (4 Nov)
 
 - Raw data organised in `data/twibot-22-raw/`: `edge.csv` (complete, 6.64 GB), `user.json`, labels, split, sub-communities and expert labels.
