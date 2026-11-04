@@ -81,6 +81,7 @@ Status: ✅ done and checked · 🟡 partly done · ⬜ to do · ➖ not needed 
 |---|---|---|---|
 | G1 | `OMP_NUM_THREADS=1` and no torch import with sklearn boosting (the TwiBot-20 silent segfault) | ⬜ | In the CPU model scripts |
 | G2 | Every launcher logs each job's exit code | ⬜ | |
+| G6 | **Label and `verified` out of every model input** (step 3, builder 4 Nov ~21:40) | ✅ | `twibot22_guard.py`: `users.parquet` now has profile fields only (no verified, no label/y/split); verified in `eval_only/verified.parquet` (95,398), read only for the non-verified slice and checks; `check_columns()` stops any model input named verified/label/y/split (tested). Shortcut results identical after the move. `withheld` is 59 users, not 0 (comment fixed); near-constant, left out |
 | G3 | Selection rule, seeds (3), metrics (macro-F1, AUROC, AUPRC, bootstrap CIs) written into the scripts | ⬜ | Plan step 1 |
 | G4 | Every result also scored on non-verified test users and with-bio users | ⬜ | |
 | G5 | **No artificial setting B on TwiBot-22.** The natural 14% bot share is already within graph-fraud benchmark rates (1.3–21.8% in GADBench), and TwiBot-20's 1:10 subsample removed 8,108 of 8,162 bot–bot edges. For rarer rates, report **PR-AUC with test users reweighted to 5% and 1% bots** (bots weighted so they make up 5% or 1% of the test weight; graph, training and cut-off unchanged). Wording in the report: "fraud-like rare class", not "fraud" | ⬜ | Evaluation only; add to the shared metrics code with G3 |

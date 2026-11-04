@@ -104,7 +104,9 @@ def main():
     split = np.load(DATA / "split_ours.npy")
     tr, va = split == "train", split == "val"
     users = pd.read_parquet(DATA / "users.parquet").set_index("id").loc[lab.id].reset_index()
-    fields = {f"profile: {c}": v.to_numpy() for c, v in features(users).items()}
+    import twibot22_guard
+    fields = {"profile: verified": twibot22_guard.verified(lab.id).astype(int)}   # from eval_only/, checked only
+    fields.update({f"profile: {c}": v.to_numpy() for c, v in features(users).items()})
     rels = np.load(DATA / "relations_uu.npz")
     n = len(y)
     for r in RELATIONS:

@@ -100,8 +100,10 @@ def main():
     np.savez(OUT / "edge_typed.npz", **{r: v.astype(np.int64) for r, v in typed.items()})
     np.save(OUT / "split.npy", split.astype(str))
     np.save(OUT / "ids.npy", np.array(ids).astype(str))
-    meta = users[["verified", "protected", "pinned", "default_image", "url", "location", "created_at",
+    import twibot22_guard
+    meta = users[["protected", "pinned", "default_image", "url", "location", "created_at",
                   "followers", "following", "tweets", "listed"]].reset_index()
+    meta.insert(1, "verified", twibot22_guard.verified(meta.id))       # eval_only/: checks only
     meta.insert(1, "label", np.where(y == 1, "bot", "human"))
     meta.to_csv(OUT / "metadata.csv", index=False)
     deg = np.bincount(und[:, 0], minlength=len(ids)) if len(und) else np.zeros(len(ids), int)

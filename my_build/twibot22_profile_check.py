@@ -60,19 +60,30 @@ def flatten():
             tweets=pm.get("tweet_count"), listed=pm.get("listed_count")))
     del users
     df = pd.DataFrame(rows)
-    lab = pd.read_csv(RAW / "label.csv").merge(pd.read_csv(RAW / "split.csv"), on="id")
-    df = df.merge(lab, on="id", how="inner")
-    df["y"] = (df.label == "bot").astype(int)
+    df = df[df.id.isin(pd.read_csv(RAW / "label.csv").id)]
     OUT.mkdir(parents=True, exist_ok=True)
+    # "verified" goes to eval_only/ and labels are never stored here (twibot22_guard.py)
+    (OUT / "eval_only").mkdir(exist_ok=True)
+    df[["id", "verified"]].to_parquet(OUT / "eval_only" / "verified.parquet")
+    df = df.drop(columns=["verified"])
     df.to_parquet(path)
     log(f"saved {path} ({len(df):,} users)")
     return df
 
 
+def with_labels(df):
+    # Labels and the official split joined in memory for the checks; never written to users.parquet.
+    lab = pd.read_csv(RAW / "label.csv").merge(pd.read_csv(RAW / "split.csv"), on="id")
+    df = df.merge(lab, on="id", how="inner")
+    df["y"] = (df.label == "bot").astype(int)
+    return df
+
+
 def features(df):
+    # Profile features WITHOUT "verified" (it lives in eval_only/, see twibot22_guard.py).
+    # "withheld" is legitimate but near-empty (59 of 1M users); model scripts drop it.
     created = pd.to_datetime(df.created_at, utc=True, errors="coerce")
     return pd.DataFrame({
-        "verified": df.verified.astype(int),
         "protected": df.protected.astype(int),
         "withheld": df.withheld.astype(int),
         "has pinned tweet": df.pinned.astype(int),
@@ -132,8 +143,10 @@ def text_stats(df):
 
 def main():
     RES.mkdir(parents=True, exist_ok=True)
-    df = flatten()
+    import twibot22_guard
+    df = with_labels(flatten())
     X, y = features(df), df.y.to_numpy()
+    X.insert(0, "verified", twibot22_guard.verified(df.id).astype(int))     # checked here, never a model input
     results = {}
 
     log("all 1M users, official split (train -> test)")

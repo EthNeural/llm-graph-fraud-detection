@@ -69,7 +69,9 @@ def base_features(lab, split):
     sys.path.insert(0, str(ROOT))
     from twibot22_profile_check import features
     users = pd.read_parquet(DATA / "users.parquet").set_index("id").loc[lab.id].reset_index()
-    prof = features(users).drop(columns=["verified", "withheld"])     # withheld: 0 users, constant
+    from twibot22_guard import check_columns
+    prof = features(users).drop(columns=["withheld"])                 # withheld: 59 of 1M users, near-constant
+    check_columns(prof.columns)                                       # no label, no "verified"
     tr = split == "train"
     P = prof.to_numpy(np.float32)
     mu, sd = P[tr].mean(0), P[tr].std(0) + 1e-6
