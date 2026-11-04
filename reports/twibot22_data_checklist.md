@@ -72,7 +72,7 @@ Status: ✅ done and checked · 🟡 partly done · ⬜ to do · ➖ not needed 
 | F3 | Output folders per design (sample, text recipe), so no stale cache is reused (X1, lesson 20) | ⬜ | Do before the first tweet embedding |
 | F4 | Bio-only and bio + tweets embeddings saved as separate feature sets (E3) | ⬜ | |
 | F5 | Neighbour features use neighbours' features only, never their labels | ✅ | |
-| F6 | **Headline embedder fixed in advance**. Proposed (needs the builder's OK): multilingual-E5 on bio + tweets. MiniLM is reported as a check, never chosen by test score | ⬜ | Write into the plan |
+| F6 | **Headline text model, fixed by the builder 4 Nov ~21:05, before any score.** multilingual-E5 is the headline. Text = bio + 20 most recent tweets **if** tweet embeddings for **all 1M users** finish by **Fri 6 Nov 18:00**; otherwise the headline is multilingual-E5 on **bio only**. MiniLM is reported as a check. Qwen2.5-1.5B is used only on the sample, not all 1M. Before embedding tweets: a 10k-user timing test, the estimated total hours, and the builder's go. Not while a TwiBot-20 LoRA seed run is on the GPU (that queue starts Thu night, ~12 h) | ✅ decided | Consequence: tweet extraction covers all 1M users (top-20 each), not only the sample (updates C3, H1) |
 | F7 | Users with no neighbours in a direction get a mean of 0 (= the train mean after standardisation); the separate log-count column (0) tells models it is missing | ✅ | `twibot22_features.py` `mean_agg`. GNNs need the same flag |
 
 ## G. Run hygiene

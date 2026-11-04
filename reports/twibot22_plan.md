@@ -31,7 +31,7 @@ Industry and the benchmarks keep the whole graph and subsample labels, not struc
 | Users for the LLM steps | Stratified random sample, 14% bots. **Open:** size | LLM cost |
 | Relations | **following, followers, mention, retweet, reply** (fixed 4 Nov 14:25, before any model score). Quote, like and co-list are measured and reported, not used as model edges | The 5 with the widest coverage: share of humans with an incoming edge is 56%, 43%, 41%, 25%, 20%; quote 10%, like 18%. All have near-zero label signal (table below), so coverage, not homophily, decides. Co-list (61M pairs) is too dense for the laptop |
 | Metadata | Allowed: profile fields except `verified` | `verified` is a labelling function and a shortcut: 0 of 95,398 verified users are bots |
-| Text | Bio, plus the 20 most recent tweets if the tweet files arrive | Same as TwiBot-20 |
+| Text | **Fixed 4 Nov ~21:05:** headline = multilingual-E5 on bio + 20 most recent tweets, if tweet embeddings for all 1M users finish by Fri 6 Nov 18:00; otherwise multilingual-E5 on bio only. MiniLM = check. Qwen2.5-1.5B on the sample only | Fallback rule set before any score (checklist F6) |
 | Metrics | Macro-F1, AUROC, AUPRC (+ accuracy and bot F1 on the official split, for comparison with published work) | Always-human scores 70.6% accuracy on the official test set |
 | Second test set | The 986 expert-labelled users, reported both overall and for non-verified users only. **Open:** headline or check | Weak labels: dataset "bot" labels agree with experts for only 56 of 101 users |
 
