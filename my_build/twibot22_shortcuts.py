@@ -9,7 +9,8 @@ the leaf-size test changed from a share (10%) to a count, so a small but pure gr
    (b) a depth-1 tree on it, fitted on OUR TRAIN users, has a leaf with >= 200 training users
        that is >= 99% one class.
 Each field is also scored alone on OUR VAL users (AUROC of the tree's score; macro-F1 at the cut-off
-that is best on val). No test user is used anywhere in this script.
+that is best on val). No test user is used to fit or score anything; only the descriptive
+bot_mean / human_mean columns are averaged over all users (labels incl. test), as in the plan's tables.
 
 Fields checked:
   profile  the 17 fields of twibot22_profile_check.features() (incl. verified and withheld)

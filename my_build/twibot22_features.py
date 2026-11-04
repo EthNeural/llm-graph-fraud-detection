@@ -64,6 +64,9 @@ def make_split(lab):
     return split
 
 
+from twibot22_guard import check_columns
+
+
 def base_features(lab, split):
     import sys
     sys.path.insert(0, str(ROOT))
@@ -117,6 +120,7 @@ def main():
     blocks += [c1, m1, m2]
     names += ["union:log_count"] + [f"union_hop1:mean_{b}" for b in base_names] + [f"union_hop2:mean_{b}" for b in base_names]
     F = np.hstack(blocks).astype(np.float16)
+    check_columns(names)                                              # final guard on all column names
     np.savez(DATA / "features_full.npz", X=F, names=np.array(names), base_dim=X.shape[1])
     log(f"saved features_full.npz: {F.shape[0]:,} users x {F.shape[1]} features ({F.nbytes / 1e9:.1f} GB)")
     (ROOT / "results" / "twibot22" / "features_info.json").write_text(json.dumps(dict(

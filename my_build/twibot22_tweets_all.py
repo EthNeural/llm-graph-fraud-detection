@@ -22,7 +22,7 @@ Checks written to the summary (data/twibot-22/tweets_top20_summary.json):
   per file: complete (ends with "]"), objects found, author misses, date misses, timezone suffix other
             than +00:00, tweets of unlabelled authors, decode errors in pass 2;
   overall:  total tweets vs the 88,217,457 `post` edges in edge.csv; date range; tweets after the
-            collection end (15 Mar 2022); users with 0 tweets, by class.
+            collection end (15 Mar 2022); users with 0 tweets, by class (descriptive, over all labels).
 
 Outputs (git-ignored, CC BY-NC-ND data):
   data/twibot-22/tweet_index/tweet_<i>.npz          pass-1 index per file

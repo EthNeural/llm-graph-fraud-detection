@@ -49,7 +49,7 @@ Status: ✅ done and checked · 🟡 partly done · ⬜ to do · ➖ not needed 
 | D4 | **Labelling-function leakage**: spam keywords in bios and tweets, by class (the labels were made partly from them) | ⬜ | A model that finds these is partly re-learning the labelling machine |
 | D5 | Account age parsed from ISO dates, not zero for everyone (X3) | ✅ | `twibot22_profile_check.py` uses `pd.to_datetime`. The TwiBot-20 parsers in `metadata_check.py` and `step6_dgp.py` are still wrong for TwiBot-22 |
 | D7 | **Labels were partly made by graph models** (GCN, GAT, R-GCN were labelling functions). Graph models may re-learn the labeller. Check: compare each graph model's gain on weak-label test users vs on expert-labelled users | ⬜ | Planned as DEC question 3; applies to every graph model |
-| D6 | "Empty bio" flag: strong label cue (40.6% of bots, 7.8% of humans). Report a flag-only baseline and a with-bio slice | ⬜ | |
+| D6 | "Empty bio" and "no tweets" flags: strong label cues (empty bio 40.6% of bots vs 7.8% of humans; no tweets 17.6% vs 4.8%). Report a flag-only baseline and with-bio / with-tweets slices | ⬜ | |
 
 ## E. Graph
 
@@ -68,7 +68,7 @@ Status: ✅ done and checked · 🟡 partly done · ⬜ to do · ➖ not needed 
 | # | Item | Status | Note |
 |---|---|---|---|
 | F1 | Standardisation and PCA fitted on train only | ✅ | `twibot22_features.py` |
-| F2 | Rows kept in `label.csv` order everywhere; any join by id, never by position (X2) | ✅ | `twibot22_graph_checks.py`: all artefacts 1M rows; the 124,231 zero embedding rows equal the 124,231 empty bios exactly. Keep this assertion in every new script. Earlier note: | True for the new scripts; `prep_twibot22.py` sorts by id, so it must reindex |
+| F2 | Rows kept in `label.csv` order everywhere; any join by id, never by position (X2) | ✅ | `twibot22_graph_checks.py`: all artefacts 1M rows; the 124,231 zero embedding rows equal the 124,231 empty bios exactly. Keep this assertion in every new script. `prep_twibot22.py` (superseded) sorts by id and would need a reindex if reused |
 | F3 | Output folders per design (sample, text recipe), so no stale cache is reused (X1, lesson 20) | ⬜ | Do before the first tweet embedding |
 | F4 | Bio-only and bio + tweets embeddings saved as separate feature sets (E3) | ⬜ | |
 | F5 | Neighbour features use neighbours' features only, never their labels | ✅ | |

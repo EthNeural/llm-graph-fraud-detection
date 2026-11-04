@@ -1,6 +1,6 @@
 # TwiBot-22 plan
 
-Status as of Wed 4 Nov 2026, 14:20. This is a working plan: decisions marked **open** are not fixed yet. Every decision below is fixed **before** any TwiBot-22 test score is seen (lesson from TwiBot-20, see `twibot20_lessons_for_twibot22.md`).
+Status as of Wed 4 Nov 2026, 21:55. The row-by-row status lives in `twibot22_data_checklist.md`; where the two differ, the checklist wins. This is a working plan: decisions marked **open** are not fixed yet. Every decision below is fixed **before** any TwiBot-22 test score is seen (lesson from TwiBot-20, see `twibot20_lessons_for_twibot22.md`).
 
 ## Why TwiBot-22
 
@@ -28,11 +28,11 @@ Industry and the benchmarks keep the whole graph and subsample labels, not struc
 |---|---|---|
 | Split | Our stratified split, seed 42. The official split is reported as an extra | Official `split.csv` is not random: train 7.8% bots, val 28%, test 29.4%. All 95k verified users sit in train. Median followers 1,593 (train) vs 244 (test) |
 | Users for the graph models | All 1M | Slicing removes edges: the paper's 10k sub-communities keep only 290 to 7,900 follow edges each |
-| Users for the LLM steps | Stratified random sample, 14% bots. **Open:** size | LLM cost |
+| Users for the text and LLM steps | 100k stratified random sample, natural 14% bots, plus the 986 experts; neighbours from the full graph (checklist B5, F6). Fallback size if GPU time runs short: to be set with the timing estimate (H7) | LLM cost; same text for every compared model |
 | Relations | **All 7: following, followers, mention, retweet, reply, quote, like** (changed by the builder 4 Nov ~21:30, before any model score; replaces the 5 fixed at 14:25). Co-list is measured and reported, not used | "Don't miss information" (model-input contract step 1). Quote and like add links for 8,856 users (0.9%) and carry almost no label signal (adjusted homophily 0.024, 0.011), but cost little. Co-list (61M pairs) is too dense for the laptop |
 | Metadata | Allowed: profile fields except `verified` | `verified` is a labelling function and a shortcut: 0 of 95,398 verified users are bots |
 | Text | **Fixed 4 Nov 20:58 (option B):** headline = multilingual-E5 on bio + 20 most recent tweets on the 100k stratified sample, neighbours from the full graph. Full-graph models on 1M users: bio only (full-scale check). Option A (tweets for all 1M) afterwards as an extra, never the headline. MiniLM = check; Qwen2.5-1.5B on the sample only | Cheap features on everyone, expensive work on a sample (as Facebook DEC); same text for every compared model (as TwiBot-20). Checklist F6 |
-| Metrics | Macro-F1, AUROC, AUPRC (+ accuracy and bot F1 on the official split, for comparison with published work) | Always-human scores 70.6% accuracy on the official test set |
+| Metrics | Macro-F1, AUROC, AUPRC with bootstrap CIs; AUPRC also with test reweighted to 5% and 1% bots (G5); slices: non-verified, with-bio, experts (+ accuracy and bot F1 on the official split, for comparison with published work) | Always-human scores 70.6% accuracy on the official test set |
 | Second test set | The 986 expert-labelled users, reported both overall and for non-verified users only. **Open:** headline or check | Weak labels: dataset "bot" labels agree with experts for only 56 of 101 users |
 
 ## Data checks done
@@ -59,7 +59,7 @@ Read: every relation is near random for labels (adjusted homophily 0.011–0.038
 
 **The graph is star-shaped.** Only 10,039 users (1.0%) have any outgoing edge in these seven relations. They are 14.5% bots, and none is in the official val split (5,711 train, 4,328 test). For the other 99% of users, every neighbour is one of those ~10k crawled users. So out-degree AUROC is about 0.50 simply because 99% of users have out-degree 0.
 
-**Tweets:** 93.4% of users have at least one collected tweet (82.4% of bots, 95.2% of humans). The median is 53 among users with tweets, 51 over all users.
+**Tweets** (re-checked on the 9 files, `tweets_top20_summary.json`): 88,217,457 tweets; 93.4% of users have at least one (82.4% of bots, 95.2% of humans). The median is 53 among users with tweets, 51 over all users.
 
 **Our split, fixed 4 Nov 14:22** (`split_ours.npy`): 699,309 / 199,803 / 100,888 users, 14.0% bots in each part; all 986 expert users are in test.
 
@@ -90,23 +90,24 @@ TwiBot-22 fits DEC's setting closely:
 
 - Raw data organised in `data/twibot-22-raw/`: `edge.csv` (complete, 6.64 GB), `user.json`, labels, split, sub-communities and expert labels.
 - Profile shortcut check, 8-relation heterophily table, star-shape and tweet-coverage checks, each checked by a sceptic pass.
-- Relations fixed; our split fixed; 814-feature full-graph table built.
-- Bio embeddings for all 1M users: MiniLM done; multilingual-E5 running; Qwen2.5-1.5B queued (GPU).
+- Relations fixed (all 7 since ~21:30); our split fixed; 814-feature full-graph table built (MiniLM bios; rebuild with multilingual-E5 pending, H2).
+- Bio embeddings for all 1M users: MiniLM and multilingual-E5 done. The all-1M Qwen2.5-1.5B bio run was stopped at 26% (16:29) on purpose: Qwen runs on the sample only (F6).
+- All tweets extracted (20 most recent per user, `twibot22_tweets_all.py`); shortcut, graph and row-order checks done; `verified` and labels moved out of model inputs (`twibot22_guard.py`).
 
 ## Next, in order
 
 Deadline: experiments finished by Sat 7 Nov night; Sun 8 Nov is writing only.
 
 1. **Pre-registration (before step 2).** Write the checkpoint and model-selection rule into the scripts (best validation macro-F1, cut-off chosen on validation), along with seeds (3) and metrics (macro-F1, AUROC, AUPRC, bootstrap CIs). The checklist is in `twibot20_lessons_for_twibot22.md`.
-2. **Cheap models on all 1M users (CPU).** Run each with `OMP_NUM_THREADS=1`, without torch in the same process: the TwiBot-20 tree baseline crashed silently that way.
+2. **Cheap models on all 1M users (CPU), each with and without profile fields (H3).** Run each with `OMP_NUM_THREADS=1`, without torch in the same process: the TwiBot-20 tree baseline crashed silently that way.
    - Profile-only MLP and trees.
    - **Degree-only / "has an edge" model**: measures the crawl artefact.
    - MLP on base features.
    - **XGB-Graph** (GADBench recipe: own + mean 1-hop + mean 2-hop), merged graph and per relation.
    - DEC-lite: the 814 features into gradient-boosted trees.
    - Each scored on our test set, the expert set (all 986 and non-verified only), and the official split for comparison.
-3. **GNNs on the full graph (CPU).** GCN, SAGE, FAGCN, LINKX, plus an RGCN over the 5 relations. Fall back to neighbour sampling if memory runs out.
-4. **Tweets.** When the `tweet_*.json` files finish downloading: `twibot22_tweets.py` → text = bio + 20 most recent tweets → re-embed the LLM sample.
+3. **GNNs on the full graph (CPU).** GCN, SAGE, FAGCN, LINKX, plus an RGCN over the 7 relations. With profile fields (H3). Fall back to neighbour sampling if memory runs out.
+4. **Tweets.** Extracted (done). Next: tweet checks (C6, C7, D4), text rules (C5), 10k timing test, the builder's go, then multilingual-E5 on bio + 20 tweets for the sample + hubs.
 5. **LLM sample (GPU).** A stratified random sample at 14% bots, neighbours taken from the full graph. LLM embeddings, then DGP with LoRA. Score the graph models on the same test users so the comparison is paired.
 6. **Optional:** DEC's noisy-then-clean training (weak labels → expert labels), only if time is left.
 7. **Script fixes still open:** per-design output folders; `DATASET=twibot22` in `common.py`; TwiBot-22 field names and dates in `metadata_check.py` and `step6_dgp.py`.
