@@ -37,11 +37,11 @@ Check before queueing: the step 6 launcher accepts the selection rule and saves 
 | # | Edit | Source |
 |---|---|---|
 | R1 | Main LoRA tables use the **full-validation adapter rule**, with both adapters shown and a note that the rule was fixed after some test scores were known | feedback #1; lesson 8 |
-| R2 | Setting B finding: **lead with AUROC and PR-AUC** (macro-F1 cannot separate models with 54 test bots). On AUROC the gaps are clear and favour text models (GCN − MLP −0.072, FAGCN − MLP −0.141, LoRA dgp − MLP −0.064). Word it as "B cannot separate models on macro-F1", not "no difference" | feedback #3; finding 8 |
-| R3 | Every headline also on non-verified test users (from C1) | lesson 2 |
+| R2 ✅ (finding 8 already leads with AUROC) | Setting B finding: **lead with AUROC and PR-AUC** (macro-F1 cannot separate models with 54 test bots). On AUROC the gaps are clear and favour text models (GCN − MLP −0.072, FAGCN − MLP −0.141, LoRA dgp − MLP −0.064). Word it as "B cannot separate models on macro-F1", not "no difference" | feedback #3; finding 8 |
+| R3 ✅ 6 Nov (REPORT.md follow-up section) | Every headline also on non-verified test users (from C1) | lesson 2 |
 | R4 | Text-cap and training-size caveats next to every "encoder vs LoRA" claim, with the G4 result | lessons 10, 12 |
-| R5 | Note: TwiBot-20 used each user's first 20 tweets in file order; TwiBot-22 uses the 20 most recent | TwiBot-22 checklist C5 |
-| R6 | Note: many comparisons on one test set and no sealed set on TwiBot-20 (cannot be fixed now; TwiBot-22 has one) | lesson 22 |
+| R5 ✅ | Note: TwiBot-20 used each user's first 20 tweets in file order; TwiBot-22 uses the 20 most recent | TwiBot-22 checklist C5 |
+| R6 ✅ | Note: many comparisons on one test set and no sealed set on TwiBot-20 (cannot be fixed now; TwiBot-22 has one) | lesson 22 |
 
 ## Not doing (and why)
 

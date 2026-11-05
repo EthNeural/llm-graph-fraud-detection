@@ -372,6 +372,27 @@ Step 4 rerun with the bridge edges added (`GRAPH=bridges`, `results/twibot20/A/s
 - FAGCN holds steady or gains slightly (−0.007 to +0.010). The extra edges do not hurt it the way they hurt GCN.
 - Graph-only drops by about 0.04. One hypothesis, not tested: in the labelled-only graph, degree partly reflects a user's position in the dataset's BFS crawl, and the bridge edges blur that.
 
+### Follow-up checks, 6 Nov (TwiBot-20 to-do C1–C4): non-verified users, seeds, profile, crawl artefact
+
+Scripts: `my_build/twibot20_c1_scores.py`, `twibot20_c2_gnn_profile.py`, `twibot20_c4_crawl_ci.py`; results in `my_build/results/twibot20/{A,B}/c1_nonverified.json`, `c2_gnn_profile.json`, `A/c4_crawl_artefact_ci.json`. Same models, features, seeds and cut-off rule as above. Non-verified = the 857 of 1,183 A test users who are not verified (all 326 verified test users are human).
+
+**Headlines on non-verified test users (A, Qwen2.5-1.5B text; macro-F1 / AUROC):**
+
+| Model | All test users | Non-verified | Gap to MLP on non-verified [95% CI, macro-F1] |
+|---|---|---|---|
+| MLP (no edges) | 0.766 / 0.840 | 0.687 / 0.791 | – |
+| GCN | 0.707 / 0.775 | 0.635 / 0.723 | −0.052 [−0.080, −0.025] |
+| SAGE | 0.750 / 0.829 | 0.683 / 0.771 | −0.004 [−0.024, +0.016] |
+| FAGCN | 0.745 / 0.811 | 0.675 / 0.758 | −0.012 [−0.033, +0.009] |
+| LoRA `target`, 2 seeds, adapter chosen by full-validation macro-F1 | 0.732 / 0.814 | 0.652 / 0.744 | vs MLP (1,300): −0.009 [−0.037, +0.020] |
+| LoRA `dgp`, same rule | 0.736 / 0.821 | 0.667 / 0.778 | vs MLP (1,300): +0.006 [−0.022, +0.033] |
+
+The GCN loss holds without verified users. With two seeds and the matched checkpoint rule, **`dgp` − `target` is +0.033 [+0.014, +0.051] AUROC on non-verified users** (macro-F1 +0.014 [−0.008, +0.036]): the neighbour summaries help ranking a little; seed 2 is queued.
+
+**GNNs with the 5 allowed profile fields (C2; like-for-like with TwiBot-22):** MLP 0.808 / 0.885; GCN − MLP −0.069 [−0.093, −0.045], SAGE −0.012 [−0.029, +0.005], FAGCN −0.035 [−0.053, −0.015], LINKX −0.009 [−0.025, +0.007] macro-F1; every GNN is below the MLP on AUROC (−0.018 to −0.078), also on non-verified users. Setting B: no GNN above the MLP.
+
+**Crawl artefact, tree baseline (C4; 3 seeds averaged):** adding the 4 in/out friend/follow degrees gives +0.021 [+0.002, +0.040] macro-F1 and +0.031 [+0.019, +0.043] AUROC on all test users, but **−0.008 [−0.033, +0.018] and +0.009 [−0.007, +0.026] on non-verified users**: the artefact's gain comes from the verified, all-human users.
+
 ## Limitations (so far)
 
 - **One seed for step 6 so far, and that run was unseeded on the LoRA side.** The first `dgp` and `target` runs fixed the training users (SEED=42) and batch order, but not the LoRA start weights or dropout (no `torch.manual_seed`), so they cannot be reproduced exactly. Seeded runs (`LORA_SEED=1, 2`, same 1,300 users and summaries) are running on TwiBot-20 A; the unseeded run will be the third. Qwen3-1.7B instead of the paper's Qwen3-8B; the paper uses 5 seeds.
@@ -385,6 +406,8 @@ Step 4 rerun with the bridge edges added (`GRAPH=bridges`, `results/twibot20/A/s
 - **No duplicate-text leakage.** 1 of 1,183 TwiBot-20 A test users (12 of 2,268 on Instagram A) has exactly the same normalised text as a training user; dropping them changes Qwen2.5 + LR by at most 0.001 (`my_build/duplicate_text.py`).
 - **TwiBot-20 graph = labelled users only** (see "dropped support users"; bridge check below).
 - **Edge signal near zero**, so these results speak to near-random edges, not to strongly heterophilous graphs (see the adjusted-homophily table).
+- **Tweet order differs between the two Twitter datasets.** TwiBot-20 uses each user's first 20 tweets in file order; TwiBot-22 uses the 20 most recent.
+- **Many comparisons on one test set, and no sealed set on TwiBot-20.** Every TwiBot-20 choice was made while its test scores were visible; this cannot be fixed now. TwiBot-22 has a sealed test set scored once.
 
 ## Findings so far
 
