@@ -4,6 +4,10 @@
 
 **Writing rule:** as in research papers, the report never cites feedback (supervisor or external) as the reason for a choice. Heterophily is motivated by the problem itself: fraudsters and bots camouflage by linking to benign accounts (Dou et al., 2020), so methods must be evaluated under measured heterophily. Dataset changes are justified on their merits (e.g. Elliptic has no text for an LLM to read).
 
+## Length and format (`uni brief /word count ,font.docx`, read 6 Nov ~02:10)
+
+**~7,000 words excluding the bibliography; Arial, 11 pt only; one submission per group; due 11:55 PM, Sunday 8 November 2026.** (Replaces the earlier 7-page / 12-pt assumption.) Working split: Introduction ~700, Literature Review ~1,200, Methodology ~1,800, Outcome ~2,500, Contributions ~300, Future Outlook ~500.
+
 ## Template and project brief (`uni brief /`, checked 5 Nov 23:10)
 
 - **Sections (latest template):** Introduction (for a layperson: aim, why it matters, how, expected vs achieved) · Literature Review · Research Methodology (sub-problems, integration with figures, timeline vs plan, difficulties and fallbacks) · Research Outcome (follow the plan; deviations as P → P′) · Individual Contributions · **Future Outlook** · **Bibliography**.

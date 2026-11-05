@@ -32,11 +32,11 @@ Do LLM-based and graph-based methods help detect bots when the graph is heteroph
 7. **The main conflict:** the TwiBot-22 paper ranks graph models first. Our reading of the paper: ranked by **accuracy** on a skewed official split (test 29.4% bots, so all-human = 70.6%); on bot-F1 a non-graph model is best; and the labels were partly produced by **GCN / GAT / R-GCN**, the same families that top the board. **Confirmed in their official code:** BotRGCN, GCN and GAT take `verified` as an input, use the skewed split, train a fixed 200 epochs with no validation selection, and report AUC from 0/1 predictions. A reconciliation run (our models under their protocol, with and without `verified`): section 7. Their repo also has a separate 500-user, 3-expert annotation study that never trained the label-makers: used for D8 (section 8).
 
 ## 5. Still to do (before Sunday 8 Nov, report day)
-DGP (LLM with neighbour summaries) result early Fri, second LLM seeds by ~13:00; FAGCN expert stage; the sealed final run on the non-expert sealed users (main table, D7: do graph models gain only on weak labels?); TwiBot-20 comparison; figures; report (7 pages).
+DGP (LLM with neighbour summaries) result early Fri, second LLM seeds by ~13:00; FAGCN expert stage; the sealed final run on the non-expert sealed users (main table, D7: do graph models gain only on weak labels?); TwiBot-20 comparison; figures; report (~7,000 words, Arial 11 pt, one per group, due 11:55 PM Sun 8 Nov).
 
 ## 6. Questions for the tutor
 1. Report framing: is a mostly *negative* result for graph methods ("profile and simple neighbour features suffice; message passing adds little under measured heterophily") acceptable as the main outcome, if every claim is CI-backed and the leaderboard conflict is explained?
-2. Scope for 7 pages: TwiBot-22 as the main dataset, TwiBot-20 and Instagram as shorter supporting sections — OK?
+2. Scope for ~7,000 words: TwiBot-22 as the main dataset, TwiBot-20 and Instagram as full supporting sections — OK? Are figures / tables / appendices counted?
 3. Label quality: the 986 expert labels trained the label-makers (not independent); the 500-user annotation study did not. Is it sound to lead the label-quality discussion with the annotation study (small: 44 bots) and use the 986 experts as the training / rotation set?
 4. Literature review: MAGNET, FRAUDRE, TROPICAL and the TKDD 2026 paper as the camouflage / heterophily line, plus GADBench, Hays et al. (WWW 2023) and Mao et al. (NeurIPS 2023) — anything missing?
 5. Anything specific the marking expects in "Contributions" for a team project where my part is the TwiBot / LLM pipeline?

@@ -1,6 +1,6 @@
 # MOCK final report: for review (Fri 6 Nov 2026, ~02:00)
 
-> **Status of this draft.** Structure follows `uni brief /Assessment 3 – Project Completion (2).docx`. Numbers are from the working test users (weak labels) unless marked; the sealed-set final run is Friday afternoon, so headline numbers will be replaced. **[PENDING]** = result not in yet; **[verify]** = citation not yet checked; **[TEAM]** = needs the other members' input. The **timeline is skipped on purpose** (deferred by the builder; to be added before submission). Length now ~2,600 words + 5 figure slots; target ≤ 7 pages at 12 pt.
+> **Status of this draft.** Structure follows `uni brief /Assessment 3 – Project Completion (2).docx`. Numbers are from the working test users (weak labels) unless marked; the sealed-set final run is Friday afternoon, so headline numbers will be replaced. **[PENDING]** = result not in yet; **[verify]** = citation not yet checked; **[TEAM]** = needs the other members' input. The **timeline is skipped on purpose** (deferred by the builder; to be added before submission). Length now ~2,600 words + 5 figure slots. **Target: ~7,000 words excluding the bibliography, Arial 11 pt** (`uni brief /word count ,font.docx`); one submission per group, due 11:55 PM Sun 8 Nov. This mock is a skeleton at ~37% of the length.
 
 ---
 
