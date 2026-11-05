@@ -32,3 +32,15 @@ features 47 (own profile + bio PCA); union edges 8,967,538; graphs built in 0.0 
   FAGCN_s1: val F1 0.694 | test F1 0.691 AUROC 0.828 PR-AUC 0.444 | non-verified F1 0.685 | 63 epochs, 20.8 min
     FAGCN seed 2 epoch 0: loss 0.7007 val F1 0.6305  (0.3 min)
     FAGCN seed 2 epoch 25: loss 0.5449 val F1 0.6501  (8.9 min)
+    FAGCN seed 2 epoch 50: loss 0.5342 val F1 0.6467  (18.5 min)
+  FAGCN_s2: val F1 0.694 | test F1 0.691 AUROC 0.831 PR-AUC 0.454 | non-verified F1 0.685 | 62 epochs, 25.3 min
+    RGCN seed 1 epoch 0: loss 0.9192 val F1 0.6276  (0.6 min)
+    RGCN seed 1 epoch 25: loss 0.5601 val F1 0.6539  (10.2 min)
+    RGCN seed 1 epoch 50: loss 0.5342 val F1 0.6455  (17.5 min)
+  RGCN_s1: val F1 0.690 | test F1 0.689 AUROC 0.804 PR-AUC 0.449 | non-verified F1 0.683 | 60 epochs, 20.9 min
+    RGCN seed 2 epoch 0: loss 0.8530 val F1 0.6028  (0.4 min)
+    RGCN seed 2 epoch 25: loss 0.5449 val F1 0.6545  (8.5 min)
+    RGCN seed 2 epoch 50: loss 0.5287 val F1 0.6465  (24.7 min)
+  RGCN_s2: val F1 0.690 | test F1 0.690 AUROC 0.809 PR-AUC 0.452 | non-verified F1 0.684 | 57 epochs, 32.1 min
+=== exit code 0 (MODELS=FAGCN,RGCN SEEDS=1,2)
+=== 19:57 all done
