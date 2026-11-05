@@ -43,7 +43,7 @@ DGP (LLM with neighbour summaries) result early Fri, second LLM seeds by ~13:00;
 6. Citation rule (≤ 5 years): may older foundational works (CARE-GNN 2020 for camouflage) be cited briefly?
 7. The discriminative intra- / inter-relation model in the camouflage line: is it called DEFEND, and is it the TKDD 2026 paper ("Beyond Smoothing")?
 
-## 7. Leaderboard reconciliation (our models under the official protocol; Fri 00:30)
+## 7. Leaderboard reconciliation (our models under the official protocol; complete, Fri 00:40)
 
 Official split, our sealed users removed: test 94,889 users, **29.5% bots → calling everyone human scores 0.705 accuracy**. Our split: test 49,951, 14.0% bots → all-human 0.860.
 
@@ -60,7 +60,7 @@ Official split, our sealed users removed: test 94,889 users, **29.5% bots → ca
 | XGB-Graph + profile | in / out | 0.885 / 0.869 | 0.730 / 0.731 | 0.874 / 0.873 |
 | MLP (no edges) | in / out | 0.770 / 0.843 | 0.686 / 0.679 | 0.824 / 0.799 |
 | FAGCN | in / out | 0.816 / 0.850 | 0.674 / 0.689 | 0.799 / 0.828 |
-| RGCN | in / out | *running* / 0.836 | – / 0.689 | – / 0.800 |
+| RGCN | in / out | 0.814 / 0.836 | 0.678 / 0.689 | 0.797 / 0.800 |
 
 Seed 0 each. All models use the 1M bio-only features (15 profile fields + multilingual-E5 bio). "Out" on our split = the main results.
 
