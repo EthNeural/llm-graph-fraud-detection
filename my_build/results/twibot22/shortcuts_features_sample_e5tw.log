@@ -1,0 +1,41 @@
+830 columns; shortcuts: none
+strongest single columns (val AUROC):
+  self:prof_log followers                                 0.740  purest big leaf {'users': 44871, 'share': np.float64(0.641), 'purity': 0.9483, 'majority': 'human'}
+  self:prof_log tweet count                               0.698  purest big leaf {'users': 37945, 'share': np.float64(0.542), 'purity': 0.9466, 'majority': 'human'}
+  self:prof_log listed count                              0.691  purest big leaf {'users': 35321, 'share': np.float64(0.505), 'purity': 0.9505, 'majority': 'human'}
+  self:prof_bio length                                    0.679  purest big leaf {'users': 59085, 'share': np.float64(0.844), 'purity': 0.9104, 'majority': 'human'}
+  self:prof_log following                                 0.671  purest big leaf {'users': 44745, 'share': np.float64(0.639), 'purity': 0.9228, 'majority': 'human'}
+  self:prof_bio empty                                     0.668  purest big leaf {'users': 61423, 'share': np.float64(0.877), 'purity': 0.9051, 'majority': 'human'}
+  self:prof_has location                                  0.627  purest big leaf {'users': 49710, 'share': np.float64(0.71), 'purity': 0.9002, 'majority': 'human'}
+  following_in:share_with_text                            0.623  purest big leaf {'users': 36714, 'share': np.float64(0.524), 'purity': 0.9158, 'majority': 'human'}
+  union_hop1:log_count                                    0.622  purest big leaf {'users': 30647, 'share': np.float64(0.438), 'purity': 0.924, 'majority': 'human'}
+  following_in:mean_prof_protected                        0.621  purest big leaf {'users': 36835, 'share': np.float64(0.526), 'purity': 0.9152, 'majority': 'human'}
+  self:prof_has pinned tweet                              0.619  purest big leaf {'users': 27292, 'share': np.float64(0.39), 'purity': 0.9318, 'majority': 'human'}
+  self:prof_has url                                       0.619  purest big leaf {'users': 36399, 'share': np.float64(0.52), 'purity': 0.9166, 'majority': 'human'}
+  following_in:mean_prof_log following                    0.617  purest big leaf {'users': 30841, 'share': np.float64(0.441), 'purity': 0.9238, 'majority': 'human'}
+  following_in:mean_prof_default profile image            0.610  purest big leaf {'users': 34415, 'share': np.float64(0.492), 'purity': 0.9136, 'majority': 'human'}
+  following_in:log_count                                  0.607  purest big leaf {'users': 20262, 'share': np.float64(0.289), 'purity': 0.9492, 'majority': 'human'}
+Exception ignored in: <function ResourceTracker.__del__ at 0x107a6dbc0>
+Traceback (most recent call last):
+  File "/opt/anaconda3/lib/python3.13/multiprocessing/resource_tracker.py", line 82, in __del__
+  File "/opt/anaconda3/lib/python3.13/multiprocessing/resource_tracker.py", line 91, in _stop
+  File "/opt/anaconda3/lib/python3.13/multiprocessing/resource_tracker.py", line 116, in _stop_locked
+ChildProcessError: [Errno 10] No child processes
+Exception ignored in: <function ResourceTracker.__del__ at 0x10516dbc0>
+Traceback (most recent call last):
+  File "/opt/anaconda3/lib/python3.13/multiprocessing/resource_tracker.py", line 82, in __del__
+  File "/opt/anaconda3/lib/python3.13/multiprocessing/resource_tracker.py", line 91, in _stop
+  File "/opt/anaconda3/lib/python3.13/multiprocessing/resource_tracker.py", line 116, in _stop_locked
+ChildProcessError: [Errno 10] No child processes
+Exception ignored in: <function ResourceTracker.__del__ at 0x11406dbc0>
+Traceback (most recent call last):
+  File "/opt/anaconda3/lib/python3.13/multiprocessing/resource_tracker.py", line 82, in __del__
+  File "/opt/anaconda3/lib/python3.13/multiprocessing/resource_tracker.py", line 91, in _stop
+  File "/opt/anaconda3/lib/python3.13/multiprocessing/resource_tracker.py", line 116, in _stop_locked
+ChildProcessError: [Errno 10] No child processes
+Exception ignored in: <function ResourceTracker.__del__ at 0x1057d9bc0>
+Traceback (most recent call last):
+  File "/opt/anaconda3/lib/python3.13/multiprocessing/resource_tracker.py", line 82, in __del__
+  File "/opt/anaconda3/lib/python3.13/multiprocessing/resource_tracker.py", line 91, in _stop
+  File "/opt/anaconda3/lib/python3.13/multiprocessing/resource_tracker.py", line 116, in _stop_locked
+ChildProcessError: [Errno 10] No child processes

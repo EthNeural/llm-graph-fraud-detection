@@ -1,0 +1,9 @@
+{
+ "n_users": 100986,
+ "n_features": 830,
+ "text": "multilingual-E5 bio + 20 tweets (2-hop: bio only)",
+ "profile_columns": 255,
+ "text_columns": 544,
+ "graph_columns": 31,
+ "pca_explained": 0.5060789585113525
+}

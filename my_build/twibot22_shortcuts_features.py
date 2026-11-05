@@ -27,7 +27,9 @@ def main():
     import os
     f = np.load(DATA / os.environ.get("FEATURES", "features_full_e5.npz"))
     X, names = f["X"], list(f["names"])
-    res = Parallel(n_jobs=8)(delayed(check)(X[:, j].astype(np.float32), y, tr, va) for j in range(X.shape[1]))
+    if "rows" in f.files:                                  # a sample table (H10): restrict labels and split to its rows
+        y, tr, va = y[f["rows"]], tr[f["rows"]], va[f["rows"]]
+    res = Parallel(n_jobs=int(os.environ.get('JOBS', 8)))(delayed(check)(X[:, j].astype(np.float32), y, tr, va) for j in range(X.shape[1]))
     rows = {}
     for name, r in zip(names, res):
         leaf = r["purest_leaf"]
