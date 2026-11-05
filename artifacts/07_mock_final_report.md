@@ -283,4 +283,6 @@ Several parts of the problem remain open beyond this project.
 - Xu, F., Wang, N., Wu, H., Wen, X., Zhao, X., & Wan, H. (2024). Revisiting graph-based fraud detection in sight of heterophily and spectrum. *AAAI 2024*. **[verify]**
 - Yang, et al. (2025). FLAG. *KDD 2025*. **[full reference; verify]**
 - Zhang, G., Wu, J., Yang, J., Beheshti, A., Xue, S., Zhou, C., & Sheng, Q. Z. (2021). FRAUDRE: Fraud detection dual-resistant to graph inconsistency and imbalance. *IEEE ICDM 2021*. doi:10.1109/ICDM51629.2021.00098.
-- **[DGP reference; verify]** · **[Methods older than 5 years (GCN, GraphSAGE, R-GCN, LoRA, Snorkel): ask whether foundational methods may be cited; FAGCN and LINKX are 2021]** · **[TwiBot-20 (Feng et al., CIKM 2021): add]**
+- **[DGP reference; verify]** · **[TwiBot-20 (Feng et al., CIKM 2021): add]** · **[FAGCN (Bo et al., AAAI 2021) and LINKX (Lim et al., NeurIPS 2021): add; both 2021]**
+
+*Rule: works older than 5 years (GCN, GraphSAGE, R-GCN, LoRA, Snorkel, CARE-GNN, the Elliptic dataset) are described in the text where needed but not cited.*

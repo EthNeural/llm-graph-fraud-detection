@@ -40,8 +40,7 @@ DGP (LLM with neighbour summaries) result early Fri, second LLM seeds by ~13:00;
 3. Label quality: the 986 expert labels trained the label-makers (not independent); the 500-user annotation study did not. Is it sound to lead the label-quality discussion with the annotation study (small: 44 bots) and use the 986 experts as the training / rotation set?
 4. Literature review: MAGNET, FRAUDRE, TROPICAL and the TKDD 2026 paper as the camouflage / heterophily line, plus GADBench, Hays et al. (WWW 2023) and Mao et al. (NeurIPS 2023) — anything missing?
 5. Anything specific the marking expects in "Contributions" for a team project where my part is the TwiBot / LLM pipeline?
-6. Citation rule (≤ 5 years): may older foundational works (CARE-GNN 2020 for camouflage) be cited briefly?
-7. The discriminative intra- / inter-relation model in the camouflage line: is it called DEFEND, and is it the TKDD 2026 paper ("Beyond Smoothing")?
+6. The discriminative intra- / inter-relation model in the camouflage line: is it called DEFEND, and is it the TKDD 2026 paper ("Beyond Smoothing")?
 
 ## 7. Leaderboard reconciliation (our models under the official protocol; complete, Fri 00:40)
 
