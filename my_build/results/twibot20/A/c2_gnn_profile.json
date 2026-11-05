@@ -1,0 +1,177 @@
+{
+ "profile_fields": [
+  "log_followers_count",
+  "log_following_count",
+  "log_tweet_count",
+  "log_listed_count",
+  "account_age_years"
+ ],
+ "models": {
+  "MLP": {
+   "all": {
+    "macro_f1": 0.8077,
+    "auroc": 0.8845,
+    "pr_auc": 0.8849
+   },
+   "non_verified": {
+    "macro_f1": 0.7017,
+    "auroc": 0.7977,
+    "pr_auc": 0.9061
+   }
+  },
+  "GCN": {
+   "all": {
+    "macro_f1": 0.7363,
+    "auroc": 0.8056,
+    "pr_auc": 0.8219
+   },
+   "non_verified": {
+    "macro_f1": 0.6427,
+    "auroc": 0.7251,
+    "pr_auc": 0.8753
+   }
+  },
+  "SAGE": {
+   "all": {
+    "macro_f1": 0.7877,
+    "auroc": 0.8647,
+    "pr_auc": 0.8678
+   },
+   "non_verified": {
+    "macro_f1": 0.6822,
+    "auroc": 0.7808,
+    "pr_auc": 0.8982
+   }
+  },
+  "FAGCN": {
+   "all": {
+    "macro_f1": 0.771,
+    "auroc": 0.8513,
+    "pr_auc": 0.865
+   },
+   "non_verified": {
+    "macro_f1": 0.6603,
+    "auroc": 0.7616,
+    "pr_auc": 0.8977
+   }
+  },
+  "LINKX": {
+   "all": {
+    "macro_f1": 0.7889,
+    "auroc": 0.8622,
+    "pr_auc": 0.8552
+   },
+   "non_verified": {
+    "macro_f1": 0.6737,
+    "auroc": 0.7486,
+    "pr_auc": 0.8801
+   }
+  }
+ },
+ "pairs": {
+  "GCN - MLP": {
+   "all": {
+    "macro_f1": [
+     -0.0689,
+     -0.0928,
+     -0.0448
+    ],
+    "auroc": [
+     -0.0782,
+     -0.0972,
+     -0.0608
+    ]
+   },
+   "non_verified": {
+    "macro_f1": [
+     -0.056,
+     -0.0886,
+     -0.0231
+    ],
+    "auroc": [
+     -0.0733,
+     -0.1018,
+     -0.0433
+    ]
+   }
+  },
+  "SAGE - MLP": {
+   "all": {
+    "macro_f1": [
+     -0.0123,
+     -0.029,
+     0.0053
+    ],
+    "auroc": [
+     -0.0184,
+     -0.0284,
+     -0.0081
+    ]
+   },
+   "non_verified": {
+    "macro_f1": [
+     -0.0112,
+     -0.0348,
+     0.0125
+    ],
+    "auroc": [
+     -0.016,
+     -0.0327,
+     0.0006
+    ]
+   }
+  },
+  "FAGCN - MLP": {
+   "all": {
+    "macro_f1": [
+     -0.0348,
+     -0.053,
+     -0.0151
+    ],
+    "auroc": [
+     -0.0336,
+     -0.0452,
+     -0.0221
+    ]
+   },
+   "non_verified": {
+    "macro_f1": [
+     -0.0354,
+     -0.0613,
+     -0.0094
+    ],
+    "auroc": [
+     -0.037,
+     -0.0566,
+     -0.0171
+    ]
+   }
+  },
+  "LINKX - MLP": {
+   "all": {
+    "macro_f1": [
+     -0.0087,
+     -0.0253,
+     0.0071
+    ],
+    "auroc": [
+     -0.0179,
+     -0.0274,
+     -0.0084
+    ]
+   },
+   "non_verified": {
+    "macro_f1": [
+     -0.0203,
+     -0.0423,
+     0.0011
+    ],
+    "auroc": [
+     -0.045,
+     -0.0624,
+     -0.0296
+    ]
+   }
+  }
+ }
+}

@@ -1,0 +1,11 @@
+MLP    {'all': {'macro_f1': 0.6552, 'auroc': 0.8439, 'pr_auc': 0.3607}, 'non_verified': {'macro_f1': 0.6331, 'auroc': 0.7563, 'pr_auc': 0.4291}}
+GCN    {'all': {'macro_f1': 0.5912, 'auroc': 0.7415, 'pr_auc': 0.234}, 'non_verified': {'macro_f1': 0.5764, 'auroc': 0.6768, 'pr_auc': 0.3414}}
+SAGE   {'all': {'macro_f1': 0.6376, 'auroc': 0.7831, 'pr_auc': 0.2788}, 'non_verified': {'macro_f1': 0.6175, 'auroc': 0.7012, 'pr_auc': 0.3585}}
+FAGCN  {'all': {'macro_f1': 0.573, 'auroc': 0.7304, 'pr_auc': 0.2035}, 'non_verified': {'macro_f1': 0.5648, 'auroc': 0.6864, 'pr_auc': 0.3371}}
+LINKX  {'all': {'macro_f1': 0.6195, 'auroc': 0.8035, 'pr_auc': 0.3099}, 'non_verified': {'macro_f1': 0.5979, 'auroc': 0.7135, 'pr_auc': 0.3949}}
+  GCN - MLP: all {'macro_f1': [-0.0166, -0.0904, 0.0626], 'auroc': [-0.0921, -0.1433, -0.0429]} | non-verified {'macro_f1': [-0.0122, -0.1016, 0.075], 'auroc': [-0.0711, -0.1372, -0.0045]}
+  SAGE - MLP: all {'macro_f1': [0.0061, -0.0519, 0.0665], 'auroc': [-0.058, -0.0995, -0.0201]} | non-verified {'macro_f1': [0.0078, -0.0625, 0.0793], 'auroc': [-0.0549, -0.1079, -0.0072]}
+  FAGCN - MLP: all {'macro_f1': [-0.0632, -0.1315, 0.0057], 'auroc': [-0.1019, -0.1418, -0.0634]} | non-verified {'macro_f1': [-0.0523, -0.1331, 0.0268], 'auroc': [-0.0633, -0.1145, -0.0151]}
+  LINKX - MLP: all {'macro_f1': [-0.0025, -0.047, 0.0418], 'auroc': [-0.0274, -0.0666, 0.008]} | non-verified {'macro_f1': [-0.0038, -0.0547, 0.0424], 'auroc': [-0.0271, -0.0696, 0.0156]}
+saved /Users/pj/Desktop/Macquarie - Sem 4/PROJECT/Graph-based-fraud-detection-system/my_build/results/twibot20/B/c2_gnn_profile.json
+=== exit code 0
