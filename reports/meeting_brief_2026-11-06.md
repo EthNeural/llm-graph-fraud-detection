@@ -23,7 +23,7 @@ Do LLM-based and graph-based methods help detect bots when the graph is heteroph
 | GNNs, full 1M graph (FAGCN, RGCN, SAGE, LINKX, GCN) | 0.678–0.690 / 0.80–0.83, within ~0.01 of the same net without edges (0.679 / 0.799) |
 
 ## 4. Findings (each with a paired 95% CI)
-1. **Profile beats text** by a wide margin (+0.07 F1 over the LLM, also with the same 1,300 training users).
+1. **Profile beats text** by a wide margin (+0.07 F1 over the LLM, also with the same 1,300 training users). **Not just the empty-bio cue:** on users who *have* a bio (where the empty-bio flag is useless, AUROC 0.500), the profile model still scores AUROC 0.790 (sample) / 0.802 (1M), and XGB-Graph + profile 0.841 (1M).
 2. **Text adds a little** on top of profile (+0.01); averaging tweets in *hurts* a text-only model because it blurs the empty-bio cue (40.6% of bots vs 7.8% of humans have no bio). Tested: one empty-bio flag closes the gap.
 3. **Neighbours help a little at full scale** (+0.01 F1, +0.05 PR-AUC), more without profile; GNN message passing adds little (heterophily).
 4. **Local heterogeneity (MAGNET's question):** neighbour averaging helps users in homophilous neighbourhoods (+0.057 AUROC) and hurts users in heterophilous ones (−0.016). Mao et al. (NeurIPS 2023) predict this.
