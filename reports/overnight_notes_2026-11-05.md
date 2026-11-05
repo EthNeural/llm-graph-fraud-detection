@@ -46,3 +46,4 @@ minilm_mlp_matched1300 seed 2 {'n': 5000, 'bots': 700, 'macro_f1': 0.56531622819
 Saved /Users/pj/Desktop/Macquarie - Sem 4/PROJECT/Graph-based-fraud-detection-system/my_build/results/twibot22/text_baselines.json
 === exit code 0
 ```
+- 13:22 Builder decision: experts used for training by 5-fold rotation (G7, B8). LoRA rotation queued after DGP (blind).

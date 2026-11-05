@@ -22,7 +22,8 @@ Planned (estimates, 5 Nov):
 | Thu 5 Nov | Cheap models (MLP, trees, XGB-Graph, DEC-lite, baselines), with and without profile, sample and 1M | ~2–4 h CPU |
 | Thu 5 Nov | GNNs on the full 1M graph: 1 seed for all 5, then 3 seeds for the 2 best by validation macro-F1 (tables mark 1 vs 3 seeds) | ~4–7 h CPU |
 | Thu night – Fri | LLM on the sample: neighbour summaries, LoRA `target` and `dgp` | ~6–8 h GPU |
-| Fri 6 Nov | Confidence intervals, sealed-set final run, expert recalibration, comparison with TwiBot-20 | ~3 h |
+| Fri 6 Nov, early | Weak → expert LoRA fine-tuning, 5-fold rotation over the 986 experts (blind) | ~3.5–4 h GPU |
+| Fri 6 Nov | Confidence intervals, expert rotation for trees / MLP, sealed-set final run, comparison with TwiBot-20 | ~3 h |
 | Fri night – Sat 7 Nov | TwiBot-20 follow-up batch (optional), figures | ~12 h GPU + ~4 h |
 | Sun 8 Nov | Writing | 1 day |
 
@@ -31,4 +32,5 @@ Planned (estimates, 5 Nov):
 - Datasets and why: Instagram (secondary), TwiBot-20, TwiBot-22 (see `artifacts/04_decisions_and_reasons.md`).
 - Heterophily measures: adjusted homophily, label informativeness.
 - Shortcut rule and what it excluded (`verified`).
+- Expert labels (986, 105 bots): used for training **and** clean evaluation by 5-fold rotation (decided 5 Nov, before any expert score); weak labels match experts for 56 of 101 dataset bots.
 - Split, sealed set, sample; metrics (macro-F1, AUROC, PR-AUC, reweighted PR-AUC, bootstrap CIs, non-verified slice).
