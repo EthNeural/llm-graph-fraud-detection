@@ -1,6 +1,6 @@
 # TwiBot-22, explained from the ground up
 
-Written Thu 5 Nov 2026, ~00:45. This explains what we are doing with TwiBot-22 and why. Each section starts in plain words and then goes one level deeper. A short glossary follows each section. Exact numbers and rules live in `reports/twibot22_data_checklist.md`; the reasons for each decision are in `04_decisions_and_reasons.md`.
+Written Thu 5 Nov 2026, ~00:45; updated ~19:00 with the first results (sections 6, 7, 10, 11). This explains what we are doing with TwiBot-22 and why. Each section starts in plain words and then goes one level deeper. A short glossary follows each section. Exact numbers and rules live in `reports/twibot22_data_checklist.md`; the reasons for each decision are in `04_decisions_and_reasons.md`.
 
 ---
 
@@ -93,7 +93,7 @@ We have a million Twitter accounts, and about one in seven is a bot. We want to 
   - a **sealed half** (50,937 accounts, including all 986 expert accounts), scored **once**, at the very end.
 - A second guard refuses to score sealed accounts before that final run.
 
-**Deeper still.** Choices such as "which model version is best" are made on a separate **validation** set (200k accounts), never on test. On TwiBot-20 some of those choices were made after test scores were seen, a mistake we listed and are not repeating. At the very end there is one more step, borrowed from Facebook: use the clean expert labels to **recalibrate** the models (a light correction, rotated so each expert is scored by a model that never saw it).
+**Deeper still.** Choices such as "which model version is best" are made on a separate **validation** set (200k accounts), never on test. On TwiBot-20 some of those choices were made after test scores were seen, a mistake we listed and are not repeating. The expert labels get a second job, borrowed from Facebook's DEC (noisy labels first, clean labels second). Sealing all 986 for one final score would waste them, because the weak labels disagree with the experts too often to learn the expert view. So they are **rotated**: split into 5 parts; train on 4, score the 5th with a model that never saw it; repeat. Every expert is used for training and is still scored cleanly once. This runs **blind**: the scores are saved but nobody looks until the final run.
 
 **Glossary**
 - **Train / validation / test**: learn from / choose with / judge on.
@@ -119,7 +119,7 @@ We have a million Twitter accounts, and about one in seven is a bot. We want to 
 
 **One level deeper.** The neighbour averages are exactly the idea behind Facebook's DEC and the GADBench benchmark's strongest simple method: describe an account by summaries of its neighbourhood, then let a simple model use them.
 
-**Deeper still.** The text reading is the slowest step: 2.06 million pieces of text for the 110,057 sampled and hub accounts, about 2.7–3.5 hours on the Mac's GPU. It is running now. A smaller text model (MiniLM) runs afterwards as a cross-check.
+**Deeper still.** The text reading is the slowest step: 2.06 million pieces of text for the 110,057 sampled and hub accounts, 153.5 minutes on the Mac's GPU (finished 5 Nov, early morning). A smaller text model (MiniLM) followed as a cross-check (37.7 minutes).
 
 **Glossary**
 - **Embedding**: the list of numbers a text model produces; similar texts get similar numbers.
@@ -170,21 +170,29 @@ We have a million Twitter accounts, and about one in seven is a bot. We want to 
 
 ---
 
-## 10. Where we are now (5 Nov, ~00:45)
+## 10. Where we are now (5 Nov, ~19:00)
 
-- **Done:**
-  - all data downloaded and checked (88,217,457 tweets, 0 errors);
-  - shortcuts and heterophily measured;
-  - the split, the sealed set and the 100k sample fixed;
-  - the guards in place;
-  - the scoring code written and tested;
-  - every decision written down.
-- **Running:** the text reading (multilingual-E5, then MiniLM), done around 02:30–03:30.
-- **Next:**
-  1. a final check of the outputs;
-  2. the first models on Thursday;
-  3. the language model on Thursday night;
-  4. the sealed test and the comparison with TwiBot-20 on Friday;
-  5. TwiBot-20's open items afterwards, if time allows;
-  6. the report on Sunday.
-- **No model has been scored yet.** That is on purpose: every rule had to be fixed first.
+- **Done:** all data checks; the sample feature table with bio + tweets (830 numbers per account, no shortcuts); the fine-tuned language model reading only the account's text (LoRA `target`); text-only baselines; every cheap model, with and without profile, on the sample and on all 1M; the five graph neural networks on the full 1M graph; confidence intervals; a sceptic review of the findings; the expert rotation (blind).
+- **Running:** the language model with neighbour summaries (DGP) on the GPU, about 9.5 h, then a second seed of both language-model versions until about midday Friday. The graph networks' extra seeds on the CPU.
+- **Next:** the final run on the sealed set and the experts (once every choice is made), the comparison with TwiBot-20, the report on Sunday.
+
+---
+
+## 11. What we found so far (working test users, weak labels)
+
+**Plain version.** On TwiBot-22, an account's **profile** (follower counts, empty bio, account age, ...) gives bots away far better than anything it writes. Reading its tweets adds almost nothing. Its connections add a little, mostly when the profile is left out.
+
+**One level deeper** (macro-F1 / AUROC, higher is better; 0.5 AUROC = coin flip):
+- **Profile only** (15 fields, a simple tree model): **0.701 / 0.837**.
+- **Fine-tuned language model on the text:** 0.626 / 0.710. A word-count model (TF-IDF) trained on 70,000 accounts ties it.
+- **Profile + text:** 0.713 / 0.848, only a little above profile alone.
+- **+ neighbours** (the industry-style tree with neighbour summaries): 0.712 / 0.852 on the sample, **0.731 / 0.873 on all 1M** (the best so far).
+- **Graph neural networks** (all 1M): 0.678–0.689 / 0.800–0.828, within about 0.01 of the same network with the links switched off. Message passing along heterophilous links adds little, as on TwiBot-20.
+
+**Deeper still.**
+- **Why tweets do not help:** 40.6% of bots have an empty bio, against 7.8% of humans. A text model on the bio alone spots that easily. Averaging 20 tweets into the description blurs it, so bio + tweets scores *lower* than bio alone (−0.05 macro-F1, same users). Once the profile (which has an "empty bio" field) is added, the two are equal.
+- **The big caveat:** the weak labels were made partly by automatic rules, some of them profile-based. A model that wins with profile fields may partly be copying the label-maker. The expert rotation and the sealed final run test exactly this.
+
+**Glossary**
+- **TF-IDF:** counting which words an account uses, weighted by how rare they are.
+- **Message passing:** a graph network updating each account with its neighbours' descriptions.

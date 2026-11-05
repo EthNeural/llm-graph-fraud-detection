@@ -1,8 +1,218 @@
-> **Snapshot** of the whole project as of Thu 5 Nov 2026, 00:30. **Part A**: the full working report (`REPORT.md`), Instagram and TwiBot-20. **Part B**: TwiBot-22 data, sealed set and sample, every check, the decisions fixed before any score, status and next steps. **Part C**: external feedback and the TwiBot-20 to-do. **Appendices**: the TwiBot-22 checklist and the TwiBot-20 to-do list. Reasons for decisions: `04_decisions_and_reasons.md`; a plain-language explainer: `06_twibot22_explained.md`. Live versions: `REPORT.md` and `reports/`.
+> **Snapshot** of the whole project as of **Thu 5 Nov 2026, ~19:00**. Read in this order:
+> **Part 0**: TwiBot-22 explained from the ground up, in plain words (start here).
+> **Part A**: the full working report (`REPORT.md`): Instagram and TwiBot-20.
+> **Part B**: TwiBot-22: data, checks, decisions, **results so far**, what is running, what is next.
+> **Part C**: external feedback and the TwiBot-20 to-do.
+> **Part D**: every decision with its time and reason (all three datasets).
+> **Appendices**: the TwiBot-22 checklist, the TwiBot-20 to-do, the notes for the submitted report (internal), and the full run log of 5 Nov with every exit code.
+> Live status: `reports/STATUS.md`. Nothing here is a final result until the sealed run (Fri 6 Nov).
+
+# Part 0: TwiBot-22 explained (plain words first)
+
+## TwiBot-22, explained from the ground up
+
+Written Thu 5 Nov 2026, ~00:45; updated ~19:00 with the first results (sections 6, 7, 10, 11). This explains what we are doing with TwiBot-22 and why. Each section starts in plain words and then goes one level deeper. A short glossary follows each section. Exact numbers and rules live in `reports/twibot22_data_checklist.md`; the reasons for each decision are in `04_decisions_and_reasons.md`.
+
+---
+
+### 1. The whole thing in three sentences
+
+We have a million Twitter accounts, and about one in seven is a bot. We want to know whether looking at **who an account is connected to** helps catch bots, beyond reading **what the account writes**. On our first Twitter dataset (TwiBot-20) the answer was "no, the writing does all the work". TwiBot-22 is the second, bigger test, where the writing is weaker.
+
+**Glossary**
+- **Bot**: an account run by software, not by a person.
+- **Connections**: follows, mentions, retweets, replies, quotes and likes between accounts.
+
+---
+
+### 2. What TwiBot-22 is
+
+**Plain version.** TwiBot-22 is a public research dataset collected in early 2022. It has profiles for 1,000,000 accounts and 88 million of their tweets, plus who follows, mentions and retweets whom. Every account is marked "bot" or "human".
+
+**One level deeper.** The labels are not hand-checked one by one. With a million accounts, that is impossible. The dataset's authors combined many automatic rules and models into a single vote. These are called **weak labels**: they are often right, but not always. For 986 accounts, human experts also checked the label. When we compare the two, the dataset's "bot" label matches the experts for only 56 of 101 accounts. So the expert labels are our most trustworthy check, and we protect them (section 6).
+
+**Deeper still.** Some of the rules used to make the labels are things a model could see, such as the blue "verified" tick. If a rule made the label, a model that finds the rule is not detecting bots; it is copying the label-maker. That is why we hunt for **shortcuts** (section 5).
+
+**Glossary**
+- **Weak labels**: labels produced automatically, cheaply, with some errors.
+- **Expert labels**: labels checked by people; few, but more reliable.
+- **Labelling function**: one automatic rule used to vote on a label.
+
+---
+
+### 3. The question: do connections help?
+
+**Plain version.** On many social networks, birds of a feather flock together: friends tend to resemble each other. If bots mostly connected to bots, a bot's friends would give it away. But fraudsters and bots often connect to ordinary users to blend in. Then a bot's friends look normal and tell you little.
+
+**One level deeper.** The first pattern (similar accounts connect) is **homophily**. The second (different accounts connect) is **heterophily**. Which one a dataset has must be measured, not assumed. We measured it for each of the 7 kinds of connection.
+
+**Deeper still.** Plain "share of links between same-label accounts" is misleading when one class is rare: with 86% humans, most links join two humans just by chance. So we use **adjusted homophily**, which subtracts that chance level: 0 means "no better than random", 1 means "perfectly same-label". On TwiBot-22 every relation scores between **0.011 and 0.038**, essentially no label signal. A bot's neighbours are 11.6% bots, *below* the 14% you would expect by chance. That is heterophily.
+
+**Glossary**
+- **Homophily / heterophily**: links mostly between similar / different accounts.
+- **Adjusted homophily**: homophily corrected for chance; around 0 means links carry no label signal.
+- **Neighbour**: an account linked to this one.
+
+---
+
+### 4. Too big to do everything: cut the work, not the graph
+
+**Plain version.** Reading 20 tweets for each of a million accounts with a modern language model would take many hours on a laptop. We could shrink the dataset, but cutting the network apart removes links and changes the problem.
+
+**One level deeper.** We copy what large companies do: **keep the whole network, and do the expensive work on a sample**. Facebook's abuse system (called DEC) computes simple features for every account, but trains and tests on samples; it measures how many abusive accounts it has by hand-labelling 20,000 random users a day.
+- **Every one of the 1M accounts:** cheap features (profile numbers, a short summary of the bio, summaries of each account's neighbours).
+- **A random 100,000 accounts** (the same 14% bot share): the expensive reading of bio + 20 tweets, and the language-model step.
+- Their neighbours still come from the full million, so no link is lost.
+
+**Deeper still.** TwiBot-22's network is **star-shaped**: only 10,039 accounts (1%) have any outgoing links; everyone else only receives them. So every account's neighbour features come from those ~10k "hub" accounts. We therefore read the tweets of the 100k sample **and** of the hubs (110,057 accounts in total).
+
+**Glossary**
+- **Sample**: a random subset that keeps the same mix as the whole.
+- **Stratified**: drawn so each group (bots/humans, train/test) keeps its share.
+- **Hub**: one of the ~10k accounts with outgoing links.
+
+---
+
+### 5. Making it fair, part 1: shortcuts and the guard
+
+**Plain version.** A model can look clever by spotting a giveaway that has nothing to do with bot behaviour. A classic example: an image classifier for "wolf vs husky" that learned "snow means wolf" because the wolf photos had snow. On TwiBot-20, the "verified" tick alone predicted the label almost perfectly, because the dataset labelled verified accounts as human.
+
+**One level deeper.** We tested every input for shortcuts with one fixed rule: if a simple split on one field puts 200 or more training accounts into a group that is 99% one class, it is a shortcut. On TwiBot-22:
+- **Only "verified" is a shortcut**: 0 of 95,398 verified accounts are bots. It is removed.
+- **All 814 model features pass**, as do 43,469 words and every posting app.
+- Some strong but fair clues remain and are reported:
+  - an **empty bio**: 40.6% of bots vs 7.8% of humans;
+  - **no tweets**: 17.6% vs 4.8%;
+  - a **default profile picture**: 13.0% vs 1.7%.
+
+**Deeper still.** Removing a column is not enough if a later script reads it by mistake. So "verified" and the labels now live in a separate evaluation-only folder, and a **guard** in the code stops any model that is handed a column called verified, label, y or split. We tested that it catches them.
+
+**Glossary**
+- **Shortcut**: an input that predicts the label for reasons unrelated to the task.
+- **Guard**: code that refuses to run if a forbidden input appears.
+
+---
+
+### 6. Making it fair, part 2: rules first, and a sealed test
+
+**Plain version.** If you try many ideas and keep whichever scores best on the test, the test score flatters you. Medical trials avoid this by writing their analysis plan before they see results. Kaggle competitions keep a hidden test set that only counts at the end.
+
+**One level deeper.** We do both.
+- **Every rule is written down and committed before any score:** the split, the sample, the text recipe, the metrics, how a model is chosen.
+- **The test accounts are split in two:**
+  - a **working half** (49,951 accounts), used while building;
+  - a **sealed half** (50,937 accounts, including all 986 expert accounts), scored **once**, at the very end.
+- A second guard refuses to score sealed accounts before that final run.
+
+**Deeper still.** Choices such as "which model version is best" are made on a separate **validation** set (200k accounts), never on test. On TwiBot-20 some of those choices were made after test scores were seen, a mistake we listed and are not repeating. The expert labels get a second job, borrowed from Facebook's DEC (noisy labels first, clean labels second). Sealing all 986 for one final score would waste them, because the weak labels disagree with the experts too often to learn the expert view. So they are **rotated**: split into 5 parts; train on 4, score the 5th with a model that never saw it; repeat. Every expert is used for training and is still scored cleanly once. This runs **blind**: the scores are saved but nobody looks until the final run.
+
+**Glossary**
+- **Train / validation / test**: learn from / choose with / judge on.
+- **Sealed set**: test accounts kept untouched until the final run.
+- **Pre-registration**: fixing the rules before seeing results.
+
+---
+
+### 7. What each account "looks like" to a model
+
+**Plain version.** A model cannot read words directly. Each account is turned into a list of numbers that describe it. There are three kinds of description.
+
+1. **Its writing.** For each account, the bio plus its **20 most recent tweets**.
+   - Retweets are kept, and links and @mentions are left as written, as on TwiBot-20.
+   - A text model (**multilingual-E5**, which handles many languages) reads the bio and each tweet separately and turns each into 768 numbers. The account's description is the average.
+2. **Its profile.** 15 fields, such as follower count, account age, empty bio and default picture ("verified" excluded).
+3. **Its neighbours.** For each of the 7 kinds of link and each direction:
+   - how many neighbours it has;
+   - the average of their descriptions;
+   - plus averages over neighbours-of-neighbours.
+
+   In total 814 numbers per account.
+
+**One level deeper.** The neighbour averages are exactly the idea behind Facebook's DEC and the GADBench benchmark's strongest simple method: describe an account by summaries of its neighbourhood, then let a simple model use them.
+
+**Deeper still.** The text reading is the slowest step: 2.06 million pieces of text for the 110,057 sampled and hub accounts, 153.5 minutes on the Mac's GPU (finished 5 Nov, early morning). A smaller text model (MiniLM) followed as a cross-check (37.7 minutes).
+
+**Glossary**
+- **Embedding**: the list of numbers a text model produces; similar texts get similar numbers.
+- **multilingual-E5 / MiniLM**: the two text models we use (main / check).
+- **Feature**: one number describing an account.
+
+---
+
+### 8. The models we will compare
+
+**Plain version.** From simplest to most complex:
+- **Baselines** that show what simple clues alone give:
+  - profile only;
+  - "links only" (just the counts of connections), which measures how much the way the data was collected gives away.
+- **Text-only model** (an MLP): reads only the writing.
+- **Trees with neighbour summaries** (XGB-Graph, DEC-lite): the industry-style approach.
+- **Graph neural networks** (GCN, SAGE, FAGCN, LINKX, RGCN): models that pass information along the links.
+- **A language model fine-tuned for the task** (Qwen + LoRA, including our replication of the DGP method), on the 100k sample.
+
+**One level deeper.** Each cheap model is run twice: **with** the profile fields and **without** them. Without profile, the comparison is clean: does adding the network help the writing? With profile, we see the best detector we can build. The expensive models (graph networks, language model) run with profile only, to save time.
+
+**Deeper still.** The headline comparison is on the 100k sample, where every model reads the same text. A full-million run with bio only checks that the answer holds at full scale. The language model must read the same text as the encoders it is compared with; on TwiBot-20 it read less (480 tokens vs up to 2,000 characters), which external feedback rightly flagged.
+
+**Glossary**
+- **MLP**: a small neural network; here the "text only" reference.
+- **GNN** (graph neural network): a model that mixes each account's description with its neighbours'.
+- **Fine-tuning / LoRA**: adapting a large language model to our task by training a small add-on.
+
+---
+
+### 9. How we keep score
+
+**Plain version.** "Accuracy" is misleading here: a model that calls everyone human is right 86% of the time and catches no bots. So we use measures that reward finding the bots.
+
+**One level deeper.**
+- **Macro-F1:** the average of how well we do on bots and on humans, each counted equally.
+- **AUROC:** how well the model ranks bots above humans (0.5 = coin flip, 1 = perfect).
+- **PR-AUC:** how precise the model stays as it catches more bots. This is the most telling measure when bots are rare. Facebook's DEC paper makes the same point.
+
+**Deeper still.**
+- We also report PR-AUC as if bots were only **5% or 1%** of accounts. This is done by reweighting the test accounts, not by changing the data, because real fraud is often rarer than 14%; Facebook reports 3.8–5.2% abusive accounts.
+- Every number comes with a **confidence interval** (by resampling the test accounts 2,000 times).
+- Every number is also shown on **non-verified accounts only**, because on TwiBot-20 the verified accounts (all human) inflated every score by 0.06–0.09.
+
+**Glossary**
+- **Confidence interval**: the range the true score probably lies in; if two models' ranges overlap a lot, their difference may be luck.
+- **Reweighting**: counting some test accounts more, to mimic a different bot share.
+
+---
+
+### 10. Where we are now (5 Nov, ~19:00)
+
+- **Done:** all data checks; the sample feature table with bio + tweets (830 numbers per account, no shortcuts); the fine-tuned language model reading only the account's text (LoRA `target`); text-only baselines; every cheap model, with and without profile, on the sample and on all 1M; the five graph neural networks on the full 1M graph; confidence intervals; a sceptic review of the findings; the expert rotation (blind).
+- **Running:** the language model with neighbour summaries (DGP) on the GPU, about 9.5 h, then a second seed of both language-model versions until about midday Friday. The graph networks' extra seeds on the CPU.
+- **Next:** the final run on the sealed set and the experts (once every choice is made), the comparison with TwiBot-20, the report on Sunday.
+
+---
+
+### 11. What we found so far (working test users, weak labels)
+
+**Plain version.** On TwiBot-22, an account's **profile** (follower counts, empty bio, account age, ...) gives bots away far better than anything it writes. Reading its tweets adds almost nothing. Its connections add a little, mostly when the profile is left out.
+
+**One level deeper** (macro-F1 / AUROC, higher is better; 0.5 AUROC = coin flip):
+- **Profile only** (15 fields, a simple tree model): **0.701 / 0.837**.
+- **Fine-tuned language model on the text:** 0.626 / 0.710. A word-count model (TF-IDF) trained on 70,000 accounts ties it.
+- **Profile + text:** 0.713 / 0.848, only a little above profile alone.
+- **+ neighbours** (the industry-style tree with neighbour summaries): 0.712 / 0.852 on the sample, **0.731 / 0.873 on all 1M** (the best so far).
+- **Graph neural networks** (all 1M): 0.678–0.689 / 0.800–0.828, within about 0.01 of the same network with the links switched off. Message passing along heterophilous links adds little, as on TwiBot-20.
+
+**Deeper still.**
+- **Why tweets do not help:** 40.6% of bots have an empty bio, against 7.8% of humans. A text model on the bio alone spots that easily. Averaging 20 tweets into the description blurs it, so bio + tweets scores *lower* than bio alone (−0.05 macro-F1, same users). Once the profile (which has an "empty bio" field) is added, the two are equal.
+- **The big caveat:** the weak labels were made partly by automatic rules, some of them profile-based. A model that wins with profile fields may partly be copying the label-maker. The expert rotation and the sealed final run test exactly this.
+
+**Glossary**
+- **TF-IDF:** counting which words an account uses, weighted by how rare they are.
+- **Message passing:** a graph network updating each account with its neighbours' descriptions.
+
+---
 
 # Part A: working report (Instagram, TwiBot-20)
 
-# Progress Report
+## Progress Report
 
 A living report, updated as experiments finish. The newest entries are at the top of each
 section. For how everything works, see [TEAM_GUIDE.md](TEAM_GUIDE.md).
@@ -11,7 +221,7 @@ section. For how everything works, see [TEAM_GUIDE.md](TEAM_GUIDE.md).
 
 **Scope.** TwiBot-20 is the main dataset: steps 1–6, settings A and B. Instagram is the secondary dataset, steps 1–5 only: it checks whether the step 1–5 findings hold on a second, multilingual graph. Step 6 is not planned for Instagram. One step 6 run takes about 3–6 h on our Mac, so that time goes to the main dataset.
 
-## Status
+### Status
 
 | Experiment | TwiBot-20 A | TwiBot-20 B | Instagram A | Instagram B |
 |---|---|---|---|---|
@@ -30,22 +240,22 @@ section. For how everything works, see [TEAM_GUIDE.md](TEAM_GUIDE.md).
 - Done today: step 6 `target` on TwiBot-20 A (13:30–15:42); Qwen3-1.7B embeddings (15:42–19:14, 3.5 h).
 - On CPU after the chain: the setting B training-size control and bootstrap.
 
-## Data preparation
+### Data preparation
 
-### Sources and labels
+#### Sources and labels
 - **TwiBot-20** (Feng et al., CIKM 2021), the TwiBot-22-format release (`TwiBot-20-Format22.zip`), read straight from the zip by `my_build/prep_twibot20.py`. Class 1 = bot. We keep the **11,826 labelled users** and drop the 217,754 unlabelled support users (see "dropped support users").
 - **Instagram**, the GLBench version (Li et al., 2024) that FLAG also uses, already prepared as `x_text`, `y` and `edge_index` files; we did not rebuild it. Class 1 = commercial account (business, brand or media), a stand-in for a minority class, not fraud.
 
-### Text per user
+#### Text per user
 - **TwiBot-20:** the bio plus the user's first 20 tweets, one per line (whitespace trimmed, line breaks inside a tweet removed), cut at 2,000 characters. **61.6% of users reach that cap**, so the models see the bio and as many tweets as fit. 12.9% of users have no bio, 1.3% have no tweets, 37 have no text at all.
 - **Instagram:** the bio (median 119 characters, maximum 523); 99 users have none.
 - **Profile metadata is excluded.** TwiBot-20's "verified" flag alone gives macro-F1 0.803: a collection shortcut (Hays et al., WWW 2023), not text or graph signal.
 
-### Edges
+#### Edges
 - **TwiBot-20:** friend and follow links between labelled users, stored both ways (undirected), merged into one edge type for steps 4–5; step 6 keeps the two types. 16,349 undirected edges; no self-loops or duplicates.
 - **Instagram:** 72,005 undirected follow edges; no self-loops or duplicates.
 
-### Splits and the two settings
+#### Splits and the two settings
 | | Users | Class 1 | Edges | Train / val / test |
 |---|---|---|---|---|
 | TwiBot-20 A (natural) | 11,826 | 6,589 bots (55.7%) | 16,349 | 8,278 / 2,365 / 1,183 (official split) |
@@ -55,10 +265,10 @@ section. For how everything works, see [TEAM_GUIDE.md](TEAM_GUIDE.md).
 
 **Setting B** keeps every class-0 user and a random sample of class-1 users (seed 42) so that class 1 is 10% of class 0, following FLAG's protocol (§4.1.1), with only the edges whose two ends are kept. Splits are restricted to the kept users. The subsampling removes almost all bot–bot edges on TwiBot-20 (54 rows vs 8,162 in A).
 
-### Encoding (step 3)
+#### Encoding (step 3)
 TwiBot-20 text is longer than an encoder reads, so each piece (the bio and each tweet) is encoded separately, up to 128 tokens, and the L2-normalised piece vectors are averaged per user. Decoder LLMs (Qwen2.5-1.5B, Qwen3-1.7B) and Twitter-RoBERTa are mean-pooled over tokens. A user with no text gets a zero vector, and two 0/1 flags ("no bio", "no tweets") are added for TwiBot-20, so nobody is dropped. Features are standardised with training-set statistics only.
 
-### Profile metadata: which fields are shortcuts? (TwiBot-20 A, full test set)
+#### Profile metadata: which fields are shortcuts? (TwiBot-20 A, full test set)
 
 We use every profile field unless it is a shortcut, under a rule fixed before looking at results (`my_build/metadata_check.py`): a field is excluded if (a) it is a documented collection or labelling artefact, or (b) one split on it labels a large group almost perfectly (a depth-1 tree leaf with at least 10% of training users that is at least 99% one class).
 
@@ -80,7 +290,7 @@ We use every profile field unless it is a shortcut, under a rule fixed before lo
 
 The allowed fields add a real +0.04–0.05 to text. Two caveats: followers and listed count correlate ρ 0.59 with the crawl artefact (in-friend count), so part of their gain is the same collection effect; and every comparison elsewhere in this report (encoders, GNNs, LLMs) is text-only, so these rows are a separate "text + profile" track, not a replacement. The DGP numerical-summary variant (`VARIANT=dgp_num`) uses only the 5 allowed fields.
 
-### Checks on the prepared data
+#### Checks on the prepared data
 | Check | Result |
 |---|---|
 | Graph: self-loops, duplicate edges, symmetry | none, none, symmetric (both datasets) |
@@ -88,11 +298,11 @@ The allowed fields add a real +0.04–0.05 to text. Two caveats: followers and l
 | Raw vs cleaned text (`clean_text_check.py`, TF-IDF + LR) | URLs → `URL`, @mentions → `@USER`, retweet prefixes removed: −0.007 to +0.002 macro-F1; deleting URLs and mentions: −0.007 to −0.026. Every CI includes 0, so cleaning would not have helped, and removing URLs and mentions slightly hurts (they carry signal: 93.8% of TwiBot-20 users post URLs, 33.4% of tweets are retweets) |
 | Language | 2.8% of TwiBot-20 and 5.6% of Instagram users write mostly non-Latin text; kept, and the multilingual encoder covers it |
 
-## Latest results (macro-F1, test set)
+### Latest results (macro-F1, test set)
 
 **Which test set?** Each heading says so. Most tables use the **full test set**: TwiBot-20 1,183 users (A) and 597 (B); Instagram 2,268 (A) and 1,590 (B). One table, "LLM reasoner vs trained models", uses the smaller **step 5 test sample**, because LLM scoring is slow. Its trained rows are also a single seed, so the same model can show a slightly different number there (for example, Qwen2.5 + GCN is 0.707 in the ladder and 0.698 there).
 
-### TwiBot-20, encoder ladder (full test set, mean of 3 seeds)
+#### TwiBot-20, encoder ladder (full test set, mean of 3 seeds)
 
 | Encoder | A: MLP | A: GCN | A: SAGE | A: FAGCN | B: MLP | B: GCN | B: SAGE | B: FAGCN |
 |---|---|---|---|---|---|---|---|---|
@@ -109,7 +319,7 @@ FAGCN (Bo et al., AAAI 2021; PyG `FAConv`, eps 0.3) is built for heterophily: ea
 
 References for TwiBot-20 A: TF-IDF 0.702; metadata without "verified" 0.755 (not a valid model).
 
-### Heterophily and fraud baselines: FLAG-lite and LINKX (full test set, mean of 3 seeds)
+#### Heterophily and fraud baselines: FLAG-lite and LINKX (full test set, mean of 3 seeds)
 
 Two more graph baselines, run with the same training, seeds and validation cut-off rule as step 4 (`my_build/step4_gnn.py`):
 - **FLAG-lite**: FLAG (Yang et al., KDD 2025) without its LLM. Its skip-GNN, `GCN(X, A) + Linear(X)` (eq. 6), on a graph pruned by its semantic-similarity sampling: each user keeps up to its 10 most text-similar neighbours with cosine > 0 (`GRAPH=similar10`, 1-hop). FLAG's own ablation (Table 5) credits these two parts with most of its gain. The pruning drops about 25% of TwiBot-20's edges and 48% of Instagram's.
@@ -132,7 +342,7 @@ Two more graph baselines, run with the same training, seeds and validation cut-o
 - **On TwiBot-20 A neither FLAG-lite (0.754) nor LINKX (0.752) beats MLP (0.766)**, matching every other GNN here. Setting B's best (multilingual-E5 + FLAG-lite 0.635 ± 0.018 vs MLP 0.606) is inside B's ±0.05 noise.
 - **LINKX graph-only (0.595) beats GCN graph-only (0.577) in A**: reading who links to whom helps more than averaging. It is still far below the untrained in/out link-direction score (AUROC 0.713 vs LINKX's 0.633), because our adjacency is undirected.
 
-### Instagram (secondary dataset, steps 1–5): full test set; LR one fit, MLP and GNNs mean of 3 seeds
+#### Instagram (secondary dataset, steps 1–5): full test set; LR one fit, MLP and GNNs mean of 3 seeds
 
 On Instagram, class 1 is **commercial accounts** (business, brand or media) against personal ones: a stand-in for a minority class, not fraud. FLAG uses the same Instagram graph (from GLBench, Li et al. 2024) as a fraud proxy at 1:10, our setting B. Its reported macro-F1 there is 0.473–0.483 for text-embedding GNNs and at most 0.507 for FLAG itself (Table 4), near the 0.476 an all-majority predictor scores; our Qwen2.5 + LR reaches 0.578 in B. Splits, subsample and encoder differ (FLAG uses Sentence-BERT), so this is not a head-to-head comparison. Text alone is much weaker here than on TwiBot-20 (AUROC about 0.63 against 0.84).
 
@@ -145,7 +355,7 @@ On Instagram, class 1 is **commercial accounts** (business, brand or media) agai
 
 References: TF-IDF (balanced) 0.578 (A), 0.552 (B). Every model sits within about 0.03 of LR. Unlike TwiBot-20, GCN is level with or above MLP for all three encoders in setting A (macro-F1 +0.001 to +0.022; AUROC 0.639–0.642 vs 0.609–0.635), and graph-only reaches 0.548. In B no graph model is consistently better or worse.
 
-### LLM reasoner vs trained models (step 5 test sample, 1 seed)
+#### LLM reasoner vs trained models (step 5 test sample, 1 seed)
 
 **Sample sizes:** 400 test users for TwiBot-20 A, 300 for Instagram A and 600 for Instagram B, stratified, the same users for every row in a column. For TwiBot-20 B the "sample" is the whole test set (597). The trained rows here are one run (seed 0), not the mean of 3 seeds used elsewhere.
 
@@ -175,7 +385,7 @@ The two "zero-shot: DGP summaries" rows (0.550 and 0.562) differ in the LLM and 
 
 LoRA dgp is one seed (42). On the full TwiBot-20 A test set (1,183 users) it scores 0.711 macro-F1, AUROC 0.794. Every model picks its own cut-off by the same rule: the one that maximises macro-F1 on validation, applied unchanged to test. On the 400-user step 5 sample its AUROC (0.828) is the highest, but that does not hold on the full test set: AUROC 0.794, against 0.822 for Qwen2.5 + LR and 0.840 for MLP. So it is behind on ranking too, not just on the cut-off. Even the best cut-off chosen on test itself (not a valid model) gives only 0.726.
 
-### LoRA checkpoint rule: both adapters (full test set, 1 seed)
+#### LoRA checkpoint rule: both adapters (full test set, 1 seed)
 
 `my_build/step6_rescore.py` scores each run's last-check adapter and applies the text-only models' rule, written into the script before any last-adapter test score existed (commit `fc45a63`, 3 Nov 15:24): keep the adapter with the higher full-validation macro-F1. Only two adapters per run were saved and compared.
 
@@ -188,7 +398,7 @@ LoRA dgp is one seed (42). On the full TwiBot-20 A test set (1,183 users) it sco
 
 **Under this rule the DGP summaries add nothing:** `dgp` − `target` is −0.001 in A (0.727 vs 0.728) and −0.016 in B (0.628 vs 0.644). LoRA on 1,300 users is then level with text-only models on the same 1,300 users (MLP 0.726 on the same draw). **The tables and findings below still use the lowest-validation-loss adapters** until the team decides which rule is primary; CIs for the rule's adapters (`LORA_ADAPTER=chosen` in `bootstrap_ci.py` and `link_direction.py`) are running.
 
-### Where GCN loses: connected vs isolated test users (TwiBot-20 A, full test set, mean of 3 seeds)
+#### Where GCN loses: connected vs isolated test users (TwiBot-20 A, full test set, mean of 3 seeds)
 
 | Qwen2.5-1.5B + | Connected (1,096 users) | Isolated (87 users) |
 |---|---|---|
@@ -199,7 +409,7 @@ LoRA dgp is one seed (42). On the full TwiBot-20 A test set (1,183 users) it sco
 
 GCN's whole loss is on connected users, where neighbours are averaged in. The isolated column is only 87 users (47 bots) and is not reliable: isolated users have no neighbours in either graph, yet GCN scores 0.777 on them when trained on the real edges and 0.720–0.758 (mean 0.738) when trained on five shuffled versions. The difference comes only from weights learned on a different graph.
 
-### How much label signal do the edges carry? (all graphs)
+#### How much label signal do the edges carry? (all graphs)
 
 Plain edge homophily is misleading when classes are unbalanced, so this table also gives two measures from Platonov et al. ([arXiv 2209.06177](https://arxiv.org/abs/2209.06177)) that correct for chance. **Adjusted homophily** is 0 when edges join same-label users no more often than chance. **Label informativeness** (0 to 1) says how much a neighbour's label tells you about yours. Both use all labels, test included: they describe the data and are never a model input. From `my_build/graph_stats.py` (`results/graph_stats.json`).
 
@@ -215,7 +425,7 @@ Plain edge homophily is misleading when classes are unbalanced, so this table al
 
 Every graph sits near zero once chance is removed. Setting B's high edge homophily (0.86–0.88) only reflects the 1:10 ratio: almost every edge touches the large class. On TwiBot-20, B's near-zero value is also caused by how B is built: it keeps 8% of bots and only edges whose two ends are both kept, so bot–bot edge rows fall from 8,162 (A) to 54 (B). A bot's neighbours are then 7.8% bots, below B's 9.1% base rate, and isolation becomes tied to the label (41.8% of B's bots are isolated, against 27.6% of its humans; 7.3% vs 8.5% in A). Friend links on TwiBot-20 join same-label users no more often than chance (adjusted −0.015); the label signal in TwiBot-20's links sits elsewhere, in who lists whom (see "who lists whom"). The bridge edges raise adjusted homophily to 0.175, yet GCN still gets worse on them (robustness check below).
 
-### Per-class homophily: is there "camouflage"? (FLAG's Figure 5 test)
+#### Per-class homophily: is there "camouflage"? (FLAG's Figure 5 test)
 
 FLAG (KDD 2025, Fig. 5) argues its 1:10 fraud datasets show *neighbourhood camouflage*: minority nodes have low per-node homophily, majority nodes high. We ran the same histogram on our four graphs, adding the chance level (each class's share of all edge ends, which is what random edges would give). `my_build/class_homophily.py`, figure `my_build/figures/class_homophily.png`.
 
@@ -230,7 +440,7 @@ Every class sits a few points above chance. The low-minority / high-majority pat
 
 ![Per-class homophily](my_build/figures/class_homophily.png)
 
-### TwiBot-20 graph: dropped support users
+#### TwiBot-20 graph: dropped support users
 
 Our TwiBot-20 graph keeps only the 11,826 labelled users. The benchmark also ships 217,754 unlabelled support users, and its own GCN/GAT code keeps them as neighbours. `my_build/playground_bridges.py` counts what we lost (`results/twibot20/support_bridges.json`).
 
@@ -246,7 +456,7 @@ Our TwiBot-20 graph keeps only the 11,826 labelled users. The benchmark also shi
 
 Homophily here uses all labels, test included: it describes the data and is never a model input. The published TwiBot-20 GCN/GAT scores (F1 0.809 / 0.853) are binary F1 with profile metadata, so they are not comparable with our text-only macro-F1.
 
-### Control: training-set size (TwiBot-20 A)
+#### Control: training-set size (TwiBot-20 A)
 
 Step 6 fine-tunes on **1,300** training users (the DGP paper's size); the text-only models above train on all **8,278**. `my_build/control_train_size.py` retrains Qwen2.5-1.5B + LR / MLP on the exact 1,300 users step 6 used. Validation, cut-off and test sets are unchanged. MLP is the mean of 3 seeds.
 
@@ -276,7 +486,7 @@ Step 6 fine-tunes on **1,300** training users (the DGP paper's size); the text-o
 
 LoRA + DGP at 1,300 users (0.711) is below every text-only point from 650 users up, and level with LR trained on 325 users (0.714), a quarter of its data. LoRA target only (0.704) is below them all. Equal training data closes most of the gap, but not all of it.
 
-### Are the gaps real? Paired bootstrap 95% CIs (TwiBot-20 A, full test set)
+#### Are the gaps real? Paired bootstrap 95% CIs (TwiBot-20 A, full test set)
 
 Each pair is scored on the same 2,000 resamples of the 1,183 test users; seeded models count as the mean of their 3 seeds. A CI that excludes 0 means the gap is larger than test-set noise. LoRA is one seed, so its CI covers test-set noise only, not seed noise.
 
@@ -295,7 +505,7 @@ Each pair is scored on the same 2,000 resamples of the 1,183 test users; seeded 
 
 Same test on **Instagram A** (Qwen2.5-1.5B embeddings, 2,268 test users; `results/A/bootstrap_ci.json`): GCN − MLP +0.002 [−0.016, +0.020], SAGE − MLP −0.003 [−0.018, +0.012], FAGCN − MLP −0.002 [−0.017, +0.013]; MLP on 1,300 users − all users −0.035 [−0.051, −0.020]. So on Instagram the graph models are indistinguishable from MLP, while on TwiBot-20 A GCN is clearly below it (−0.059).
 
-### Control: the same GNNs on shuffled edges (full test set, mean of 3 seeds)
+#### Control: the same GNNs on shuffled edges (full test set, mean of 3 seeds)
 
 `GRAPH=shuffled` keeps every user's degree but rewires who links to whom at random (`my_build/step4_gnn.py`, `step4_gnn_shuffled.json`). If a GNN scores the same on shuffled edges, the real edges give it nothing.
 
@@ -325,7 +535,7 @@ Each shuffled value is the mean ± std over 5 random rewirings (each itself the 
 
 Real edges join users with similar text whatever their labels, even across bot–human pairs (0.235). So GCN loses less on real edges because averaging similar users blurs a user's own vector less, not because the edges reveal labels. Setting B shows the same pattern (0.336 real vs 0.071 shuffled).
 
-### Who lists whom: a crawl artefact that carries label signal (TwiBot-20 A)
+#### Who lists whom: a crawl artefact that carries label signal (TwiBot-20 A)
 
 TwiBot-20 stored, for each labelled user, a sample of about 10 accounts they follow (`friend`) and 10 accounts following them (`follow`). So a link between two labelled users means one appears in the other's 10-sample; out-degree inside the labelled graph is capped at 10, and only 1.2% (friend) and 3.8% (follow) of links are mutual. Our pipelines symmetrise these links, and steps 4–5 also merge the two types. `my_build/link_direction.py` (`results/twibot20/A/link_direction.json`) looks at direction:
 
@@ -356,7 +566,7 @@ In setting B the three flags lift LR from 0.634 to 0.656 (+0.023 [+0.002, +0.049
 
 **Does step 6 `dgp` gain only through this cue? In A, apparently yes.** The `dgp` prompt writes "none" for each missing link type, so it exposes the three undirected flags; `target` does not. Combining the target-only LoRA score with the three flags (an LR fitted on the validation set) scores 0.731 macro-F1 (AUROC 0.803), against 0.711 (0.794) for `dgp`: +0.020 [−0.002, +0.040]. Within groups of users with the same flag, `dgp` is better in some (no friend link: AUROC 0.803 vs 0.775; has follow link: 0.786 vs 0.770) and worse in others (has friend: 0.768 vs 0.777). So in A the summaries' own contribution is not established: a 4-feature LR on top of target LoRA matches `dgp`. In setting B the same check goes the other way (target + flags 0.574 vs `dgp` 0.628, see the setting B step 6 paragraph).
 
-### Robustness check: step 4 on the bridge graph (TwiBot-20 A, full test set)
+#### Robustness check: step 4 on the bridge graph (TwiBot-20 A, full test set)
 
 Step 4 rerun with the bridge edges added (`GRAPH=bridges`, `results/twibot20/A/step4_gnn_bridges.json`): 92,724 edge rows instead of 32,698, and 137 isolated users instead of 923. **This is a robustness check only. Steps 5 and 6 and all tables above stay on the labelled-only graph.** "Isolated" still means isolated in the labelled-only graph, so the groups are the same users in both runs. Macro-F1, mean of 3 seeds:
 
@@ -376,7 +586,7 @@ Step 4 rerun with the bridge edges added (`GRAPH=bridges`, `results/twibot20/A/s
 - FAGCN holds steady or gains slightly (−0.007 to +0.010). The extra edges do not hurt it the way they hurt GCN.
 - Graph-only drops by about 0.04. One hypothesis, not tested: in the labelled-only graph, degree partly reflects a user's position in the dataset's BFS crawl, and the bridge edges blur that.
 
-## Limitations (so far)
+### Limitations (so far)
 
 - **One seed for step 6 so far, and that run was unseeded on the LoRA side.** The first `dgp` and `target` runs fixed the training users (SEED=42) and batch order, but not the LoRA start weights or dropout (no `torch.manual_seed`), so they cannot be reproduced exactly. Seeded runs (`LORA_SEED=1, 2`, same 1,300 users and summaries) are running on TwiBot-20 A; the unseeded run will be the third. Qwen3-1.7B instead of the paper's Qwen3-8B; the paper uses 5 seeds.
 - **LoRA reads less text than the encoders.** Every model works from the same prepared text (bio + tweets, cut at 2,000 characters). The encoders read all of it; the LoRA prompt caps the user's own text at 480 tokens of whole lines, which cuts 81% of TwiBot-20 users short (13.2 of 16.6 lines kept on average, 800-user sample). This biases LoRA vs MLP against LoRA; dgp vs target is unaffected (same cap).
@@ -390,7 +600,7 @@ Step 4 rerun with the bridge edges added (`GRAPH=bridges`, `results/twibot20/A/s
 - **TwiBot-20 graph = labelled users only** (see "dropped support users"; bridge check below).
 - **Edge signal near zero**, so these results speak to near-random edges, not to strongly heterophilous graphs (see the adjusted-homophily table).
 
-## Findings so far
+### Findings so far
 
 **In one line:** on TwiBot-20 a strong text encoder does the work. Neighbour labels carry almost no signal, so no GNN and no neighbour-summary prompt is significantly better than a text-only model; the label signal that the links do carry comes from how the dataset was collected (who appears in whose follower sample) and tracks follower count. A fine-tuned LLM roughly matches text-only models trained on the same 1,300 users but stays below them when those use all 8,278.
 
@@ -403,7 +613,7 @@ Step 4 rerun with the bridge edges added (`GRAPH=bridges`, `results/twibot20/A/s
 7. **Fine-tuning helps a lot; at equal data the fine-tuned LLM roughly matches text-only models.** Qwen3-1.7B goes from 0.562 zero-shot to 0.726 with LoRA on the step 5 sample (0.711 on the full test set; zero-shot was scored on the sample only). The same model as a frozen encoder + MLP scores 0.724 on the same 1,300 users and 0.769 on all 8,278. Against Qwen2.5 + MLP on 1,300 users the gap is −0.014 (95% CI [−0.041, +0.013]) on the same draw and about −0.02 over 6 draws. LoRA was never trained on more than 1,300 users, so whether more data would close the full-data gap is untested. One seed. **The DGP neighbour summaries add +0.007** over target-only LoRA (0.711 vs 0.704; CI [−0.015, +0.030]), and in A target LoRA plus three link flags matches `dgp` (0.731 vs 0.711, +0.020 [−0.002, +0.040]), so there the summaries' own contribution is not established. In setting B, `dgp` beats `target` on AUROC (0.723 vs 0.683) and target + flags does not catch up (0.574 macro-F1), but B has 54 test bots and label-dependent edges. Zero-shot they hurt (0.562 vs 0.590, step 5 sample).
 8. **Setting B separates few models on macro-F1.** Its test set has 54 bots and its macro-F1 CIs are about ±0.05; only FAGCN − MLP excludes 0. On AUROC more gaps are clear: GCN − MLP −0.072 [−0.129, −0.018], FAGCN − MLP −0.141 [−0.196, −0.090], FAGCN − GCN −0.069, and LoRA `dgp` − MLP −0.064. Its subsampling also removes almost every bot–bot edge (54 rows, against 8,162 in A).
 
-## Decision log
+### Decision log
 
 | Date | Decision | Why |
 |---|---|---|
@@ -428,7 +638,7 @@ Step 4 rerun with the bridge edges added (`GRAPH=bridges`, `results/twibot20/A/s
 | 30 Oct | Settings A (natural) and B (1:10, FLAG-style) | Tests both the data as it is and rare fraud. FLAG (Yang et al., KDD 2025, §4.1.1) builds its text-rich fraud datasets the same way: the minority class "randomly selected so that the final ratio … is about 1:10" |
 | 27 Oct | Dropped Elliptic, rebuilt on Instagram | Elliptic has no natural text for an LLM to read |
 
-## Next steps
+### Next steps
 
 1. Running tonight (GPU): Qwen3-1.7B as an encoder (step 3, then LR / MLP / GNNs and the 1,300-user control), step 6 `dgp` and `target` on TwiBot-20 B, then scoring the last-check LoRA adapters.
 2. Decide which LoRA checkpoint rule is primary. The full-validation macro-F1 rule was fixed in `step6_rescore.py` (commit `fc45a63`) before the last-check adapters were scored; both are reported (see "LoRA checkpoint rule").
@@ -436,7 +646,7 @@ Step 4 rerun with the bridge edges added (`GRAPH=bridges`, `results/twibot20/A/s
 4. Optional, by Saturday night: more LoRA seeds on TwiBot-20 A (about 2.2 h per run, so 2 seeds × dgp and target fit one night; needs a separate `LORA_SEED` and the seed in the checkpoint name first), a semi-synthetic heterophily sweep (CPU), figures.
 5. Low priority: the M ∈ {4, 8, 16} sweep. The limit of 8 binds only for friend-of-friend (mean 5.1 kept in A); 1-hop metapaths keep 0.8–1.8.
 
-## Changelog
+### Changelog
 
 - **4 Nov 2026 (05:40):** Metadata shortcut check: only "verified" is a shortcut under the pre-set rule; text + the 5 allowed fields gains +0.04–0.05 macro-F1 (significant). `VARIANT=dgp_num` (DGP's numerical summaries) added and queued after the LoRA seeds.
 - **4 Nov 2026 (05:00):** New Data preparation section (sources, text, edges, splits and settings, encoding, checks). Raw vs cleaned text check: cleaning changes TF-IDF + LR by −0.026 to +0.002, all CIs include 0. Noted the 2,000-character text cap (61.6% of TwiBot-20 users).
@@ -465,12 +675,11 @@ Step 4 rerun with the bridge edges added (`GRAPH=bridges`, `results/twibot20/A/s
 - **3 Nov 2026:** TwiBot-20 A step 6 `dgp` finished (LoRA 0.726 on the step 5 sample, 0.711 on the full test set). Counted the dropped support users: 8,082 bridges; bridge edges are more homophilous (0.619) than our graph (0.532).
 - **2 Nov 2026:** TwiBot-20 step 5 finished (A and B). Step 6 (DGP replication) written and started on TwiBot-20 A. Repository created.
 
-
 ---
 
-# Part B: TwiBot-22 (status Thu 5 Nov 2026, 00:30)
+# Part B: TwiBot-22 (status Thu 5 Nov 2026, ~19:00)
 
-No TwiBot-22 model has been trained or scored yet. Everything below is data preparation, checks and decisions fixed **before** any score (the lesson from TwiBot-20). Reasons for each decision: `artifacts/04_decisions_and_reasons.md`. Row-by-row status: the checklist in the appendix.
+Data preparation, checks and every rule were fixed **before** any model was scored (the lesson from TwiBot-20). Models were then run on the **working** test users only; the sealed set and the 986 experts are untouched until the final run.
 
 ## B1. Data
 
@@ -510,43 +719,53 @@ No TwiBot-22 model has been trained or scored yet. Everything below is data prep
 | Row order | Every per-user file in `label.csv` order; the 124,231 zero embedding rows equal the 124,231 empty bios exactly |
 | Guard | `verified` and the labels are outside every model input (`eval_only/`); scripts stop if they appear; sealed users refused before the final run |
 
-## B4. Decisions fixed before any score
+## B4. Decisions (all fixed before the scores they govern; reasons in Part D)
 
-1. **Headline (option B):** multilingual-E5 on bio + 20 tweets, on the 100k sample, neighbours from the full graph. Full-graph 1M models use bio only. Option A (tweets for all 1M) only as an extra.
-2. **Profile fields kept** (all except `verified`). Cheap models are run with and without profile; GNNs and the LLM with profile.
+1. **Headline (option B):** multilingual-E5 on bio + 20 tweets, on the 100k sample, neighbours from the full graph. Full-graph 1M models use bio only.
+2. **Profile fields kept** (all except `verified`). Cheap models run with and without profile; GNNs and the LLM with profile.
 3. **All 7 relations.**
-4. **No artificial 1:10 setting.** PR-AUC is also reported with the test set reweighted to 5% and 1% bots.
-5. **Metrics and selection** (`twibot22_metrics.py`):
-   - macro-F1, AUROC, PR-AUC with paired bootstrap CIs;
-   - cut-off and model choice on validation only;
-   - 3 seeds;
-   - slices: all, non-verified, with bio, with tweets.
-6. **Last step:** weak → expert recalibration (light version, trees and MLP, 5-fold rotation over the sealed experts).
+4. **No artificial 1:10 setting.** PR-AUC also reported with the test set reweighted to 5% and 1% bots.
+5. **Metrics and selection** (`twibot22_metrics.py`): macro-F1, AUROC, PR-AUC, paired bootstrap CIs; cut-off and model choice on validation only; 3 seeds; slices: all, non-verified, with bio, with tweets.
+6. **LLM (H7):** Qwen3-1.7B, 1,300 training users, TwiBot-20's LoRA settings; adapter chosen by validation macro-F1 on 1,000 validation users (2,000 measured at 23.6 min per check, over the 10-min limit).
+7. **Experts (5 Nov 13:22):** used for training **and** clean evaluation by 5-fold rotation (LoRA `target`: 1 more epoch per fold; trees: 50 more boosting rounds per fold). Blind until the final run. Replaces the 4 Nov "light recalibration".
+8. **DGP scope (5 Nov 13:47):** TwiBot-20 scope: 1,300 train, the same 1,000 validation users, a 1,500-user stratified test subset of the working test users (seed 42, committed before scoring). dgp vs target compared on that subset. Reason: summaries take ~1 s each (5.6 h instead of 8.6 h).
+9. **GNNs:** all 5 with 1 seed, then the 2 best by validation macro-F1 with 3 seeds; tables mark seed counts. Run only while no LoRA trains (they pause automatically otherwise).
+10. **GPU never idle overnight:** queues are planned to run until ~13:00 the next day.
 
-## B5. Prepared files
+## B5. Results so far (working test users, weak labels; sceptic-checked)
 
-- `features_full_e5.npz`: 814 features, built with multilingual-E5 bios. That is 47 own features plus, per relation and direction, the log count and the neighbours' mean, plus the 1- and 2-hop means.
-- `features_full.npz`: the same table built with MiniLM bios, kept as the check.
-- Bio embeddings for all 1M users (MiniLM, multilingual-E5).
-- Tweets: `tweets_top20/`.
-- Roles, sample and hubs: `roles.npy`, `sample_idx.npy`, `hub_idx.npy`.
+All numbers macro-F1 / AUROC / PR-AUC, mean of 3 seeds unless noted. Sample = the 5,000 sample working-test users (bio + 20 tweets, the same users as the LLM); 1M = 49,951 working-test users (bio only). Trees are HistGradientBoosting.
 
-## B6. Status and next (Thu 5 Nov, 00:30)
+| Model | Sample | 1M |
+|---|---|---|
+| Zero-shot Qwen3-1.7B (no training; says "bot" for nearly everyone) | 0.505 / 0.461 / 0.139 | – |
+| LoRA `target` (fine-tuned on text, 1,300 train, 1 seed) | 0.626 / 0.710 / 0.312 | – |
+| TF-IDF + LR, 70k train / 1,300 train | 0.628 / 0.727 / 0.307 · 0.576 / 0.640 / 0.243 | – |
+| MiniLM + MLP, 70k train | 0.607 / 0.684 / 0.291 | – |
+| Links only (neighbour counts) | 0.563 / 0.672 / 0.214 | 0.558 / 0.675 / 0.214 |
+| Empty-bio flag alone | 0.668 / 0.658 / 0.264 | 0.670 / 0.662 / 0.266 |
+| Text only, tree (own text) | 0.618 / 0.712 / 0.320 | 0.680 / 0.772 / 0.362 |
+| **Profile only** (15 fields) | **0.701 / 0.837 / 0.497** | 0.707 / 0.846 / 0.508 |
+| Profile + text, tree | 0.713 / 0.848 / 0.518 | 0.720 / 0.860 / 0.525 |
+| XGB-Graph, no profile | 0.631 / 0.763 / 0.361 | 0.694 / 0.816 / 0.447 |
+| **XGB-Graph + profile** | 0.712 / 0.852 / 0.533 | **0.731 / 0.873 / 0.580** |
+| GNNs (full 1M, profile + bio, 7 relations; seed 0) | – | FAGCN 0.689 / 0.828, RGCN 0.689 / 0.800, SAGE 0.684 / 0.810, LINKX 0.681 / 0.811, GCN 0.678 / 0.808; MLP control 0.679 / 0.799 |
 
-**Checklist: 48 rows done, 9 to do, 1 not needed.** No model has been scored yet.
+**Findings with paired 95% CIs** (`ci_pairs.json`):
+1. Profile beats every text model: profile − LoRA +0.073 [+0.054, +0.093] F1, +0.128 AUROC. With LoRA's same 1,300 training users, profile still gets 0.677 / 0.808.
+2. Text adds a little on top of profile: +0.011 [−0.001, +0.025] F1 (sample), +0.012 [+0.008, +0.016] (1M).
+3. Neighbours help without profile (+0.053 AUROC, sample; +0.044, 1M), barely with it (sample −0.001 F1; 1M +0.010 F1, +0.054 PR-AUC).
+4. Tweets do not help a text-only model: bio + tweets − bio only, same users: −0.052 [−0.074, −0.030] F1. Mechanism checked by slices: equal on users with a bio; averaging blurs the empty-bio cue (40.6% of bots vs 7.8% of humans).
+5. GNNs: all within ~0.01 F1 of the MLP control and below the trees on the same own features: message passing along heterophilous links adds little (as on TwiBot-20).
+6. LoRA vs cheap text models: with the same 1,300 users LoRA beats TF-IDF by +0.05 F1; with 70k users TF-IDF ties it.
 
-- **Running:** multilingual-E5 on bio + 20 tweets for 110,057 users. It started 4 Nov 22:56 with the builder's go after a 10k timing test (213 pieces/s, 2.7 h estimated), and was 43% done at 00:26. The MiniLM check follows automatically; output goes to `data/twibot-22/sample110k_<enc>_bio20tw_raw/`.
-- **Left before the freeze:**
-  - B7, G1, G2: train labels only and run safety, written into the model launchers.
-  - F4: the embeddings.
-  - G8: the LLM reads the same text as the encoders.
-  - H7: the LLM GPU budget and fallback size (needs the builder's decision).
-- **Planned after the runs:** D6 (flag-only baselines), D7 (weak vs expert check), G7 (expert recalibration, light version).
-- **Order (decided 5 Nov ~00:40):**
-  1. Finish TwiBot-22: freeze, cheap models, GNNs, the LLM on Thursday night, the sealed set.
-  2. Compare it with TwiBot-20's current results.
-  3. Then run the TwiBot-20 batch in one go (Part C).
-- **If time runs out,** TwiBot-20's current results are used as they are, with their caveats stated.
+**Main caveat:** much of the profile signal is one cue (empty bio), on weak labels partly made by labelling rules. The expert rotation and D7 (gain on weak vs expert labels) test whether "profile wins" means "copies the labeller".
+
+## B6. Running and next (Thu 5 Nov, ~19:00)
+
+- **GPU:** DGP (TwiBot-20 scope): summaries until ~23:00, LoRA, scored ~03:00; then LoRA `target` seed 1 and `dgp` seed 1 until ~12:30 Fri; then dgp vs target with 2 seeds.
+- **CPU:** GNN seeds 1–2 for FAGCN and RGCN; tree expert rotation (blind).
+- **Next:** DEC-lite; D7; the sealed final run (`FINAL_RUN=1`: sealed users + experts, read once); comparison with TwiBot-20; TwiBot-20 batch if time allows; report Sunday 8 Nov.
 
 ---
 
@@ -571,15 +790,138 @@ TwiBot-22 takes the lesson as checklist row G8: the LLM reads the same text as t
 
 ---
 
-# Appendix 1: TwiBot-22 data checklist (copy of `reports/twibot22_data_checklist.md`, 5 Nov 00:30)
+# Part D: decisions and reasons (copy of `artifacts/04_decisions_and_reasons.md`)
+
+## Decisions and reasons: Instagram, TwiBot-20, TwiBot-22
+
+Written Wed 4 Nov 2026, evening, so that anyone picking up this project (a teammate, the supervisor, a new Claude session) can see **what was decided, when, and why**, without reading every chat. It covers all three datasets in the order they were used. Detailed numbers live in `REPORT.md` (Instagram, TwiBot-20) and `reports/twibot22_data_checklist.md` (TwiBot-22); this file is the reasoning.
+
+**The project in one paragraph.** COMP8851 (Macquarie). Question: do LLM-based and graph-based methods help detect bots or fraud-like accounts when the graph is **heterophilous**, that is, when bad accounts mostly connect to good ones, so a user's neighbours do not share its label? The supervisor asked for heterophily to be measured, not assumed. We compare text-only models, graph models (GNNs and neighbour-feature trees) and LLMs (zero-shot reasoning and LoRA fine-tuning, including a replication of the DGP method) on the same users.
+
+---
+
+### 1. Instagram (27 Oct – 3 Nov): the first text graph
+
+| Decision | Why |
+|---|---|
+| **Dropped Elliptic** (27 Oct), the team's original Bitcoin dataset | Elliptic has no natural text, so an LLM has nothing to read. The project is about LLMs on graphs |
+| **Instagram from GLBench** (Li et al., 2024), used as prepared | A real text graph (bios) with follow edges, and the same version FLAG (KDD 2025) uses, so results can be set next to a published fraud-detection paper |
+| **Class 1 = commercial account**, treated as "a stand-in for a minority class, not fraud" | Instagram has no fraud labels; saying "fraud" would overclaim |
+| **Two settings: A (natural, 36% commercial) and B (1:10, FLAG-style)** | A tests the data as it is; B copies FLAG's protocol for a rare class (§4.1.1) |
+| **Cut-off chosen on validation for every model** (30 Oct) | Scores are not calibrated, and 0.5 is a bad cut-off when the class is rare |
+| **Became the secondary dataset** (3 Nov), steps 1–5 only | TwiBot-20 has real bot labels, a benchmark split and typed relations. The LLM fine-tuning step costs 3–6 GPU hours per run, so it went to the main dataset |
+
+**What Instagram showed.** Text is weak there (AUROC about 0.63), and every model sits within about 0.03 macro-F1 of a logistic regression on the text embeddings. GCN is level with the text-only MLP (+0.002, CI includes 0). So on Instagram the graph neither helps nor hurts.
+
+---
+
+### 2. TwiBot-20 (1 – 4 Nov): the main dataset
+
+#### Data decisions
+
+| Date | Decision | Why |
+|---|---|---|
+| 1 Nov | **Added TwiBot-20** (official split; text = bio + 20 tweets, capped at 2,000 characters) | A real Twitter bot dataset with text and a benchmark split |
+| 1 Nov | **Kept only the 11,826 labelled users**; dropped 217,754 unlabelled "support" users | They have no labels and no text in our use; keeps preparation small. Checked later (3 Nov): they bridge 8,082 users, so a robustness run on the bridge graph was added |
+| 1 Nov | **Excluded all profile metadata** | `verified` alone gave macro-F1 0.803. Hays et al. (WWW 2023) explain why: the crawl started from verified accounts and "verified accounts were automatically labeled human". The other fields were excluded with it, without a check (our own mistake #1, see `reports/twibot20_lessons_for_twibot22.md`) |
+| 4 Nov | **Shortcut rule written down and run**: only `verified` fails; the 5 other fields add +0.04–0.05 | Fixed the 1 Nov over-caution. Profile fields became a separate "text + profile" track because every other comparison was already text-only |
+| 1 Nov | **Encoder ladder**: six text encoders, everything else fixed | Separates the effect of the encoder from the effect of the graph |
+| 2 Nov | **DGP replication** with Qwen3-1.7B, 1,300 training users, LoRA r = 16 | The closest to the paper that fits a 16 GB Mac; the paper's code is not public |
+| 3 Nov | **TwiBot-20 = main dataset, Instagram = secondary** | See section 1 |
+| 3 Nov | **Report adjusted homophily and label informativeness**, not only edge homophily | Plain homophily is inflated by class imbalance (0.88 vs 0.014 adjusted in setting B) |
+| 3 Nov | **Training-size control**: text models retrained on the LLM's 1,300 users | The LLM trained on 1,300 users and text models on 8,278; that confounded "LLM vs encoder" with data size |
+| 3 Nov | **Added FAGCN, FLAG-lite, LINKX** | GNNs designed for heterophily; tests whether "graphs do not help" is about GCN or about the data |
+
+#### What TwiBot-20 showed
+
+1. **A good text encoder does the work**: Qwen2.5 + MLP 0.766, Qwen3 + MLP 0.769 macro-F1, against TF-IDF 0.702.
+2. **No graph model beats the text-only MLP.** GCN is 0.04–0.06 below it; FAGCN, FLAG-lite and LINKX stay below too.
+3. **Edges carry almost no label signal** (adjusted homophily −0.015 to 0.08). The signal links do carry is a **crawl artefact**: who appears in whose follower sample, which tracks follower count.
+4. **The fine-tuned LLM roughly matches text models at equal data** (1,300 users), and stays below them when those use all 8,278.
+5. **Verified users inflate every score**: all 326 verified test users are human. Without them, target LoRA drops from 0.704 to 0.641 macro-F1 (confirmed from raw data on 4 Nov, `check_verified_subset.py`).
+6. **Trees do not beat the MLP** (GADBench's "trees win" does not hold here), and the crawl-artefact gain for trees (+0.025) disappears on non-verified users (−0.009). Tree baseline rerun 4 Nov after fixing a silent crash (torch and sklearn clashing over OpenMP).
+
+#### Mistakes we made, and why TwiBot-22 is done differently
+
+The 22-item review (`reports/twibot20_lessons_for_twibot22.md`) found, among others:
+- rules (checkpoint choice) set **after** some test scores were seen;
+- the first LLM runs had **no seed**;
+- **verified users never removed from the test set**;
+- the tree baseline **crashed silently**;
+- results files that could be **overwritten**.
+
+None of these changed the main conclusion, but they shifted numbers by 0.02–0.05. TwiBot-22's whole approach (checklist first, rules fixed before any score, sealed test set) comes from this list.
+
+---
+
+### 3. TwiBot-22 (4 Nov onwards): the second, larger test
+
+**Why TwiBot-22.**
+- It has 1M users and 14% bots, which is fraud-like and within the 1.3–21.8% range of the GADBench fraud benchmarks.
+- Its text is weak: bio word counts give macro-F1 0.561 on users with a bio.
+- So it tests whether the graph helps when the text cannot do the work.
+- Facebook reports 3.8–5.2% abusive accounts (DEC paper), so 14% is not "real-world fraud". The report calls it a **fraud-like rare class**.
+
+#### Fixed before any model score (times are git commit times, 4 Nov)
+
+| Time | Decision | Why |
+|---|---|---|
+| 14:22 | **Our own split**: stratified 70/20/10, seed 42, all 986 expert users in test | The official split is not random: train has 7.8% bots, test 29.4%, and all 95k verified users sit in train |
+| 14:25 → ~21:30 | **Relations: all 7** (following, followers, mention, retweet, reply, quote, like); co-list reported only | First 5 by coverage; changed to 7 under "don't miss information". Quote and like add links for only 8,856 users, at small cost. Co-list (61M pairs) is too dense for the laptop |
+| afternoon | **Keep the whole 1M graph for cheap models; use a sample for expensive work** | Industry and benchmarks cut the computation, not the graph (`reports/graph_slicing_research.md`). Cutting a subgraph is what broke TwiBot-20's setting B: it removed 8,108 of 8,162 bot–bot edges |
+| evening | **No artificial setting B** | The natural 14% is already rare. For rarer rates we instead report PR-AUC with the test set reweighted to 5% and 1% bots (evaluation only) |
+| 16:29 | **Stopped the all-1M Qwen bio embedding** (26% done, ~9 h left) | It would have used the GPU for a weak, interim input (bio only), when the final text is bio + tweets |
+| 20:38 → 20:58 | **Option B is the headline**: multilingual-E5 on bio + 20 most recent tweets, on a **100k stratified sample**, neighbours from the full graph. Full-graph 1M models use bio only. Option A (tweets for all 1M) later, as an extra, never the headline | Follows Facebook DEC (cheap features on everyone, expensive work on samples) and TwiBot-20 (same text for every compared model). Avoids a 10–15 GPU-hour risk before the TwiBot-20 queue on Thursday night. The 100k sample has ~10× TwiBot-20's test size, so it is less noisy. Report limit: "with tweets" results are for a random sample |
+| evening | **Profile fields kept** (all except `verified`). Cheap models: with and without profile. Expensive models (GNNs, LLM): with profile only | TwiBot-20's text-only main track was partly an accident of order. Profile fields are real signal (follower count alone: AUROC 0.733). Running the cheap models both ways still shows what the graph adds without profile. If time allows, rerun TwiBot-20's GNNs and LLM with profile so the two datasets match |
+| ~21:40 | **`verified` and the labels moved out of the profile file** into `eval_only/`; every model script stops if it sees them (`twibot22_guard.py`) | Prevents an accidental shortcut: on TwiBot-20, `verified` alone scored 0.803. The profile file also held the label columns, which was a worse risk |
+| ~22:05 | **Sealed test set: 50% of test plus all 986 experts**, scored once at the end | Like Kaggle's private leaderboard, it stops choices drifting toward the test set. The experts are the cleanest labels we have (dataset "bot" labels match them only 56 of 101 times), so they stay untouched until the end |
+| ~22:45 | **Text rules**: retweets kept; no total length cap (all 20 tweets, each piece ≤ 128 tokens, averaged per user); links and @mentions kept raw | All three follow TwiBot-20, except the cap: there it was a file-size convenience and here it would cut 70.7% of users to ~15 tweets. TwiBot-20's cleaning check found placeholders gave no gain and deleting links slightly hurt. One difference to report: TwiBot-22 uses the 20 most recent tweets, TwiBot-20 the first 20 in file order |
+| ~22:20 | ~~**Weak → expert recalibration, light version**~~ (replaced 5 Nov ~13:20, next row), at the very end: trees and MLP keep their weights; a small logistic regression on their score + a few profile fields is fitted on the experts with 5-fold rotation | Facebook DEC trains on noisy labels then clean ones (30M, then 240k). We have only 986 clean labels (105 bots): too few for full fine-tuning, enough for recalibration. Rotation keeps every expert's score clean, so the seal holds. A check, not a headline |
+| 5 Nov ~13:20 | **Weak → expert fine-tuning with 5-fold rotation**, for LoRA `target` (1 epoch from its best adapter, ~789 experts per fold) and for trees / MLP (a real second training stage). Every model is also scored weak-only on the same 986 experts | The builder judged that sealing all 986 expert labels for one final score wastes them: the weak labels disagree with the experts too often (56 of 101) for weak-label training to learn the expert view. Training on all experts would leave no clean test, so they are rotated: each expert trains 4 folds and is scored once by a model that never saw it, and all 105 expert bots stay in the evaluation. Measured timings (5 Nov) put the LLM rotation at ~3.5–4 h, so the 4 Nov "too costly" reason no longer holds. The rotation runs blind; scores are read once, in the final run. Fixed before any expert score |
+| 5 Nov ~13:45 | **DGP at TwiBot-20 scope**: 1,300 training users (same settings), the same 1,000 validation-check users as `target`, and a **1,500-user stratified test subset** of the working test users (seed 42, `dgp_test_subset_1500.npy`, committed before any scoring). **dgp vs target is compared on that same subset**; `target` keeps its 5,000-user score for the other comparisons | Time: LLM summaries run at ~1 s each (0.94 s measured). Full scope (5,000 test users) needs 26,674 node + 13,126 path summaries, ~8.6 h; the 1,500 subset needs 18,234 + 6,815, ~5.6 h (most summaries belong to the 2,300 train and validation users' neighbours). TwiBot-20 scored DGP on a test of similar size. The subset scores `target` at 0.632 / 0.718 vs 0.626 / 0.710 on all 5,000, so it is representative |
+| ~22:05 | **100k sample**: stratified by role and label, seed 42, plus the experts (100,986 users); 10,039 hub users embedded as neighbour providers only | The hubs are the only users with outgoing links, so everyone's neighbour features come from them. Adding them as study users would make them ~10% of the sample instead of ~1% |
+
+#### What the checks found (no model run yet)
+
+- **Shortcuts:** only `verified` (0 of 95,398 verified users are bots), across 17 profile fields, 28 graph cues and all 814 feature columns.
+- **Graph:** near-zero label signal on all 7 relations (adjusted homophily 0.011–0.038). A bot's neighbours are 11.6% bots, below the 14% chance level, which is heterophily. Only 10,039 users (1%) have any outgoing link, so the graph is star-shaped.
+- **Strong cues, allowed but reported:** empty bio (40.6% of bots vs 7.8% of humans); no tweets (17.6% vs 4.8%); default profile picture (13.0% vs 1.7%).
+- **Data integrity:**
+  - 88,217,457 tweets read, exactly the "posted" links in `edge.csv`;
+  - 0 decode errors;
+  - no tweets after the collection end;
+  - every file in `label.csv` row order.
+
+---
+
+### 4. Rules that now apply to everything
+
+1. **Question every claim.** A low-cost sceptic agent checks new claims; several of our own statements were corrected this way and the corrections are recorded.
+2. **Decide before scoring.** Split, sample, metrics, model choice and cut-offs are written down and committed before any test number.
+3. **Honest metrics.** Macro-F1, AUROC and PR-AUC with bootstrap confidence intervals, plus a non-verified slice. Accuracy alone hides an "always human" model.
+4. **No shortcuts in the inputs**, checked by a fixed rule, and guarded in code.
+5. **Before any job longer than 30 minutes**, say in one line what it gives and why the report needs it; ask if the value is weak.
+6. **No dataset files in the repository** (TwiBot-22 is CC BY-NC-ND).
+
+### 5. Still open (4 Nov, late evening)
+
+- Text rules for the tweets: keep retweets? length cap? (checklist C5)
+- Tweet checks: copy-paste tweets across train and test, spam keywords, posting app (C6, C7, D4).
+- Feature rebuild with multilingual-E5 bios, then re-check shortcuts (H2).
+- Shared scoring module (G3, G5), then the freeze and the first model runs.
+- The builder's go after a 10k-user timing test, before embedding tweets.
+
+---
+
+# Appendix 1: TwiBot-22 data checklist (copy of `reports/twibot22_data_checklist.md`)
 
 ## TwiBot-22 data-processing checklist
 
-Written Wed 4 Nov 2026, 19:50, before any TwiBot-22 model score. Built from `twibot20_lessons_for_twibot22.md` (the TwiBot-20 mistakes) and `twibot22_plan.md`. Nothing below the line "Freeze" may change after the first test score.
+Written Wed 4 Nov 2026, 19:50, before any TwiBot-22 model score. Built from `twibot20_lessons_for_twibot22.md` (the TwiBot-20 mistakes) and `twibot22_plan.md`. Rules recorded here are kept; any later change is written down with its reason and time.
 
 Status: ✅ done and checked · 🟡 partly done · ⬜ to do · ➖ not needed (with the reason)
 
-## A. Raw data
+### A. Raw data
 
 | # | Item | Status | Note |
 |---|---|---|---|
@@ -588,7 +930,7 @@ Status: ✅ done and checked · 🟡 partly done · ⬜ to do · ➖ not needed 
 | A3 | Tweet count per file and in total, against the paper's ~88M | ✅ | 88,217,457 tweets = exactly the `post` edges in `edge.csv` (`tweets_top20_summary.json`) |
 | A4 | No dataset file in git (CC BY-NC-ND 4.0) | ✅ | `data/` is git-ignored |
 
-## B. Labels and split
+### B. Labels and split
 
 | # | Item | Status | Note |
 |---|---|---|---|
@@ -599,9 +941,9 @@ Status: ✅ done and checked · 🟡 partly done · ⬜ to do · ➖ not needed 
 | B5 | **100k study sample** | ✅ | `sample_idx.npy`: 100,000 drawn stratified by role and label (70k train, 20k val, 5k test_work, 5k sealed; 14.0% bots each) + the 986 experts = 100,986 users |
 | B6 | Weak labels documented: dataset "bot" matches experts for 56 of 101 | ✅ | |
 | B7 | **Only train-split labels are ever used for training**, including DEC's stage 1 ("1M weak labels" in the plan means the train part only) | ⬜ | Write into every training script |
-| B8 | **Expert users have one role: test_sealed.** DEC stage 2 on experts only as the very last step | ✅ | All 986 in test_sealed |
+| B8 | **Expert users are never in train / val / working test.** All 986 sit in test_sealed. **Changed by the builder 5 Nov ~13:20:** they are no longer used only for a final score; they are also used for training, by 5-fold rotation (G7), so each expert is scored once by a model that never saw it | ✅ | All 986 in test_sealed; rotation in G7 |
 
-## C. Tweets
+### C. Tweets
 
 | # | Item | Status | Note |
 |---|---|---|---|
@@ -614,7 +956,7 @@ Status: ✅ done and checked · 🟡 partly done · ⬜ to do · ➖ not needed 
 | C7 | Duplicate tweets across train and val | ✅ | 0.56% of val users have an exact original tweet (≥30 chars) also posted by a train user. For those 157 val bots the copy writers are 31% bots (chance 14%): some bot-to-bot copying, touching ~0.5% of users. Reported, not excluded |
 | C8 | Tweet dates within the collection window; no tweets after 15 Mar 2022 | ✅ | 2006-03-21 to 2022-03-15 01:16 UTC; 0 after the collection end; all timestamps +00:00 |
 
-## D. Profile fields
+### D. Profile fields
 
 | # | Item | Status | Note |
 |---|---|---|---|
@@ -626,7 +968,7 @@ Status: ✅ done and checked · 🟡 partly done · ⬜ to do · ➖ not needed 
 | D7 | **Labels were partly made by graph models** (GCN, GAT, R-GCN were labelling functions). Graph models may re-learn the labeller. Check: compare each graph model's gain on weak-label test users vs on expert-labelled users | ⬜ | Planned as DEC question 3; applies to every graph model |
 | D6 | "Empty bio" and "no tweets" flags: strong label cues (empty bio 40.6% of bots vs 7.8% of humans; no tweets 17.6% vs 4.8%). Report a flag-only baseline and with-bio / with-tweets slices | ⬜ | |
 
-## E. Graph
+### E. Graph
 
 | # | Item | Status | Note |
 |---|---|---|---|
@@ -638,32 +980,32 @@ Status: ✅ done and checked · 🟡 partly done · ⬜ to do · ➖ not needed 
 | E6 | co-list counts use int8, so they can overflow above 127 shared lists (R2) | ➖ | co-list is reported only and never used as model edges. Note it in the report |
 | E7 | Relation names in `edge.csv` all present and non-empty (R4) | ✅ | Every relation in the heterophily table has edges |
 
-## F. Features and embeddings
+### F. Features and embeddings
 
 | # | Item | Status | Note |
 |---|---|---|---|
 | F1 | Standardisation and PCA fitted on train only | ✅ | `twibot22_features.py` |
 | F2 | Rows kept in `label.csv` order everywhere; any join by id, never by position (X2) | ✅ | `twibot22_graph_checks.py`: all artefacts 1M rows; the 124,231 zero embedding rows equal the 124,231 empty bios exactly. Keep this assertion in every new script. `prep_twibot22.py` (superseded) sorts by id and would need a reindex if reused |
 | F3 | Output folders per design (sample, text recipe), so no stale cache is reused (X1, lesson 20) | ✅ | `twibot22_embed_text.py` writes `data/twibot-22/sample110k_<enc>_bio20tw_raw/{emb,ids,user_ids}.npy`, asserts the row order after saving, refuses to overwrite. Timing test (10k users): 213 pieces/s, 2.7 h estimated for 110,057 users. Full run started 4 Nov 22:56 with the builder's go (E5, then MiniLM) |
-| F4 | Bio-only and bio + tweets embeddings saved as separate feature sets (E3) | ⬜ | |
+| F4 | Bio-only and bio + tweets embeddings saved as separate feature sets (E3) | ✅ | Bio only: `emb_bio_{minilm,e5}_all.npy` (1M). Bio + 20 tweets: `data/twibot-22/sample110k_{e5,minilm}_bio20tw_raw/` (110,057 users; E5 153.5 min, MiniLM 37.7 min, both exit 0; row order asserted; 3,344 users without text = zero rows) |
 | F5 | Neighbour features use neighbours' features only, never their labels | ✅ | |
 | F6 | **Headline text model and comparison, fixed by the builder 4 Nov 20:58, before any score (replaces the 20:38 rule).** Option B: headline text model = multilingual-E5. **Headline comparison = the 100k stratified sample** (natural 14% bots), text = bio + 20 most recent tweets, neighbour features from the full 1M graph (hub users' tweets embedded as neighbour providers). **Full-graph models on all 1M users use bio only** (reported as the full-scale check). Option A (bio + tweets for all 1M) is run afterwards as an extra check if time allows; it never replaces the headline. MiniLM = check; Qwen2.5-1.5B on the sample only. Before any tweet embedding: a 10k-user timing test, the estimate, and the builder's go; not while a TwiBot-20 LoRA seed run is on the GPU. Report limit: "with tweets" results are for a 100k random sample, not all 1M users | ✅ decided | Tweet extraction covers all 1M users (top 20 each), so it serves B and A |
 | F7 | Users with no neighbours in a direction get a mean of 0 (= the train mean after standardisation); the separate log-count column (0) tells models it is missing | ✅ | `twibot22_features.py` `mean_agg`. GNNs need the same flag |
 
-## G. Run hygiene
+### G. Run hygiene
 
 | # | Item | Status | Note |
 |---|---|---|---|
 | G1 | `OMP_NUM_THREADS=1` and no torch import with sklearn boosting (the TwiBot-20 silent segfault) | ⬜ | In the CPU model scripts |
 | G2 | Every launcher logs each job's exit code | ⬜ | |
-| G7 | **Weak → expert recalibration, light version** (decided by the builder 4 Nov, before any score): at the very end, after the freeze, for trees and MLP only. Keep each trained model; fit a small logistic regression on its score + a few profile fields, on the 986 experts with **5-fold rotation** (each expert scored once, by a model that never saw it). Report next to the weak-label-only score on the same experts, as a check, not a headline (~105 bots, CI about ±0.05). No full fine-tuning (≈790 users per fold is too few); no LLM (too costly to rotate). Also answers D7 | ⬜ | Replaces DEC stage 4 |
+| G7 | **Weak → expert fine-tuning with 5-fold rotation** (builder, 5 Nov ~13:20, replacing the 4 Nov light version; reason: dataset "bot" matches experts for only 56 of 101, so weak-label models learn the labelling rules; using all experts for training would leave no clean test). Folds: StratifiedKFold(5, shuffle, seed 42) on the expert label (~789 train / ~197 held out, 84 / 21 bots). **LoRA target:** start from the best target adapter (validation), 1 epoch on the 4 training folds, step 6 settings, no selection; macro-F1 cut-off chosen on the fold model's own training folds (`twibot22_expert_rotation_llm.py`, queued after DGP, ~3.5-4 h GPU, **blind**: writes scores, prints no metric). **Trees / MLP:** the same folds, a real second training stage (continue / refit on experts), CPU. Every model also scored on the same 986 experts weak-only, for the paired comparison. Read once, in the final run. Fixed before any expert score. Also answers D7 | ⬜ | Replaces DEC stage 4 |
 | G8 | **The LLM reads the same text as the encoders it is compared with** (same pieces, same token limit), so "frozen encoder vs fine-tuned LLM" is like for like. Lesson from TwiBot-20 (LoRA 480 tokens vs encoders 2,000 characters; external feedback #2, 5 Nov) | ⬜ | Set when the LLM step is configured |
 | G6 | **Label and `verified` out of every model input** (step 3, builder 4 Nov ~21:40) | ✅ | `twibot22_guard.py`: `users.parquet` now has profile fields only (no verified, no label/y/split); verified in `eval_only/verified.parquet` (95,398), read only for the non-verified slice and checks; `check_columns()` stops any model input named verified/label/y/split (tested). Shortcut results identical after the move. `withheld` is 59 users, not 0 (comment fixed); near-constant, left out |
 | G3 | Selection rule, seeds (3), metrics (macro-F1, AUROC, AUPRC, bootstrap CIs) written into the scripts | ✅ | `twibot22_metrics.py`: val-only cut-off and selection, seeds 0–2, paired bootstrap CIs (2,000), self-tested |
 | G4 | Every result also scored on non-verified test users and with-bio users | ✅ | Slices in `twibot22_metrics.slices()`: all, non-verified, with bio, with tweets; optionally restricted to the 100k sample |
 | G5 | **No artificial setting B on TwiBot-22.** The natural 14% bot share is already within graph-fraud benchmark rates (1.3–21.8% in GADBench), and TwiBot-20's 1:10 subsample removed 8,108 of 8,162 bot–bot edges. For rarer rates, report **PR-AUC with test users reweighted to 5% and 1% bots** (bots weighted so they make up 5% or 1% of the test weight; graph, training and cut-off unchanged). Wording in the report: "fraud-like rare class", not "fraud" | ✅ | In `twibot22_metrics.py`; self-test: a random score gives 0.14 / 0.05 / 0.01 as expected |
 
-## H. Added after the step-list review and its sceptic pass (4 Nov, 20:28)
+### H. Added after the step-list review and its sceptic pass (4 Nov, 20:28)
 
 | # | Item | Status | Note |
 |---|---|---|---|
@@ -673,17 +1015,19 @@ Status: ✅ done and checked · 🟡 partly done · ⬜ to do · ➖ not needed 
 | H4 | Tweet script checks each file's completeness itself (ends with `]`, size stable) before marking it done (lesson T1) | ✅ | `complete()` asserts the closing `]` before indexing |
 | H5 | Parse tweet dates with `pd.to_datetime(utc=True)` before "most recent" (X6), checked on a sample | ✅ | Selection uses parsed seconds; checked against a full JSON parse of a 600 MB slice (532,984 tweets, all authors and dates match) |
 | H6 | Results naming that cannot overwrite: one folder per design and seed; seeds fixed per model (lessons 18–20) | ✅ | `save_scores()` writes `runs/<design>/<model>_s<seed>.npz` and refuses to overwrite |
-| H7 | GPU-time estimate for the LLM sample (embedding + LoRA) and a pre-set fallback sample size if it does not fit by Sat | ⬜ | Before B5 is final |
+| H7 | **LLM budget, decided by the builder 5 Nov ~00:50:** Qwen3-1.7B, **1,300 training users**, same LoRA settings as TwiBot-20 (B = 10, K = 2, M = 8, r = 16, lr 1e-4). Order tonight: smoke test of step 6 on 20 users (5 min); if it passes, after E5 finishes: summaries → LoRA `target` → LoRA `dgp`, then the MiniLM embedding (cheap models only). Each sub-step checkpointed and logged. No GNNs on CPU while LoRA trains. If the smoke test fails: nothing is launched; the failure is written to the overnight notes | ✅ decided | **Details decided 5 Nov ~02:15:** (1) adapter saved at every check, chosen by macro-F1 on a fixed 2,000-user stratified validation subset; if one check takes > 10 min in the smoke test, use 1,000 users or check less often. (2) An MLP on exactly LoRA's 480-token text is added (G8). (3) Profile in the LLM: decided later; `target` and `dgp` run text-only as on TwiBot-20. (4) DGP relation types: 2 groups, follow = following + followers, interaction = mention + retweet + reply + quote + like (6 path types, as TwiBot-20's 2 relations). (5) MiniLM done; the LLM runs tonight. (6) GNNs (changed by the builder 5 Nov ~02:35, replaces "all 5 × 3 seeds"): all 5 GNNs with 1 seed each, then the 2 best by validation macro-F1 with 3 seeds each; never all 5 × 3. Results tables mark each GNN as 1 seed or 3 seeds. Thursday daytime on CPU, not during LoRA. LoRA training users: 1,300 drawn from the sample's train part, stratified, seed 42; tested on the sample's working-test users only |
+| H7b | **DGP scope (builder, 5 Nov ~13:45):** 1,300 train, the same 1,000 validation users as `target`, a 1,500-user stratified test subset of test_work (seed 42, saved and committed before scoring: `results/twibot22/A/dgp_test_subset_1500.npy`). dgp vs target on that subset (`twibot22_dgp_vs_target.py`, paired bootstrap). Reason: summaries ~1 s each; 5.6 h instead of 8.6 h. GPU queue: zero-shot rescore → rotation smoke test → expert rotation → DGP → target seed 1 → dgp seed 1 | ✅ decided | `step6_dgp.py` `DGP_TEST` |
 | H8 | Sealed users: ids saved to disk before the sample draw; every scoring script refuses them before the final run | ✅ | `twibot22_guard.score_mask()` returns test_work unless `FINAL_RUN=1`; `assert_not_sealed()` stops otherwise (tested) |
+| H10 | **Sample neighbour features from bio + tweet embeddings** (headline, F6). Checked 5 Nov 00:50: 98.8% of sample users have all their 1-hop neighbours embedded (59% of links, because a few sample hubs link out widely), but only 18% of 2-hop neighbours are. So: **1-hop** per-relation and union text means from the multilingual-E5 bio + tweet embeddings, averaged over embedded neighbours, plus a "share of neighbours embedded" column; **2-hop** stays on the bio-only embedding (all 1M users have it); profile columns unchanged. Own file next to the embeddings; shortcut rule rerun on it | ✅ | `twibot22_features_sample.py` → `features_sample_e5tw.npz`: 100,986 × 830 (profile 255, text 544, graph 31 columns; text PCA explained 0.51; 106,713 of 110,057 embedded users have text). Shortcut rule rerun: **none** (strongest single column: own log followers, val AUROC 0.740) |
 | H9 | Extraction time | ✅ | 7 min in total (index 2.5 min at ~900 MB/s, select 1 min, decode 4 min) |
 
 Simplified (descriptive only, not gates): C6 language mix, C8 date range (folded into the C1 counts), C4 zero-tweet counts. G5 reweighted PR-AUC is computed from saved scores after the runs; it changes no model.
 
-## Freeze
+### Freeze (dropped)
 
-When every row above is ✅ or ➖, commit this file. Only then run the first model.
+No separate freeze commit (builder, 5 Nov). Decisions are recorded with their times in this file and the git history; models start once the rows they need are done.
 
-## Order for tonight and tomorrow morning
+### Order for tonight and tomorrow morning
 
 1. `tweet_1` lands → A2.
 2. Quick checks, ~30 min CPU: D2, D3, E4, E5. Then B4 (sealed set) before B5 (sample).
@@ -691,7 +1035,6 @@ When every row above is ✅ or ➖, commit this file. Only then run the first mo
 4. Tweet checks: C4, C6, C7, D4. Decide the text rules (C5).
 5. F3, then a 5-minute embedding timing test, then the full embedding.
 6. G1–G3, freeze, first model runs.
-
 
 ---
 
@@ -703,12 +1046,12 @@ Written Thu 5 Nov 2026, ~00:30. It collects every open TwiBot-20 item from `twib
 
 **When (decided by the builder 5 Nov ~00:40):** TwiBot-22 is finished first (its checklist, models, sealed set), then compared with TwiBot-20's current results, and only **then** is this whole batch run. Target: TwiBot-22 done by Fri 6 Nov evening, this batch Fri night to Sat. If time runs short, GPU jobs run in this order: G1 + G2 (seeds, adapter rule), G4 (matched text), G3 (`dgp_num`). **If time runs out, TwiBot-20's current results are used as they are** (builder, 5 Nov) and compared with TwiBot-22; the report then states the open caveats from this list (adapter rule, text cap, setting B on macro-F1, verified slice for non-LLM models).
 
-## Already done (4 Nov)
+### Already done (4 Nov)
 
 - ✅ Tree baseline rerun after the silent crash (`run_tree_baseline.sh`, A and B, exit codes logged), with PR-AUC and a non-verified slice. Lesson 17.
 - ✅ Verified-subset check from raw data: target LoRA 0.704 → 0.641 on non-verified test users (`check_verified_subset.py`). Lesson 2, LoRA part.
 
-## Batch 1: GPU queue (~12 h, after TwiBot-22)
+### Batch 1: GPU queue (~12 h, after TwiBot-22)
 
 Run in one queue, each job logs its exit code and writes to its own named file (lessons 19-20).
 
@@ -721,7 +1064,7 @@ Run in one queue, each job logs its exit code and writes to its own named file (
 
 Check before queueing: the step 6 launcher accepts the selection rule and saves every check (`step6_dgp.py:416-418` saved only 2 adapters).
 
-## Batch 2: CPU (can run while the GPU queue runs)
+### Batch 2: CPU (can run while the GPU queue runs)
 
 | # | Job | Why | Source |
 |---|---|---|---|
@@ -731,7 +1074,7 @@ Check before queueing: the step 6 launcher accepts the selection rule and saves 
 | C4 | **Bootstrap CIs on the tree baseline's crawl-artefact result** (+0.025 on all test users, −0.009 on non-verified) plus a sceptic check | New finding from 4 Nov; must be tested before it goes in the report | 4 Nov tree rerun |
 | C5 | Step 5 neighbour ranking: use unit-length vectors without the 2 flags | A shared "no text" flag can outrank text similarity | lesson 9 |
 
-## Batch 3: report edits (`REPORT.md`, after batches 1-2)
+### Batch 3: report edits (`REPORT.md`, after batches 1-2)
 
 | # | Edit | Source |
 |---|---|---|
@@ -742,7 +1085,147 @@ Check before queueing: the step 6 launcher accepts the selection rule and saves 
 | R5 | Note: TwiBot-20 used each user's first 20 tweets in file order; TwiBot-22 uses the 20 most recent | TwiBot-22 checklist C5 |
 | R6 | Note: many comparisons on one test set and no sealed set on TwiBot-20 (cannot be fixed now; TwiBot-22 has one) | lesson 22 |
 
-## Not doing (and why)
+### Not doing (and why)
 
 - Raising LoRA's token cap to 2,000 characters: too much GPU memory for a 16 GB Mac; G4 equalises from the other side instead.
 - A sealed test set for TwiBot-20 after the fact: every test number has already been seen.
+
+---
+
+# Appendix 3: notes for the submitted report (internal; copy of `reports/report_for_submission.md`)
+
+## For the submission (internal)
+
+"Internal" = goes into the submitted COMP8851 research project report (7 pages, template: Introduction, Literature review, Methodology + timeline, Outcome, Contributions). Everything else in the repository is external working material. Items are added here as they are decided; Sunday's writing starts from this file.
+
+**Writing rule:** as in research papers, the report never cites feedback (supervisor or external) as the reason for a choice. Heterophily is motivated by the problem itself: fraudsters and bots camouflage by linking to benign accounts (Dou et al., 2020), so methods must be evaluated under measured heterophily. Dataset changes are justified on their merits (e.g. Elliptic has no text for an LLM to read).
+
+### Methodology: timeline
+
+Past work (dates 2026):
+
+| When | Work |
+|---|---|
+| Sep – Oct | Team pipeline on Elliptic (Bitcoin transactions) |
+| 27 Oct | Elliptic dropped (no text for an LLM to read); rebuilt on Instagram (GLBench text graph) |
+| 30 Oct | Instagram results; settings A (natural) and B (1:10, FLAG protocol) |
+| 1 – 4 Nov | TwiBot-20 as the main dataset: encoder ladder, GNNs (GCN, SAGE, FAGCN, LINKX, FLAG-lite), zero-shot LLM, LoRA fine-tuning and a DGP replication; shortcut and crawl-artefact checks; 22-item self-review |
+| 4 Nov | TwiBot-22 data preparation: 1M users, 88.2M tweets, 7 relations; shortcut, heterophily and leakage checks; sealed test set and 100k study sample; all rules recorded before any model |
+
+Planned (estimates, 5 Nov):
+
+| When | Work | Estimate |
+|---|---|---|
+| Thu 5 Nov, early | Text embeddings (multilingual-E5, MiniLM) for the 100k sample + hubs | ~3.5 h GPU (measured pace for E5) |
+| Thu 5 Nov | Cheap models (MLP, trees, XGB-Graph, DEC-lite, baselines), with and without profile, sample and 1M | ~2–4 h CPU |
+| Thu 5 Nov | GNNs on the full 1M graph: 1 seed for all 5, then 3 seeds for the 2 best by validation macro-F1 (tables mark 1 vs 3 seeds) | ~4–7 h CPU |
+| Thu 5 Nov, 02:41–06:18 | LoRA `target` (measured: 3.6 h) | done |
+| Thu 5 Nov – Fri 6 Nov | Expert rotation (~4 h), then DGP at TwiBot-20 scope (1,500-user test subset; ~9.5 h, summaries ~1 s each), then second seeds of `target` and `dgp` (~7 h) | ~20 h GPU |
+| Fri 6 Nov, early | Weak → expert LoRA fine-tuning, 5-fold rotation over the 986 experts (blind) | ~3.5–4 h GPU |
+| Fri 6 Nov | Confidence intervals, expert rotation for trees / MLP, sealed-set final run, comparison with TwiBot-20 | ~3 h |
+| Fri night – Sat 7 Nov | TwiBot-20 follow-up batch (optional), figures | ~12 h GPU + ~4 h |
+| Sun 8 Nov | Writing | 1 day |
+
+### Methodology: other items to include (to be filled)
+
+- Datasets and why: Instagram (secondary), TwiBot-20, TwiBot-22 (see `artifacts/04_decisions_and_reasons.md`).
+- Heterophily measures: adjusted homophily, label informativeness.
+- Shortcut rule and what it excluded (`verified`).
+- Expert labels (986, 105 bots): used for training **and** clean evaluation by 5-fold rotation (decided 5 Nov, before any expert score); weak labels match experts for 56 of 101 dataset bots.
+- Split, sealed set, sample; metrics (macro-F1, AUROC, PR-AUC, reweighted PR-AUC, bootstrap CIs, non-verified slice).
+
+### Outcome: TwiBot-22 findings so far (5 Nov evening; working-test users, weak labels; sealed set and experts not yet scored)
+
+Paired bootstrap 95% CIs (2,000), seed 0, each model with its own validation cut-off (`my_build/twibot22_ci.py` → `results/twibot22/ci_pairs.json`). Sample = the 5,000 sample working-test users (same as LoRA); 1M = 49,951 working-test users, bio only. Models are HistGradientBoosting trees ("XGB-Graph style"), 3 seeds unless noted; sceptic-checked 5 Nov.
+
+1. **Profile beats every text model.** Profile only (15 fields): macro-F1 0.701, AUROC 0.837. LoRA `target` (Qwen3-1.7B, 1 seed, 1,300 training users): 0.626 / 0.710; difference +0.073 [+0.054, +0.093] F1, +0.128 [+0.106, +0.149] AUROC. With the same 1,300 training users, profile only still gets 0.677 / 0.808. Caveat: much of the profile signal is the empty-bio flag (40.6% of bots vs 7.8% of humans), bio length and follower counts, on weak labels partly made by labelling functions; the expert check (rotation) tests this.
+2. **Text adds a little on top of profile.** Tree profile + text − profile: +0.011 [−0.001, +0.025] F1, +0.012 [+0.005, +0.018] AUROC (sample); +0.012 [+0.008, +0.016] / +0.014 [+0.012, +0.016] (1M).
+3. **Neighbour features help without profile, barely with it.** XGB-Graph − own features, no profile: +0.005 [−0.010, +0.021] F1 but +0.053 [+0.037, +0.070] AUROC (sample), +0.015 / +0.044 (1M). With profile: −0.001 [−0.012, +0.010] F1, +0.005 [−0.000, +0.010] AUROC (sample); +0.010 [+0.007, +0.013] / +0.012 [+0.011, +0.014] (1M, where PR-AUC +0.054). Best model overall: XGB-Graph with profile on 1M, 0.731 / 0.873 / PR-AUC 0.580.
+4. **Tweets add nothing over the bio for a text-only model; averaging them in hurts.** Same 70k training / 5,000 test users: bio + 20 tweets − bio only: −0.052 [−0.074, −0.030] F1, −0.049 [−0.074, −0.026] AUROC. Mechanism checked by slices: on users with a bio the two are equal (AUROC 0.682 vs 0.681); on the 602 users without a bio (46% bots) tweets help (0.613 vs 0.500), but averaging blurs the no-bio group's contrast with everyone else (mean score 0.25 vs 0.12, against 0.46 vs 0.10 for bio only). With profile (which holds the empty-bio flag) the two are equal (0.713 vs 0.712).
+5. **Fine-tuned LLM vs cheap text models** (5,000 users): with the same 1,300 training users LoRA beats TF-IDF+LR by +0.050 F1 [CI excludes 0]; TF-IDF+LR on 70k training users ties LoRA (+0.002 [−0.015, +0.019]). Zero-shot Qwen: 0.505 / 0.461 (answers "bot" for nearly everyone; readout checked).
+6. Crawl-structure baseline (links only, neighbour counts): 0.563 / 0.672: the graph's shape alone carries some signal.
+
+---
+
+# Appendix 4: run log, Thu 5 Nov (copy of `reports/overnight_notes_2026-11-05.md`)
+
+## Overnight notes, Thu 5 Nov 2026 (external)
+
+- 02:20 Step 6 smoke test started (DATASET=twibot22, VARIANT=dgp, SMOKE=1: 20 train, 50 val, 20 test users).
+- 02:24 Finding: LLM node summaries run at ~1 s each (316 s per chunk of 320 prompts). The full `dgp` run would need summaries for tens of thousands of neighbours (8,300 targets × 3 paths × up to 8) plus ~25k path summaries: an estimated 20-30 h. Not possible tonight.
+- Plan agreed for tonight: if the smoke test passes, run LoRA `target` only (no summaries needed). Validation checks on 2,000 users unless the smoke test shows one check would take > 10 min, then 1,000. `dgp` waits for the builder's decision on a smaller scope. No GNNs during LoRA.
+- 02:41 Smoke test PASSED. Timings:
+```
+SMOKE TEST PASSED (end to end). Timings:
+  node_summaries    20.28 min for 1,300 items (0.94 s each)
+  path_summaries     1.69 min for 219 items (0.46 s each)
+  fine_tune          2.05 min for 20 items (6.16 s each)
+  test_scoring       0.25 min for 20 items (0.75 s each)
+  val check         0.59 min for 50 users -> 23.6 min for 2,000 (limit 10 min: OVER, use 1,000 users or fewer checks)
+```
+- 02:41 Starting LoRA target (VAL_CHECK=1000).
+- 02:42 Note on the validation-check rule: a 2,000-user check was measured at 23.6 min (> 10 min), so the builder's remedy was applied: 1,000 users. Extrapolated, a 1,000-user check takes ~11.8 min, just above 10 min; kept at 1,000 because that is the remedy the builder named. Checks run twice per epoch. Smoke numbers for planning the rest: training ~9.5 s per step of 4 users (~51 min per epoch of 1,300 users), scoring ~0.75 s per user (5,000 test users ~1 h), node summaries 0.94 s each, path summaries 0.46 s each. Estimated LoRA target total: ~4-6 h, done around 07:00-09:00 (estimate).
+- 06:18 LoRA target finished, exit code 0. Last lines:
+```
+  {'check': 2, 'epoch': 1.4984615384615385, 'val_loss': 0.732, 'val_macro_f1': 0.6217, 'val_auroc': np.float64(0.704), 'check_minutes': 9.14}
+  {'check': 3, 'epoch': 2.0, 'val_loss': 0.5291, 'val_macro_f1': 0.6162, 'val_auroc': np.float64(0.6669), 'check_minutes': 9.33}
+  {'check': 4, 'epoch': 2.4984615384615383, 'val_loss': 0.749, 'val_macro_f1': 0.6196, 'val_auroc': np.float64(0.6773), 'check_minutes': 9.28}
+
+                                                      
+
+                                                              
+Qwen3-1.7B LoRA target (full test) acc 0.795  macroF1 0.626  F1_1 0.374  AUROC 0.710  PR-AUC 0.312  | conn 0.625  iso 0.620
+
+Same test sample as step 5:
+Qwen3-1.7B LoRA target acc 0.797  macroF1 0.621  F1_1 0.362  AUROC 0.743  PR-AUC 0.341  | conn 0.617  iso 0.617
+Qwen3-1.7B zero-shot target acc 0.810  macroF1 0.484  F1_1 0.073  AUROC 0.392  PR-AUC 0.118  | conn 0.492  iso 0.450
+
+Saved -> /Users/pj/Desktop/Macquarie - Sem 4/PROJECT/Graph-based-fraud-detection-system/my_build/results/twibot22/A/step6_lora.json
+=== exit code 0
+```
+- 13:14 Step 1 text baselines (TF-IDF+LR, MiniLM+MLP) exit 0.
+```
+LoRA target (rescored here, cut-off on its 1,000 val users): {'n': 5000, 'bots': 700, 'macro_f1': 0.6258268349978193, 'auroc': 0.7097636212624584, 'pr_auc': 0.3117658616534659, 'pr_auc_at_5pct_bots': 0.1355174285272691, 'pr_auc_at_1pct_bots': 0.03046781241349008}
+tfidf_lr_full70k {'n': 5000, 'bots': 700, 'macro_f1': 0.6277243150773428, 'auroc': 0.7270598006644519, 'pr_auc': 0.3073773846262937, 'pr_auc_at_5pct_bots': 0.12980747527796996, 'pr_auc_at_1pct_bots': 0.02842308125742991, 'minus_lora_target': {'macro_f1': [0.0019872451382913375, -0.015143776910713867
+minilm_mlp_full70k seed 0 {'n': 5000, 'bots': 700, 'macro_f1': 0.6031720237640975, 'auroc': 0.6809059800664452, 'pr_auc': 0.2934477378951583, 'pr_auc_at_5pct_bots': 0.12741901585936968, 'pr_auc_at_1pct_bots': 0.02970204458157622, 'minus_lora_target': {'macro_f1': [-0.022378653266130984, -0.041911960
+minilm_mlp_full70k seed 1 {'n': 5000, 'bots': 700, 'macro_f1': 0.6109970612124651, 'auroc': 0.6813441860465117, 'pr_auc': 0.2829647125808818, 'pr_auc_at_5pct_bots': 0.11877874499942107, 'pr_auc_at_1pct_bots': 0.02698765283912572, 'minus_lora_target': {'macro_f1': [-0.01487286365178505, -0.0342863075
+minilm_mlp_full70k seed 2 {'n': 5000, 'bots': 700, 'macro_f1': 0.6053591516146144, 'auroc': 0.6888003322259136, 'pr_auc': 0.2960759059142913, 'pr_auc_at_5pct_bots': 0.12879045136999392, 'pr_auc_at_1pct_bots': 0.031110635826162577, 'minus_lora_target': {'macro_f1': [-0.02030092577907114, -0.040413601
+tfidf_lr_matched1300 {'n': 5000, 'bots': 700, 'macro_f1': 0.575765747047815, 'auroc': 0.6401501661129569, 'pr_auc': 0.24264754711067998, 'pr_auc_at_5pct_bots': 0.09704941491671179, 'pr_auc_at_1pct_bots': 0.02062665496190425, 'minus_lora_target': {'macro_f1': [-0.04998096775492642, -0.066778336624091
+minilm_mlp_matched1300 seed 0 {'n': 5000, 'bots': 700, 'macro_f1': 0.5765818013683321, 'auroc': 0.6097279069767442, 'pr_auc': 0.2345723383104145, 'pr_auc_at_5pct_bots': 0.09487997780513902, 'pr_auc_at_1pct_bots': 0.020384570398131886, 'minus_lora_target': {'macro_f1': [-0.0494326581914654, -0.069605
+minilm_mlp_matched1300 seed 1 {'n': 5000, 'bots': 700, 'macro_f1': 0.580203269995581, 'auroc': 0.6146441860465116, 'pr_auc': 0.2337058576688688, 'pr_auc_at_5pct_bots': 0.09374388210797924, 'pr_auc_at_1pct_bots': 0.020003088637714796, 'minus_lora_target': {'macro_f1': [-0.045652491024263726, -0.06441
+minilm_mlp_matched1300 seed 2 {'n': 5000, 'bots': 700, 'macro_f1': 0.5653162281911631, 'auroc': 0.5840106312292359, 'pr_auc': 0.21650790163396474, 'pr_auc_at_5pct_bots': 0.08713150412001633, 'pr_auc_at_1pct_bots': 0.021664731098819928, 'minus_lora_target': {'macro_f1': [-0.06043881552551307, -0.0790
+Saved /Users/pj/Desktop/Macquarie - Sem 4/PROJECT/Graph-based-fraud-detection-system/my_build/results/twibot22/text_baselines.json
+=== exit code 0
+```
+- 13:22 Builder decision: experts used for training by 5-fold rotation (G7, B8). LoRA rotation queued after DGP (blind).
+- 13:47 Builder decision: DGP at TwiBot-20 scope (1,300 train, 1,000 val, 1,500 stratified test subset, seed 42, committed before scoring); dgp vs target on that subset. Reason: summaries ~1 s each (5.6 h vs 8.6 h). Queue: zero-shot -> rotation smoke -> rotation -> DGP -> target s1 -> dgp s1 (until ~13:00 Fri).
+- 14:00 Zero-shot on 5,000 test users: done (readout checked: not inverted).
+```
+zero-shot target, 5,000 working-test users: {'n': 5000, 'bots': 700, 'macro_f1': 0.504552682080655, 'auroc': 0.4612513289036545, 'pr_auc': 0.13935416785982876, 'pr_auc_at_5pct_bots': 0.04986199351296926, 'pr_auc_at_1pct_bots': 0.009982694280251808}
+same with 1 - p (sign check only, not a result): {'n': 5000, 'bots': 700, 'macro_f1': 0.5531060914221793, 'auroc': 0.5387486710963454, 'pr_auc': 0.19786860249547744, 'pr_auc_at_5pct_bots': 0.07743622133900813, 'pr_auc_at_1pct_bots': 0.016326891613152955}
+Saved /Users/pj/Desktop/Macquarie - Sem 4/PROJECT/Graph-based-fraud-detection-system/my_build/results/twibot22/A/step6_Qwen3-1.7B_target_zeroshot_full.npz
+=== exit status (from log) 0
+```
+- 14:01 Rotation smoke test: PASSED.
+```
+                                                                 
+
+                                                            
+fold 0 saved (no metric printed: blind)
+ROTATION SMOKE TEST PASSED (1.0 min for 20 train + 10 held out)
+=== exit code 0
+```
+- 14:01 Expert rotation (LoRA target, 5 folds, blind) started.
+- 17:14 Expert rotation finished, exit 0 (blind: scores saved, no metric looked at).
+```
+                                                              
+fold 4 saved (no metric printed: blind)
+Saved /Users/pj/Desktop/Macquarie - Sem 4/PROJECT/Graph-based-fraud-detection-system/my_build/results/twibot22/A/expert_rotation_target.npz (blind: read in the final run)
+=== exit code 0
+```
+- 17:14 DGP started (TwiBot-20 scope: 1,300 train, 1,000 val, 1,500 test subset). Est. ~9.5 h (5.6 h summaries).
+- 17:15 GNNs started (DGP summary phase: no LoRA training).
+- 18:17 GNN seed 0 done; 2 best by validation macro-F1: FAGCN,RGCN -> seeds 1, 2.
+- 18:21 Check: bio-only tree on the SAME sample users (70k train / 5,000 test): text-only F1 0.673 AUROC 0.761 vs bio + tweets 0.618 / 0.712; with profile 0.712 / 0.846 vs 0.713 / 0.848. Averaging tweets in hides the empty-bio cue; with profile they are equal. To be checked by the sceptic before the report.
+- 18:28 CIs for key pairs done; sceptic check done (verdicts: profile-vs-LoRA needed a matched 1,300 run -> profile 0.677 / 0.808, still ahead; empty-bio mechanism confirmed by slices). Findings in report_for_submission.md.
+
