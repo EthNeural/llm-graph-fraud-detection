@@ -96,3 +96,4 @@ FAGCN (1M)                       expert    0.734 [0.685, 0.780]    0.841 [0.800,
                                  diff      +0.013 [-0.011, +0.036]  -0.005 [-0.017, +0.005]  +0.012 [-0.009, +0.035] 
 ```
 - 01:19 Exploratory pilot step 0 (oracle neighbour-trust switch), exit 0: switch − XGB-Graph AUROC +0.0030 [+0.0021, +0.0040] (A, <0.5, 8.8% switched), +0.0032 [+0.0023, +0.0042] (B, <0.25); macro-F1 +0.005–0.006; PR-AUC +0.005–0.006. Below the +0.005 AUROC go/no-go: full pilot NOT built (rule fixed at 01:05).
+- 04:11 TwiBot-20 C4 (crawl-artefact CIs, tree baseline, 3 seeds averaged, exit 0): + in/out degrees vs own+neighbour+degree: all test macro-F1 +0.021 [+0.002, +0.040], AUROC +0.031 [+0.019, +0.043]; NON-VERIFIED macro-F1 -0.008 [-0.033, +0.018], AUROC +0.009 [-0.007, +0.026]. The artefact's gain comes from the verified (all-human) users. (c4_crawl_artefact_ci.json)

@@ -29,7 +29,7 @@ Check before queueing: the step 6 launcher accepts the selection rule and saves 
 | C1 | **Save test scores** for LR, MLP and the GNNs (they are retrained inside `bootstrap_ci.py` and never saved), then score them on **non-verified test users** | Every TwiBot-20 headline must also be shown without the 326 verified (all human) test users | lesson 2; top-10 #3 |
 | C2 | **GNNs with profile** (the 5 allowed fields added to the input): GCN, SAGE, FAGCN, LINKX | Match TwiBot-22's design (H3), so the two datasets compare like for like | H3 |
 | C3 | `bootstrap_ci.py` and `link_direction.py`: read the **seeded** LoRA score files (seeds 1, 2) and average over seeds | They hard-code the unseeded file | lesson 18 |
-| C4 | **Bootstrap CIs on the tree baseline's crawl-artefact result** (+0.025 on all test users, −0.009 on non-verified) plus a sceptic check | New finding from 4 Nov; must be tested before it goes in the report | 4 Nov tree rerun |
+| C4 ✅ 6 Nov 04:45: all +0.021 [+0.002, +0.040] F1; non-verified −0.008 [−0.033, +0.018] (gain is from verified users) | **Bootstrap CIs on the tree baseline's crawl-artefact result** (+0.025 on all test users, −0.009 on non-verified) plus a sceptic check | New finding from 4 Nov; must be tested before it goes in the report | 4 Nov tree rerun |
 | C5 | Step 5 neighbour ranking: use unit-length vectors without the 2 flags | A shared "no text" flag can outrank text similarity | lesson 9 |
 
 ## Batch 3: report edits (`REPORT.md`, after batches 1-2)

@@ -1,0 +1,6 @@
+own + neighbour mean + degree + in/out d - own + neighbour mean + degree [all]: macro_f1 +0.021 [+0.002, +0.040]  auroc +0.031 [+0.019, +0.043]  pr_auc +0.027 [+0.015, +0.040]
+own + neighbour mean + degree + in/out d - own + neighbour mean + degree [non_verified]: macro_f1 -0.008 [-0.033, +0.018]  auroc +0.009 [-0.007, +0.026]  pr_auc +0.007 [-0.002, +0.016]
+own + neighbour mean + degree - own only [all]: macro_f1 +0.025 [+0.007, +0.043]  auroc +0.007 [-0.002, +0.016]  pr_auc +0.007 [-0.003, +0.017]
+own + neighbour mean + degree - own only [non_verified]: macro_f1 +0.016 [-0.005, +0.038]  auroc -0.006 [-0.018, +0.006]  pr_auc -0.001 [-0.009, +0.006]
+saved /Users/pj/Desktop/Macquarie - Sem 4/PROJECT/Graph-based-fraud-detection-system/my_build/results/twibot20/A/c4_crawl_artefact_ci.json
+=== exit code 0
