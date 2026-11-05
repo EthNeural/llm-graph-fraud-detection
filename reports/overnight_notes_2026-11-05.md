@@ -133,3 +133,6 @@ dgp_s1 {'macro_f1': 0.607, 'auroc': 0.711, 'pr_auc': 0.34, 'pr_auc_at_5pct_bots'
 dgp - target_s1 {'macro_f1': [0.00480505930740957, -0.021281293668412575, 0.030982996624176386], 'auroc': [0.030273526254619158, -0.00013424285555028995, 0.05838599714281657]}
 Saved dgp_vs_target.json
 ```
+- 10:13 FINAL RUN started (sealed non-expert users, read once).
+- 10:14 TwiBot-20 GPU: step6_target_s2 started.
+- 10:20 FINAL RUN finished, exit 0 (final_run.json).

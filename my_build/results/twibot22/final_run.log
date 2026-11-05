@@ -1,0 +1,34 @@
+FINAL RUN: scoring the SEALED test set (do this once, after the freeze)
+FINAL RUN: 49,951 users, 0.140 bots
+  full/profile_only          3 seed(s) n 49,951: macro-F1 0.709 AUROC 0.847 PR-AUC 0.515 (5% 0.290, 1% 0.087) | working 0.707 / 0.846
+  full/tree_self_prof        3 seed(s) n 49,951: macro-F1 0.724 AUROC 0.862 PR-AUC 0.537 (5% 0.305, 1% 0.092) | working 0.720 / 0.860
+  full/tree_self_noprof      3 seed(s) n 49,951: macro-F1 0.683 AUROC 0.775 PR-AUC 0.368 (5% 0.167, 1% 0.040) | working 0.680 / 0.772
+  full/xgb_graph_prof        3 seed(s) n 49,951: macro-F1 0.735 AUROC 0.874 PR-AUC 0.590 (5% 0.378, 1% 0.156) | working 0.731 / 0.873
+  full/xgb_graph_noprof      3 seed(s) n 49,951: macro-F1 0.699 AUROC 0.817 PR-AUC 0.458 (5% 0.238, 1% 0.065) | working 0.694 / 0.816
+  full/links_only            3 seed(s) n 49,951: macro-F1 0.562 AUROC 0.680 PR-AUC 0.219 (5% 0.083, 1% 0.017) | working 0.558 / 0.675
+  full_gnn/MLP               1 seed(s) n 49,951: macro-F1 0.683 AUROC 0.800 PR-AUC 0.425 (5% 0.207, 1% 0.050) | working 0.679 / 0.799
+  full_gnn/GCN               1 seed(s) n 49,951: macro-F1 0.681 AUROC 0.807 PR-AUC 0.438 (5% 0.225, 1% 0.062) | working 0.678 / 0.808
+  full_gnn/SAGE              1 seed(s) n 49,951: macro-F1 0.685 AUROC 0.810 PR-AUC 0.453 (5% 0.235, 1% 0.063) | working 0.684 / 0.810
+  full_gnn/FAGCN             3 seed(s) n 49,951: macro-F1 0.695 AUROC 0.830 PR-AUC 0.456 (5% 0.228, 1% 0.057) | working 0.690 / 0.829
+  full_gnn/LINKX             1 seed(s) n 49,951: macro-F1 0.686 AUROC 0.811 PR-AUC 0.435 (5% 0.215, 1% 0.053) | working 0.681 / 0.811
+  full_gnn/RGCN              3 seed(s) n 49,951: macro-F1 0.693 AUROC 0.803 PR-AUC 0.458 (5% 0.240, 1% 0.064) | working 0.689 / 0.804
+  sample/profile_only        3 seed(s) n  5,000: macro-F1 0.705 AUROC 0.841 PR-AUC 0.514 (5% 0.297, 1% 0.105) | working 0.701 / 0.837
+  sample/tree_self_prof      3 seed(s) n  5,000: macro-F1 0.723 AUROC 0.858 PR-AUC 0.546 (5% 0.324, 1% 0.118) | working 0.713 / 0.848
+  sample/tree_self_noprof    3 seed(s) n  5,000: macro-F1 0.623 AUROC 0.715 PR-AUC 0.340 (5% 0.157, 1% 0.038) | working 0.618 / 0.712
+  sample/xgb_graph_prof      3 seed(s) n  5,000: macro-F1 0.728 AUROC 0.860 PR-AUC 0.573 (5% 0.366, 1% 0.156) | working 0.712 / 0.852
+  sample/xgb_graph_noprof    3 seed(s) n  5,000: macro-F1 0.645 AUROC 0.772 PR-AUC 0.403 (5% 0.210, 1% 0.061) | working 0.631 / 0.763
+  sample/links_only          3 seed(s) n  5,000: macro-F1 0.563 AUROC 0.683 PR-AUC 0.219 (5% 0.083, 1% 0.017) | working 0.563 / 0.672
+  pair full/text_on_top_of_profile   n 49,951: macro_f1 +0.016 [+0.012, +0.020]  auroc +0.015 [+0.013, +0.017]  pr_auc +0.022 [+0.018, +0.026]
+  pair full/neighbours_with_profile  n 49,951: macro_f1 +0.012 [+0.009, +0.016]  auroc +0.012 [+0.011, +0.014]  pr_auc +0.054 [+0.048, +0.060]
+  pair full/neighbours_no_profile    n 49,951: macro_f1 +0.017 [+0.014, +0.020]  auroc +0.043 [+0.039, +0.046]  pr_auc +0.092 [+0.085, +0.099]
+  pair full/FAGCN_minus_MLP          n 49,951: macro_f1 +0.011 [+0.008, +0.014]  auroc +0.029 [+0.027, +0.032]  pr_auc +0.032 [+0.027, +0.037]
+  pair full/RGCN_minus_MLP           n 49,951: macro_f1 +0.010 [+0.006, +0.014]  auroc -0.000 [-0.005, +0.004]  pr_auc +0.031 [+0.024, +0.038]
+  pair sample/text_on_top_of_profile   n  5,000: macro_f1 +0.015 [+0.003, +0.028]  auroc +0.016 [+0.010, +0.022]  pr_auc +0.026 [+0.010, +0.043]
+  pair sample/neighbours_with_profile  n  5,000: macro_f1 +0.006 [-0.005, +0.016]  auroc +0.002 [-0.003, +0.008]  pr_auc +0.032 [+0.015, +0.049]
+  pair sample/neighbours_no_profile    n  5,000: macro_f1 +0.026 [+0.010, +0.043]  auroc +0.059 [+0.043, +0.075]  pr_auc +0.069 [+0.049, +0.089]
+  D7 XGB-Graph - own tree (1M)      AUROC gain: weak +0.012 [+0.011, +0.014] (n 49,951) | expert -0.005 [-0.015, +0.004] (n 986) | weak - expert +0.018 [+0.008, +0.027]
+  D7 XGB-Graph - own tree (sample)  AUROC gain: weak +0.002 [-0.003, +0.008] (n 5,000) | expert +0.004 [-0.010, +0.020] (n 986) | weak - expert -0.002 [-0.019, +0.014]
+  D7 FAGCN - MLP (1M)               AUROC gain: weak +0.029 [+0.027, +0.032] (n 49,951) | expert +0.026 [+0.003, +0.053] (n 986) | weak - expert +0.003 [-0.023, +0.027]
+  D7 RGCN - MLP (1M)                AUROC gain: weak -0.000 [-0.005, +0.004] (n 49,951) | expert -0.020 [-0.057, +0.014] (n 986) | weak - expert +0.020 [-0.014, +0.057]
+Saved final_run.json (7.0 min)
+=== exit code 0
