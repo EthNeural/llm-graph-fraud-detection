@@ -1,4 +1,7 @@
 target {'macro_f1': 0.632, 'auroc': 0.718, 'pr_auc': 0.346, 'pr_auc_at_5pct_bots': 0.162, 'pr_auc_at_1pct_bots': 0.039}
 dgp {'macro_f1': 0.628, 'auroc': 0.717, 'pr_auc': 0.346, 'pr_auc_at_5pct_bots': 0.173, 'pr_auc_at_1pct_bots': 0.064}
 dgp - target {'macro_f1': [-0.004065591283265327, -0.02657503243871165, 0.01788914041000687], 'auroc': [-0.0012136139822521192, -0.03139959867318264, 0.02795168622629283]}
+target_s1 {'macro_f1': 0.603, 'auroc': 0.681, 'pr_auc': 0.318, 'pr_auc_at_5pct_bots': 0.147, 'pr_auc_at_1pct_bots': 0.035}
+dgp_s1 {'macro_f1': 0.607, 'auroc': 0.711, 'pr_auc': 0.34, 'pr_auc_at_5pct_bots': 0.173, 'pr_auc_at_1pct_bots': 0.07}
+dgp - target_s1 {'macro_f1': [0.00480505930740957, -0.021281293668412575, 0.030982996624176386], 'auroc': [0.030273526254619158, -0.00013424285555028995, 0.05838599714281657]}
 Saved dgp_vs_target.json
