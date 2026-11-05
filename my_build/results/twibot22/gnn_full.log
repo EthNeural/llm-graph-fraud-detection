@@ -1,0 +1,34 @@
+=== 17:15 MODELS=FAGCN,RGCN,SAGE,GCN,LINKX,MLP SEEDS=0
+features 47 (own profile + bio PCA); union edges 8,967,538; graphs built in 0.0 min
+    FAGCN seed 0 epoch 0: loss 0.6957 val F1 0.6068  (0.5 min)
+    FAGCN seed 0 epoch 25: loss 0.5432 val F1 0.6578  (11.7 min)
+    FAGCN seed 0 epoch 50: loss 0.5342 val F1 0.6410  (22.3 min)
+  FAGCN_s0: val F1 0.692 | test F1 0.689 AUROC 0.828 PR-AUC 0.449 | non-verified F1 0.684 | 63 epochs, 26.9 min
+    RGCN seed 0 epoch 0: loss 0.9341 val F1 0.5913  (0.3 min)
+    RGCN seed 0 epoch 25: loss 0.5611 val F1 0.6622  (10.5 min)
+    RGCN seed 0 epoch 50: loss 0.5354 val F1 0.6518  (16.9 min)
+  RGCN_s0: val F1 0.691 | test F1 0.689 AUROC 0.800 PR-AUC 0.441 | non-verified F1 0.683 | 62 epochs, 19.6 min
+    SAGE seed 0 epoch 0: loss 0.7907 val F1 0.1759  (0.1 min)
+    SAGE seed 0 epoch 25: loss 0.5442 val F1 0.6564  (2.3 min)
+    SAGE seed 0 epoch 50: loss 0.5342 val F1 0.6548  (4.6 min)
+  SAGE_s0: val F1 0.683 | test F1 0.684 AUROC 0.810 PR-AUC 0.448 | non-verified F1 0.678 | 54 epochs, 4.9 min
+    GCN seed 0 epoch 0: loss 0.7045 val F1 0.6298  (0.1 min)
+    GCN seed 0 epoch 25: loss 0.5687 val F1 0.6534  (1.4 min)
+    GCN seed 0 epoch 50: loss 0.5640 val F1 0.6512  (2.7 min)
+  GCN_s0: val F1 0.679 | test F1 0.678 AUROC 0.808 PR-AUC 0.431 | non-verified F1 0.672 | 58 epochs, 3.1 min
+    LINKX seed 0 epoch 0: loss 0.7380 val F1 0.6563  (0.2 min)
+    LINKX seed 0 epoch 25: loss 0.5318 val F1 0.6353  (2.9 min)
+  LINKX_s0: val F1 0.684 | test F1 0.681 AUROC 0.811 PR-AUC 0.430 | non-verified F1 0.676 | 51 epochs, 5.6 min
+    MLP seed 0 epoch 0: loss 0.7694 val F1 0.6507  (0.0 min)
+    MLP seed 0 epoch 25: loss 0.5453 val F1 0.6349  (0.5 min)
+    MLP seed 0 epoch 50: loss 0.5389 val F1 0.6390  (0.9 min)
+  MLP_s0: val F1 0.681 | test F1 0.679 AUROC 0.799 PR-AUC 0.415 | non-verified F1 0.674 | 52 epochs, 1.0 min
+=== exit code 0 (MODELS=FAGCN,RGCN,SAGE,GCN,LINKX,MLP SEEDS=0)
+=== 18:17 MODELS=FAGCN,RGCN SEEDS=1,2
+features 47 (own profile + bio PCA); union edges 8,967,538; graphs built in 0.0 min
+    FAGCN seed 1 epoch 0: loss 0.7070 val F1 0.4879  (0.4 min)
+    FAGCN seed 1 epoch 25: loss 0.5428 val F1 0.6605  (9.5 min)
+    FAGCN seed 1 epoch 50: loss 0.5339 val F1 0.6438  (16.8 min)
+  FAGCN_s1: val F1 0.694 | test F1 0.691 AUROC 0.828 PR-AUC 0.444 | non-verified F1 0.685 | 63 epochs, 20.8 min
+    FAGCN seed 2 epoch 0: loss 0.7007 val F1 0.6305  (0.3 min)
+    FAGCN seed 2 epoch 25: loss 0.5449 val F1 0.6501  (8.9 min)
