@@ -48,3 +48,10 @@ Saved /Users/pj/Desktop/Macquarie - Sem 4/PROJECT/Graph-based-fraud-detection-sy
 ```
 - 13:22 Builder decision: experts used for training by 5-fold rotation (G7, B8). LoRA rotation queued after DGP (blind).
 - 13:47 Builder decision: DGP at TwiBot-20 scope (1,300 train, 1,000 val, 1,500 stratified test subset, seed 42, committed before scoring); dgp vs target on that subset. Reason: summaries ~1 s each (5.6 h vs 8.6 h). Queue: zero-shot -> rotation smoke -> rotation -> DGP -> target s1 -> dgp s1 (until ~13:00 Fri).
+- 14:00 Zero-shot on 5,000 test users: done (readout checked: not inverted).
+```
+zero-shot target, 5,000 working-test users: {'n': 5000, 'bots': 700, 'macro_f1': 0.504552682080655, 'auroc': 0.4612513289036545, 'pr_auc': 0.13935416785982876, 'pr_auc_at_5pct_bots': 0.04986199351296926, 'pr_auc_at_1pct_bots': 0.009982694280251808}
+same with 1 - p (sign check only, not a result): {'n': 5000, 'bots': 700, 'macro_f1': 0.5531060914221793, 'auroc': 0.5387486710963454, 'pr_auc': 0.19786860249547744, 'pr_auc_at_5pct_bots': 0.07743622133900813, 'pr_auc_at_1pct_bots': 0.016326891613152955}
+Saved /Users/pj/Desktop/Macquarie - Sem 4/PROJECT/Graph-based-fraud-detection-system/my_build/results/twibot22/A/step6_Qwen3-1.7B_target_zeroshot_full.npz
+=== exit status (from log) 0
+```
