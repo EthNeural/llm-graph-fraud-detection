@@ -487,7 +487,7 @@ def main():
     val_s, test_s = sample(val, y, N_VAL), sample(test, y, N_TEST)    # the step 5 samples
     if SMOKE:
         val_s, test, test_s = val_s[:50], test[:20], test_s[:20]
-    if DGP_TEST:                                               # TwiBot-20 scope (builder, 5 Nov ~15:00)
+    if DGP_TEST:                                               # TwiBot-20 scope (builder, 5 Nov ~13:45)
         sub = np.load(DGP_TEST)
         assert np.isin(sub, test).all(), "DGP_TEST must be a subset of the working test users"
         test = test_s = np.sort(sub)                           # summaries, scoring and zero-shot all on it

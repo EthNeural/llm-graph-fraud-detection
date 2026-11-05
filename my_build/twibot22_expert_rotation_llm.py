@@ -1,6 +1,6 @@
 """
 TwiBot-22 weak -> expert fine-tuning of LoRA target, with 5-fold rotation over the 986 expert users
-(decided by the builder 5 Nov ~14:00, replacing "experts only for the final score"; checklist B8, G7).
+(decided by the builder 5 Nov ~13:20, replacing "experts only for the final score"; checklist B8, G7).
 
 Why: the weak labels disagree with the experts often (dataset "bot" matches experts for 56 of 101), so
 models trained on weak labels learn the labelling rules. Using all experts for training would leave no

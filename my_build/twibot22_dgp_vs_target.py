@@ -1,6 +1,6 @@
 """
 TwiBot-22: LoRA dgp vs LoRA target on the SAME 1,500-user test subset (dgp_test_subset_1500.npy, drawn
-5 Nov ~15:00, stratified from the 5,000 working-test users, seed 42, committed before any scoring).
+5 Nov ~13:45, stratified from the 5,000 working-test users, seed 42, committed before any scoring).
 target was scored on all 5,000, so its scores are restricted to the subset; each model keeps its own
 cut-off from its 1,000 validation-check users. Paired bootstrap (2,000) of dgp - target. Any extra
 seeds found (step6_..._s<seed>_scores.npz) are listed per seed. Output: results/twibot22/dgp_vs_target.json
