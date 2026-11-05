@@ -73,5 +73,35 @@
   "val_cut": 0.6986200213432312,
   "epochs": 62,
   "minutes": 59.6
+ },
+ "official_verified0/RGCN": {
+  "test_users": 94889,
+  "test_bot_share": 0.29503946716690027,
+  "all_human_accuracy": 0.7049605328330997,
+  "acc_at_0_5": 0.6396210308887226,
+  "bot_f1_at_0_5": 0.535960484177387,
+  "acc_at_val_cut": 0.6917134757453446,
+  "bot_f1_at_val_cut": 0.5367622606850465,
+  "macro_f1_at_val_cut": 0.6528744138715727,
+  "auroc": 0.7263930752138923,
+  "train_bot_share": 0.07794849097959872,
+  "val_cut": 0.5961100363731384,
+  "epochs": 66,
+  "minutes": 39.8
+ },
+ "ours_verified1/MLP": {
+  "test_users": 49951,
+  "test_bot_share": 0.1399771776340814,
+  "all_human_accuracy": 0.8600228223659185,
+  "acc_at_0_5": 0.7702348301335309,
+  "bot_f1_at_0_5": 0.4644173783191003,
+  "acc_at_val_cut": 0.8514143860983764,
+  "bot_f1_at_val_cut": 0.45832725149613196,
+  "macro_f1_at_val_cut": 0.6861125816645393,
+  "auroc": 0.8243035603821706,
+  "train_bot_share": 0.1399796084420478,
+  "val_cut": 0.744951623082161,
+  "epochs": 55,
+  "minutes": 3.1
  }
 }
