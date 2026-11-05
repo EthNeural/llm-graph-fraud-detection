@@ -1,0 +1,11 @@
+(a) comments only: {'n': 278, 'bots': 100, 'macro_f1': 0.9882, 'auroc': 0.999, 'pr_auc': 0.9985}
+(b) k=1: {'macro_f1': 0.915, 'auroc': 0.9639, 'pr_auc': 0.9539}
+(b) k=2: {'macro_f1': 0.9616, 'auroc': 0.9929, 'pr_auc': 0.9907}
+(b) k=5: {'macro_f1': 0.9896, 'auroc': 0.9988, 'pr_auc': 0.9981}
+(b) k=10: {'macro_f1': 0.9909, 'auroc': 0.9993, 'pr_auc': 0.9988}
+(b) k=20: {'macro_f1': 0.9922, 'auroc': 0.9993, 'pr_auc': 0.9989}
+(b) k=all: {'macro_f1': 0.9882, 'auroc': 0.999, 'pr_auc': 0.9985}
+(c) single comment: {'comments': 8074, 'auroc': 0.9897}
+(d) focal-word rate AUROC (untrained): 0.8435
+(e) top features: [(np.str_('text:mean_comment_len'), np.float64(0.1138044619422572)), (np.str_('time:log_median_gap_s'), np.float64(0.06549212598425194)), (np.str_('text:mean_post_len'), np.float64(0.04847375328083986)), (np.str_('time:hour_entropy'), np.float64(0.015939632545931715)), (np.str_('prof:log_comment_num_1'), np.float64(0.011687664041994705)), (np.str_('prof:comment_per_post'), np.float64(0.006847769028871353))]
+Saved botsim_stage1b.json

@@ -1,0 +1,13 @@
+tfidf_lr         macro-F1 1.000  AUROC 1.000  PR-AUC 1.000  (1 seed(s))
+in_degree_probe  macro-F1 0.781  AUROC 0.833  PR-AUC 0.622  (1 seed(s))
+profile_timing   macro-F1 0.886  AUROC 0.970  PR-AUC 0.945  (3 seed(s))
+xgbgraph_out     macro-F1 0.940  AUROC 0.988  PR-AUC 0.978  (3 seed(s))
+xgbgraph_full    macro-F1 0.945  AUROC 0.992  PR-AUC 0.984  (3 seed(s))
+fusion_out       macro-F1 0.998  AUROC 1.000  PR-AUC 1.000  (3 seed(s))
+leak_contrast    macro-F1 0.996  AUROC 1.000  PR-AUC 1.000  (3 seed(s))
+  G-out - profile_timing               macro_f1 +0.067 [+0.031, +0.103]  auroc +0.018 [+0.008, +0.031]  pr_auc +0.032 [+0.013, +0.057]
+  G-full - G-out (in-edge artefact)    macro_f1 +0.001 [-0.023, +0.027]  auroc +0.005 [+0.000, +0.011]  pr_auc +0.008 [-0.002, +0.019]
+  text - profile_timing                macro_f1 +0.124 [+0.086, +0.165]  auroc +0.030 [+0.016, +0.048]  pr_auc +0.056 [+0.029, +0.091]
+  fusion_out - best single (text)      macro_f1 +0.000 [+0.000, +0.000]  auroc +0.000 [-0.000, +0.000]  pr_auc +0.000 [-0.000, +0.000]
+  fusion_out - G-out                   macro_f1 +0.058 [+0.030, +0.086]  auroc +0.012 [+0.005, +0.021]  pr_auc +0.023 [+0.009, +0.043]
+Saved botsim_stage1.json

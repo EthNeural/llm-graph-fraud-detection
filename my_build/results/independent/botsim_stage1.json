@@ -1,0 +1,154 @@
+{
+ "test_work_users": 291,
+ "bots": 100,
+ "models": {
+  "tfidf_lr": {
+   "seeds": 1,
+   "macro_f1": 1.0,
+   "auroc": 1.0,
+   "pr_auc": 1.0,
+   "pr_auc_at_5pct_bots": 1.0,
+   "pr_auc_at_1pct_bots": 1.0
+  },
+  "in_degree_probe": {
+   "seeds": 1,
+   "macro_f1": 0.7807,
+   "auroc": 0.8328,
+   "pr_auc": 0.6217,
+   "pr_auc_at_5pct_bots": 0.143,
+   "pr_auc_at_1pct_bots": 0.0311
+  },
+  "profile_timing": {
+   "seeds": 3,
+   "macro_f1": 0.8861,
+   "auroc": 0.9701,
+   "pr_auc": 0.9449,
+   "pr_auc_at_5pct_bots": 0.7469,
+   "pr_auc_at_1pct_bots": 0.5688,
+   "auroc_sd": 0.0007
+  },
+  "xgbgraph_out": {
+   "seeds": 3,
+   "macro_f1": 0.9395,
+   "auroc": 0.9878,
+   "pr_auc": 0.978,
+   "pr_auc_at_5pct_bots": 0.8803,
+   "pr_auc_at_1pct_bots": 0.7585,
+   "auroc_sd": 0.0004
+  },
+  "xgbgraph_full": {
+   "seeds": 3,
+   "macro_f1": 0.945,
+   "auroc": 0.9921,
+   "pr_auc": 0.9838,
+   "pr_auc_at_5pct_bots": 0.8932,
+   "pr_auc_at_1pct_bots": 0.7498,
+   "auroc_sd": 0.001
+  },
+  "fusion_out": {
+   "seeds": 3,
+   "macro_f1": 0.9975,
+   "auroc": 1.0,
+   "pr_auc": 1.0,
+   "pr_auc_at_5pct_bots": 1.0,
+   "pr_auc_at_1pct_bots": 1.0,
+   "auroc_sd": 0.0
+  },
+  "leak_contrast": {
+   "seeds": 3,
+   "macro_f1": 0.9962,
+   "auroc": 1.0,
+   "pr_auc": 1.0,
+   "pr_auc_at_5pct_bots": 1.0,
+   "pr_auc_at_1pct_bots": 1.0,
+   "auroc_sd": 0.0
+  }
+ },
+ "pairs": {
+  "G-out - profile_timing": {
+   "macro_f1": [
+    0.0665,
+    0.0308,
+    0.1033
+   ],
+   "auroc": [
+    0.018,
+    0.0077,
+    0.0306
+   ],
+   "pr_auc": [
+    0.0323,
+    0.0128,
+    0.0572
+   ]
+  },
+  "G-full - G-out (in-edge artefact)": {
+   "macro_f1": [
+    0.0014,
+    -0.0231,
+    0.0268
+   ],
+   "auroc": [
+    0.0049,
+    0.0001,
+    0.0107
+   ],
+   "pr_auc": [
+    0.0076,
+    -0.0019,
+    0.0189
+   ]
+  },
+  "text - profile_timing": {
+   "macro_f1": [
+    0.1243,
+    0.0862,
+    0.1651
+   ],
+   "auroc": [
+    0.0302,
+    0.0157,
+    0.048
+   ],
+   "pr_auc": [
+    0.0556,
+    0.0288,
+    0.0907
+   ]
+  },
+  "fusion_out - best single (text)": {
+   "macro_f1": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "auroc": [
+    0.0,
+    -0.0,
+    0.0
+   ],
+   "pr_auc": [
+    0.0,
+    -0.0,
+    0.0
+   ]
+  },
+  "fusion_out - G-out": {
+   "macro_f1": [
+    0.0578,
+    0.0301,
+    0.0864
+   ],
+   "auroc": [
+    0.0123,
+    0.0049,
+    0.0215
+   ],
+   "pr_auc": [
+    0.0233,
+    0.0087,
+    0.0426
+   ]
+  }
+ }
+}
