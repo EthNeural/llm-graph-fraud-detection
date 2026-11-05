@@ -90,3 +90,8 @@ Saved /Users/pj/Desktop/Macquarie - Sem 4/PROJECT/Graph-based-fraud-detection-sy
 - 00:40 Reconciliation complete (E11, all cells, exit 0): RGCN our split + verified 0.678 / 0.797.
 - 00:46 Reconciliation complete (last cell RGCN, our split, verified in); brief section 7 filled automatically.
 - 00:58 GNN expert rotation finished, exit 0 (blind).
+- 01:08 Expert read repeated with FAGCN (expert_read_with_fagcn.json):
+```
+FAGCN (1M)                       expert    0.734 [0.685, 0.780]    0.841 [0.800, 0.881]    0.537 [0.441, 0.631]   
+                                 diff      +0.013 [-0.011, +0.036]  -0.005 [-0.017, +0.005]  +0.012 [-0.009, +0.035] 
+```
