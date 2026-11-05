@@ -50,6 +50,17 @@ Argument: in online social networks, malicious accounts may deliberately connect
 
 **Related-work checks** (`reports/literature_check_findings.md`, arXiv ids verified): supported by Yang et al. AAAI 2020, Hays et al. WWW 2023, GADBench (Tang et al. NeurIPS 2023), Mao et al. NeurIPS 2023; contradicted by the TwiBot-22 leaderboard (graph methods first): discuss split, `verified` and graph-model labelling functions as candidate reasons. **Confirmed in the official code** (`reports/twibot22_repo_check.md`): BotRGCN, GCN and GAT use the skewed official split, take `verified` as an input, train a fixed 200 epochs with no validation selection, and report AUC from hard predictions.
 
+## Future Outlook: candidate points (draft list, 6 Nov ~00:45; builder picks 3–4)
+
+Template asks: what remains beyond scope, what further work could solve, the challenges, the most promising approaches. Each point below comes from a result of ours.
+
+1. **Labels are the bottleneck.** Remains: weak labels overstate the empty-bio cue (5.0× vs 1.6× under independent humans), and the 986 experts are not independent of the label-makers. Challenge: human labels are costly and biased too (Hays et al.). Promising: more independent annotation chosen by active learning (label the users the models disagree on), and noise-robust training on the weak labels.
+2. **Camouflage-aware graph models.** Remains: message passing adds little, and neighbour averaging hurts users in heterophilous neighbourhoods (Q2). Promising: models that adapt aggregation per node or per relation (MAGNET; the discriminative intra- / inter-relation model of the TKDD 2026 paper), tested on TwiBot-22 under our protocol.
+3. **LLMs with more context and more data.** Remains: the LLM read 480 tokens, trained on 1,300 users, 1.7B parameters; DGP adds neighbour summaries (result pending). Promising: longer context, more training users, LLM-derived features fed into the tree models instead of the LLM deciding alone.
+4. **Distribution shift and newer bots.** Remains: every model loses ~0.11 AUROC on the official (non-random) split, and TwiBot-22 is a 2022 snapshot; newer bots may write with LLMs, weakening text cues. Promising: time-based splits and evaluation on newer data.
+5. **Benchmark practice.** Our protocol (random stratified split, sealed test, no `verified`, macro-F1 / AUROC / PR-AUC instead of accuracy) as a proposed standard for comparing graph and non-graph detectors.
+6. **Other fraud graphs.** The project brief covers e-commerce and finance: test whether the same pattern (profile / own features first, little from message passing under heterophily) holds on text-rich fraud graphs such as review networks.
+
 ## Methodology: other items to include (to be filled)
 
 - Datasets and why: Instagram (secondary), TwiBot-20, TwiBot-22 (see `artifacts/04_decisions_and_reasons.md`).
