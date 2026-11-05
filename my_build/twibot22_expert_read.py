@@ -33,6 +33,11 @@ RES = ROOT / "results" / "twibot22"
 RAW = ROOT.parent / "data" / "twibot-22-raw"
 DATA = ROOT.parent / "data" / "twibot-22"
 B = 2000
+# after the GNN run finishes: WITH_FAGCN=1 reads the final file (adds FAGCN) and writes expert_read_with_fagcn.json
+import os
+WITH_FAGCN = os.environ.get("WITH_FAGCN") == "1"
+GNN_FILE = RES / ("expert_rotation_gnn.npz" if WITH_FAGCN else "expert_rotation_gnn.partial.npz")
+OUT_NAME = "expert_read_with_fagcn.json" if WITH_FAGCN else "expert_read_early.json"
 
 
 def metrics(y, p, cut):
@@ -94,7 +99,7 @@ def main():
                                                          ("sample_tree_self_prof", "Profile + text (tree, sample)"),
                                                          ("sample_xgb_graph_prof", "XGB-Graph + profile (sample)"),
                                                          ("full_xgb_graph_prof", "XGB-Graph + profile (1M)")]),
-                     (RES / "expert_rotation_gnn.partial.npz", [("MLP", "MLP control, no edges (1M)"), ("RGCN", "RGCN (1M)")])):
+                     (GNN_FILE, [("MLP", "MLP control, no edges (1M)"), ("RGCN", "RGCN (1M)")] + ([("FAGCN", "FAGCN (1M)")] if WITH_FAGCN else []))):
         d = np.load(f)
         assert (d["rows"] == rows).all() and (d["y_expert"] == y_exp).all()
         for k, name in names:
@@ -170,8 +175,8 @@ def main():
     for k in ("weak", "annotation"):
         print(f"  {k:10s} labels: bot rate empty {d8b[k]['bot_rate_empty']:.3f} vs with bio {d8b[k]['bot_rate_bio']:.3f} -> lift {d8b[k]['lift'][0]:.2f} [{d8b[k]['lift'][1]:.2f}, {d8b[k]['lift'][2]:.2f}]")
     print(f"  weak - annotation lift: {d8b['weak_minus_annotation_lift'][0]:+.2f} [{d8b['weak_minus_annotation_lift'][1]:+.2f}, {d8b['weak_minus_annotation_lift'][2]:+.2f}]")
-    (RES / "expert_read_early.json").write_text(json.dumps(out, indent=1))
-    print("\nSaved expert_read_early.json")
+    (RES / OUT_NAME).write_text(json.dumps(out, indent=1))
+    print("\nSaved", OUT_NAME)
 
 
 if __name__ == "__main__":
