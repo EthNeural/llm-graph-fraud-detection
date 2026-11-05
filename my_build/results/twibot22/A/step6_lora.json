@@ -28,5 +28,35 @@
     "pr_auc": 0.1183,
     "macro_f1_connected": 0.492,
     "macro_f1_isolated": 0.4496
+  },
+  {
+    "model": "Qwen3-1.7B LoRA dgp (test subset 1,500)",
+    "acc": 0.8087,
+    "macro_f1": 0.6282,
+    "f1_class1": 0.3692,
+    "auroc": 0.7167,
+    "pr_auc": 0.3455,
+    "macro_f1_connected": 0.6362,
+    "macro_f1_isolated": 0.5932
+  },
+  {
+    "model": "Qwen3-1.7B LoRA dgp",
+    "acc": 0.8087,
+    "macro_f1": 0.6282,
+    "f1_class1": 0.3692,
+    "auroc": 0.7167,
+    "pr_auc": 0.3455,
+    "macro_f1_connected": 0.6362,
+    "macro_f1_isolated": 0.5932
+  },
+  {
+    "model": "Qwen3-1.7B zero-shot dgp",
+    "acc": 0.7927,
+    "macro_f1": 0.5304,
+    "f1_class1": 0.1794,
+    "auroc": 0.5578,
+    "pr_auc": 0.1816,
+    "macro_f1_connected": 0.5154,
+    "macro_f1_isolated": 0.532
   }
 ]

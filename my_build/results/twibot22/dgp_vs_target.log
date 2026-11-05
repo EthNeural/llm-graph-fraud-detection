@@ -1,0 +1,4 @@
+target {'macro_f1': 0.632, 'auroc': 0.718, 'pr_auc': 0.346, 'pr_auc_at_5pct_bots': 0.162, 'pr_auc_at_1pct_bots': 0.039}
+dgp {'macro_f1': 0.628, 'auroc': 0.717, 'pr_auc': 0.346, 'pr_auc_at_5pct_bots': 0.173, 'pr_auc_at_1pct_bots': 0.064}
+dgp - target {'macro_f1': [-0.004065591283265327, -0.02657503243871165, 0.01788914041000687], 'auroc': [-0.0012136139822521192, -0.03139959867318264, 0.02795168622629283]}
+Saved dgp_vs_target.json

@@ -99,3 +99,25 @@ FAGCN (1M)                       expert    0.734 [0.685, 0.780]    0.841 [0.800,
 - 04:11 TwiBot-20 C4 (crawl-artefact CIs, tree baseline, 3 seeds averaged, exit 0): + in/out degrees vs own+neighbour+degree: all test macro-F1 +0.021 [+0.002, +0.040], AUROC +0.031 [+0.019, +0.043]; NON-VERIFIED macro-F1 -0.008 [-0.033, +0.018], AUROC +0.009 [-0.007, +0.026]. The artefact's gain comes from the verified (all-human) users. (c4_crawl_artefact_ci.json)
 - 05:00 TwiBot-20 C1 + C3 done, exit 0 (A and B; `c1_nonverified.json`, scores in `c1_scores/`). A, non-verified test users (857): MLP 0.687 / 0.791; GCN − MLP F1 −0.052 [−0.080, −0.025] (holds without verified users); SAGE − MLP −0.004 [−0.024, +0.016]; FAGCN − MLP −0.012 [−0.033, +0.009]. LoRA (C3: seeds unseeded + s1, adapter chosen by full-validation macro-F1): target 0.732 / 0.814 all, dgp 0.736 / 0.821 all; **dgp − target non-verified AUROC +0.033 [+0.014, +0.051]** (F1 +0.014 [−0.008, +0.036]); dgp − MLP(1,300) F1 +0.010 [−0.011, +0.032]. B (54 test bots): all CIs wide; FAGCN − MLP F1 −0.059 [−0.112, −0.002].
 - 05:25 TwiBot-20 C2 done, exit 0 (GNNs with the 5 allowed profile fields + Qwen2.5 text, 3 seeds; c2_gnn_profile.json). A: MLP 0.808 / 0.885 (non-verified 0.702 / 0.798); GNN − MLP macro-F1: GCN −0.069 [−0.093, −0.045], SAGE −0.012 [−0.029, +0.005], FAGCN −0.035 [−0.053, −0.015], LINKX −0.009 [−0.025, +0.007]; every GNN below the MLP on AUROC (−0.018 to −0.078). Same on non-verified users. B: no GNN above MLP; AUROC gaps −0.03 to −0.10. Like-for-like with TwiBot-22: message passing adds nothing with profile either.
+- 04:44 DGP finished, exit 0.
+```
+
+                                                      
+
+                                                            
+Qwen3-1.7B LoRA dgp (test subset 1,500) acc 0.809  macroF1 0.628  F1_1 0.369  AUROC 0.717  PR-AUC 0.346  | conn 0.636  iso 0.593
+
+Same test sample as step 5:
+Qwen3-1.7B LoRA dgp acc 0.809  macroF1 0.628  F1_1 0.369  AUROC 0.717  PR-AUC 0.346  | conn 0.636  iso 0.593
+Qwen3-1.7B zero-shot dgp acc 0.793  macroF1 0.530  F1_1 0.179  AUROC 0.558  PR-AUC 0.182  | conn 0.515  iso 0.532
+
+Saved -> /Users/pj/Desktop/Macquarie - Sem 4/PROJECT/Graph-based-fraud-detection-system/my_build/results/twibot22/A/step6_lora.json
+=== exit code 0
+```
+- 04:44 dgp vs target on the 1,500 subset:
+```
+target {'macro_f1': 0.632, 'auroc': 0.718, 'pr_auc': 0.346, 'pr_auc_at_5pct_bots': 0.162, 'pr_auc_at_1pct_bots': 0.039}
+dgp {'macro_f1': 0.628, 'auroc': 0.717, 'pr_auc': 0.346, 'pr_auc_at_5pct_bots': 0.173, 'pr_auc_at_1pct_bots': 0.064}
+dgp - target {'macro_f1': [-0.004065591283265327, -0.02657503243871165, 0.01788914041000687], 'auroc': [-0.0012136139822521192, -0.03139959867318264, 0.02795168622629283]}
+Saved dgp_vs_target.json
+```
