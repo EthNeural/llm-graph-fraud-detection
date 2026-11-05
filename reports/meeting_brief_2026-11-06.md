@@ -97,3 +97,14 @@ Each expert is scored by a model that never saw that expert (5-fold rotation). 9
 
 - **The 986 experts cannot settle it:** 800 of their labels trained the label-making models (TwiBot-22 paper §3.2), so agreement is built in. The annotation study (6 researchers, 3 per user) never trained them.
 - **Reading:** under independent human labels the empty-bio cue is much weaker; the weak labels overstate it (difference excludes 0). Mostly a label-maker habit, possibly a small real effect (1.6× CI includes 1, sample small). Consistent with Hays et al. (WWW 2023), who warn that benchmark labels are artefacts of collection and labelling (studied TwiBot-20, not TwiBot-22); extending it to TwiBot-22 is, as far as we found, new.
+
+## 9. DGP result (added automatically Fri 04:48; 1,500-user test subset, seed 0, paired bootstrap of dgp − target)
+
+DGP = the LLM reading each account's text **plus summaries of its neighbours** (node and path summaries). Same 1,300 training users, same 1,000 validation users as LoRA `target`.
+
+```
+target {'macro_f1': 0.632, 'auroc': 0.718, 'pr_auc': 0.346, 'pr_auc_at_5pct_bots': 0.162, 'pr_auc_at_1pct_bots': 0.039}
+dgp {'macro_f1': 0.628, 'auroc': 0.717, 'pr_auc': 0.346, 'pr_auc_at_5pct_bots': 0.173, 'pr_auc_at_1pct_bots': 0.064}
+dgp - target {'macro_f1': [-0.004065591283265327, -0.02657503243871165, 0.01788914041000687], 'auroc': [-0.0012136139822521192, -0.03139959867318264, 0.02795168622629283]}
+Saved dgp_vs_target.json
+```
