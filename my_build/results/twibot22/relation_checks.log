@@ -1,0 +1,11 @@
+Q1: homophily by relation, direction and class (train + val users only)
+following  adj.h +0.022 | out: bot->bot 0.062 human->bot 0.038 | in: bot<-bot 0.141 human<-bot 0.090 | pairs 2,129,177
+followers  adj.h +0.024 | out: bot->bot 0.165 human->bot 0.120 | in: bot<-bot 0.091 human<-bot 0.065 | pairs 908,426
+mention    adj.h +0.016 | out: bot->bot 0.050 human->bot 0.034 | in: bot<-bot 0.084 human<-bot 0.059 | pairs 1,189,463
+retweet    adj.h +0.018 | out: bot->bot 0.049 human->bot 0.030 | in: bot<-bot 0.095 human<-bot 0.061 | pairs 532,045
+reply      adj.h +0.018 | out: bot->bot 0.055 human->bot 0.039 | in: bot<-bot 0.076 human<-bot 0.053 | pairs 295,669
+quote      adj.h +0.019 | out: bot->bot 0.043 human->bot 0.026 | in: bot<-bot 0.080 human<-bot 0.048 | pairs 139,028
+like       adj.h +0.010 | out: bot->bot 0.057 human->bot 0.039 | in: bot<-bot 0.139 human<-bot 0.100 | pairs 274,968
+
+Q3: cross-relation inconsistency features (label-free)
+Q3 features saved: (1000000, 8); users with both groups 343,817, only follow 349,944, only interaction 79,759, neither 226,480

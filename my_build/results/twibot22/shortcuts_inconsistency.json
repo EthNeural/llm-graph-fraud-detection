@@ -1,0 +1,111 @@
+{
+ "rule": "depth-1 leaf with >= 200 train users at >= 99% purity; scored on val",
+ "n_columns": 8,
+ "shortcuts": [],
+ "columns": {
+  "inc:cos_dist_follow_vs_interaction": {
+   "val_auroc": 0.61,
+   "val_macro_f1": 0.392,
+   "purest_leaf": {
+    "users": 207964,
+    "share": 0.297,
+    "purity": 0.9492,
+    "majority": "human"
+   },
+   "bot_mean": 0.051,
+   "human_mean": 0.162,
+   "verdict": "allowed"
+  },
+  "inc:profile_dist_follow_vs_interaction": {
+   "val_auroc": 0.61,
+   "val_macro_f1": 0.392,
+   "purest_leaf": {
+    "users": 208010,
+    "share": 0.297,
+    "purity": 0.9493,
+    "majority": "human"
+   },
+   "bot_mean": 0.268,
+   "human_mean": 0.768,
+   "verdict": "allowed"
+  },
+  "inc:own_cos_follow": {
+   "val_auroc": 0.621,
+   "val_macro_f1": 0.494,
+   "purest_leaf": {
+    "users": 353153,
+    "share": 0.505,
+    "purity": 0.9178,
+    "majority": "human"
+   },
+   "bot_mean": 0.082,
+   "human_mean": 0.161,
+   "verdict": "allowed"
+  },
+  "inc:own_cos_interaction": {
+   "val_auroc": 0.612,
+   "val_macro_f1": 0.414,
+   "purest_leaf": {
+    "users": 234936,
+    "share": 0.336,
+    "purity": 0.941,
+    "majority": "human"
+   },
+   "bot_mean": 0.04,
+   "human_mean": 0.114,
+   "verdict": "allowed"
+  },
+  "inc:own_cos_difference": {
+   "val_auroc": 0.56,
+   "val_macro_f1": 0.285,
+   "purest_leaf": {
+    "users": 113382,
+    "share": 0.162,
+    "purity": 0.9489,
+    "majority": "human"
+   },
+   "bot_mean": 0.003,
+   "human_mean": 0.008,
+   "verdict": "allowed"
+  },
+  "inc:log_degree_ratio": {
+   "val_auroc": 0.529,
+   "val_macro_f1": 0.291,
+   "purest_leaf": {
+    "users": 136286,
+    "share": 0.195,
+    "purity": 0.8948,
+    "majority": "human"
+   },
+   "bot_mean": 0.383,
+   "human_mean": 0.384,
+   "verdict": "allowed"
+  },
+  "inc:no_follow_group": {
+   "val_auroc": 0.565,
+   "val_macro_f1": 0.525,
+   "purest_leaf": {
+    "users": 485018,
+    "share": 0.694,
+    "purity": 0.8827,
+    "majority": "human"
+   },
+   "bot_mean": 0.418,
+   "human_mean": 0.288,
+   "verdict": "allowed"
+  },
+  "inc:no_interaction_group": {
+   "val_auroc": 0.608,
+   "val_macro_f1": 0.454,
+   "purest_leaf": {
+    "users": 295701,
+    "share": 0.423,
+    "purity": 0.9226,
+    "majority": "human"
+   },
+   "bot_mean": 0.765,
+   "human_mean": 0.546,
+   "verdict": "allowed"
+  }
+ }
+}

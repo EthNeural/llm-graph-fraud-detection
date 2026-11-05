@@ -1,0 +1,124 @@
+{
+ "base_rate_bot": 0.13998033615389407,
+ "relations": {
+  "following": {
+   "out": {
+    "pairs": 2129177,
+    "p_nbr_bot_given_bot": 0.06227768024853749,
+    "p_nbr_bot_given_human": 0.0381917618939763,
+    "nodes_with_edge_bot": 1271,
+    "nodes_with_edge_human": 7648
+   },
+   "in": {
+    "pairs": 2129177,
+    "p_nbr_bot_given_bot": 0.1414505422968276,
+    "p_nbr_bot_given_human": 0.08967263358513357,
+    "nodes_with_edge_bot": 37043,
+    "nodes_with_edge_human": 414133
+   },
+   "adjusted_homophily": 0.021840011970909085
+  },
+  "followers": {
+   "out": {
+    "pairs": 908426,
+    "p_nbr_bot_given_bot": 0.165204417559963,
+    "p_nbr_bot_given_human": 0.12003476769769109,
+    "nodes_with_edge_bot": 1156,
+    "nodes_with_edge_human": 7482
+   },
+   "in": {
+    "pairs": 908426,
+    "p_nbr_bot_given_bot": 0.09109525342490253,
+    "p_nbr_bot_given_human": 0.06461979568113402,
+    "nodes_with_edge_bot": 50651,
+    "nodes_with_edge_human": 313191
+   },
+   "adjusted_homophily": 0.02426241017054383
+  },
+  "mention": {
+   "out": {
+    "pairs": 1189463,
+    "p_nbr_bot_given_bot": 0.049534078432476564,
+    "p_nbr_bot_given_human": 0.03424649572924686,
+    "nodes_with_edge_bot": 950,
+    "nodes_with_edge_human": 7047
+   },
+   "in": {
+    "pairs": 1189463,
+    "p_nbr_bot_given_bot": 0.084144329403888,
+    "p_nbr_bot_given_human": 0.05883629215382497,
+    "nodes_with_edge_bot": 23832,
+    "nodes_with_edge_human": 303049
+   },
+   "adjusted_homophily": 0.015658851682118752
+  },
+  "retweet": {
+   "out": {
+    "pairs": 532045,
+    "p_nbr_bot_given_bot": 0.04850700792199878,
+    "p_nbr_bot_given_human": 0.030465221092693676,
+    "nodes_with_edge_bot": 805,
+    "nodes_with_edge_human": 6591
+   },
+   "in": {
+    "pairs": 532045,
+    "p_nbr_bot_given_bot": 0.094756264508065,
+    "p_nbr_bot_given_human": 0.06060817787300774,
+    "nodes_with_edge_bot": 10057,
+    "nodes_with_edge_human": 182409
+   },
+   "adjusted_homophily": 0.01839169510197246
+  },
+  "reply": {
+   "out": {
+    "pairs": 295669,
+    "p_nbr_bot_given_bot": 0.05542063640326297,
+    "p_nbr_bot_given_human": 0.03893279925610672,
+    "nodes_with_edge_bot": 753,
+    "nodes_with_edge_human": 6228
+   },
+   "in": {
+    "pairs": 295669,
+    "p_nbr_bot_given_bot": 0.07557744565217392,
+    "p_nbr_bot_given_human": 0.05343210294019225,
+    "nodes_with_edge_bot": 9308,
+    "nodes_with_edge_human": 147193
+   },
+   "adjusted_homophily": 0.01771071326591223
+  },
+  "quote": {
+   "out": {
+    "pairs": 139028,
+    "p_nbr_bot_given_bot": 0.04347189695550351,
+    "p_nbr_bot_given_human": 0.025870676873732942,
+    "nodes_with_edge_bot": 489,
+    "nodes_with_edge_human": 5448
+   },
+   "in": {
+    "pairs": 139028,
+    "p_nbr_bot_given_bot": 0.07990314769975787,
+    "p_nbr_bot_given_human": 0.048296147393781734,
+    "nodes_with_edge_bot": 2920,
+    "nodes_with_edge_human": 71751
+   },
+   "adjusted_homophily": 0.019094675401533933
+  },
+  "like": {
+   "out": {
+    "pairs": 274968,
+    "p_nbr_bot_given_bot": 0.05669602732338666,
+    "p_nbr_bot_given_human": 0.03945329411336298,
+    "nodes_with_edge_bot": 1067,
+    "nodes_with_edge_human": 7162
+   },
+   "in": {
+    "pairs": 274968,
+    "p_nbr_bot_given_bot": 0.13921257062146894,
+    "p_nbr_bot_given_human": 0.09952207555757851,
+    "nodes_with_edge_bot": 7602,
+    "nodes_with_edge_human": 129123
+   },
+   "adjusted_homophily": 0.01011923549762377
+  }
+ }
+}

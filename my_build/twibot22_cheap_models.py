@@ -19,6 +19,7 @@ MODEL (fixed settings, no tuning; 3 seeds unless deterministic)
   xgb_graph        HistGB on own + all neighbour features (GADBench XGB-Graph style) -> "_prof" / "_noprof"
   mlp_text         sklearn MLP (256) on the text embedding (sample: full 768-dim E5 bio + tweets;
                    full: bio PCA 32) (+ own profile)                     -> "_prof" / "_noprof"
+  EXTRA=inconsistency adds the 8 label-free cross-relation features (Q3, E10); tag gets "_inc"
   flags            no training: score = empty bio flag, or no-tweets flag (deterministic, seed 0)
 Column groups by name (H10): base name in {log_count, share_with_text, has_text} = graph; text PCs
 (txt_*, bio_pc*) = text; everything else = profile.
@@ -42,6 +43,7 @@ DATA = ROOT.parent / "data" / "twibot-22"
 DESIGN = os.environ.get("DESIGN", "sample")
 MODEL = os.environ["MODEL"]
 PROFILE = os.environ.get("PROFILE", "1") == "1"
+EXTRA = os.environ.get("EXTRA", "")             # "inconsistency": add the Q3 cross-relation features (E10)
 assert DESIGN in ("sample", "full", "bio_on_sample") and MODEL in ("profile_only", "links_only", "tree_self", "xgb_graph", "mlp_text", "flags")
 GRAPH_BASES = {"log_count", "share_with_text", "has_text"}
 
@@ -121,9 +123,14 @@ def main():
             X = StandardScaler().fit(X[pos[tr]]).transform(X).astype(np.float32)
         else:
             X = f["X"][:, cols].astype(np.float32)
+        if EXTRA == "inconsistency":
+            inc = np.load(DATA / "inconsistency.npz")
+            guard.check_columns(list(inc["names"]))
+            X = np.hstack([X, inc["X"][rows]])
+            tag += "_inc"
         print(f"{DESIGN} {tag}: {X.shape[1]} columns; train {len(tr):,} val {len(va):,} test {len(te):,}", flush=True)
         out[tag] = []
-        for seed in SEEDS:
+        for seed in ([int(x) for x in os.environ['SEEDS'].split(',')] if os.environ.get('SEEDS') else SEEDS):
             t0 = time.time()
             m = (mlp if MODEL == "mlp_text" else hgb)(seed).fit(X[pos[tr]], y[tr])
             s = np.full(len(y), np.nan, np.float32)
