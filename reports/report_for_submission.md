@@ -4,6 +4,12 @@
 
 **Writing rule:** as in research papers, the report never cites feedback (supervisor or external) as the reason for a choice. Heterophily is motivated by the problem itself: fraudsters and bots camouflage by linking to benign accounts (Dou et al., 2020), so methods must be evaluated under measured heterophily. Dataset changes are justified on their merits (e.g. Elliptic has no text for an LLM to read).
 
+## Template and project brief (`uni brief /`, checked 5 Nov 23:10)
+
+- **Sections (latest template):** Introduction (for a layperson: aim, why it matters, how, expected vs achieved) · Literature Review · Research Methodology (sub-problems, integration with figures, timeline vs plan, difficulties and fallbacks) · Research Outcome (follow the plan; deviations as P → P′) · Individual Contributions · **Future Outlook** · **Bibliography**.
+- **Citation rule:** cite work from the past 3 (recommended) to 5 (at most) years, i.e. 2021 or later. Our list to check: Dou et al. 2020 (CARE-GNN) and Yang et al. AAAI 2020 are 6 years old: keep only as one-line foundational mentions, or replace (camouflage can be motivated from MAGNET 2024 / TKDD 2026 and FRAUDRE 2021). Fine: TwiBot-20 (2021), FRAUDRE (2021), TwiBot-22 (2022), Platonov, Hays, GADBench, Mao (2023), MAGNET, TROPICAL (2024–25), TKDD 2026.
+- **Project brief:** "Large Language Models for Graph-based Fraud Detection": how textual (LLM) and structural (graph) information can be jointly leveraged; expected outcome a framework prototype + technical report. **Framing for the report:** the three LLM roles the brief names map onto our pipeline: LLM node representations (multilingual-E5 / MiniLM text features into trees and GNNs), LLM reasoning over graph structure by prompting (zero-shot, DGP with neighbour summaries), and LLM fine-tuning (LoRA `target`). The main result is *when* each helps under heterophily, not "profile wins".
+
 ## Methodology: timeline
 
 Past work (dates 2026):
