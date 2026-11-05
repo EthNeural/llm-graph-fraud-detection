@@ -89,3 +89,4 @@ Saved /Users/pj/Desktop/Macquarie - Sem 4/PROJECT/Graph-based-fraud-detection-sy
   - Paper (arXiv 2206.04564v6, `research documents/`): the 1,000 experts are 17 researchers of the dataset's own group, and their labels (800 of them) trained the label-making classifiers, so expert and weak labels are not independent. The annotation study (6 researchers, most of whom have published on bot detection; 3 per user; whether they are from the same group is not stated) never trained the label-makers: the independent check.
 - 00:40 Reconciliation complete (E11, all cells, exit 0): RGCN our split + verified 0.678 / 0.797.
 - 00:46 Reconciliation complete (last cell RGCN, our split, verified in); brief section 7 filled automatically.
+- 00:58 GNN expert rotation finished, exit 0 (blind).
