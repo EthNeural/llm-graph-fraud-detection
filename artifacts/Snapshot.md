@@ -1,4 +1,4 @@
-> **Snapshot** of the whole project as of **Thu 5 Nov 2026, ~23:00**. Read in this order:
+> **Snapshot** of the whole project as of **Fri 6 Nov 2026, ~00:45**. Read in this order:
 > **Part 0**: TwiBot-22 explained from the ground up, in plain words (start here).
 > **Part A**: the full working report (`REPORT.md`): Instagram and TwiBot-20.
 > **Part B**: TwiBot-22: data, checks, decisions, **results so far**, the graph questions Q1–Q3, the leaderboard conflict, the expert stage, what is running, what is next.
@@ -181,10 +181,10 @@ We have a million Twitter accounts, and about one in seven is a bot. We want to 
 
 ---
 
-### 10. Where we are now (Thu 5 Nov, ~23:00)
+### 10. Where we are now (Fri 6 Nov, ~00:45)
 
-- **Done:** all data checks; the sample feature table with bio + tweets (830 numbers per account, no shortcuts); the fine-tuned language model reading only the account's text (LoRA `target`); text-only baselines; every cheap model, with and without profile, on the sample and on all 1M; the five graph neural networks on the full 1M graph (the 2 best with 3 seeds); confidence intervals; a sceptic review; a literature check; three graph questions (Q1–Q3, below); a check of the official TwiBot-22 code; the expert stage for the language model and the trees (blind).
-- **Running:** the language model with neighbour summaries (DGP) on the GPU, scored early Friday, then a second seed of both language-model versions until about midday; the expert stage for the graph networks (blind); the leaderboard reconciliation (our models under the official protocol), done ~00:30.
+- **Done:** all data checks; the sample feature table with bio + tweets (830 numbers per account, no shortcuts); the fine-tuned language model reading only the account's text (LoRA `target`); text-only baselines; every cheap model, with and without profile, on the sample and on all 1M; the five graph neural networks on the full 1M graph (the 2 best with 3 seeds); confidence intervals; a sceptic review; a literature check; three graph questions (Q1–Q3, below); a check of the official TwiBot-22 code; the expert stage for the language model, the trees, the MLP and RGCN, read early on the 986 experts (the builder's decision, Thu 23:50); the empty-bio test (D8); the leaderboard reconciliation (all but one run).
+- **Running:** the language model with neighbour summaries (DGP) on the GPU, scored early Friday, then a second seed of both language-model versions until about 13:00; the expert stage for FAGCN; the last reconciliation run.
 - **Next:** the final run on the sealed set and the experts (Friday afternoon), the comparison with TwiBot-20, figures Saturday, the report Sunday.
 
 ---
@@ -211,6 +211,10 @@ We have a million Twitter accounts, and about one in seven is a bot. We want to 
 - **TROPICAL's pattern does not carry over:** on Amazon, bots get denser further out in the graph; on TwiBot-22 bot density *falls* with distance (0.116 → 0.059 over 1–4 hops).
 
 **The leaderboard conflict, plain version.** The TwiBot-22 paper ranks graph models first. Their official code shows why the comparison is not like ours: they use a skewed split (test 29.4% bots), give the models `verified` (no verified user is a bot), train a fixed 200 epochs, and rank by accuracy. We are re-running our own models their way (results so far: the split matters, `verified` hardly does, and graph models still do not beat the tree without neighbours).
+
+**Checking against human labels, plain version.** The dataset's labels were made by machines. 986 users were also labelled by experts, and 458 more by an independent group of 3 researchers per user.
+- **The ranking holds with expert labels:** profile-based trees with neighbour features are still best (AUROC 0.910); the graph network gains most when retrained on expert labels (+0.067) but stays below them.
+- **Empty bio is a weaker clue than the dataset says.** By the dataset's labels, empty-bio users are 5× as likely to be bots; by the independent humans, on the same users, only 1.6×. The 986 experts cannot settle this, because their labels were used to train the label-making machines.
 
 **Glossary**
 - **TF-IDF:** counting which words an account uses, weighted by how rare they are.
@@ -685,7 +689,7 @@ Step 4 rerun with the bridge edges added (`GRAPH=bridges`, `results/twibot20/A/s
 
 ---
 
-# Part B: TwiBot-22 (status Thu 5 Nov 2026, ~23:00)
+# Part B: TwiBot-22 (status Fri 6 Nov 2026, ~00:45)
 
 Data preparation, checks and every rule were fixed **before** any model was scored (the lesson from TwiBot-20). Models were then run on the **working** test users only; the sealed set and the 986 experts are untouched until the final run.
 
@@ -788,20 +792,35 @@ All numbers macro-F1 / AUROC / PR-AUC, mean of 3 seeds unless noted. Sample = th
 
 **What their official code does** (`reports/twibot22_repo_check.md`): BotRGCN, GCN and GAT take `verified` as an input (`preprocess_1.py:193`; no verified user is a bot), use the official split (3 contiguous blocks: train 7.8% / val 28.0% / test 29.4% bots, although the paper says "7:2:1 random"), use 2 relations, train a fixed 200 epochs with no validation selection, and compute AUC from 0/1 predictions. The leaderboard ranks by accuracy; on bot-F1 a random forest (Kantepe, 0.587) beats BotRGCN (0.575); leaderboard recall is below 50%. The weak labels were partly made by GCN / GAT / R-GCN.
 
-**Reconciliation run** (our models under the official protocol; `REPLICATION=1`; our sealed users removed from every part). Official split, test 94,889 users, 29.5% bots, all-human accuracy **0.705**. Partial at 22:45:
+**Reconciliation run** (our models under the official protocol; `REPLICATION=1`; our sealed users removed from every part):
 
-| Model | `verified` | acc@0.5 | bot-F1@0.5 | macro-F1 | AUROC |
-|---|---|---|---|---|---|
-| Profile tree | in | 0.763 | 0.430 | 0.700 | 0.765 |
-| Profile tree | out | 0.763 | 0.426 | 0.695 | 0.764 |
-| XGB-Graph + profile | in | 0.769 | 0.535 | 0.689 | 0.758 |
-| XGB-Graph + profile | out | 0.769 | 0.536 | 0.691 | 0.758 |
-| MLP control | in / out | 0.627 / 0.644 | 0.542 / 0.540 | 0.683 / 0.674 | 0.745 / 0.734 |
-| FAGCN | in / out | 0.603 / 0.625 | 0.531 / 0.545 | 0.667 / 0.678 | 0.731 / 0.745 |
-| RGCN | in / out | 0.645 / running | 0.534 / – | 0.666 / – | 0.724 / – |
-| Our split, profile tree | in | 0.878 | 0.420 | 0.721 | 0.863 |
 
-**Reading so far.** (1) The split matters far more than `verified`: AUROC 0.873 on our split vs 0.758 on the official one; `verified` moves ≤ 0.01. (2) Graph models do not beat the tree without neighbours under the official protocol either. (3) Caveat: our GNNs use class weights (theirs do not), which trades accuracy for bot recall, so GNN accuracy sits below all-human; compare GNNs on macro-F1 / AUROC. Remaining cells (RGCN without `verified`; our split with `verified` for XGB-Graph and the GNNs) finish ~00:30 → meeting brief §7.
+Official split, our sealed users removed: test 94,889 users, **29.5% bots → calling everyone human scores 0.705 accuracy**. Our split: test 49,951, 14.0% bots → all-human 0.860.
+
+| Model | `verified` in / out | Accuracy @0.5 | Macro-F1 | AUROC |
+|---|---|---|---|---|
+| **Official split** | | | | |
+| Own-feature tree (profile + bio, no neighbours) | in / out | 0.763 / 0.763 | 0.700 / 0.695 | 0.765 / 0.764 |
+| XGB-Graph + profile | in / out | 0.769 / 0.769 | 0.689 / 0.691 | 0.758 / 0.758 |
+| MLP (no edges) | in / out | 0.627 / 0.644 | 0.683 / 0.674 | 0.745 / 0.734 |
+| FAGCN | in / out | 0.603 / 0.625 | 0.667 / 0.678 | 0.731 / 0.745 |
+| RGCN | in / out | 0.645 / 0.640 | 0.666 / 0.653 | 0.724 / 0.726 |
+| **Our random split** | | | | |
+| Own-feature tree (profile + bio, no neighbours) | in / out | 0.878 / – | 0.721 / 0.720 | 0.863 / 0.860 |
+| XGB-Graph + profile | in / out | 0.885 / 0.869 | 0.730 / 0.731 | 0.874 / 0.873 |
+| MLP (no edges) | in / out | 0.770 / 0.843 | 0.686 / 0.679 | 0.824 / 0.799 |
+| FAGCN | in / out | 0.816 / 0.850 | 0.674 / 0.689 | 0.799 / 0.828 |
+| RGCN | in / out | *running* / 0.836 | – / 0.689 | – / 0.800 |
+
+Seed 0 each. All models use the 1M bio-only features (15 profile fields + multilingual-E5 bio). "Out" on our split = the main results.
+
+**What it says**
+1. **The split matters far more than `verified`.** AUROC drops by ~0.11 from our random split to the official one, for every model. `verified` moves the trees by ≤ 0.01; for the GNNs it goes both ways (MLP +0.025 AUROC on our split, FAGCN −0.03), within single-seed noise of a few hundredths.
+2. **Graph models do not win under their protocol either.** On the official split the tree without neighbours is the best on macro-F1 and AUROC; XGB-Graph is 0.006 higher only on accuracy; FAGCN and RGCN do not beat the MLP without edges (RGCN 0.02 below it without `verified`).
+3. **Caveat:** our GNNs use class weights (theirs do not), which trades accuracy for catching bots, so their accuracy at 0.5 is below all-human. Compare GNNs on macro-F1 / AUROC.
+
+**Likely explanation of the leaderboard:** their ranking rests on accuracy on a skewed split, graph models given `verified`, fixed-epoch training without validation selection, and labels partly made by the same graph-model families. Under one common protocol, we do not reproduce a graph advantage.
+
 
 ## B8. Expert stage (checklist G7; weak → expert, 5-fold rotation, blind)
 
@@ -812,15 +831,43 @@ All numbers macro-F1 / AUROC / PR-AUC, mean of 3 seeds unless noted. Sample = th
 | GNNs: MLP control, RGCN, FAGCN (1M) | 🔄 MLP ✅ 13 min, RGCN ✅ 112 min, FAGCN running (~01:00; pauses while a LoRA trains). 30 epochs at lr 1e-3, class-weighted, on the ~789 experts of the other 4 folds |
 | DGP | ✗ not enough GPU time |
 
-No expert number has been looked at. All are read once in the final run, with D7 (graph gain on weak vs expert labels) and D8 (empty-bio lift under weak vs expert labels, also on the separate 500-user annotation study).
+Read early on Thu 23:50 (B9), except FAGCN (still running): see B9. D7 (graph gain on weak vs expert labels on the sealed non-expert users) stays for the final run.
 
-## B9. Running and next (Thu 5 Nov, ~23:00)
+## B9. Expert results read early and D8 (Thu 23:50, builder's decision; recorded in Part D before reading)
 
-- **GPU:** DGP (TwiBot-20 scope): node summaries 49 / 57 at 22:45, then path summaries, LoRA, scored early Fri; then LoRA `target` seed 1 and `dgp` seed 1 until ~13:00 Fri; then dgp vs target with 2 seeds on the 1,500-user subset.
-- **CPU:** leaderboard reconciliation (~00:30); GNN expert stage (FAGCN, ~01:00, pauses during LoRA).
+Each expert is scored by a model that never saw that expert (5-fold rotation). 95% bootstrap CIs. FAGCN still running.
+
+| Model | AUROC weak-only → after expert stage | Change [95% CI] | Macro-F1 after |
+|---|---|---|---|
+| LoRA `target` (text) | 0.822 → 0.724 | **−0.099** [−0.164, −0.038] | 0.735 |
+| Profile only (tree) | 0.861 → 0.867 | +0.006 [−0.017, +0.030] | 0.736 |
+| Profile + text (tree) | 0.879 → 0.899 | +0.020 [+0.000, +0.040] | 0.752 |
+| **XGB-Graph + profile** (sample) | 0.883 → **0.910** | +0.027 [+0.009, +0.044] | **0.751** |
+| XGB-Graph + profile (1M) | 0.875 → 0.887 | +0.012 [−0.002, +0.028] | 0.714 |
+| MLP, no edges (1M) | 0.819 → 0.845 | +0.025 [+0.006, +0.046] | 0.728 |
+| RGCN (1M) | 0.799 → 0.866 | **+0.067** [+0.034, +0.104] | 0.725 |
+| *The dataset's own weak label as a prediction* | – | – | 0.745 |
+
+- **The ranking holds on expert labels:** profile-based trees with neighbour features best; the GNN gains most from expert labels but stays below the trees; LoRA's ranking worsens (1 epoch on ~789 users disturbs the adapter; its F1 gain comes from the new cut-off).
+- **90.5% agreement is not much:** on these 986 users, calling everyone human agrees 89.4%. On bots, the weak label and the experts agree for 56 of the 105 expert bots.
+
+**D8: is "empty bio → bot" a real bot habit or a label-maker habit?** Lift = bot rate among empty-bio users ÷ bot rate among users with a bio.
+
+| Users | Weak labels | Human labels | Weak − human |
+|---|---|---|---|
+| 986 experts (103 empty bio) | 8.7× [6.4, 12.3] | experts 7.2× [5.3, 10.3] | +1.5 [−1.5, +4.6] |
+| 458 annotation-study users (44 bots, 62 empty bio) | 5.0× [3.3, 7.7] | annotators **1.6×** [0.7, 3.1] | **+3.4** [+1.2, +6.1] |
+
+- **The 986 experts cannot settle it:** 800 of their labels trained the label-making models (TwiBot-22 paper §3.2), so agreement is built in. The annotation study (6 researchers, 3 per user) never trained them.
+- **Reading:** under independent human labels the empty-bio cue is much weaker; the weak labels overstate it (difference excludes 0). Mostly a label-maker habit, possibly a small real effect (1.6× CI includes 1, sample small). Consistent with Hays et al. (WWW 2023), who warn that benchmark labels are artefacts of collection and labelling (studied TwiBot-20, not TwiBot-22); extending it to TwiBot-22 is, as far as we found, new.
+
+## B10. Running and next (Fri 6 Nov, ~00:45)
+
+- **GPU (unattended, pushes itself):** DGP path summaries → LoRA training + scoring (~04:00–05:00) → dgp vs target on the 1,500 subset → LoRA `target` seed 1 → `dgp` seed 1 → dgp vs target with 2 seeds (~13:00).
+- **CPU:** last reconciliation run (RGCN, our split, `verified` in); FAGCN expert stage (pauses during LoRA).
 - **Fri 9:00:** tutor meeting (`reports/meeting_brief_2026-11-06.md`).
-- **Fri afternoon, final run** (`FINAL_RUN=1`: sealed users + experts, read once): headline table on the sealed set; all expert rotations; D7; D8; dgp vs target.
-- **Then:** comparison with TwiBot-20; DEC-lite only if time; figures Saturday; report Sunday 8 Nov.
+- **Fri afternoon, final run** (`FINAL_RUN=1`, the sealed non-expert users, read once): headline table; D7; FAGCN expert result; dgp vs target.
+- **Then:** comparison with TwiBot-20; figures Saturday; report Sunday 8 Nov.
 
 ---
 
@@ -939,6 +986,7 @@ None of these changed the main conclusion, but they shifted numbers by 0.02–0.
 | 5 Nov 19:44 | **Leaderboard reconciliation (E11)**: our models under the official split, with and without `verified`; replication only, sealed users removed | The TwiBot-22 paper ranks graph models first, we find graph ≈ no graph; this tests whether the split or the `verified` shortcut explains the gap |
 | 5 Nov ~20:15 | **D8, empty-bio test (builder's design)**: lift of the empty-bio cue under weak vs expert labels, on the 986 experts and the separate 500-user annotation study; final run only | Tells whether empty bio is a real bot habit or a habit of the label-makers |
 | 5 Nov 20:38 | **Expert stage for the GNNs** (MLP control, RGCN, FAGCN; 30 epochs at lr 1e-3 per fold), blind | So every model family gets the same weak → expert treatment; if graph models gain more from expert labels, the weak labels hid what the graph can do |
+| 5 Nov ~23:50 | **Expert rotation scores read early, Thu 5 Nov ~23:50, by the builder's choice; no model or rule changed after this.** Read: the 986 expert users only (LoRA `target`, trees, MLP, RGCN; FAGCN still running, left out) and D8. The sealed non-expert users stay unread until the final run | Builder's decision |
 | ~22:05 | **100k sample**: stratified by role and label, seed 42, plus the experts (100,986 users); 10,039 hub users embedded as neighbour providers only | The hubs are the only users with outgoing links, so everyone's neighbour features come from them. Adding them as study users would make them ~10% of the sample instead of ~1% |
 
 #### What the checks found (no model run yet)
@@ -1026,7 +1074,7 @@ Status: ✅ done and checked · 🟡 partly done · ⬜ to do · ➖ not needed 
 | D4 | **Labelling-function leakage**: spam keywords in bios and tweets, by class | ✅ | 43,469 words used by ≥200 train users checked: **no bot-pure word**. 8 human-pure words, each 200–244 users (topic communities, e.g. French politics, `#ucustrike`). Apps: 3 newsroom tools (SocialFlow, SocialNewsDesk, Echobox) ~99% human, 400–715 users each. Tiny; reported, not excluded (same treatment as the D3 tails) |
 | D5 | Account age parsed from ISO dates, not zero for everyone (X3) | ✅ | `twibot22_profile_check.py` uses `pd.to_datetime`. The TwiBot-20 parsers in `metadata_check.py` and `step6_dgp.py` are still wrong for TwiBot-22 |
 | D7 | **Labels were partly made by graph models** (GCN, GAT, R-GCN were labelling functions). Graph models may re-learn the labeller. Check: compare each graph model's gain on weak-label test users vs on expert-labelled users | ⬜ | Planned as DEC question 3; applies to every graph model |
-| D8 | **Empty-bio cue: real bot habit (A) or label-maker habit (B)?** Planned by the builder 5 Nov ~20:15, before any expert number; run in the final run only. On the same 986 expert users: bot rate among empty-bio users and among users with a bio, and the **lift** (empty ÷ with bio), under the weak labels and under the expert labels; bootstrap 95% CIs (2,000) on each lift and on their difference. A predicts a similar lift under both sources; B predicts the lift shrinks towards 1 under expert labels. Caveats to report: (1) the expert labels are only partly independent: the paper's 7 voting models were trained on 800 of the 1,000 expert-labelled users, and which 800 is not released; (2) experts are also people looking at the profile, so a lift that survives supports A but does not prove it; (3) only ~100–150 empty-bio experts, so a null result means 'not enough data'. **Second source, added 5 Nov ~20:40 (before any number):** the official repo's annotation study, 500 TwiBot-22 users × 3 experts on 0–4 (`data/twibot-22-raw/annotation_study/`); only 1 overlaps the 986 and none trained the voters, so caveat (1) does not apply. Fixed rule: bot if the median rating ≥ 3, human if ≤ 1, dropped if 2 (not sure); same lift comparison against the weak labels on those users (labels vs labels, no model, so their train / val roles do not matter); read in the final run. Reason: the profile's lead over text rests largely on this cue (findings 1, 4) | ⬜ | Final run (`FINAL_RUN=1`) |
+| D8 | **Empty-bio cue: real bot habit (A) or label-maker habit (B)?** Planned by the builder 5 Nov ~20:15, before any expert number; run in the final run only. On the same 986 expert users: bot rate among empty-bio users and among users with a bio, and the **lift** (empty ÷ with bio), under the weak labels and under the expert labels; bootstrap 95% CIs (2,000) on each lift and on their difference. A predicts a similar lift under both sources; B predicts the lift shrinks towards 1 under expert labels. Caveats to report: (1) the expert labels are only partly independent: the paper's 7 voting models were trained on 800 of the 1,000 expert-labelled users, and which 800 is not released; (2) experts are also people looking at the profile, so a lift that survives supports A but does not prove it; (3) only ~100–150 empty-bio experts, so a null result means 'not enough data'. **Second source, added 5 Nov ~20:40 (before any number):** the official repo's annotation study, 500 TwiBot-22 users × 3 experts on 0–4 (`data/twibot-22-raw/annotation_study/`); only 1 overlaps the 986 and none trained the voters, so caveat (1) does not apply. Fixed rule: bot if the median rating ≥ 3, human if ≤ 1, dropped if 2 (not sure); same lift comparison against the weak labels on those users (labels vs labels, no model, so their train / val roles do not matter); read in the final run. Reason: the profile's lead over text rests largely on this cue (findings 1, 4) | ✅ | Run early 5 Nov 23:50 (builder's decision): experts weak 8.7× vs expert 7.2× (not independent); annotation study weak 5.0× vs annotators 1.6×, difference +3.4 [+1.2, +6.1]; `expert_read_early.json`. Final run (`FINAL_RUN=1`) |
 | D6 | "Empty bio" and "no tweets" flags: strong label cues (empty bio 40.6% of bots vs 7.8% of humans; no tweets 17.6% vs 4.8%). Report a flag-only baseline and with-bio / with-tweets slices | ⬜ | |
 
 ### E. Graph
@@ -1043,7 +1091,7 @@ Status: ✅ done and checked · 🟡 partly done · ⬜ to do · ➖ not needed 
 | E8 | **Q1. Homophily by relation, direction and class** (builder, 5 Nov ~19:20, fixed before any number): for each of the 7 relations and each direction, P(neighbour is a bot \| node is a bot) and P(neighbour is a bot \| node is a human) against the 14% base rate, plus adjusted homophily per direction. Labels of train + val users only (no test, no sealed) | ✅ | Done 5 Nov 19:25: bots' neighbours 4–17% bots (base 14.0%), adjusted homophily 0.010–0.024 on all 7 relations; `relation_homophily_by_class.json`. `twibot22_relation_checks.py` |
 | E9 | **Q2. Local heterogeneity** (fixed ~19:20): each user's local homophily = share of the user's TRAIN-labelled neighbours with the user's own label, on the union graph and per relation. (a) Distribution on val users (deciles, share above 0.5, share with no train neighbour). (b) Where graph models gain: on the working test users, FAGCN, RGCN vs the MLP control (same network, no edges) and XGB-Graph vs own-feature tree (1M, with profile), per local-homophily bin (no train neighbour, [0, 0.25), [0.25, 0.5), [0.5, 0.75), [0.75, 1]); AUROC and macro-F1 per bin. A test user's own label is used only to slice scores (as in heterophily papers), never as an input | ✅ | Done 5 Nov 19:25: neighbour features help homophilous users (+0.057 AUROC), hurt heterophilous ones (−0.016); RGCN hurts the homophilous bin (−0.052); `local_homophily.json`. `twibot22_local_homophily.py` |
 | E10 | **Q3. Cross-relation inconsistency** (fixed ~19:20): label-free features per user from two relation groups, follow (following + followers) and interaction (mention, retweet, reply, quote, like), both directions: cosine distance between the groups' mean neighbour bio embedding (PCA 32), distance between their mean neighbour profiles, own-vs-group cosine for each group and its difference, log degree ratio, flags for an empty group. Test: (a) each feature alone, val AUROC; (b) XGB-Graph + these features vs XGB-Graph, sample (with and without profile, 3 seeds) and 1M (with profile, seed 0), paired bootstrap CI. Shortcut rule run on them first | ✅ | Done 5 Nov 21:21: 8 features, no shortcuts; add nothing (1M: F1 −0.002 [−0.004, −0.000], AUROC +0.000; sample the same); `q3_ci_full.json`. `twibot22_relation_checks.py`, `EXTRA=inconsistency` |
-| E11 | **Leaderboard reconciliation** (builder, 5 Nov ~19:50, fixed before any number). Why: the TwiBot-22 paper ranks graph models first (accuracy on the official split); we find graph ≈ no graph. 2 × 2 design: split {ours (random stratified), official `split.csv` (train 7.8% / val 28.0% / test 29.4% bots)} × `verified` {out, in as an input column}. Ours / out = the existing results. Models: own-feature tree and XGB-Graph (with profile, 1M bio-only table), MLP control, FAGCN, RGCN (same settings as the main GNNs, seed 0). Metrics: accuracy and bot-class F1 at a 0.5 probability threshold (the paper's convention) and at our validation cut-off, plus macro-F1 and AUROC. **Our sealed users (incl. experts) are removed from every official part** (train, val and test), so the seal holds; `verified` enters only these replication models, never the main ones (explicit override, `REPLICATION=1`). GNNs first (they must finish before DGP's LoRA starts) | 🟡 | Official split done for trees and MLP / FAGCN / RGCN (with `verified`) and trees / MLP / FAGCN (without); rest running, done ~00:30. Split lowers AUROC ~0.11, `verified` ≤ 0.01, graph ≤ no graph. `twibot22_official_protocol.py` |
+| E11 | **Leaderboard reconciliation** (builder, 5 Nov ~19:50, fixed before any number). Why: the TwiBot-22 paper ranks graph models first (accuracy on the official split); we find graph ≈ no graph. 2 × 2 design: split {ours (random stratified), official `split.csv` (train 7.8% / val 28.0% / test 29.4% bots)} × `verified` {out, in as an input column}. Ours / out = the existing results. Models: own-feature tree and XGB-Graph (with profile, 1M bio-only table), MLP control, FAGCN, RGCN (same settings as the main GNNs, seed 0). Metrics: accuracy and bot-class F1 at a 0.5 probability threshold (the paper's convention) and at our validation cut-off, plus macro-F1 and AUROC. **Our sealed users (incl. experts) are removed from every official part** (train, val and test), so the seal holds; `verified` enters only these replication models, never the main ones (explicit override, `REPLICATION=1`). GNNs first (they must finish before DGP's LoRA starts) | 🟡 | All cells done except RGCN on our split with `verified` (running). 
 
 ### F. Features and embeddings
 
@@ -1063,7 +1111,7 @@ Status: ✅ done and checked · 🟡 partly done · ⬜ to do · ➖ not needed 
 |---|---|---|---|
 | G1 | `OMP_NUM_THREADS=1` and no torch import with sklearn boosting (the TwiBot-20 silent segfault) | ⬜ | In the CPU model scripts |
 | G2 | Every launcher logs each job's exit code | ⬜ | |
-| G7 | **Weak → expert fine-tuning with 5-fold rotation** (builder, 5 Nov ~13:20, replacing the 4 Nov light version; reason: dataset "bot" matches experts for only 56 of 101, so weak-label models learn the labelling rules; using all experts for training would leave no clean test). Folds: StratifiedKFold(5, shuffle, seed 42) on the expert label (~789 train / ~197 held out, 84 / 21 bots). **LoRA target:** start from the best target adapter (validation), 1 epoch on the 4 training folds, step 6 settings, no selection; macro-F1 cut-off chosen on the fold model's own training folds (`twibot22_expert_rotation_llm.py`, queued after DGP, ~3.5-4 h GPU, **blind**: writes scores, prints no metric). **GNNs (builder, 5 Nov ~20:35):** FAGCN, RGCN and the MLP control: weak model as in `twibot22_gnn.py`, then per fold 30 epochs at lr 1e-3 on the experts, no early stopping, cut-off on the fold's training experts (`twibot22_expert_rotation_gnn.py`, blind, pauses while LoRA trains). **Trees / MLP:** the same folds, a real second training stage (continue / refit on experts), CPU. Every model also scored on the same 986 experts weak-only, for the paired comparison. Read once, in the final run. Fixed before any expert score. Also answers D7 | ⬜ | Replaces DEC stage 4 |
+| G7 | **Weak → expert fine-tuning with 5-fold rotation** (builder, 5 Nov ~13:20, replacing the 4 Nov light version; reason: dataset "bot" matches experts for only 56 of 101, so weak-label models learn the labelling rules; using all experts for training would leave no clean test). Folds: StratifiedKFold(5, shuffle, seed 42) on the expert label (~789 train / ~197 held out, 84 / 21 bots). **LoRA target:** start from the best target adapter (validation), 1 epoch on the 4 training folds, step 6 settings, no selection; macro-F1 cut-off chosen on the fold model's own training folds (`twibot22_expert_rotation_llm.py`, queued after DGP, ~3.5-4 h GPU, **blind**: writes scores, prints no metric). **GNNs (builder, 5 Nov ~20:35):** FAGCN, RGCN and the MLP control: weak model as in `twibot22_gnn.py`, then per fold 30 epochs at lr 1e-3 on the experts, no early stopping, cut-off on the fold's training experts (`twibot22_expert_rotation_gnn.py`, blind, pauses while LoRA trains). **Trees / MLP:** the same folds, a real second training stage (continue / refit on experts), CPU. Every model also scored on the same 986 experts weak-only, for the paired comparison. Read once, in the final run. Fixed before any expert score. Also answers D7 | ⬜ | Replaces DEC stage 4 Read early 5 Nov 23:50 (builder's decision): LoRA, trees, MLP, RGCN; FAGCN pending; `expert_read_early.json` |
 | G8 | **The LLM reads the same text as the encoders it is compared with** (same pieces, same token limit), so "frozen encoder vs fine-tuned LLM" is like for like. Lesson from TwiBot-20 (LoRA 480 tokens vs encoders 2,000 characters; external feedback #2, 5 Nov) | ⬜ | Set when the LLM step is configured |
 | G6 | **Label and `verified` out of every model input** (step 3, builder 4 Nov ~21:40) | ✅ | `twibot22_guard.py`: `users.parquet` now has profile fields only (no verified, no label/y/split); verified in `eval_only/verified.parquet` (95,398), read only for the non-verified slice and checks; `check_columns()` stops any model input named verified/label/y/split (tested). Shortcut results identical after the move. `withheld` is 59 users, not 0 (comment fixed); near-constant, left out |
 | G3 | Selection rule, seeds (3), metrics (macro-F1, AUROC, AUPRC, bootstrap CIs) written into the scripts | ✅ | `twibot22_metrics.py`: val-only cut-off and selection, seeds 0–2, paired bootstrap CIs (2,000), self-tested |
@@ -1165,6 +1213,12 @@ Check before queueing: the step 6 launcher accepts the selection rule and saves 
 
 **Writing rule:** as in research papers, the report never cites feedback (supervisor or external) as the reason for a choice. Heterophily is motivated by the problem itself: fraudsters and bots camouflage by linking to benign accounts (Dou et al., 2020), so methods must be evaluated under measured heterophily. Dataset changes are justified on their merits (e.g. Elliptic has no text for an LLM to read).
 
+### Template and project brief (`uni brief /`, checked 5 Nov 23:10)
+
+- **Sections (latest template):** Introduction (for a layperson: aim, why it matters, how, expected vs achieved) · Literature Review · Research Methodology (sub-problems, integration with figures, timeline vs plan, difficulties and fallbacks) · Research Outcome (follow the plan; deviations as P → P′) · Individual Contributions · **Future Outlook** · **Bibliography**.
+- **Citation rule:** cite work from the past 3 (recommended) to 5 (at most) years, i.e. 2021 or later. Our list to check: Dou et al. 2020 (CARE-GNN) and Yang et al. AAAI 2020 are 6 years old: keep only as one-line foundational mentions, or replace (camouflage can be motivated from MAGNET 2024 / TKDD 2026 and FRAUDRE 2021). Fine: TwiBot-20 (2021), FRAUDRE (2021), TwiBot-22 (2022), Platonov, Hays, GADBench, Mao (2023), MAGNET, TROPICAL (2024–25), TKDD 2026.
+- **Project brief:** "Large Language Models for Graph-based Fraud Detection": how textual (LLM) and structural (graph) information can be jointly leveraged; expected outcome a framework prototype + technical report. **Framing for the report:** the three LLM roles the brief names map onto our pipeline: LLM node representations (multilingual-E5 / MiniLM text features into trees and GNNs), LLM reasoning over graph structure by prompting (zero-shot, DGP with neighbour summaries), and LLM fine-tuning (LoRA `target`). The main result is *when* each helps under heterophily, not "profile wins".
+
 ### Methodology: timeline
 
 Past work (dates 2026):
@@ -1229,6 +1283,11 @@ Paired bootstrap 95% CIs (2,000), seed 0, each model with its own validation cut
 10. **Cross-relation inconsistency (Q3, E10; FRAUDRE's question) adds nothing:** 8 label-free features (follow vs interaction neighbourhoods); XGB-Graph + profile with − without, 1M seed 0: F1 −0.002 [−0.004, −0.000], AUROC +0.000 (`q3_ci_full.json`); same on the sample.
 11. **GNNs, 3 seeds (1M):** FAGCN 0.690 ± 0.001 / 0.829, RGCN 0.689 ± 0.000 / 0.804; MLP control (seed 0) 0.679 / 0.799.
 12. **Leaderboard reconciliation (E11, official protocol; partial, 5 Nov 22:45).** Official split, our sealed users removed (test 94,889, 29.5% bots, all-human accuracy 0.705): profile tree 0.763 acc@0.5 / 0.700 macro-F1 / 0.765 AUROC with `verified`, 0.763 / 0.695 / 0.764 without; XGB-Graph 0.769 / 0.689 / 0.758 (both); MLP 0.627 / 0.683 / 0.745 (with), FAGCN 0.603 / 0.667 / 0.731 (with), 0.625 / 0.678 / 0.745 (without); RGCN 0.645 / 0.666 / 0.724 (with). Reading: the split lowers AUROC by ~0.11; `verified` changes ≤ 0.01; graph models do not beat the tree without neighbours under the official protocol either. GNN accuracy is below all-human because our GNNs use class weights (theirs do not): compare GNNs on macro-F1 / AUROC.
+13. **The profile model is not just the empty-bio cue** (slice already computed in `cheap_*.json`, "with_bio"; 3 seeds). Two tests: (i) *more clues, same users*: empty-bio flag alone AUROC 0.658 → profile (15 fields) 0.837 (sample); (ii) *same model, users where empty bio cannot help* (users with a bio: 4,398 sample / 43,694 1M, 9.7% / 9.5% bots): flag 0.500, profile 0.790 / 0.802, profile + text 0.808 / 0.826, XGB-Graph + profile 0.813 / 0.841 AUROC. Macro-F1 falls on this slice (profile 0.604 / 0.606) partly because the bot share is lower and the cut-off was chosen on all validation users, so AUROC is the fair measure here. **Limit:** this shows the other profile clues carry signal *against the weak labels*; whether they reflect real bot behaviour or label-maker habits is D8 / the expert check.
+
+14. **Expert labels (986 experts, 105 bots; 5-fold rotation; read early 5 Nov 23:50 by the builder's decision, recorded before reading; `expert_read_early.json`).** AUROC weak-only → after the expert stage [CI of change]: LoRA `target` 0.822 → 0.724 (−0.099 [−0.164, −0.038]); profile tree 0.861 → 0.867 (+0.006); profile + text 0.879 → 0.899 (+0.020 [+0.000, +0.040]); XGB-Graph + profile (sample) 0.883 → 0.910 (+0.027 [+0.009, +0.044]), macro-F1 0.751, PR-AUC 0.599, the best; XGB-Graph (1M) 0.875 → 0.887; MLP 0.819 → 0.845 (+0.025 [+0.006, +0.046]); RGCN 0.799 → 0.866 (+0.067 [+0.034, +0.104]). The dataset's weak label as a prediction: macro-F1 0.745; its 90.5% agreement compares with 89.4% for all-human. **Reading:** the model ranking holds on expert labels; the GNN gains most from clean labels but stays below the trees; the LLM's one-epoch expert stage hurts its ranking. **Caveat:** 800 of the 1,000 expert labels trained the label-making models (TwiBot-22 paper §3.2), so weak-only models are not tested on fully independent labels.
+15. **D8: empty-bio lift (bot rate empty ÷ bot rate with bio; bootstrap 2,000).** 986 experts: weak 8.7× [6.4, 12.3] vs expert 7.2× [5.3, 10.3] (difference +1.5 [−1.5, +4.6]); not independent (above). Annotation study (TwiBot-22 repo; 6 researchers, 3 per user; median ≥ 3 bot, ≤ 1 human, 2 dropped; 458 users after removing 21 sealed non-expert users; 44 bots): weak 5.0× [3.3, 7.7] vs annotators 1.6× [0.7, 3.1], difference +3.4 [+1.2, +6.1]. **Reading:** under independent human labels the empty-bio cue is much weaker; the weak labels overstate it. Wording: "consistent with Hays et al. (WWW 2023), extending it to TwiBot-22" (they studied TwiBot-20).
+16. **Leaderboard reconciliation complete except one cell** (E11; seed 0; table in `reports/meeting_brief_2026-11-06.md` §7): the split lowers AUROC by ~0.11 for every model; `verified` moves trees ≤ 0.01 and GNNs in both directions; under the official protocol the own-feature tree is best on macro-F1 / AUROC and no GNN beats the MLP without edges.
 
 ---
 
@@ -1319,4 +1378,8 @@ Saved /Users/pj/Desktop/Macquarie - Sem 4/PROJECT/Graph-based-fraud-detection-sy
 - 21:21 Q3 full 1M (XGB-Graph + profile + inconsistency features, seed 0) done, exit 0: 0.729 / 0.872 / PR-AUC 0.579; paired CI vs without: F1 −0.002 [−0.004, −0.000], AUROC +0.000 (`q3_ci_full.json`). Q3 adds nothing.
 - 22:43 GNN expert rotation: MLP done (13 min), RGCN done (112 min), saved blind; FAGCN running.
 - 22:45 DGP node summaries 49 / 57 (~7 min per chunk, CPU shared with 3 jobs).
+- 23:50 Builder's decision: expert rotation scores read early (decision line committed first, 851a08b). Read: 986 experts only, plus the TwiBot-22 annotation study without its 21 sealed non-expert users. Script `twibot22_expert_read.py`, output `expert_read_early.json` / `.log` (84d8da2). FAGCN left out (still running).
+  - Expert stage vs weak-only (AUROC): trees +0.006 to +0.027, MLP +0.025, RGCN +0.067 [+0.034, +0.104], LoRA −0.099 [−0.164, −0.038] (its macro-F1 +0.040). Best after the expert stage: XGB-Graph + profile (sample) 0.751 / 0.910 / 0.599. The dataset's weak label itself: macro-F1 0.745 on the experts.
+  - D8: lift on the experts, weak 8.74 [6.39, 12.33] vs expert 7.22 [5.31, 10.30] (difference +1.52 [−1.50, +4.64]); on the annotation study (458 users, 44 bots), weak 5.01 [3.30, 7.67] vs annotation 1.64 [0.70, 3.06] (difference +3.36 [+1.20, +6.14]).
+  - Paper (arXiv 2206.04564v6, `research documents/`): the 1,000 experts are 17 researchers of the dataset's own group, and their labels (800 of them) trained the label-making classifiers, so expert and weak labels are not independent. The annotation study (6 researchers, most of whom have published on bot detection; 3 per user; whether they are from the same group is not stated) never trained the label-makers: the independent check.
 

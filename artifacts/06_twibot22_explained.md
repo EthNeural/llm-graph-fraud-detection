@@ -170,10 +170,10 @@ We have a million Twitter accounts, and about one in seven is a bot. We want to 
 
 ---
 
-## 10. Where we are now (Thu 5 Nov, ~23:00)
+## 10. Where we are now (Fri 6 Nov, ~00:45)
 
-- **Done:** all data checks; the sample feature table with bio + tweets (830 numbers per account, no shortcuts); the fine-tuned language model reading only the account's text (LoRA `target`); text-only baselines; every cheap model, with and without profile, on the sample and on all 1M; the five graph neural networks on the full 1M graph (the 2 best with 3 seeds); confidence intervals; a sceptic review; a literature check; three graph questions (Q1–Q3, below); a check of the official TwiBot-22 code; the expert stage for the language model and the trees (blind).
-- **Running:** the language model with neighbour summaries (DGP) on the GPU, scored early Friday, then a second seed of both language-model versions until about midday; the expert stage for the graph networks (blind); the leaderboard reconciliation (our models under the official protocol), done ~00:30.
+- **Done:** all data checks; the sample feature table with bio + tweets (830 numbers per account, no shortcuts); the fine-tuned language model reading only the account's text (LoRA `target`); text-only baselines; every cheap model, with and without profile, on the sample and on all 1M; the five graph neural networks on the full 1M graph (the 2 best with 3 seeds); confidence intervals; a sceptic review; a literature check; three graph questions (Q1–Q3, below); a check of the official TwiBot-22 code; the expert stage for the language model, the trees, the MLP and RGCN, read early on the 986 experts (the builder's decision, Thu 23:50); the empty-bio test (D8); the leaderboard reconciliation (all but one run).
+- **Running:** the language model with neighbour summaries (DGP) on the GPU, scored early Friday, then a second seed of both language-model versions until about 13:00; the expert stage for FAGCN; the last reconciliation run.
 - **Next:** the final run on the sealed set and the experts (Friday afternoon), the comparison with TwiBot-20, figures Saturday, the report Sunday.
 
 ---
@@ -200,6 +200,10 @@ We have a million Twitter accounts, and about one in seven is a bot. We want to 
 - **TROPICAL's pattern does not carry over:** on Amazon, bots get denser further out in the graph; on TwiBot-22 bot density *falls* with distance (0.116 → 0.059 over 1–4 hops).
 
 **The leaderboard conflict, plain version.** The TwiBot-22 paper ranks graph models first. Their official code shows why the comparison is not like ours: they use a skewed split (test 29.4% bots), give the models `verified` (no verified user is a bot), train a fixed 200 epochs, and rank by accuracy. We are re-running our own models their way (results so far: the split matters, `verified` hardly does, and graph models still do not beat the tree without neighbours).
+
+**Checking against human labels, plain version.** The dataset's labels were made by machines. 986 users were also labelled by experts, and 458 more by an independent group of 3 researchers per user.
+- **The ranking holds with expert labels:** profile-based trees with neighbour features are still best (AUROC 0.910); the graph network gains most when retrained on expert labels (+0.067) but stays below them.
+- **Empty bio is a weaker clue than the dataset says.** By the dataset's labels, empty-bio users are 5× as likely to be bots; by the independent humans, on the same users, only 1.6×. The 986 experts cannot settle this, because their labels were used to train the label-making machines.
 
 **Glossary**
 - **TF-IDF:** counting which words an account uses, weighted by how rare they are.
