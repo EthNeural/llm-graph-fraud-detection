@@ -64,3 +64,11 @@ fold 0 saved (no metric printed: blind)
 ROTATION SMOKE TEST PASSED (1.0 min for 20 train + 10 held out)
 === exit code 0
 ```
+- 14:01 Expert rotation (LoRA target, 5 folds, blind) started.
+- 17:14 Expert rotation finished, exit 0 (blind: scores saved, no metric looked at).
+```
+                                                              
+fold 4 saved (no metric printed: blind)
+Saved /Users/pj/Desktop/Macquarie - Sem 4/PROJECT/Graph-based-fraud-detection-system/my_build/results/twibot22/A/expert_rotation_target.npz (blind: read in the final run)
+=== exit code 0
+```
