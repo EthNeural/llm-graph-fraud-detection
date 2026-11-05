@@ -1,0 +1,32 @@
+[
+  {
+    "model": "Qwen3-1.7B LoRA target (full test)",
+    "acc": 0.7952,
+    "macro_f1": 0.6258,
+    "f1_class1": 0.3741,
+    "auroc": 0.7098,
+    "pr_auc": 0.3118,
+    "macro_f1_connected": 0.6249,
+    "macro_f1_isolated": 0.6196
+  },
+  {
+    "model": "Qwen3-1.7B LoRA target",
+    "acc": 0.7975,
+    "macro_f1": 0.6209,
+    "f1_class1": 0.3622,
+    "auroc": 0.7433,
+    "pr_auc": 0.3405,
+    "macro_f1_connected": 0.6169,
+    "macro_f1_isolated": 0.6173
+  },
+  {
+    "model": "Qwen3-1.7B zero-shot target",
+    "acc": 0.81,
+    "macro_f1": 0.4837,
+    "f1_class1": 0.0732,
+    "auroc": 0.3919,
+    "pr_auc": 0.1183,
+    "macro_f1_connected": 0.492,
+    "macro_f1_isolated": 0.4496
+  }
+]
