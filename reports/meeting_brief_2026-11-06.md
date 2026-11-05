@@ -52,7 +52,7 @@ Official split, our sealed users removed: test 94,889 users, **29.5% bots → ca
 | MLP (no edges) | in / out | 0.627 / 0.644 | 0.683 / 0.674 | 0.745 / 0.734 |
 | FAGCN | in / out | 0.603 / 0.625 | 0.667 / 0.678 | 0.731 / 0.745 |
 | RGCN | in / out | 0.645 / *running* | 0.666 / – | 0.724 / – |
-| *For reference: XGB-Graph + profile, our random split* | out | 0.869 | 0.731 | 0.873 |
+| *For reference: XGB-Graph + profile, our random split* | in / out | 0.885 / 0.869 | 0.730 / 0.731 | 0.874 / 0.873 |
 
 **What it says so far**
 1. **The split matters far more than `verified`.** AUROC drops from 0.873 (our random split) to 0.758 (official split); adding `verified` moves our models by ≤ 0.01.
