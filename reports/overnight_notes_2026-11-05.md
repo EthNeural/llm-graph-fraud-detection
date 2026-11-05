@@ -55,3 +55,12 @@ same with 1 - p (sign check only, not a result): {'n': 5000, 'bots': 700, 'macro
 Saved /Users/pj/Desktop/Macquarie - Sem 4/PROJECT/Graph-based-fraud-detection-system/my_build/results/twibot22/A/step6_Qwen3-1.7B_target_zeroshot_full.npz
 === exit status (from log) 0
 ```
+- 14:01 Rotation smoke test: PASSED.
+```
+                                                                 
+
+                                                            
+fold 0 saved (no metric printed: blind)
+ROTATION SMOKE TEST PASSED (1.0 min for 20 train + 10 held out)
+=== exit code 0
+```
