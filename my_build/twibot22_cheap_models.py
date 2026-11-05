@@ -8,6 +8,8 @@ DESIGN
            neighbours from the full graph (headline, F6). Test = the 5,000 sample working-test users,
            the same users LoRA target is scored on.
   full     features_full_e5.npz: all 1M users, bio only (full-scale check). Test = 49,951 working-test users.
+  bio_on_sample  the bio-only table restricted to the sample users (check, 5 Nov: separates "bio vs bio +
+           tweets" from "700k vs 70k training users")
 
 MODEL (fixed settings, no tuning; 3 seeds unless deterministic)
   profile_only     HistGB on the user's own profile fields
@@ -40,7 +42,7 @@ DATA = ROOT.parent / "data" / "twibot-22"
 DESIGN = os.environ.get("DESIGN", "sample")
 MODEL = os.environ["MODEL"]
 PROFILE = os.environ.get("PROFILE", "1") == "1"
-assert DESIGN in ("sample", "full") and MODEL in ("profile_only", "links_only", "tree_self", "xgb_graph", "mlp_text", "flags")
+assert DESIGN in ("sample", "full", "bio_on_sample") and MODEL in ("profile_only", "links_only", "tree_self", "xgb_graph", "mlp_text", "flags")
 GRAPH_BASES = {"log_count", "share_with_text", "has_text"}
 
 
@@ -67,9 +69,15 @@ def main():
     y = labels()
     roles = guard.roles()
     f = np.load(DATA / ("features_sample_e5tw.npz" if DESIGN == "sample" else "features_full_e5.npz"))
+    if DESIGN == "bio_on_sample":
+        f = {k: f[k] for k in f.files}
+        f["X"] = f["X"][np.load(DATA / "sample_idx.npy")]
+        f = type("F", (dict,), {"files": property(lambda self: list(self.keys()))})(f)
     names = list(f["names"])
     guard.check_columns(names)
     rows = f["rows"] if "rows" in f.files else np.arange(len(y))
+    if DESIGN == "bio_on_sample":                      # check: bio-only table, trained and scored on the sample users
+        rows = np.load(DATA / "sample_idx.npy")
     tr, va = rows[roles[rows] == "train"], rows[roles[rows] == "val"]
     te = rows[roles[rows] == "test_work"]
     pos = np.full(len(y), -1)
@@ -96,7 +104,7 @@ def main():
                               ("flag_no_tweets", (np.load(DATA / "tweet_count_files.npy")[rows] == 0).astype(np.float32))):
             s = np.full(len(y), np.nan, np.float32)
             s[rows] = s_rows
-            out[fname] = [evaluate(y, s, va, in_sample_only=DESIGN == "sample")]
+            out[fname] = [evaluate(y, s, va, in_sample_only=DESIGN != "full")]
             save_scores(DESIGN, fname, 0, s)
     else:
         if MODEL == "mlp_text":
@@ -121,7 +129,7 @@ def main():
             s = np.full(len(y), np.nan, np.float32)
             s[rows] = m.predict_proba(X)[:, 1]
             guard.assert_not_sealed(te)
-            r = evaluate(y, s, va, in_sample_only=DESIGN == "sample")
+            r = evaluate(y, s, va, in_sample_only=DESIGN != "full")
             r["minutes"] = round((time.time() - t0) / 60, 2)
             out[tag].append(r)
             save_scores(DESIGN, tag, seed, s)
