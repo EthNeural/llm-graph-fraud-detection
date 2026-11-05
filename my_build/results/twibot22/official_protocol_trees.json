@@ -68,5 +68,19 @@
   "train_bot_share": 0.1399796084420478,
   "val_cut": 0.30928424379177777,
   "minutes": 1.6
+ },
+ "ours_verified1/xgb_graph_prof": {
+  "test_users": 49951,
+  "test_bot_share": 0.1399771776340814,
+  "all_human_accuracy": 0.8600228223659185,
+  "acc_at_0_5": 0.885107405257152,
+  "bot_f1_at_0_5": 0.45295967972547896,
+  "acc_at_val_cut": 0.8667694340453644,
+  "bot_f1_at_val_cut": 0.5387760759581398,
+  "macro_f1_at_val_cut": 0.7304576155064761,
+  "auroc": 0.8741389300574658,
+  "train_bot_share": 0.1399796084420478,
+  "val_cut": 0.3002367222157126,
+  "minutes": 67.5
  }
 }
