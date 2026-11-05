@@ -56,7 +56,7 @@ Official split, our sealed users removed: test 94,889 users, **29.5% bots → ca
 
 **What it says so far**
 1. **The split matters far more than `verified`.** AUROC drops from 0.873 (our random split) to 0.758 (official split); adding `verified` moves our models by ≤ 0.01.
-2. **Graph models do not win under their protocol either.** The tree without neighbours ≥ XGB-Graph; FAGCN and RGCN ≤ the MLP without edges.
+2. **Graph models do not win under their protocol either.** On macro-F1 and AUROC the tree without neighbours is at least as good as XGB-Graph (XGB-Graph is 0.006 higher on accuracy only); FAGCN and RGCN stay within ~0.01 of the MLP without edges (FAGCN slightly above without `verified`, below with it).
 3. **Caveat:** our GNNs use class weights (theirs do not), which trades accuracy for catching bots; GNN accuracy is therefore below all-human. Compare GNNs on macro-F1 / AUROC, not accuracy.
 
 **Likely explanation of the leaderboard:** their ranking rests on accuracy on a skewed split, graph models that were given `verified`, fixed-epoch training, and labels partly made by the same graph-model families. Under one common protocol, we do not reproduce a graph advantage. *(Last cells, RGCN without `verified` and our split with `verified`, added ~00:30.)*
