@@ -1,0 +1,318 @@
+{
+ "test_users": 1183,
+ "non_verified_test_users": 857,
+ "verified_test_bots": 0,
+ "lora_seeds_used": {
+  "target": [
+   "unseeded",
+   "_s1"
+  ],
+  "dgp": [
+   "unseeded",
+   "_s1"
+  ]
+ },
+ "models": {
+  "MLP (all train)": {
+   "all": {
+    "macro_f1": 0.7656,
+    "auroc": 0.8395,
+    "pr_auc": 0.8536
+   },
+   "non_verified": {
+    "macro_f1": 0.6866,
+    "auroc": 0.7911,
+    "pr_auc": 0.9045
+   },
+   "seeds": 3
+  },
+  "GCN (all train)": {
+   "all": {
+    "macro_f1": 0.7068,
+    "auroc": 0.7748,
+    "pr_auc": 0.7973
+   },
+   "non_verified": {
+    "macro_f1": 0.6346,
+    "auroc": 0.7226,
+    "pr_auc": 0.8736
+   },
+   "seeds": 3
+  },
+  "SAGE (all train)": {
+   "all": {
+    "macro_f1": 0.7503,
+    "auroc": 0.8285,
+    "pr_auc": 0.8427
+   },
+   "non_verified": {
+    "macro_f1": 0.683,
+    "auroc": 0.7712,
+    "pr_auc": 0.8942
+   },
+   "seeds": 3
+  },
+  "FAGCN (all train)": {
+   "all": {
+    "macro_f1": 0.7445,
+    "auroc": 0.811,
+    "pr_auc": 0.8335
+   },
+   "non_verified": {
+    "macro_f1": 0.6747,
+    "auroc": 0.7584,
+    "pr_auc": 0.895
+   },
+   "seeds": 3
+  },
+  "MLP (1,300)": {
+   "all": {
+    "macro_f1": 0.7259,
+    "auroc": 0.7961,
+    "pr_auc": 0.8088
+   },
+   "non_verified": {
+    "macro_f1": 0.6613,
+    "auroc": 0.7488,
+    "pr_auc": 0.8773
+   },
+   "seeds": 3
+  },
+  "LR (all train)": {
+   "all": {
+    "macro_f1": 0.7565,
+    "auroc": 0.8222,
+    "pr_auc": 0.8305
+   },
+   "non_verified": {
+    "macro_f1": 0.6696,
+    "auroc": 0.7557,
+    "pr_auc": 0.8833
+   },
+   "seeds": 1
+  },
+  "LR (1,300)": {
+   "all": {
+    "macro_f1": 0.7252,
+    "auroc": 0.7865,
+    "pr_auc": 0.7945
+   },
+   "non_verified": {
+    "macro_f1": 0.6459,
+    "auroc": 0.7273,
+    "pr_auc": 0.8624
+   },
+   "seeds": 1
+  },
+  "LoRA target (1,300)": {
+   "all": {
+    "macro_f1": 0.7321,
+    "auroc": 0.8143,
+    "pr_auc": 0.8356
+   },
+   "non_verified": {
+    "macro_f1": 0.6523,
+    "auroc": 0.7442,
+    "pr_auc": 0.8904
+   },
+   "seeds": 2
+  },
+  "LoRA dgp (1,300)": {
+   "all": {
+    "macro_f1": 0.7362,
+    "auroc": 0.8212,
+    "pr_auc": 0.8525
+   },
+   "non_verified": {
+    "macro_f1": 0.6665,
+    "auroc": 0.7776,
+    "pr_auc": 0.9126
+   },
+   "seeds": 2
+  }
+ },
+ "pairs": {
+  "GCN (all train) - MLP (all train)": {
+   "all": {
+    "macro_f1": [
+     -0.0589,
+     -0.082,
+     -0.0369
+    ],
+    "auroc": [
+     -0.0646,
+     -0.0847,
+     -0.0462
+    ]
+   },
+   "non_verified": {
+    "macro_f1": [
+     -0.0522,
+     -0.0795,
+     -0.0248
+    ],
+    "auroc": [
+     -0.0689,
+     -0.0971,
+     -0.0401
+    ]
+   }
+  },
+  "SAGE (all train) - MLP (all train)": {
+   "all": {
+    "macro_f1": [
+     -0.0152,
+     -0.0313,
+     0.0002
+    ],
+    "auroc": [
+     -0.011,
+     -0.0219,
+     -0.0005
+    ]
+   },
+   "non_verified": {
+    "macro_f1": [
+     -0.004,
+     -0.0237,
+     0.0158
+    ],
+    "auroc": [
+     -0.0203,
+     -0.036,
+     -0.005
+    ]
+   }
+  },
+  "FAGCN (all train) - MLP (all train)": {
+   "all": {
+    "macro_f1": [
+     -0.0211,
+     -0.0387,
+     -0.0039
+    ],
+    "auroc": [
+     -0.0283,
+     -0.0414,
+     -0.0164
+    ]
+   },
+   "non_verified": {
+    "macro_f1": [
+     -0.0118,
+     -0.0332,
+     0.0094
+    ],
+    "auroc": [
+     -0.0327,
+     -0.0508,
+     -0.0142
+    ]
+   }
+  },
+  "LoRA dgp (1,300) - MLP (1,300)": {
+   "all": {
+    "macro_f1": [
+     0.0102,
+     -0.011,
+     0.032
+    ],
+    "auroc": [
+     0.025,
+     0.006,
+     0.0458
+    ]
+   },
+   "non_verified": {
+    "macro_f1": [
+     0.0055,
+     -0.0217,
+     0.0325
+    ],
+    "auroc": [
+     0.0289,
+     0.0005,
+     0.0587
+    ]
+   }
+  },
+  "LoRA target (1,300) - MLP (1,300)": {
+   "all": {
+    "macro_f1": [
+     0.0061,
+     -0.0171,
+     0.0286
+    ],
+    "auroc": [
+     0.0181,
+     -0.0029,
+     0.0389
+    ]
+   },
+   "non_verified": {
+    "macro_f1": [
+     -0.0086,
+     -0.037,
+     0.0201
+    ],
+    "auroc": [
+     -0.0042,
+     -0.036,
+     0.0257
+    ]
+   }
+  },
+  "LoRA dgp (1,300) - LoRA target (1,300)": {
+   "all": {
+    "macro_f1": [
+     0.0041,
+     -0.0143,
+     0.0225
+    ],
+    "auroc": [
+     0.0069,
+     -0.0071,
+     0.0206
+    ]
+   },
+   "non_verified": {
+    "macro_f1": [
+     0.014,
+     -0.0082,
+     0.0357
+    ],
+    "auroc": [
+     0.0331,
+     0.014,
+     0.0511
+    ]
+   }
+  },
+  "LoRA dgp (1,300) - MLP (all train)": {
+   "all": {
+    "macro_f1": [
+     -0.0293,
+     -0.05,
+     -0.0069
+    ],
+    "auroc": [
+     -0.0183,
+     -0.0368,
+     0.0013
+    ]
+   },
+   "non_verified": {
+    "macro_f1": [
+     -0.0198,
+     -0.0477,
+     0.0093
+    ],
+    "auroc": [
+     -0.0133,
+     -0.0397,
+     0.0128
+    ]
+   }
+  }
+ }
+}

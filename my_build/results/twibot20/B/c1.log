@@ -1,0 +1,25 @@
+trained MLP (all train)
+trained GCN (all train)
+trained SAGE (all train)
+trained FAGCN (all train)
+trained MLP (1,300)
+  best C = 0.001 (val macroF1 0.685)
+  best C = 0.001 (val macroF1 0.682)
+MLP (all train)        all {'macro_f1': 0.6127, 'auroc': 0.7876, 'pr_auc': 0.2693}  non-verified {'macro_f1': 0.5977, 'auroc': 0.7225, 'pr_auc': 0.3809}  (3 run(s))
+GCN (all train)        all {'macro_f1': 0.5765, 'auroc': 0.7155, 'pr_auc': 0.2103}  non-verified {'macro_f1': 0.5729, 'auroc': 0.6927, 'pr_auc': 0.3584}  (3 run(s))
+SAGE (all train)       all {'macro_f1': 0.6243, 'auroc': 0.7486, 'pr_auc': 0.2509}  non-verified {'macro_f1': 0.619, 'auroc': 0.7023, 'pr_auc': 0.3595}  (3 run(s))
+FAGCN (all train)      all {'macro_f1': 0.5543, 'auroc': 0.6467, 'pr_auc': 0.1641}  non-verified {'macro_f1': 0.5471, 'auroc': 0.6586, 'pr_auc': 0.3125}  (3 run(s))
+MLP (1,300)            all {'macro_f1': 0.6188, 'auroc': 0.7586, 'pr_auc': 0.2385}  non-verified {'macro_f1': 0.6119, 'auroc': 0.7148, 'pr_auc': 0.3431}  (3 run(s))
+LR (all train)         all {'macro_f1': 0.6335, 'auroc': 0.7986, 'pr_auc': 0.2824}  non-verified {'macro_f1': 0.6107, 'auroc': 0.7289, 'pr_auc': 0.3735}  (1 run(s))
+LR (1,300)             all {'macro_f1': 0.6219, 'auroc': 0.7435, 'pr_auc': 0.2449}  non-verified {'macro_f1': 0.6091, 'auroc': 0.6896, 'pr_auc': 0.3488}  (1 run(s))
+LoRA target (1,300)    all {'macro_f1': 0.6443, 'auroc': 0.7391, 'pr_auc': 0.2906}  non-verified {'macro_f1': 0.6407, 'auroc': 0.686, 'pr_auc': 0.3948}  (1 run(s))
+LoRA dgp (1,300)       all {'macro_f1': 0.6275, 'auroc': 0.7233, 'pr_auc': 0.2965}  non-verified {'macro_f1': 0.6321, 'auroc': 0.6771, 'pr_auc': 0.4077}  (1 run(s))
+  GCN (all train) - MLP (all train): all F1 [-0.0367, -0.0874, 0.0122] | non-verified F1 [-0.0252, -0.0935, 0.0411] AUROC [-0.0291, -0.0913, 0.0313]
+  SAGE (all train) - MLP (all train): all F1 [0.0111, -0.0342, 0.0576] | non-verified F1 [0.0219, -0.0338, 0.0787] AUROC [-0.0195, -0.0788, 0.0344]
+  FAGCN (all train) - MLP (all train): all F1 [-0.0591, -0.1118, -0.002] | non-verified F1 [-0.05, -0.1191, 0.024] AUROC [-0.063, -0.1224, -0.0074]
+  LoRA dgp (1,300) - MLP (1,300): all F1 [0.0085, -0.0562, 0.0749] | non-verified F1 [0.0207, -0.0573, 0.0978] AUROC [-0.0375, -0.1065, 0.031]
+  LoRA target (1,300) - MLP (1,300): all F1 [0.0253, -0.0509, 0.1003] | non-verified F1 [0.0292, -0.0584, 0.1224] AUROC [-0.0267, -0.1176, 0.0618]
+  LoRA dgp (1,300) - LoRA target (1,300): all F1 [-0.0167, -0.0781, 0.0446] | non-verified F1 [-0.0085, -0.0849, 0.0695] AUROC [-0.0109, -0.0898, 0.062]
+  LoRA dgp (1,300) - MLP (all train): all F1 [0.0143, -0.051, 0.0805] | non-verified F1 [0.0354, -0.0468, 0.1129] AUROC [-0.0445, -0.1148, 0.022]
+saved /Users/pj/Desktop/Macquarie - Sem 4/PROJECT/Graph-based-fraud-detection-system/my_build/results/twibot20/B/c1_nonverified.json
+=== exit code 0
