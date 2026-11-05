@@ -33,7 +33,7 @@ We have a million Twitter accounts, and about one in seven is a bot. We want to 
 
 **Plain version.** On many social networks, birds of a feather flock together: friends tend to resemble each other. If bots mostly connected to bots, a bot's friends would give it away. But fraudsters and bots often connect to ordinary users to blend in. Then a bot's friends look normal and tell you little.
 
-**One level deeper.** The first pattern (similar accounts connect) is **homophily**. The second (different accounts connect) is **heterophily**. Our supervisor asked us to measure which one TwiBot-22 has, not assume it. We measured it for each of the 7 kinds of connection.
+**One level deeper.** The first pattern (similar accounts connect) is **homophily**. The second (different accounts connect) is **heterophily**. Which one a dataset has must be measured, not assumed. We measured it for each of the 7 kinds of connection.
 
 **Deeper still.** Plain "share of links between same-label accounts" is misleading when one class is rare: with 86% humans, most links join two humans just by chance. So we use **adjusted homophily**, which subtracts that chance level: 0 means "no better than random", 1 means "perfectly same-label". On TwiBot-22 every relation scores between **0.011 and 0.038**, essentially no label signal. A bot's neighbours are 11.6% bots, *below* the 14% you would expect by chance. That is heterophily.
 

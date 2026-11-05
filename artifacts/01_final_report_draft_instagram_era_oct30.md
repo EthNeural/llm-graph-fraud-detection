@@ -16,7 +16,7 @@ Our main finding is that, on a network where fraud-like accounts hide among norm
 
 **Why it matters.** That borrowing assumes neighbours are alike, a property called *homophily*. Fraudsters deliberately break it. They connect to many normal accounts so they look normal, a tactic called *camouflage*, which makes their neighbourhoods *heterophilous* (mostly unlike them). A GNN then pulls a fraudster's profile towards "normal", which is exactly the wrong direction. Large language models (LLMs) offer a way around this: they can read the text attached to each account and judge it on its own merits.
 
-**What we set out to do.** The project brief asked how LLM reasoning and semantics can be combined with graph structure for fraud detection. Our supervisor asked us to evaluate this specifically under heterophily. We therefore asked three questions:
+**What we set out to do.** The project brief asked how LLM reasoning and semantics can be combined with graph structure for fraud detection. Because fraudsters camouflage themselves by linking to benign users (Dou et al., 2020), any such combination has to be evaluated under heterophily. We therefore asked three questions:
 
 1. Do LLM text representations detect fraud-like accounts better than a simple word-count baseline?
 2. Does adding the graph, through a GNN, improve on text alone when the graph is heterophilous?
@@ -24,7 +24,7 @@ Our main finding is that, on a network where fraud-like accounts hide among norm
 
 **How we did it.** We used a public Instagram network of 11,339 users with profile bios and follow links. Following FLAG (Yang et al., 2025), commercial accounts stand in for the fraud class. We first measured how heterophilous the network is. We then built one reproducible pipeline that tests the LLM in two roles: as an *encoder* that turns bios into vectors for a classifier or GNN, and as a *reasoner* that reads a prompt and decides. Every model was trained and tested on identical data splits, in two settings: the natural class ratio (36% commercial) and FLAG's 1:10 ratio (9% commercial), which mimics how rare real fraud is.
 
-**Expected versus achieved.** Our Assessment 2 plan used the Elliptic Bitcoin dataset and expected LLM-derived text to improve a graph model. We changed dataset after supervisor feedback (Section 3.4). Elliptic has no real text, and our planned evaluation did not address heterophily. On Instagram, the expected gain from the graph did not appear. A good LLM encoder improved on the baseline in both settings (macro-F1 0.612 against 0.578, and 0.578 against 0.552). GNNs added nothing in the natural setting and reduced commercial-class F1 from 0.238 to 0.186 in the 1:10 setting. We consider this a useful, if unflattering, result. It shows *when* graph structure stops helping, and why heterophily-aware designs matter.
+**Expected versus achieved.** Our Assessment 2 plan used the Elliptic Bitcoin dataset and expected LLM-derived text to improve a graph model. We changed dataset (Section 3.4): Elliptic has no real text, and an evaluation on it could not address heterophily. On Instagram, the expected gain from the graph did not appear. A good LLM encoder improved on the baseline in both settings (macro-F1 0.612 against 0.578, and 0.578 against 0.552). GNNs added nothing in the natural setting and reduced commercial-class F1 from 0.238 to 0.186 in the 1:10 setting. We consider this a useful, if unflattering, result. It shows *when* graph structure stops helping, and why heterophily-aware designs matter.
 
 ## 2. Literature Review
 
@@ -101,7 +101,7 @@ Subsampling removes edges as well as users, so we recompute homophily for Settin
 | Period | Planned (Assessment 2, Elliptic) | What actually happened |
 | --- | --- | --- |
 | 22 Sep – 5 Oct 2026 | Reconcile LLaMA fusion; sample-based explanations (SP8) | \[Team to confirm\] |
-| 6 – 19 Oct 2026 | FLAG-style neighbour sampling on Elliptic (SP9); close the gap to Random Forest | Supervisor feedback: evaluation must address heterophily and camouflaged fraud |
+| 6 – 19 Oct 2026 | FLAG-style neighbour sampling on Elliptic (SP9); close the gap to Random Forest | Review of the plan: evaluation must address heterophily and camouflaged fraud |
 | 27 Oct 2026 | (not planned) | Pivot to the Instagram text-attributed graph; heterophily measured (SP1) |
 | 30 Oct 2026 | Report consolidation | Pipeline SP2–SP7 built and run for both settings; FLAG comparison |
 
@@ -231,7 +231,7 @@ This is a shortcut: the model learns "verified or famous means human", not how b
 
 ### 4.7 Deviations and limitations
 
-We changed the original question, "does LLM text improve a GNN on Elliptic?", into the question P′: "when does graph structure help an LLM-based detector, given measured heterophily?" Elliptic offered no real text and no heterophily evaluation, so P could not answer the supervisor's concern. Limitations: commercial accounts are a proxy for fraud; we used one dataset; LLM-reasoner results come from samples; models are small (up to 1.5B parameters) and not fine-tuned; FLAG is compared through published numbers only. The planned explainability output (SP8 in Assessment 2) was not carried over to the new dataset.
+We changed the original question, "does LLM text improve a GNN on Elliptic?", into the question P′: "when does graph structure help an LLM-based detector, given measured heterophily?" Elliptic offered no real text and no heterophily evaluation, so P could not test what happens under camouflage. Limitations: commercial accounts are a proxy for fraud; we used one dataset; LLM-reasoner results come from samples; models are small (up to 1.5B parameters) and not fine-tuned; FLAG is compared through published numbers only. The planned explainability output (SP8 in Assessment 2) was not carried over to the new dataset.
 
 ## 5. Individual Contributions
 

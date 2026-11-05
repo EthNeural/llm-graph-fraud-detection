@@ -4,8 +4,8 @@ How much do large language models help graph-based fraud detection when the grap
 **heterophilous**, that is, when fraudulent accounts mostly connect to normal ones?
 
 This repository is my part of the COMP8851 major project (Macquarie University). The topic is
-LLM-based approaches for graph fraud detection, and the supervisor asked for an evaluation
-that accounts for heterophily and camouflaged fraud.
+LLM-based approaches for graph fraud detection, evaluated under heterophily and camouflaged
+fraud.
 
 - **New to the project?** Start with [TEAM_GUIDE.md](TEAM_GUIDE.md), which explains every step and decision.
 - **Latest status and results:** see [REPORT.md](REPORT.md), updated as experiments finish.

@@ -28,7 +28,7 @@ graph models rely on it. If your friends are bots, you're probably a bot.
 
 **Fraudsters break this rule on purpose.** A bot follows lots of real people so it looks
 normal. This is called **heterophily**: connected accounts are often *different*, not similar.
-Our supervisor asked us to test everything with this in mind.
+So everything here is tested with this in mind.
 
 **What we measured:** on Instagram, a business account's friends are business accounts only
 39% of the time. Business accounts are 36% of all users, so a business account's friends are

@@ -2,7 +2,7 @@
 
 Everything in this folder was written to be **read**, not run. These are the reading guides, report drafts and handoff notes from the project's working sessions. Read this page first: it tells you what each file is and how the thinking got from "Elliptic" to "TwiBot-22".
 
-**Project:** COMP8851 (Macquarie University). LLM-based approaches for graph fraud detection, evaluated under **heterophily**, as the supervisor asked.
+**Project:** COMP8851 (Macquarie University). LLM-based approaches for graph fraud detection, evaluated under **heterophily** (camouflaged fraud).
 
 **Builder:** Prajan Bhattarai. Code in `my_build/`, results in `my_build/results/`.
 
@@ -11,7 +11,7 @@ Everything in this folder was written to be **read**, not run. These are the rea
 | When (2026) | What changed | Why |
 |---|---|---|
 | Sep–Oct | Team pipeline on **Elliptic** (Bitcoin transactions) | Original Assessment 2 plan |
-| 27 Oct | Dropped Elliptic, rebuilt on **Instagram** (GLBench text graph) | Elliptic has no real text for an LLM to read; supervisor asked for heterophily |
+| 27 Oct | Dropped Elliptic, rebuilt on **Instagram** (GLBench text graph) | Elliptic has no real text for an LLM to read, and the evaluation had to address heterophily |
 | 30 Oct | First report draft (file 01) | Instagram results: a good text encoder wins; GNNs add nothing |
 | 1–3 Nov | Added **TwiBot-20** (real bot labels, bio + tweets) as the main dataset | A real bot/fraud-like task with a benchmark split |
 | 3–4 Nov | TwiBot-20 findings | Text does the work. Edges carry almost no label signal (adjusted homophily ≈ 0). The link signal that exists is a crawl artefact. `verified` is a shortcut |
