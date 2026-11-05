@@ -12,7 +12,7 @@
 
 ## Link to the earlier reports (A1, A2; `previous_reports/`, git-ignored; read 6 Nov ~01:40)
 
-**A1 (Project Initiation, 23 Aug 2026)** promised a dataset-agnostic plan: "a publicly available fraud-detection dataset that can be represented as a graph"; four experiments (traditional ML, GNN-only, language-model-only, hybrid with concatenation fusion `z = [z_graph || z_text]`, gated / attention fusion "if time permits"); metrics precision, recall, F1, ROC-AUC, PR-AUC; ablations. **No timeline in A1** (the final template asks for timeline vs plan: reconstruct the plan from A1's task list and A2's next steps). Roles: Prajan = language-model / semantic component.
+**A1 (Project Initiation, 23 Aug 2026)** promised a dataset-agnostic plan: "a publicly available fraud-detection dataset that can be represented as a graph"; four experiments (traditional ML, GNN-only, language-model-only, hybrid with concatenation fusion `z = [z_graph || z_text]`, gated / attention fusion "if time permits"); metrics precision, recall, F1, ROC-AUC, PR-AUC; ablations. **No timeline in A1** (the final template asks for timeline vs plan: reconstruct the plan from A1's task list and A2's next steps). **DEFERRED by the builder (6 Nov): remind before submission.** Roles: Prajan = language-model / semantic component.
 **Research questions to answer in the Outcome section:**
 - RQ1 LLM + GNN hybrid vs GNN-only → TwiBot-20/22: text features into GNNs and trees, LoRA, DGP (pending); gains small.
 - RQ2 GNNs vs traditional ML → trees ≥ GNNs on TwiBot-22 (and A2's Elliptic: random forest F1 0.816 vs GraphSAGE 0.333).
