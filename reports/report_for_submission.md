@@ -30,6 +30,16 @@ Planned (estimates, 5 Nov):
 | Fri night – Sat 7 Nov | TwiBot-20 follow-up batch (optional), figures | ~12 h GPU + ~4 h |
 | Sun 8 Nov | Writing | 1 day |
 
+## Literature review plan (builder, 5 Nov)
+
+Order and argument (~400 words in the report):
+1. **MAGNET**: adaptive learning for homophilous and heterophilous neighbourhoods (Haghighi et al., "Robust Graph Learning Against Camouflaged Malicious Actors", WISE 2024, LNCS, doi 10.1007/978-981-96-0567-5_12; verified on Crossref).
+2. **TROPICAL**: higher-order relationships and hypergraph learning (Haghighi et al., ICDM 2024, doi 10.1109/icdm59182.2024.00019; extended in Knowledge and Information Systems 2025, doi 10.1007/s10115-025-02476-5; verified).
+3. **"DEFEND"**: discriminative learning through intra- and inter-relation patterns. **Name not verified**: the closest match is Haghighi et al., "Beyond Smoothing: A Discriminative Enhanced Aggregation Graph Neural Network for Camouflaged Fraud Detection", ACM TKDD 2026, doi 10.1145/3801967. Check the model's name in the paper before citing.
+   Also available: Haghighi, "From Classic GNNs to Hyper-GNNs for Detecting Camouflaged Malicious Actors", WSDM 2023, doi 10.1145/3539597.3572989.
+
+Argument: in online social networks, malicious accounts may deliberately connect to legitimate users (camouflage; Dou et al., 2020), weakening homophily-based graph learning. Haghighi et al. address this with adaptive neighbourhood aggregation, multi-relational learning and higher-order representations. These motivate testing whether interaction patterns, local structure and cross-relation inconsistencies give complementary signals for camouflaged accounts (our Q1–Q3, checklist E8–E10). **Caution to state:** those papers evaluate specific fraud datasets; they do not show the methods transfer to TwiBot-22, so our experiments test that transfer.
+
 ## Methodology: other items to include (to be filled)
 
 - Datasets and why: Instagram (secondary), TwiBot-20, TwiBot-22 (see `artifacts/04_decisions_and_reasons.md`).
