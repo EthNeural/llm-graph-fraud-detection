@@ -10,6 +10,24 @@
 - **Citation rule:** cite work from the past 3 (recommended) to 5 (at most) years, i.e. 2021 or later. Our list to check: Dou et al. 2020 (CARE-GNN) and Yang et al. AAAI 2020 are 6 years old: keep only as one-line foundational mentions, or replace (camouflage can be motivated from MAGNET 2024 / TKDD 2026 and FRAUDRE 2021). Fine: TwiBot-20 (2021), FRAUDRE (2021), TwiBot-22 (2022), Platonov, Hays, GADBench, Mao (2023), MAGNET, TROPICAL (2024–25), TKDD 2026.
 - **Project brief:** "Large Language Models for Graph-based Fraud Detection": how textual (LLM) and structural (graph) information can be jointly leveraged; expected outcome a framework prototype + technical report. **Framing for the report:** the three LLM roles the brief names map onto our pipeline: LLM node representations (multilingual-E5 / MiniLM text features into trees and GNNs), LLM reasoning over graph structure by prompting (zero-shot, DGP with neighbour summaries), and LLM fine-tuning (LoRA `target`). The main result is *when* each helps under heterophily, not "profile wins".
 
+## Link to the earlier reports (A1, A2; `previous_reports/`, git-ignored; read 6 Nov ~01:40)
+
+**A1 (Project Initiation, 23 Aug 2026)** promised a dataset-agnostic plan: "a publicly available fraud-detection dataset that can be represented as a graph"; four experiments (traditional ML, GNN-only, language-model-only, hybrid with concatenation fusion `z = [z_graph || z_text]`, gated / attention fusion "if time permits"); metrics precision, recall, F1, ROC-AUC, PR-AUC; ablations. **No timeline in A1** (the final template asks for timeline vs plan: reconstruct the plan from A1's task list and A2's next steps). Roles: Prajan = language-model / semantic component.
+**Research questions to answer in the Outcome section:**
+- RQ1 LLM + GNN hybrid vs GNN-only → TwiBot-20/22: text features into GNNs and trees, LoRA, DGP (pending); gains small.
+- RQ2 GNNs vs traditional ML → trees ≥ GNNs on TwiBot-22 (and A2's Elliptic: random forest F1 0.816 vs GraphSAGE 0.333).
+- RQ3 contribution of semantic information on top of structure / profile → +0.01 macro-F1; empty-bio effect.
+- RQ4 fusion strategy vs cost → concatenation (encoders), prompting with neighbour summaries (DGP), fine-tuning (LoRA), neighbour filtering (FLAG-lite, TwiBot-20).
+- RQ5 robustness to imbalance → class weights, validation cut-off, PR-AUC reweighted to 5% / 1% bots.
+
+**A2 (Planning and Development)**: Elliptic → Kaggle "Fake/Authentic User Instagram" CSV (Purba; 65,326 accounts, 17 numbers, no edges: kNN proxy graph; no raw text: LLaMA read feature-to-text sentences). Results: GraphSAGE ROC-AUC 0.913; GCN + LLaMA 0.882 (threshold miscalibrated, recall 0.972). **A2's next steps and what was delivered:** threshold calibration → validation cut-off everywhere ✅; repeated seeds → 3 seeds ✅; real bios and real follow edges → GLBench Instagram, TwiBot-20, TwiBot-22 ✅; semantic neighbour filtering / reweighting → FLAG-lite on TwiBot-20 ✅, neighbour-trust headroom on TwiBot-22 (oracle +0.003 AUROC) ✅; smaller language-encoder baseline → MiniLM ✅; GraphSAGE / GAT fusion → GNN family on TwiBot ✅.
+**Dataset path and reasons** (each change follows from A1's need for real text and real links): Elliptic (no natural text) → Kaggle Instagram CSV (no real edges, no raw text) → GLBench Instagram (real bios and follow links, but labels commercial vs personal) → TwiBot-20 (real bot labels, text, links, official split) → TwiBot-22 (1M users, 7 relations, expert labels). The changes did not make results look better (final answer: graph methods add little).
+
+**Two cautions for the final report:**
+1. **A2's heterophily bands used the users' own true labels** (local heterophily from ground-truth neighbour labels, on a kNN graph built from the same features). Its band ROC-AUC 0.997 / 0.614 / 0.036 is mostly a class-composition effect: a band where nearly every user's neighbours have the other label is close to single-class, and the "inversion" 0.036 is what that produces. Our TwiBot-22 Q2 bins share the caveat (≥ 0.75 bin 1% bots, < 0.25 bin 77% bots). Present both as diagnostics, not as deployable signals, and say why.
+2. **A2 says "Supervisor feedback emphasised" heterophily.** The final report must motivate heterophily from camouflage in the literature instead (writing rule).
+**A1's LLM-for-graph-fraud papers** (MLED arXiv 2507.11997, GuARD KDD 2025, L2IR arXiv 2605.26040, FraudCoT arXiv 2601.22949, BRIGHT CIKM 2022, LEX-GNN CIKM 2024, SEC-GFD) are within the 5-year rule; the current literature plan has the camouflage line but **no LLM + graph fraud line**: add 2–3 of these (verify the arXiv ids first).
+
 ## Methodology: timeline
 
 Past work (dates 2026):
