@@ -136,3 +136,4 @@ Saved dgp_vs_target.json
 - 10:13 FINAL RUN started (sealed non-expert users, read once).
 - 10:14 TwiBot-20 GPU: step6_target_s2 started.
 - 10:20 FINAL RUN finished, exit 0 (final_run.json).
+- 10:25 Final report draft (08) fact-checked by a sceptic agent (~170 numbers): fixed the Table 1 caption (PR-AUC moves up to 0.042 on the sample), 'about 0.11' → 0.07–0.12 AUROC, Q3 'add nothing' → tiny decrease, TROPICAL series not monotone, zero-shot wording.

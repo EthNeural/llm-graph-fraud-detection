@@ -116,7 +116,7 @@ Each change followed from the need for real text and real links. None made our r
 
 On the Instagram graph, where text alone is weak (AUROC about 0.63), GCN is level with the MLP (+0.002 [−0.016, +0.020]), consistent with neighbour averaging hurting most when a user's own text is strong.
 
-**4.2 TwiBot-22: main results.** Table 1 gives the results on the **sealed** test users (49,951 users excluding the experts, scored once), with the working-test value in brackets where it differs by more than 0.005. Sample = the ~5,000 sample users with bio and tweets; 1M = all users, bios only. The language models were scored on working-test users only (marked †).
+**4.2 TwiBot-22: main results.** Table 1 gives the results on the **sealed** test users (49,951 users excluding the experts, scored once), with the working-test value in brackets for the sample rows that moved most. Sample = the ~5,000 sample users with bio and tweets; 1M = all users, bios only. The language models were scored on working-test users only (marked †).
 
 | Model | Sample | 1M |
 |---|---|---|
@@ -132,7 +132,7 @@ On the Instagram graph, where text alone is weak (AUROC about 0.63), GCN is leve
 | MLP, no edges (GNN control) | – | 0.683 / 0.800 / 0.425 |
 | LoRA `target` / `dgp`, 1,500-user subset, mean of 2 seeds † | 0.618 / 0.699 / 0.332 · 0.618 / 0.714 / 0.343 | – |
 
-*Table 1. TwiBot-22 sealed-test results, macro-F1 / AUROC / PR-AUC; random guessing gives AUROC 0.5 and PR-AUC 0.14. Every sealed value is within 0.016 of its working-test value, so nothing was tuned to the working set.*
+*Table 1. TwiBot-22 sealed-test results, macro-F1 / AUROC / PR-AUC; random guessing gives AUROC 0.5 and PR-AUC 0.14. Every sealed macro-F1 and AUROC is within 0.016 of its working-test value; PR-AUC moves more on the small sample (by up to 0.042), little on the 1M set (≤ 0.011). Nothing was tuned to the working set.*
 
 **[FIGURE 2: Table 1 as a bar chart with 95% confidence intervals]**
 
@@ -144,7 +144,7 @@ The best model, XGB-Graph with profile on all one million users, reaches PR-AUC 
 
 **Finding 2: text adds a little on top of the profile.** On the sealed users, profile plus text minus profile is +0.015 [+0.003, +0.028] macro-F1 on the sample and +0.016 [+0.012, +0.020] on all users. A surprise: for a text-only model, adding 20 tweets to the bio *hurts*, −0.052 [−0.074, −0.030] on the same users. Slices explain why. On users with a bio, the two are equal (AUROC 0.682 against 0.681). Averaging tweets into one vector blurs the sharp contrast between empty and non-empty bios. We tested this directly: adding a single empty-bio flag to the bio-plus-tweets embedding closes the gap (0.672 against 0.673).
 
-**Finding 3: the fine-tuned LLM helps only when data is scarce, and its neighbour summaries add nothing.** DGP's prompt with neighbour summaries scores the same as the account's own text on a 1,500-user subset: over two seeds the macro-F1 difference is 0.000 (−0.004 and +0.005) and the AUROC difference +0.015 (−0.001 and +0.030 [−0.000, +0.058]), smaller than the seed-to-seed change of `target` itself (0.037 AUROC). That is what heterophily predicts: the neighbours' text says little about the account. With the same 1,300 training users, LoRA beats TF-IDF by +0.050 macro-F1 (the CI excludes 0). With 70,000 training users, TF-IDF ties LoRA (+0.002 [−0.015, +0.019]). The zero-shot model answers "bot" for almost every account and is no better than chance.
+**Finding 3: the fine-tuned LLM helps only when data is scarce, and its neighbour summaries add nothing.** DGP's prompt with neighbour summaries scores the same as the account's own text on a 1,500-user subset: over two seeds the macro-F1 difference is 0.000 (−0.004 and +0.005) and the AUROC difference +0.015 (−0.001 and +0.030 [−0.000, +0.058]), smaller than the seed-to-seed change of `target` itself (0.037 AUROC). That is what heterophily predicts: the neighbours' text says little about the account. With the same 1,300 training users, LoRA beats TF-IDF by +0.050 macro-F1 (the CI excludes 0). With 70,000 training users, TF-IDF ties LoRA (+0.002 [−0.015, +0.019]). The zero-shot model's raw answer is "bot" for about 99% of accounts; even with a cut-off tuned on validation it ranks no better than chance (AUROC 0.461 on the 5,000 users).
 
 **4.4 What the links add.**
 
@@ -154,8 +154,8 @@ The best model, XGB-Graph with profile on all one million users, reaches PR-AUC 
 
 - **(Q1) Bots hide among humans on every relation.** Bots' neighbours are 4–17% bots against a 14% base rate; humans' neighbours are about 93% humans. Adjusted homophily is 0.010–0.024. This is the shape FRAUDRE reports for fraud graphs.
 - **(Q2) Neighbours help some users and hurt others.** Neighbour features help users whose neighbours mostly share their label: +0.057 [+0.045, +0.071] AUROC (27,002 users, 1% bots). They hurt users whose neighbours mostly do not: −0.016 [−0.022, −0.009] (4,197 users, 77% bots). R-GCN loses 0.052 in the homophilous group, while FAGCN gains slightly in every group. This is the node-level pattern Mao et al. (2023) predict, and the question MAGNET addresses. One caution: these groups are defined using each user's own label, so they diagnose where models fail but cannot be used to make predictions. The same caution applies to the heterophily bands in our second-phase report.
-- **(Q3) Relations do not disagree usefully.** DEFEND's premise is that fraudsters avoid consistent cross-relation interactions. Our eight features comparing each user's follow neighbourhood with their interaction neighbourhood test that premise directly, and they add nothing: −0.002 [−0.004, −0.000] macro-F1 on all users, and the same on the sample.
-- **TROPICAL's premise does not transfer.** Bot density among a bot's neighbours *falls* with distance, from 0.116 at one hop to 0.059 at four hops, unlike the rising density on Amazon.
+- **(Q3) Relations do not disagree usefully.** DEFEND's premise is that fraudsters avoid consistent cross-relation interactions. Our eight features comparing each user's follow neighbourhood with their interaction neighbourhood test that premise directly, and they do not help: −0.002 [−0.004, −0.000] macro-F1 on all users (a tiny decrease), and no change on the sample.
+- **TROPICAL's premise does not transfer.** Bot density among a bot's neighbours falls overall with distance (0.116, 0.081, 0.086 and 0.059 at one to four hops), unlike the rising density on Amazon.
 
 **[FIGURE 3: (a) per-relation share of bot neighbours for bots and humans against the 14% base rate (Q1); (b) gain from neighbour features by local-homophily group (Q2)]**
 
@@ -210,7 +210,7 @@ We reran our own models under their protocol, with and without `verified` (Table
 
 Three things follow:
 
-1. **The split matters far more than `verified`.** Every model loses about 0.11 AUROC on the released split. Our trees move by at most 0.01 with `verified`.
+1. **The split matters far more than `verified`.** Every model loses 0.07–0.12 AUROC on the released split (0.12 for XGB-Graph). Our trees move by at most 0.01 with `verified`.
 2. **Under their protocol, still no graph model beats the tree without neighbours.**
 3. **The leaderboard's labels were partly produced by GCN, GAT and R-GCN models**, the same families that top it.
 
@@ -262,7 +262,7 @@ Several parts of the problem remain open beyond this project.
 1. **Better labels are the most important next step.** The dataset's labels overstate at least one profile cue, and its expert labels are not independent of the label-makers. Clean labels at scale are expensive, and human judges are imperfect too. The most promising approach is targeted annotation: use active learning to send humans the accounts on which models disagree most. Pair it with training methods that tolerate label noise, and report results on independent labels as standard.
 2. **Camouflage-aware aggregation has limited headroom on this data.** Adaptive methods such as MAGNET are the natural next models to test under our protocol, but our oracle experiment caps the gain from per-user neighbour trust at about +0.003 AUROC on TwiBot-22. Effort is better spent first on labels and on the accounts' own features. Adaptive aggregation may matter more on graphs with stronger camouflage structure.
 3. **LLMs with more context and more data.** Our LLM read 480 tokens and trained on 1,300 users. Longer inputs, more training users and LLM-derived features fed into tree models, rather than the LLM deciding alone, are promising and cheap to test. DGP's neighbour summaries did not help on TwiBot-22, so richer LLM use of the account's own text is the more promising direction.
-4. **Shift over time and newer bots.** Every model loses about 0.11 AUROC on a non-random split, and TwiBot-22 predates bots that write with LLMs. Time-based splits and newer data are needed before any detector is deployed.
+4. **Shift over time and newer bots.** Every model loses 0.07–0.12 AUROC on a non-random split, and TwiBot-22 predates bots that write with LLMs. Time-based splits and newer data are needed before any detector is deployed.
 
 ## 7. Bibliography
 
