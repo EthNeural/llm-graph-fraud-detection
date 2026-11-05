@@ -47,3 +47,4 @@ Saved /Users/pj/Desktop/Macquarie - Sem 4/PROJECT/Graph-based-fraud-detection-sy
 === exit code 0
 ```
 - 13:22 Builder decision: experts used for training by 5-fold rotation (G7, B8). LoRA rotation queued after DGP (blind).
+- 13:47 Builder decision: DGP at TwiBot-20 scope (1,300 train, 1,000 val, 1,500 stratified test subset, seed 42, committed before scoring); dgp vs target on that subset. Reason: summaries ~1 s each (5.6 h vs 8.6 h). Queue: zero-shot -> rotation smoke -> rotation -> DGP -> target s1 -> dgp s1 (until ~13:00 Fri).

@@ -75,6 +75,7 @@ LORA_SEED = os.environ.get("LORA_SEED")                # None = the original, un
 FORCE = os.environ.get("FORCE") == "1"           # run even if the estimate is over MAX_HOURS
 FP32 = os.environ.get("FP32") == "1"             # fallback if fp16 training goes NaN
 SMOKE = os.environ.get("SMOKE") == "1"           # tiny end-to-end run (20 train users): times every phase, keeps nothing
+DGP_TEST = os.environ.get("DGP_TEST")          # .npy of test node ids: score only these (TwiBot-22 dgp, 5 Nov)
 # Checkpoint rule. "loss": lowest validation loss on the check sample (the original TwiBot-20 runs).
 # "f1": macro-F1 (validation cut-off) on the check sample, adapter saved at EVERY check, the same
 # rule as the MLP / GNNs (TwiBot-22 H7, external feedback #1). Default: f1 on TwiBot-22.
@@ -486,6 +487,10 @@ def main():
     val_s, test_s = sample(val, y, N_VAL), sample(test, y, N_TEST)    # the step 5 samples
     if SMOKE:
         val_s, test, test_s = val_s[:50], test[:20], test_s[:20]
+    if DGP_TEST:                                               # TwiBot-20 scope (builder, 5 Nov ~15:00)
+        sub = np.load(DGP_TEST)
+        assert np.isin(sub, test).all(), "DGP_TEST must be a subset of the working test users"
+        test = test_s = np.sort(sub)                           # summaries, scoring and zero-shot all on it
     if DATASET == "twibot22":                                  # never score a sealed user (B4, H8)
         import twibot22_guard
         twibot22_guard.assert_not_sealed(np.load(DATA_DIR / "rows.npy")[np.concatenate([train_s, val_s, test])])
@@ -594,7 +599,7 @@ def main():
     rows = []
     vnodes = sc["val_nodes"] if "val_nodes" in sc.files else val
     t = best_threshold(y[vnodes], sc["val"])
-    rows.append(evaluate(f"{NAME} (full test)", y[test], (sc["test"] > t).astype(int),
+    rows.append(evaluate(f"{NAME} (" + (f"test subset {len(test):,}" if DGP_TEST else "full test") + ")", y[test], (sc["test"] > t).astype(int),
                          sc["test"], iso[test]))
     pos = {v: i for i, v in enumerate(test)}
     p_s = sc["test"][[pos[v] for v in test_s]]

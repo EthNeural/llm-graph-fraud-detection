@@ -35,8 +35,10 @@ import step6_dgp as s6
 from step6_dgp import torch, F
 
 ROOT = Path(__file__).resolve().parent
-OUT = s6.RESULTS_DIR / "expert_rotation_target.npz"
-FOLD_DIR = s6.RESULTS_DIR / "expert_rotation_target_folds"
+ROT_SMOKE = os.environ.get("ROT_SMOKE") == "1"   # 1 fold, 20 train / 10 held-out experts, separate folder: checks it runs
+_sm = "_smoke" if ROT_SMOKE else ""
+OUT = s6.RESULTS_DIR / f"expert_rotation_target{_sm}.npz"
+FOLD_DIR = s6.RESULTS_DIR / f"expert_rotation_target_folds{_sm}"
 EXPERTS = ROOT.parent / "data" / "twibot-22-raw" / "expert_labels" / "label_manual.csv"
 N_FOLDS = 5
 
@@ -84,6 +86,9 @@ def main():
     yes = tok.encode("Yes", add_special_tokens=False)[0]
     no = tok.encode("No", add_special_tokens=False)[0]
     orig = s6.original_ids()
+    if ROT_SMOKE:                                          # tiny: fold 0 only, 20 train + 10 held out
+        keep = np.concatenate([np.where(folds != 0)[0][:20], np.where(folds == 0)[0][:10]])
+        nodes, y_exp, folds = nodes[keep], y_exp[keep], folds[keep]
     seqs = [tok(s6.build_prompt(tok, v, x_text, {}, orig), add_special_tokens=False)["input_ids"] for v in nodes]
     model = get_peft_model(base, LoraConfig(task_type="CAUSAL_LM", **s6.LORA))
     model.gradient_checkpointing_enable(gradient_checkpointing_kwargs={"use_reentrant": False})
@@ -98,7 +103,8 @@ def main():
     sc = np.load(s6.RESULTS_DIR / "step6_Qwen3-1.7B_target_scores.npz")
     weak_cut = val_cutoff(y_weak[sc["val_nodes"]], sc["val"])
 
-    for k in range(N_FOLDS):
+    t_all = time.time()
+    for k in range(1 if ROT_SMOKE else N_FOLDS):
         f = FOLD_DIR / f"fold{k}.npz"
         if f.exists():
             continue
@@ -111,6 +117,9 @@ def main():
         np.savez(f, held_out=te, p=p_te, cut=val_cutoff(y_exp[tr], p_tr))
         print(f"fold {k} saved (no metric printed: blind)", flush=True)
 
+    if ROT_SMOKE:
+        print(f"ROTATION SMOKE TEST PASSED ({(time.time() - t_all) / 60:.1f} min for 20 train + 10 held out)")
+        return
     p_rot, cut_rot = np.empty(len(nodes)), np.empty(len(nodes))
     for k in range(N_FOLDS):
         z = np.load(FOLD_DIR / f"fold{k}.npz")
