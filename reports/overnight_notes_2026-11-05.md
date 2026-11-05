@@ -95,3 +95,4 @@ Saved /Users/pj/Desktop/Macquarie - Sem 4/PROJECT/Graph-based-fraud-detection-sy
 FAGCN (1M)                       expert    0.734 [0.685, 0.780]    0.841 [0.800, 0.881]    0.537 [0.441, 0.631]   
                                  diff      +0.013 [-0.011, +0.036]  -0.005 [-0.017, +0.005]  +0.012 [-0.009, +0.035] 
 ```
+- 01:19 Exploratory pilot step 0 (oracle neighbour-trust switch), exit 0: switch − XGB-Graph AUROC +0.0030 [+0.0021, +0.0040] (A, <0.5, 8.8% switched), +0.0032 [+0.0023, +0.0042] (B, <0.25); macro-F1 +0.005–0.006; PR-AUC +0.005–0.006. Below the +0.005 AUROC go/no-go: full pilot NOT built (rule fixed at 01:05).

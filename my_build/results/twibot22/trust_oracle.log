@@ -1,0 +1,8 @@
+own-feature tree               macro-F1 0.721  AUROC 0.8599  PR-AUC 0.525
+XGB-Graph                      macro-F1 0.731  AUROC 0.8721  PR-AUC 0.579
+switch A (<0.5 -> own tree)    macro-F1 0.736  AUROC 0.8751  PR-AUC 0.584
+switch B (<0.25 -> own tree)   macro-F1 0.736  AUROC 0.8753  PR-AUC 0.585
+switch A (<0.5 -> own tree) - XGB-Graph: AUROC +0.0030 [+0.0021, +0.0040]  macro-F1 +0.006 [+0.004, +0.008]  PR-AUC +0.005 [+0.003, +0.008]  (switched 8.8%)
+switch B (<0.25 -> own tree) - XGB-Graph: AUROC +0.0032 [+0.0023, +0.0042]  macro-F1 +0.005 [+0.003, +0.007]  PR-AUC +0.006 [+0.003, +0.008]  (switched 8.4%)
+Saved trust_oracle.json
+=== exit code 0
