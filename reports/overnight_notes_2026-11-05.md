@@ -32,3 +32,17 @@ Qwen3-1.7B zero-shot target acc 0.810  macroF1 0.484  F1_1 0.073  AUROC 0.392  P
 Saved -> /Users/pj/Desktop/Macquarie - Sem 4/PROJECT/Graph-based-fraud-detection-system/my_build/results/twibot22/A/step6_lora.json
 === exit code 0
 ```
+- 13:14 Step 1 text baselines (TF-IDF+LR, MiniLM+MLP) exit 0.
+```
+LoRA target (rescored here, cut-off on its 1,000 val users): {'n': 5000, 'bots': 700, 'macro_f1': 0.6258268349978193, 'auroc': 0.7097636212624584, 'pr_auc': 0.3117658616534659, 'pr_auc_at_5pct_bots': 0.1355174285272691, 'pr_auc_at_1pct_bots': 0.03046781241349008}
+tfidf_lr_full70k {'n': 5000, 'bots': 700, 'macro_f1': 0.6277243150773428, 'auroc': 0.7270598006644519, 'pr_auc': 0.3073773846262937, 'pr_auc_at_5pct_bots': 0.12980747527796996, 'pr_auc_at_1pct_bots': 0.02842308125742991, 'minus_lora_target': {'macro_f1': [0.0019872451382913375, -0.015143776910713867
+minilm_mlp_full70k seed 0 {'n': 5000, 'bots': 700, 'macro_f1': 0.6031720237640975, 'auroc': 0.6809059800664452, 'pr_auc': 0.2934477378951583, 'pr_auc_at_5pct_bots': 0.12741901585936968, 'pr_auc_at_1pct_bots': 0.02970204458157622, 'minus_lora_target': {'macro_f1': [-0.022378653266130984, -0.041911960
+minilm_mlp_full70k seed 1 {'n': 5000, 'bots': 700, 'macro_f1': 0.6109970612124651, 'auroc': 0.6813441860465117, 'pr_auc': 0.2829647125808818, 'pr_auc_at_5pct_bots': 0.11877874499942107, 'pr_auc_at_1pct_bots': 0.02698765283912572, 'minus_lora_target': {'macro_f1': [-0.01487286365178505, -0.0342863075
+minilm_mlp_full70k seed 2 {'n': 5000, 'bots': 700, 'macro_f1': 0.6053591516146144, 'auroc': 0.6888003322259136, 'pr_auc': 0.2960759059142913, 'pr_auc_at_5pct_bots': 0.12879045136999392, 'pr_auc_at_1pct_bots': 0.031110635826162577, 'minus_lora_target': {'macro_f1': [-0.02030092577907114, -0.040413601
+tfidf_lr_matched1300 {'n': 5000, 'bots': 700, 'macro_f1': 0.575765747047815, 'auroc': 0.6401501661129569, 'pr_auc': 0.24264754711067998, 'pr_auc_at_5pct_bots': 0.09704941491671179, 'pr_auc_at_1pct_bots': 0.02062665496190425, 'minus_lora_target': {'macro_f1': [-0.04998096775492642, -0.066778336624091
+minilm_mlp_matched1300 seed 0 {'n': 5000, 'bots': 700, 'macro_f1': 0.5765818013683321, 'auroc': 0.6097279069767442, 'pr_auc': 0.2345723383104145, 'pr_auc_at_5pct_bots': 0.09487997780513902, 'pr_auc_at_1pct_bots': 0.020384570398131886, 'minus_lora_target': {'macro_f1': [-0.0494326581914654, -0.069605
+minilm_mlp_matched1300 seed 1 {'n': 5000, 'bots': 700, 'macro_f1': 0.580203269995581, 'auroc': 0.6146441860465116, 'pr_auc': 0.2337058576688688, 'pr_auc_at_5pct_bots': 0.09374388210797924, 'pr_auc_at_1pct_bots': 0.020003088637714796, 'minus_lora_target': {'macro_f1': [-0.045652491024263726, -0.06441
+minilm_mlp_matched1300 seed 2 {'n': 5000, 'bots': 700, 'macro_f1': 0.5653162281911631, 'auroc': 0.5840106312292359, 'pr_auc': 0.21650790163396474, 'pr_auc_at_5pct_bots': 0.08713150412001633, 'pr_auc_at_1pct_bots': 0.021664731098819928, 'minus_lora_target': {'macro_f1': [-0.06043881552551307, -0.0790
+Saved /Users/pj/Desktop/Macquarie - Sem 4/PROJECT/Graph-based-fraud-detection-system/my_build/results/twibot22/text_baselines.json
+=== exit code 0
+```
