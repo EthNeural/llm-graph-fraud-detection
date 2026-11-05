@@ -121,3 +121,5 @@ dgp {'macro_f1': 0.628, 'auroc': 0.717, 'pr_auc': 0.346, 'pr_auc_at_5pct_bots': 
 dgp - target {'macro_f1': [-0.004065591283265327, -0.02657503243871165, 0.01788914041000687], 'auroc': [-0.0012136139822521192, -0.03139959867318264, 0.02795168622629283]}
 Saved dgp_vs_target.json
 ```
+- 04:44 LoRA target seed 1 started (seed noise was 0.02-0.03 on TwiBot-20, larger than dgp - target gaps).
+- 08:07 target seed 1 finished, exit 0. dgp seed 1 started.
