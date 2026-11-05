@@ -1,0 +1,5 @@
+# Notes for the humanized report version (low priority; kept short)
+
+- Plain academic prose (Pinker, "Why Academic Writing Stinks", 2014; Sword, *Stylish Academic Writing*, 2012): concrete subjects and verbs, few nominalisations ("zombie nouns"), active voice with "we", varied sentence length, hedging matched to the evidence, sparing signposting, numbers instead of adjectives.
+- Words LLMs overuse in scientific text (Juzek & Ward 2024, arXiv 2412.11385, 21 "focal words", list from a model summary of Appendix A: delve(s/d/ing), showcasing/showcases, boasts, underscore(s/ing), comprehending, intricacies, intricate, surpassing/surpasses, garnered, emphasizing, realm, groundbreaking, advancements, aligns). Kobak et al. (Science Advances 2025, arXiv 2406.07016): excess 2024 words are almost all style words, e.g. delves, underscores, showcasing, potential, findings, crucial, intricate, notably; common set: across, additionally, comprehensive, crucial, enhancing, exhibited, insights, notably, particularly, within; ≥ 13.5% of 2024 abstracts LLM-processed.
+- Goal: clear writing a careful person would produce; not detector evasion.
