@@ -72,3 +72,4 @@ fold 4 saved (no metric printed: blind)
 Saved /Users/pj/Desktop/Macquarie - Sem 4/PROJECT/Graph-based-fraud-detection-system/my_build/results/twibot22/A/expert_rotation_target.npz (blind: read in the final run)
 === exit code 0
 ```
+- 17:14 DGP started (TwiBot-20 scope: 1,300 train, 1,000 val, 1,500 test subset). Est. ~9.5 h (5.6 h summaries).
