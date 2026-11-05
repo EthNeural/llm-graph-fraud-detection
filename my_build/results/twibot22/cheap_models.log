@@ -1,0 +1,95 @@
+=== 15:14 DESIGN=sample MODEL=flags
+=== exit code 0 (DESIGN=sample MODEL=flags)
+=== 15:14 DESIGN=sample MODEL=links_only
+sample links_only: 15 columns; train 70,000 val 20,000 test 5,000
+  seed 0: val F1 0.562 | test all F1 0.562 AUROC 0.670 PR-AUC 0.213 | non-verified F1 0.555 (0.04 min)
+  seed 1: val F1 0.562 | test all F1 0.563 AUROC 0.673 PR-AUC 0.214 | non-verified F1 0.556 (0.04 min)
+  seed 2: val F1 0.561 | test all F1 0.565 AUROC 0.673 PR-AUC 0.214 | non-verified F1 0.558 (0.04 min)
+=== exit code 0 (DESIGN=sample MODEL=links_only)
+=== 15:14 DESIGN=sample MODEL=mlp_text PROFILE=0
+sample mlp_text_noprof: 768 columns; train 70,000 val 20,000 test 5,000
+  seed 0: val F1 0.622 | test all F1 0.608 AUROC 0.692 PR-AUC 0.296 | non-verified F1 0.603 (0.23 min)
+  seed 1: val F1 0.624 | test all F1 0.613 AUROC 0.701 PR-AUC 0.307 | non-verified F1 0.609 (0.25 min)
+  seed 2: val F1 0.629 | test all F1 0.617 AUROC 0.709 PR-AUC 0.309 | non-verified F1 0.612 (0.27 min)
+=== exit code 0 (DESIGN=sample MODEL=mlp_text PROFILE=0)
+=== 15:15 DESIGN=sample MODEL=tree_self PROFILE=0
+sample tree_self_noprof: 33 columns; train 70,000 val 20,000 test 5,000
+  seed 0: val F1 0.616 | test all F1 0.621 AUROC 0.711 PR-AUC 0.326 | non-verified F1 0.616 (0.07 min)
+  seed 1: val F1 0.611 | test all F1 0.618 AUROC 0.714 PR-AUC 0.318 | non-verified F1 0.614 (0.06 min)
+  seed 2: val F1 0.612 | test all F1 0.616 AUROC 0.711 PR-AUC 0.317 | non-verified F1 0.611 (0.05 min)
+=== exit code 0 (DESIGN=sample MODEL=tree_self PROFILE=0)
+=== 15:15 DESIGN=sample MODEL=xgb_graph PROFILE=0
+sample xgb_graph_noprof: 575 columns; train 70,000 val 20,000 test 5,000
+  seed 0: val F1 0.630 | test all F1 0.626 AUROC 0.764 PR-AUC 0.363 | non-verified F1 0.619 (0.91 min)
+  seed 1: val F1 0.631 | test all F1 0.633 AUROC 0.763 PR-AUC 0.357 | non-verified F1 0.626 (0.8 min)
+  seed 2: val F1 0.627 | test all F1 0.635 AUROC 0.763 PR-AUC 0.362 | non-verified F1 0.629 (0.73 min)
+=== exit code 0 (DESIGN=sample MODEL=xgb_graph PROFILE=0)
+=== 15:17 DESIGN=sample MODEL=mlp_text PROFILE=1
+sample mlp_text_prof: 783 columns; train 70,000 val 20,000 test 5,000
+  seed 0: val F1 0.703 | test all F1 0.685 AUROC 0.818 PR-AUC 0.465 | non-verified F1 0.679 (0.26 min)
+  seed 1: val F1 0.711 | test all F1 0.703 AUROC 0.828 PR-AUC 0.471 | non-verified F1 0.698 (0.26 min)
+  seed 2: val F1 0.706 | test all F1 0.698 AUROC 0.819 PR-AUC 0.469 | non-verified F1 0.693 (0.35 min)
+=== exit code 0 (DESIGN=sample MODEL=mlp_text PROFILE=1)
+=== 15:18 DESIGN=sample MODEL=tree_self PROFILE=1
+sample tree_self_prof: 48 columns; train 70,000 val 20,000 test 5,000
+  seed 0: val F1 0.717 | test all F1 0.712 AUROC 0.849 PR-AUC 0.523 | non-verified F1 0.707 (0.09 min)
+  seed 1: val F1 0.717 | test all F1 0.711 AUROC 0.848 PR-AUC 0.513 | non-verified F1 0.706 (0.09 min)
+  seed 2: val F1 0.719 | test all F1 0.715 AUROC 0.848 PR-AUC 0.517 | non-verified F1 0.710 (0.12 min)
+=== exit code 0 (DESIGN=sample MODEL=tree_self PROFILE=1)
+=== 15:19 DESIGN=sample MODEL=xgb_graph PROFILE=1
+sample xgb_graph_prof: 830 columns; train 70,000 val 20,000 test 5,000
+  seed 0: val F1 0.721 | test all F1 0.711 AUROC 0.854 PR-AUC 0.539 | non-verified F1 0.706 (2.3 min)
+  seed 1: val F1 0.721 | test all F1 0.715 AUROC 0.851 PR-AUC 0.527 | non-verified F1 0.710 (1.49 min)
+  seed 2: val F1 0.720 | test all F1 0.711 AUROC 0.851 PR-AUC 0.534 | non-verified F1 0.706 (1.42 min)
+=== exit code 0 (DESIGN=sample MODEL=xgb_graph PROFILE=1)
+=== 15:24 DESIGN=full MODEL=profile_only
+full profile_only: 15 columns; train 699,309 val 199,803 test 49,951
+  seed 0: val F1 0.712 | test all F1 0.709 AUROC 0.846 PR-AUC 0.508 | non-verified F1 0.703 (0.7 min)
+  seed 1: val F1 0.712 | test all F1 0.707 AUROC 0.846 PR-AUC 0.508 | non-verified F1 0.702 (0.66 min)
+  seed 2: val F1 0.711 | test all F1 0.706 AUROC 0.846 PR-AUC 0.508 | non-verified F1 0.702 (0.66 min)
+=== exit code 0 (DESIGN=full MODEL=profile_only)
+=== 15:26 DESIGN=full MODEL=flags
+=== exit code 0 (DESIGN=full MODEL=flags)
+=== 15:26 DESIGN=full MODEL=links_only
+full links_only: 15 columns; train 699,309 val 199,803 test 49,951
+  seed 0: val F1 0.559 | test all F1 0.558 AUROC 0.675 PR-AUC 0.214 | non-verified F1 0.551 (0.22 min)
+  seed 1: val F1 0.559 | test all F1 0.558 AUROC 0.675 PR-AUC 0.214 | non-verified F1 0.551 (0.3 min)
+  seed 2: val F1 0.559 | test all F1 0.558 AUROC 0.675 PR-AUC 0.214 | non-verified F1 0.551 (0.28 min)
+=== exit code 0 (DESIGN=full MODEL=links_only)
+=== 15:27 DESIGN=full MODEL=mlp_text PROFILE=0
+full mlp_text_noprof: 32 columns; train 699,309 val 199,803 test 49,951
+  seed 0: val F1 0.681 | test all F1 0.678 AUROC 0.778 PR-AUC 0.363 | non-verified F1 0.675 (0.5 min)
+  seed 1: val F1 0.681 | test all F1 0.680 AUROC 0.776 PR-AUC 0.363 | non-verified F1 0.676 (0.64 min)
+  seed 2: val F1 0.681 | test all F1 0.678 AUROC 0.777 PR-AUC 0.364 | non-verified F1 0.675 (0.41 min)
+=== exit code 0 (DESIGN=full MODEL=mlp_text PROFILE=0)
+=== 15:29 DESIGN=full MODEL=tree_self PROFILE=0
+full tree_self_noprof: 32 columns; train 699,309 val 199,803 test 49,951
+  seed 0: val F1 0.681 | test all F1 0.679 AUROC 0.772 PR-AUC 0.362 | non-verified F1 0.676 (0.6 min)
+  seed 1: val F1 0.681 | test all F1 0.680 AUROC 0.773 PR-AUC 0.362 | non-verified F1 0.676 (0.62 min)
+  seed 2: val F1 0.681 | test all F1 0.680 AUROC 0.773 PR-AUC 0.362 | non-verified F1 0.677 (0.62 min)
+=== exit code 0 (DESIGN=full MODEL=tree_self PROFILE=0)
+=== 15:30 DESIGN=full MODEL=xgb_graph PROFILE=0
+full xgb_graph_noprof: 559 columns; train 699,309 val 199,803 test 49,951
+  seed 0: val F1 0.696 | test all F1 0.694 AUROC 0.816 PR-AUC 0.446 | non-verified F1 0.689 (19.31 min)
+  seed 1: val F1 0.696 | test all F1 0.693 AUROC 0.816 PR-AUC 0.447 | non-verified F1 0.688 (20.14 min)
+  seed 2: val F1 0.696 | test all F1 0.694 AUROC 0.816 PR-AUC 0.448 | non-verified F1 0.690 (18.48 min)
+=== exit code 0 (DESIGN=full MODEL=xgb_graph PROFILE=0)
+=== 16:29 DESIGN=full MODEL=mlp_text PROFILE=1
+full mlp_text_prof: 47 columns; train 699,309 val 199,803 test 49,951
+  seed 0: val F1 0.722 | test all F1 0.720 AUROC 0.858 PR-AUC 0.512 | non-verified F1 0.715 (0.54 min)
+  seed 1: val F1 0.722 | test all F1 0.719 AUROC 0.857 PR-AUC 0.509 | non-verified F1 0.714 (0.49 min)
+  seed 2: val F1 0.722 | test all F1 0.718 AUROC 0.857 PR-AUC 0.511 | non-verified F1 0.713 (0.64 min)
+=== exit code 0 (DESIGN=full MODEL=mlp_text PROFILE=1)
+=== 16:30 DESIGN=full MODEL=tree_self PROFILE=1
+full tree_self_prof: 47 columns; train 699,309 val 199,803 test 49,951
+  seed 0: val F1 0.725 | test all F1 0.721 AUROC 0.860 PR-AUC 0.525 | non-verified F1 0.715 (1.09 min)
+  seed 1: val F1 0.725 | test all F1 0.719 AUROC 0.859 PR-AUC 0.526 | non-verified F1 0.714 (1.09 min)
+  seed 2: val F1 0.725 | test all F1 0.719 AUROC 0.860 PR-AUC 0.525 | non-verified F1 0.714 (1.09 min)
+=== exit code 0 (DESIGN=full MODEL=tree_self PROFILE=1)
+=== 16:34 DESIGN=full MODEL=xgb_graph PROFILE=1
+full xgb_graph_prof: 814 columns; train 699,309 val 199,803 test 49,951
+  seed 0: val F1 0.736 | test all F1 0.731 AUROC 0.872 PR-AUC 0.579 | non-verified F1 0.726 (35.95 min)
+  seed 1: val F1 0.736 | test all F1 0.732 AUROC 0.873 PR-AUC 0.580 | non-verified F1 0.728 (35.35 min)
+  seed 2: val F1 0.737 | test all F1 0.731 AUROC 0.873 PR-AUC 0.580 | non-verified F1 0.727 (34.54 min)
+=== exit code 0 (DESIGN=full MODEL=xgb_graph PROFILE=1)
+=== 18:20 all done
