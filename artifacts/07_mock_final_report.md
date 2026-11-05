@@ -130,7 +130,7 @@ On the Instagram graph, where text alone is weak (AUROC about 0.63), GCN is leve
 | **XGB-Graph + profile** | 0.712 / 0.852 / 0.533 | **0.731 / 0.873 / 0.580** |
 | GNNs (FAGCN, R-GCN 3 seeds; others 1) | – | 0.678–0.690 / 0.804–0.829 |
 | MLP, no edges (GNN control) | – | 0.679 / 0.799 / 0.415 |
-| LoRA DGP vs `target`, 1,500 subset | **[PENDING]** | – |
+| LoRA `target` / `dgp`, 1,500-user subset (seed 0) | 0.632 / 0.718 / 0.346 · 0.628 / 0.717 / 0.346 | – |
 | Sealed test set, all models | **[PENDING]** | **[PENDING]** |
 
 *Table 1. TwiBot-22 working-test results, macro-F1 / AUROC / PR-AUC; random guessing gives AUROC 0.5 and PR-AUC 0.14.*
@@ -145,7 +145,7 @@ The best model, XGB-Graph with profile on all one million users, reaches PR-AUC 
 
 **Finding 2: text adds a little on top of the profile.** Profile plus text minus profile is +0.011 [−0.001, +0.025] macro-F1 on the sample and +0.012 [+0.008, +0.016] on all users. A surprise: for a text-only model, adding 20 tweets to the bio *hurts*, −0.052 [−0.074, −0.030] on the same users. Slices explain why. On users with a bio, the two are equal (AUROC 0.682 against 0.681). Averaging tweets into one vector blurs the sharp contrast between empty and non-empty bios. We tested this directly: adding a single empty-bio flag to the bio-plus-tweets embedding closes the gap (0.672 against 0.673).
 
-**Finding 3: the fine-tuned LLM helps only when data is scarce.** With the same 1,300 training users, LoRA beats TF-IDF by +0.050 macro-F1 (the CI excludes 0). With 70,000 training users, TF-IDF ties LoRA (+0.002 [−0.015, +0.019]). The zero-shot model answers "bot" for almost every account and is no better than chance.
+**Finding 3: the fine-tuned LLM helps only when data is scarce, and its neighbour summaries add nothing.** DGP's prompt with neighbour summaries scores the same as the account's own text on a 1,500-user subset (macro-F1 0.628 against 0.632; difference −0.004 [−0.027, +0.018]), as expected when neighbours mostly have the other label. With the same 1,300 training users, LoRA beats TF-IDF by +0.050 macro-F1 (the CI excludes 0). With 70,000 training users, TF-IDF ties LoRA (+0.002 [−0.015, +0.019]). The zero-shot model answers "bot" for almost every account and is no better than chance.
 
 **4.4 What the links add.**
 
@@ -222,7 +222,7 @@ We therefore read the leaderboard's graph advantage as a product of the protocol
 - **RQ1, does an LLM–GNN hybrid beat GNN-only?** Adding text to graph models helps, but the gain comes from the text and profile, not from message passing. The best model is a tree on the user's own features plus neighbour averages.
 - **RQ2, do GNNs capture fraud better than traditional machine learning?** No. Trees match or beat GNNs on all three datasets, as in our Elliptic phase (random forest F1 0.816 against GraphSAGE 0.333).
 - **RQ3, what does semantic information add?** On TwiBot-22, about +0.01 macro-F1 over the profile. On TwiBot-20, without profile fields, a strong encoder is the main source of accuracy.
-- **RQ4, which fusion strategy, at what cost?** Joining frozen text embeddings with other features is the cheapest and best. LoRA fine-tuning matches it only at equal training size. DGP's neighbour summaries add nothing on TwiBot-20 **[PENDING TwiBot-22]**, and semantic neighbour filtering (FLAG-lite) does not beat the MLP.
+- **RQ4, which fusion strategy, at what cost?** Joining frozen text embeddings with other features is the cheapest and best. LoRA fine-tuning matches it only at equal training size. DGP's neighbour summaries add nothing on TwiBot-22 (`dgp` − `target` −0.004 [−0.027, +0.018] macro-F1, −0.001 [−0.031, +0.028] AUROC, seed 0; **[seed 1 PENDING]**) and only a little ranking quality on TwiBot-20; semantic neighbour filtering (FLAG-lite) does not beat the MLP.
 - **RQ5, robustness to imbalance.** Validation cut-offs, class weights and reweighted PR-AUC keep the comparison honest. All methods degrade sharply as bots become rarer.
 
 **4.8 How the problem was revised (P → P′).** The original problem, P, was: *does an LLM–GNN hybrid improve fraud detection?* Our evidence reshaped it into P′: *under measured camouflage and weak labels, which signals actually carry information, and why do benchmark rankings disagree?*
