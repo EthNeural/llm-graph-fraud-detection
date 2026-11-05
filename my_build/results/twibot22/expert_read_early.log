@@ -1,0 +1,36 @@
+986 experts, 105 expert bots. Dataset weak label as prediction: macro-F1 0.745, agreement 0.905 (weak bots 101, both bot 56)
+
+model                            stage     macro-F1 [95% CI]        AUROC [95% CI]           PR-AUC [95% CI]         
+LoRA target (text, sample)       weak      0.695 [0.652, 0.734]    0.822 [0.775, 0.868]    0.450 [0.354, 0.546]   
+LoRA target (text, sample)       expert    0.735 [0.693, 0.775]    0.724 [0.660, 0.784]    0.387 [0.292, 0.485]   
+                                 diff      +0.040 [+0.009, +0.071]  -0.099 [-0.164, -0.038]  -0.064 [-0.144, +0.013] 
+Profile only (tree, sample)      weak      0.738 [0.696, 0.780]    0.861 [0.821, 0.898]    0.507 [0.413, 0.610]   
+Profile only (tree, sample)      expert    0.736 [0.691, 0.780]    0.867 [0.831, 0.902]    0.528 [0.434, 0.627]   
+                                 diff      -0.002 [-0.040, +0.032]  +0.006 [-0.017, +0.030]  +0.021 [-0.039, +0.078] 
+Profile + text (tree, sample)    weak      0.739 [0.696, 0.780]    0.879 [0.844, 0.909]    0.527 [0.427, 0.632]   
+Profile + text (tree, sample)    expert    0.752 [0.707, 0.796]    0.899 [0.867, 0.927]    0.542 [0.453, 0.650]   
+                                 diff      +0.014 [-0.025, +0.049]  +0.020 [+0.000, +0.040]  +0.016 [-0.055, +0.094] 
+XGB-Graph + profile (sample)     weak      0.724 [0.680, 0.767]    0.883 [0.851, 0.911]    0.548 [0.456, 0.639]   
+XGB-Graph + profile (sample)     expert    0.751 [0.705, 0.795]    0.910 [0.879, 0.934]    0.599 [0.509, 0.688]   
+                                 diff      +0.027 [-0.013, +0.063]  +0.027 [+0.009, +0.044]  +0.051 [-0.002, +0.100] 
+XGB-Graph + profile (1M)         weak      0.720 [0.677, 0.763]    0.875 [0.842, 0.905]    0.525 [0.432, 0.617]   
+XGB-Graph + profile (1M)         expert    0.714 [0.667, 0.761]    0.887 [0.857, 0.916]    0.555 [0.463, 0.647]   
+                                 diff      -0.006 [-0.041, +0.029]  +0.012 [-0.002, +0.028]  +0.030 [-0.016, +0.074] 
+MLP control, no edges (1M)       weak      0.718 [0.673, 0.760]    0.819 [0.770, 0.866]    0.527 [0.431, 0.621]   
+MLP control, no edges (1M)       expert    0.728 [0.686, 0.771]    0.845 [0.804, 0.885]    0.548 [0.453, 0.639]   
+                                 diff      +0.010 [-0.012, +0.034]  +0.025 [+0.006, +0.046]  +0.021 [-0.007, +0.048] 
+RGCN (1M)                        weak      0.713 [0.670, 0.754]    0.799 [0.748, 0.847]    0.513 [0.420, 0.606]   
+RGCN (1M)                        expert    0.725 [0.682, 0.767]    0.866 [0.830, 0.900]    0.519 [0.428, 0.625]   
+                                 diff      +0.013 [-0.012, +0.037]  +0.067 [+0.034, +0.104]  +0.006 [-0.048, +0.068] 
+
+D8 on the 986 experts: empty bio 103, with bio 883
+  weak   labels: bot rate empty 0.495 vs with bio 0.057 -> lift 8.74 [6.39, 12.33]
+  expert labels: bot rate empty 0.466 vs with bio 0.065 -> lift 7.22 [5.31, 10.30]
+  weak - expert lift: +1.52 [-1.50, +4.64]
+
+D8 on the annotation study: 458 users (21 sealed non-expert removed, 21 'not sure' dropped); annotation bots 44, weak bots 66, empty bio 62, weak-vs-annotation agreement 0.812
+  weak       labels: bot rate empty 0.468 vs with bio 0.093 -> lift 5.01 [3.30, 7.67]
+  annotation labels: bot rate empty 0.145 vs with bio 0.088 -> lift 1.64 [0.70, 3.06]
+  weak - annotation lift: +3.36 [+1.20, +6.14]
+
+Saved expert_read_early.json
