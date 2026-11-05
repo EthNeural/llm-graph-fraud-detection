@@ -1,0 +1,72 @@
+{
+ "official_verified1/tree_self_prof": {
+  "test_users": 94889,
+  "test_bot_share": 0.29503946716690027,
+  "all_human_accuracy": 0.7049605328330997,
+  "acc_at_0_5": 0.7633234621505127,
+  "bot_f1_at_0_5": 0.4297973899355101,
+  "acc_at_val_cut": 0.7540283910674578,
+  "bot_f1_at_val_cut": 0.5719316264397329,
+  "macro_f1_at_val_cut": 0.6996837069605322,
+  "auroc": 0.765414554642283,
+  "train_bot_share": 0.07794849097959872,
+  "val_cut": 0.2786361182510697,
+  "minutes": 1.9
+ },
+ "official_verified1/xgb_graph_prof": {
+  "test_users": 94889,
+  "test_bot_share": 0.29503946716690027,
+  "all_human_accuracy": 0.7049605328330997,
+  "acc_at_0_5": 0.7693199422483112,
+  "bot_f1_at_0_5": 0.5345241892610314,
+  "acc_at_val_cut": 0.7352801694611599,
+  "bot_f1_at_val_cut": 0.569754894404193,
+  "macro_f1_at_val_cut": 0.68929161821317,
+  "auroc": 0.7576371686833018,
+  "train_bot_share": 0.07794849097959872,
+  "val_cut": 0.25061295451343574,
+  "minutes": 66.8
+ },
+ "official_verified0/tree_self_prof": {
+  "test_users": 94889,
+  "test_bot_share": 0.29503946716690027,
+  "all_human_accuracy": 0.7049605328330997,
+  "acc_at_0_5": 0.7627016830191066,
+  "bot_f1_at_0_5": 0.42630385487528344,
+  "acc_at_val_cut": 0.7422672807174698,
+  "bot_f1_at_val_cut": 0.575843768427625,
+  "macro_f1_at_val_cut": 0.6953696589640396,
+  "auroc": 0.7644311172655845,
+  "train_bot_share": 0.07794849097959872,
+  "val_cut": 0.23810183145966457,
+  "minutes": 1.4
+ },
+ "official_verified0/xgb_graph_prof": {
+  "test_users": 94889,
+  "test_bot_share": 0.29503946716690027,
+  "all_human_accuracy": 0.7049605328330997,
+  "acc_at_0_5": 0.7692883263602736,
+  "bot_f1_at_0_5": 0.5357536686741878,
+  "acc_at_val_cut": 0.7386103763344539,
+  "bot_f1_at_val_cut": 0.5686809842622381,
+  "macro_f1_at_val_cut": 0.6905836407706751,
+  "auroc": 0.7580567060983128,
+  "train_bot_share": 0.07794849097959872,
+  "val_cut": 0.26422020992263184,
+  "minutes": 53.7
+ },
+ "ours_verified1/tree_self_prof": {
+  "test_users": 49951,
+  "test_bot_share": 0.1399771776340814,
+  "all_human_accuracy": 0.8600228223659185,
+  "acc_at_0_5": 0.8780805189085303,
+  "bot_f1_at_0_5": 0.4198895027624309,
+  "acc_at_val_cut": 0.8617845488578807,
+  "bot_f1_at_val_cut": 0.5218836565096953,
+  "macro_f1_at_val_cut": 0.7205496071507311,
+  "auroc": 0.8627594692358203,
+  "train_bot_share": 0.1399796084420478,
+  "val_cut": 0.30928424379177777,
+  "minutes": 1.6
+ }
+}

@@ -78,3 +78,8 @@ Saved /Users/pj/Desktop/Macquarie - Sem 4/PROJECT/Graph-based-fraud-detection-sy
 - 18:21 Check: bio-only tree on the SAME sample users (70k train / 5,000 test): text-only F1 0.673 AUROC 0.761 vs bio + tweets 0.618 / 0.712; with profile 0.712 / 0.846 vs 0.713 / 0.848. Averaging tweets in hides the empty-bio cue; with profile they are equal. To be checked by the sceptic before the report.
 - 18:28 CIs for key pairs done; sceptic check done (verdicts: profile-vs-LoRA needed a matched 1,300 run -> profile 0.677 / 0.808, still ahead; empty-bio mechanism confirmed by slices). Findings in report_for_submission.md.
 - 19:57 GNNs all done.
+- 20:38 GNN expert rotation (MLP, RGCN, FAGCN; blind) started.
+- 19:45–22:45 E11 leaderboard reconciliation (REPLICATION=1): official split with/without `verified` done for trees and MLP / FAGCN / RGCN (RGCN without `verified` running); our split with `verified` running. Exit 0 for each finished cell.
+- 21:21 Q3 full 1M (XGB-Graph + profile + inconsistency features, seed 0) done, exit 0: 0.729 / 0.872 / PR-AUC 0.579; paired CI vs without: F1 −0.002 [−0.004, −0.000], AUROC +0.000 (`q3_ci_full.json`). Q3 adds nothing.
+- 22:43 GNN expert rotation: MLP done (13 min), RGCN done (112 min), saved blind; FAGCN running.
+- 22:45 DGP node summaries 49 / 57 (~7 min per chunk, CPU shared with 3 jobs).

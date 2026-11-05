@@ -1,0 +1,4 @@
+{"design": "full 1M, 49,951 working-test users, seed 0, paired bootstrap 2,000, own validation cut-offs",
+ "pair": "xgb_graph_prof_inc - xgb_graph_prof",
+ "macro_f1_diff": [-0.002, -0.004, -0.000], "auroc_diff": [0.000, -0.000, 0.001],
+ "gnn_3_seeds": {"FAGCN": {"macro_f1": [0.690, 0.001], "auroc": [0.829, 0.001]}, "RGCN": {"macro_f1": [0.689, 0.000], "auroc": [0.804, 0.003]}}}

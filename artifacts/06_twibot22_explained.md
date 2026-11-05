@@ -170,11 +170,11 @@ We have a million Twitter accounts, and about one in seven is a bot. We want to 
 
 ---
 
-## 10. Where we are now (5 Nov, ~19:00)
+## 10. Where we are now (Thu 5 Nov, ~23:00)
 
-- **Done:** all data checks; the sample feature table with bio + tweets (830 numbers per account, no shortcuts); the fine-tuned language model reading only the account's text (LoRA `target`); text-only baselines; every cheap model, with and without profile, on the sample and on all 1M; the five graph neural networks on the full 1M graph; confidence intervals; a sceptic review of the findings; the expert rotation (blind).
-- **Running:** the language model with neighbour summaries (DGP) on the GPU, about 9.5 h, then a second seed of both language-model versions until about midday Friday. The graph networks' extra seeds on the CPU.
-- **Next:** the final run on the sealed set and the experts (once every choice is made), the comparison with TwiBot-20, the report on Sunday.
+- **Done:** all data checks; the sample feature table with bio + tweets (830 numbers per account, no shortcuts); the fine-tuned language model reading only the account's text (LoRA `target`); text-only baselines; every cheap model, with and without profile, on the sample and on all 1M; the five graph neural networks on the full 1M graph (the 2 best with 3 seeds); confidence intervals; a sceptic review; a literature check; three graph questions (Q1–Q3, below); a check of the official TwiBot-22 code; the expert stage for the language model and the trees (blind).
+- **Running:** the language model with neighbour summaries (DGP) on the GPU, scored early Friday, then a second seed of both language-model versions until about midday; the expert stage for the graph networks (blind); the leaderboard reconciliation (our models under the official protocol), done ~00:30.
+- **Next:** the final run on the sealed set and the experts (Friday afternoon), the comparison with TwiBot-20, figures Saturday, the report Sunday.
 
 ---
 
@@ -192,6 +192,14 @@ We have a million Twitter accounts, and about one in seven is a bot. We want to 
 **Deeper still.**
 - **Why tweets do not help:** 40.6% of bots have an empty bio, against 7.8% of humans. A text model on the bio alone spots that easily. Averaging 20 tweets into the description blurs it, so bio + tweets scores *lower* than bio alone (−0.05 macro-F1, same users). Once the profile (which has an "empty bio" field) is added, the two are equal.
 - **The big caveat:** the weak labels were made partly by automatic rules, some of them profile-based. A model that wins with profile fields may partly be copying the label-maker. The expert rotation and the sealed final run test exactly this.
+
+**The three graph questions (Q1–Q3), plain version.**
+- **Q1: who links to whom?** Bots' neighbours are only 4–17% bots, against 14% of all users; humans' neighbours are ~93% humans. Bots hide among humans (heterophily), on every one of the 7 relations.
+- **Q2: does it differ from user to user?** Yes. Neighbour features help users whose neighbours look like them (mostly humans: +0.057 AUROC) and slightly *hurt* users whose neighbours do not (mostly bots: −0.016). This is the pattern Mao et al. (NeurIPS 2023) predict, and the question MAGNET asks.
+- **Q3: do the relations disagree?** We built 8 "inconsistency" numbers (e.g. how different an account's follow-neighbours are from its interaction-neighbours). They add nothing: 0.729 vs 0.731 macro-F1 on all 1M.
+- **TROPICAL's pattern does not carry over:** on Amazon, bots get denser further out in the graph; on TwiBot-22 bot density *falls* with distance (0.116 → 0.059 over 1–4 hops).
+
+**The leaderboard conflict, plain version.** The TwiBot-22 paper ranks graph models first. Their official code shows why the comparison is not like ours: they use a skewed split (test 29.4% bots), give the models `verified` (no verified user is a bot), train a fixed 200 epochs, and rank by accuracy. We are re-running our own models their way (results so far: the split matters, `verified` hardly does, and graph models still do not beat the tree without neighbours).
 
 **Glossary**
 - **TF-IDF:** counting which words an account uses, weighted by how rare they are.
