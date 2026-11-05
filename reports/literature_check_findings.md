@@ -1,0 +1,20 @@
+# Literature check of the TwiBot-22 findings (5 Nov 2026, external)
+
+Agent search (abstracts and snippets only, no full papers read); every arXiv id below was checked against the arXiv API (titles and authors match). Our own cross-checks are marked **[ours]**.
+
+| Finding | Verdict | Evidence |
+|---|---|---|
+| F1 profile beats text | Supported, with a caveat | Yang, Varol, Hui, Menczer, AAAI 2020 (arXiv 1911.09179): profile-metadata random forest competitive with Botometer's 1,000+ features. Hays, Schutzman, Raghavan, Walsh, Cresci et al., WWW 2023 (arXiv 2301.07015): shallow trees on a few features come near state of the art on most bot datasets, which they attribute to simplistic collection and labelling. **Contradiction:** the TwiBot-22 paper (Feng et al., NeurIPS 2022 D&B, arXiv 2206.04564) ranks graph methods first. Wording: "profile features suffice on these weak labels", not "profiles are the best bot signal" |
+| F2 text adds little on top of profile | Mixed | Feng et al., "What Does the Bot Say?", ACL 2024 (arXiv 2402.00371): instruction-tuned LLMs with 1,000 examples gain up to 9.1% F1 over baselines; combining modalities helps. Scope our claim to our 1.7B LoRA and our fusion |
+| F3 tweet averaging blurs the empty-bio cue | No outside evidence; **tested [ours]** | Adding one explicit empty-bio flag to the bio + tweets embedding closes the gap: macro-F1 0.672 vs bio-only 0.673 (was 0.618); AUROC 0.775 vs 0.761 (`f3_flag_test.log`). So the mechanism is shown, not assumed |
+| F4 GNNs ~ MLP, below trees | Mixed | Supports: Tang et al., GADBench, NeurIPS 2023 D&B (arXiv 2306.12251): trees with neighbour aggregation beat specialised GNNs. Contradicts: the TwiBot-22 leaderboard (graph methods top 5). Possible reasons to state as hypotheses: the official split is not random (train 7.8% bots, test 29.4%; all verified users in train) and benchmark baselines may use `verified` (a shortcut we removed); labels were partly made by GCN / GAT / R-GCN labelling functions. Our graph is the full 1M graph with all 7 relations (8.97M undirected union edges), not a sample |
+| F5 aggregation helps homophilous, hurts heterophilous neighbourhoods | Supported | Mao et al., "Demystifying Structural Disparity in GNNs", NeurIPS 2023 (arXiv 2306.01323): GNNs do well on nodes matching the majority structural pattern and worse on the minority pattern |
+| F6 bot density falls with hops (unlike TROPICAL) | No outside evidence | Frame as "does not transfer from Amazon fraud to TwiBot-22"; star-shaped crawl graph is a confound |
+| F7 LLM beats TF-IDF only with few labels | Consistent | "What Does the Bot Say?" trains on 1,000 examples; no paper found on large-n ties or zero-shot behaviour |
+| F8 links-only AUROC 0.67 | Supported in spirit | Hays et al. (collection artefacts look predictive); Zheng, Wan, Luo et al., "Bot Meets Shortcut", AAAI 2026 (arXiv 2511.08455): bot detectors exploit shortcut features (text-side) |
+
+**Expert labels [ours]:** the agent found "1,000 users" in the paper; our file has 986 rows. Our numbers reproduce the paper's 90.5% expert accuracy exactly: (56 + 836) / 986 = 0.905. So the paper's headline accuracy is dominated by humans; on expert bots, the dataset label agrees only 56 / 105 times.
+
+**Most at risk (agent):** F1/F4's "graph adds little", because it contradicts the TwiBot-22 leaderboard. Our answer: the full graph is used; the split, `verified` and the graph-model labelling functions are candidate reasons, to be stated as hypotheses (D7 tests the last one).
+
+**Five papers to cite:** TwiBot-22 (2206.04564); GADBench (2306.12251); Hays et al. WWW 2023 (2301.07015) with Yang et al. AAAI 2020 (1911.09179); Mao et al. NeurIPS 2023 (2306.01323); Feng et al. ACL 2024 (2402.00371). Sixth: Zheng et al. AAAI 2026 (2511.08455).
