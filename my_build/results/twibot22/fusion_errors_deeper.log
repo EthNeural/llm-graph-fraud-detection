@@ -1,0 +1,16 @@
+Spearman(LLM, profile_only    ) on test: 0.352
+Spearman(LLM, tree_self_prof  ) on test: 0.396
+Spearman(LLM, tree_self_noprof) on test: 0.489
+Spearman(LLM, xgb_graph_prof  ) on test: 0.396
+raw keys ['self:bio empty', 'self:log followers', 'self:log tweet count', 'self:default profile image']
+bots missed by all       n  230 {'bio empty': -0.243, 'log followers': -0.114, 'log tweet count': -0.166, 'default profile image': -0.134, 'median followers': -0.0, 'has tweets': 1.0}
+bots caught by all       n  146 {'bio empty': 2.514, 'log followers': -1.716, 'log tweet count': -1.899, 'default profile image': 2.094, 'median followers': -1.0, 'has tweets': 0.479}
+humans flagged by all    n   95 {'bio empty': 2.277, 'log followers': -1.564, 'log tweet count': -1.873, 'default profile image': 1.536, 'median followers': -1.0, 'has tweets': 0.558}
+humans cleared by all    n 3463 {'bio empty': -0.292, 'log followers': 0.355, 'log tweet count': 0.348, 'default profile image': -0.163, 'median followers': 0.0, 'has tweets': 1.0}
+LLM AUROC users with a bio: 0.618 | text-only tree 0.687 | profile+text tree 0.810
+LLM AUROC users without a bio: 0.597 | text-only tree 0.614 | profile+text tree 0.778
+group | n | empty bio | default image | has tweets | median follower percentile | median tweet-count percentile
+bots missed by all | 230 | 4.3% | 0.9% | 100.0% | 44 | 38
+bots caught by all | 146 | 95.2% | 40.4% | 47.9% | 5 | 4
+humans flagged by all | 95 | 87.4% | 30.5% | 55.8% | 7 | 5
+humans cleared by all | 3463 | 2.7% | 0.3% | 100.0% | 62 | 60

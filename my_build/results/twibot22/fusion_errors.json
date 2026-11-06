@@ -1,0 +1,263 @@
+{
+ "n_val": 1000,
+ "n_test": 5000,
+ "test_bots": 700,
+ "fusion": {
+  "profile_only": {
+   "weights_tree_llm": [
+    1.023,
+    -0.023
+   ],
+   "tree_alone": {
+    "macro_f1": 0.7014,
+    "auroc": 0.8375
+   },
+   "fused": {
+    "macro_f1": 0.7024,
+    "auroc": 0.8374,
+    "pr_auc": 0.4976
+   },
+   "fused_minus_tree": {
+    "macro_f1": [
+     0.001,
+     -0.0024,
+     0.0046
+    ],
+    "auroc": [
+     -0.0001,
+     -0.0003,
+     0.0001
+    ],
+    "pr_auc": [
+     -0.0003,
+     -0.0018,
+     0.0012
+    ]
+   }
+  },
+  "tree_self_prof": {
+   "weights_tree_llm": [
+    0.994,
+    -0.049
+   ],
+   "tree_alone": {
+    "macro_f1": 0.7173,
+    "auroc": 0.8495
+   },
+   "fused": {
+    "macro_f1": 0.7151,
+    "auroc": 0.8494,
+    "pr_auc": 0.52
+   },
+   "fused_minus_tree": {
+    "macro_f1": [
+     -0.0023,
+     -0.0054,
+     0.0009
+    ],
+    "auroc": [
+     -0.0001,
+     -0.0006,
+     0.0003
+    ],
+    "pr_auc": [
+     -0.0012,
+     -0.0042,
+     0.0019
+    ]
+   }
+  },
+  "xgb_graph_prof": {
+   "weights_tree_llm": [
+    0.989,
+    -0.049
+   ],
+   "tree_alone": {
+    "macro_f1": 0.7162,
+    "auroc": 0.8545
+   },
+   "fused": {
+    "macro_f1": 0.7116,
+    "auroc": 0.8544,
+    "pr_auc": 0.5371
+   },
+   "fused_minus_tree": {
+    "macro_f1": [
+     -0.0046,
+     -0.013,
+     0.0038
+    ],
+    "auroc": [
+     -0.0001,
+     -0.0006,
+     0.0003
+    ],
+    "pr_auc": [
+     -0.0002,
+     -0.0023,
+     0.0021
+    ]
+   }
+  },
+  "llm_alone": {
+   "macro_f1": 0.6094,
+   "auroc": 0.6851
+  },
+  "dgp_subset": {
+   "n": 1500,
+   "xgb_plus_dgp_minus_xgb_plus_target": {
+    "macro_f1": [
+     0.0016,
+     -0.0024,
+     0.0056
+    ],
+    "auroc": [
+     0.0,
+     -0.0007,
+     0.0008
+    ],
+    "pr_auc": [
+     -0.0019,
+     -0.0061,
+     0.0017
+    ]
+   }
+  },
+  "experts_tree_self_prof": {
+   "auroc_tree": 0.8785,
+   "auroc_fused": 0.8767,
+   "auroc_llm": 0.8225
+  },
+  "experts_xgb_graph_prof": {
+   "auroc_tree": 0.8829,
+   "auroc_fused": 0.8813,
+   "auroc_llm": 0.8225
+  }
+ },
+ "slices": {
+  "no bio": {
+   "n": 602,
+   "bots": 275,
+   "auroc_tree": 0.7864,
+   "auroc_fused": 0.7876,
+   "diff": [
+    0.0011,
+    -0.0017,
+    0.0039
+   ]
+  },
+  "bio": {
+   "n": 4398,
+   "bots": 425,
+   "auroc_tree": 0.8162,
+   "auroc_fused": 0.8158,
+   "diff": [
+    -0.0003,
+    -0.001,
+    0.0003
+   ]
+  },
+  ">= 1 tweet": {
+   "n": 4687,
+   "bots": 582,
+   "auroc_tree": 0.8508,
+   "auroc_fused": 0.8507,
+   "diff": [
+    -0.0001,
+    -0.0004,
+    0.0002
+   ]
+  },
+  "no tweet": {
+   "n": 313,
+   "bots": 118,
+   "auroc_tree": 0.7907,
+   "auroc_fused": 0.791,
+   "diff": [
+    0.0003,
+    -0.0016,
+    0.0021
+   ]
+  },
+  "tree-uncertain (val 40th-90th pct)": {
+   "n": 2414,
+   "bots": 372,
+   "auroc_tree": 0.7049,
+   "auroc_fused": 0.7047,
+   "diff": [
+    -0.0002,
+    -0.0017,
+    0.0013
+   ]
+  }
+ },
+ "errors": {
+  "counts": {
+   "bots": 700,
+   "missed_by_all": 230,
+   "caught_by_all": 146,
+   "humans": 4300,
+   "flagged_by_all": 95,
+   "cleared_by_all": 3463
+  },
+  "profile_by_group": {
+   "bots missed by all": {
+    "n": 230,
+    "bio empty": -0.241,
+    "log followers": -0.109,
+    "log following": 0.084,
+    "log tweet count": -0.165,
+    "log listed count": -0.19,
+    "account age (days)": -0.277,
+    "default profile image": -0.135,
+    "bio length": 0.111,
+    "has tweets": 1.0
+   },
+   "bots caught by all": {
+    "n": 146,
+    "bio empty": 2.529,
+    "log followers": -1.715,
+    "log following": -1.208,
+    "log tweet count": -1.908,
+    "log listed count": -1.08,
+    "account age (days)": -0.624,
+    "default profile image": 2.092,
+    "bio length": -1.518,
+    "has tweets": 0.479
+   },
+   "humans flagged by all": {
+    "n": 95,
+    "bio empty": 2.291,
+    "log followers": -1.562,
+    "log following": -0.887,
+    "log tweet count": -1.881,
+    "log listed count": -1.097,
+    "account age (days)": -0.644,
+    "default profile image": 1.535,
+    "bio length": -1.465,
+    "has tweets": 0.558
+   },
+   "humans cleared by all": {
+    "n": 3463,
+    "bio empty": -0.29,
+    "log followers": 0.361,
+    "log following": 0.222,
+    "log tweet count": 0.351,
+    "log listed count": 0.304,
+    "account age (days)": 0.189,
+    "default profile image": -0.164,
+    "bio length": 0.265,
+    "has tweets": 1.0
+   }
+  },
+  "experts": {
+   "weak_bots": 101,
+   "weak_bots_missed_by_all": 32,
+   "of_those_expert_human": 17,
+   "weak_bots_caught_by_all": 42,
+   "of_those_expert_human_caught": 11,
+   "weak_humans_flagged_by_all": 33,
+   "of_those_expert_bot": 15
+  }
+ }
+}
