@@ -1,0 +1,54 @@
+{
+ "original (up to 2,000 chars)": {
+  "LR (all train)": {
+   "macro_f1": 0.7565,
+   "auroc": 0.8222,
+   "pr_auc": 0.8305,
+   "runs": 1
+  },
+  "MLP (all train)": {
+   "macro_f1": 0.7656,
+   "auroc": 0.8395,
+   "pr_auc": 0.8536,
+   "runs": 3
+  },
+  "LR (1,300)": {
+   "macro_f1": 0.7252,
+   "auroc": 0.7865,
+   "pr_auc": 0.7945,
+   "runs": 1
+  },
+  "MLP (1,300)": {
+   "macro_f1": 0.7259,
+   "auroc": 0.7961,
+   "pr_auc": 0.8088,
+   "runs": 3
+  }
+ },
+ "matched (LoRA's 480 tokens)": {
+  "LR (all train)": {
+   "macro_f1": 0.759,
+   "auroc": 0.8251,
+   "pr_auc": 0.8461,
+   "runs": 1
+  },
+  "MLP (all train)": {
+   "macro_f1": 0.7621,
+   "auroc": 0.8366,
+   "pr_auc": 0.8504,
+   "runs": 3
+  },
+  "LR (1,300)": {
+   "macro_f1": 0.7166,
+   "auroc": 0.7828,
+   "pr_auc": 0.7923,
+   "runs": 1
+  },
+  "MLP (1,300)": {
+   "macro_f1": 0.7216,
+   "auroc": 0.7901,
+   "pr_auc": 0.8053,
+   "runs": 3
+  }
+ }
+}

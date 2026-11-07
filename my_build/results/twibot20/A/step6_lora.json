@@ -60,16 +60,6 @@
     "macro_f1_isolated": 0.7179
   },
   {
-    "model": "Qwen3-1.7B zero-shot dgp",
-    "acc": 0.58,
-    "macro_f1": 0.5625,
-    "f1_class1": 0.65,
-    "auroc": 0.6123,
-    "pr_auc": 0.6132,
-    "macro_f1_connected": 0.5703,
-    "macro_f1_isolated": 0.3333
-  },
-  {
     "model": "Qwen3-1.7B LoRA target seed1 (full test)",
     "acc": 0.7303,
     "macro_f1": 0.7278,
@@ -90,6 +80,26 @@
     "macro_f1_isolated": 0.812
   },
   {
+    "model": "Qwen3-1.7B LoRA target seed2 (full test)",
+    "acc": 0.7396,
+    "macro_f1": 0.7381,
+    "f1_class1": 0.7582,
+    "auroc": 0.8241,
+    "pr_auc": 0.8486,
+    "macro_f1_connected": 0.7394,
+    "macro_f1_isolated": 0.7212
+  },
+  {
+    "model": "Qwen3-1.7B LoRA target seed2",
+    "acc": 0.7375,
+    "macro_f1": 0.7369,
+    "f1_class1": 0.7494,
+    "auroc": 0.8396,
+    "pr_auc": 0.8699,
+    "macro_f1_connected": 0.7351,
+    "macro_f1_isolated": 0.7603
+  },
+  {
     "model": "Qwen3-1.7B zero-shot target",
     "acc": 0.5975,
     "macro_f1": 0.5897,
@@ -98,6 +108,36 @@
     "pr_auc": 0.6154,
     "macro_f1_connected": 0.5883,
     "macro_f1_isolated": 0.6071
+  },
+  {
+    "model": "Qwen3-1.7B LoRA dgp seed2 (full test)",
+    "acc": 0.7227,
+    "macro_f1": 0.7152,
+    "f1_class1": 0.7616,
+    "auroc": 0.799,
+    "pr_auc": 0.8363,
+    "macro_f1_connected": 0.7161,
+    "macro_f1_isolated": 0.7026
+  },
+  {
+    "model": "Qwen3-1.7B LoRA dgp seed2",
+    "acc": 0.7375,
+    "macro_f1": 0.7299,
+    "f1_class1": 0.7752,
+    "auroc": 0.8287,
+    "pr_auc": 0.8639,
+    "macro_f1_connected": 0.7336,
+    "macro_f1_isolated": 0.6645
+  },
+  {
+    "model": "Qwen3-1.7B zero-shot dgp",
+    "acc": 0.58,
+    "macro_f1": 0.5625,
+    "f1_class1": 0.65,
+    "auroc": 0.6123,
+    "pr_auc": 0.6132,
+    "macro_f1_connected": 0.5703,
+    "macro_f1_isolated": 0.3333
   },
   {
     "model": "qwen+LR (same sample)",

@@ -190,5 +190,101 @@
     "macro_f1_isolated": 0.7054,
     "full_val_macro_f1": 0.7481,
     "chosen_by_val_f1": true
+  },
+  {
+    "model": "Qwen3-1.7B LoRA target seed2 | best val loss (epoch 2) | full test",
+    "acc": 0.7396,
+    "macro_f1": 0.7381,
+    "f1_class1": 0.7582,
+    "auroc": 0.8241,
+    "pr_auc": 0.8486,
+    "macro_f1_connected": 0.7394,
+    "macro_f1_isolated": 0.7212,
+    "full_val_macro_f1": 0.7535,
+    "chosen_by_val_f1": true
+  },
+  {
+    "model": "Qwen3-1.7B LoRA target seed2 | best val loss (epoch 2) | step 5 sample",
+    "acc": 0.7375,
+    "macro_f1": 0.7369,
+    "f1_class1": 0.7494,
+    "auroc": 0.8396,
+    "pr_auc": 0.8699,
+    "macro_f1_connected": 0.7351,
+    "macro_f1_isolated": 0.7603,
+    "full_val_macro_f1": 0.7535,
+    "chosen_by_val_f1": true
+  },
+  {
+    "model": "Qwen3-1.7B LoRA target seed2 | last check (epoch 3) | full test",
+    "acc": 0.7566,
+    "macro_f1": 0.7531,
+    "f1_class1": 0.7821,
+    "auroc": 0.8291,
+    "pr_auc": 0.8462,
+    "macro_f1_connected": 0.7502,
+    "macro_f1_isolated": 0.7897,
+    "full_val_macro_f1": 0.7516,
+    "chosen_by_val_f1": false
+  },
+  {
+    "model": "Qwen3-1.7B LoRA target seed2 | last check (epoch 3) | step 5 sample",
+    "acc": 0.74,
+    "macro_f1": 0.7376,
+    "f1_class1": 0.7626,
+    "auroc": 0.8357,
+    "pr_auc": 0.8559,
+    "macro_f1_connected": 0.7335,
+    "macro_f1_isolated": 0.8036,
+    "full_val_macro_f1": 0.7516,
+    "chosen_by_val_f1": false
+  },
+  {
+    "model": "Qwen3-1.7B LoRA dgp seed2 | best val loss (epoch 1.49846) | full test",
+    "acc": 0.7227,
+    "macro_f1": 0.7152,
+    "f1_class1": 0.7616,
+    "auroc": 0.799,
+    "pr_auc": 0.8363,
+    "macro_f1_connected": 0.7161,
+    "macro_f1_isolated": 0.7026,
+    "full_val_macro_f1": 0.7179,
+    "chosen_by_val_f1": false
+  },
+  {
+    "model": "Qwen3-1.7B LoRA dgp seed2 | best val loss (epoch 1.49846) | step 5 sample",
+    "acc": 0.7375,
+    "macro_f1": 0.7299,
+    "f1_class1": 0.7752,
+    "auroc": 0.8287,
+    "pr_auc": 0.8639,
+    "macro_f1_connected": 0.7336,
+    "macro_f1_isolated": 0.6645,
+    "full_val_macro_f1": 0.7179,
+    "chosen_by_val_f1": false
+  },
+  {
+    "model": "Qwen3-1.7B LoRA dgp seed2 | last check (epoch 2.49846) | full test",
+    "acc": 0.7498,
+    "macro_f1": 0.7468,
+    "f1_class1": 0.7744,
+    "auroc": 0.822,
+    "pr_auc": 0.8506,
+    "macro_f1_connected": 0.7477,
+    "macro_f1_isolated": 0.7344,
+    "full_val_macro_f1": 0.753,
+    "chosen_by_val_f1": true
+  },
+  {
+    "model": "Qwen3-1.7B LoRA dgp seed2 | last check (epoch 2.49846) | step 5 sample",
+    "acc": 0.7675,
+    "macro_f1": 0.7653,
+    "f1_class1": 0.7882,
+    "auroc": 0.8549,
+    "pr_auc": 0.8842,
+    "macro_f1_connected": 0.7681,
+    "macro_f1_isolated": 0.7054,
+    "full_val_macro_f1": 0.753,
+    "chosen_by_val_f1": true
   }
 ]
