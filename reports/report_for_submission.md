@@ -131,3 +131,5 @@ Paired bootstrap 95% CIs (2,000), seed 0, each model with its own validation cut
 - **Labels:** weak vs expert agreement 90.5%; 94 disagreements (45 weak-bot/expert-human, 49 the reverse). Examples include a legal-professional account (weak bot, expert human) and a repeated brand-complaint poster (weak human, expert bot).
 - **Neighbours:** one train bot (an institutional university-program account, likely mislabelled) follows 27 users, 7.4% bots. Across all 1,006 train bots, followees are 6.1% bots → strong heterophily, partly driven by mislabelled institutional accounts.
 - **`verified`:** 0 of 95,398 verified users is a bot. It is a real pre-2023 identity signal, but also a labelling rule, covers ~10% of users (all easy cases), and lost meaning after paid verification in 2023. Kept out of main models; reported separately (Table 4, TwiBot-20 metadata table).
+
+> **Sat 7 Nov:** TROPICAL removed from the report entirely (lit review, methodology, Finding 5, bibliography) at the builder's request. Ignore TROPICAL items below.

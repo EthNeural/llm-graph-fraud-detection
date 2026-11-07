@@ -32,7 +32,7 @@ The results differ from what we expected, and in an informative way. **An accoun
 
 **2.1 Graph fraud detection under camouflage.** Graph-based fraud detection treats users, accounts or transactions as nodes and their interactions as edges, and asks whether the network reveals fraud that individual records hide. A recurring problem is that fraud graphs are heterophilous: fraudsters connect to legitimate users, so neighbourhoods mix classes and averaging over neighbours blurs exactly the signal a detector needs. FRAUDRE (Zhang et al., 2021) describes this as three kinds of inconsistency caused by camouflage (in features, in topology and across relations) together with class imbalance, and reports per-relation class homophily above 0.85 for normal nodes and below 0.2 for fraudsters on its benchmarks. Xu et al. (2024) revisit graph fraud detection through heterophily and the graph spectrum and show that standard aggregation is poorly matched to fraud graphs.
 
-A line of work by Haghighi and colleagues targets camouflage directly. MAGNET (Haghighi et al., 2024a) labels each neighbourhood as homophily- or heterophily-dominated and aggregates it through separate adaptive channels, combined across relations, so that a camouflaged node is not simply averaged into its benign surroundings. TROPICAL (Haghighi et al., 2024b, 2025) moves beyond pairwise links to higher-order relations, using a transformer over hypergraphs; it is motivated by the observation that on Amazon review data, fraudster density *rises* with hop distance, so distant structure carries information. DEFEND (Haghighi et al., 2026) adds discriminative mechanisms at two levels: within each relation it classifies neighbourhoods as homophily- or heterophily-based and aggregates them through separate channels, and across relations it exploits the observation that fraudsters avoid forming consistent cross-relation interactions while benign users form them. These methods share one premise: camouflage leaves traces that the right aggregation can recover.
+A line of work by Haghighi and colleagues targets camouflage directly. MAGNET (Haghighi et al., 2024) labels each neighbourhood as homophily- or heterophily-dominated and aggregates it through separate adaptive channels, combined across relations, so that a camouflaged node is not simply averaged into its benign surroundings. DEFEND (Haghighi et al., 2026) adds discriminative mechanisms at two levels: within each relation it classifies neighbourhoods as homophily- or heterophily-based and aggregates them through separate channels, and across relations it exploits the observation that fraudsters avoid forming consistent cross-relation interactions while benign users form them. These methods share one premise: camouflage leaves traces that the right aggregation can recover.
 
 Two analysis tools frame our measurements. Adjusted homophily (Platonov et al., 2023) corrects edge homophily for class imbalance, so that 0 means "no more same-label links than chance" whatever the class balance. Mao et al. (2023) show that GNNs perform well on nodes whose local structure matches the graph's majority pattern and poorly on the minority pattern: a node-level, not graph-level, view of heterophily.
 
@@ -90,18 +90,15 @@ Each change followed from the need for real text and real links. None made our r
 - **Q1:** class homophily per relation and direction.
 - **Q2:** local heterogeneity. Each user's share of training-labelled neighbours with the same label, and where neighbour features help or hurt by that share.
 - **Q3:** cross-relation inconsistency. Eight label-free features comparing a user's follow neighbourhood with their interaction neighbourhood.
-- **TROPICAL's premise:** bot density among a bot's neighbours at hop distances 1 to 4.
 
 **3.8 Timeline.** The plan below comes from the next steps listed in the second report (submitted 20 Sep 2026).
 
 | Period | Planned | Actual | Why it changed |
 |---|---|---|---|
 | 21 Sep – late Sep | Threshold calibration; fusion for GraphSAGE and GAT; repeated seeds | Reviewed the second report's results | Instagram's made-up text profiles could not test the LLM question |
-| Early – mid Oct | Find a dataset with real text | Literature on camouflage and heterophily; dataset search; TwiBot-20/22 chosen | Real text and a real follow graph were needed |
-| Late Oct | Semantic neighbour filtering | Research questions refined; evaluation protocol designed; first versions of the pipeline | — |
-| 2 – 4 Nov | — | TwiBot-20 pipeline: LoRA, DGP, robustness checks | — |
-| 5 – 6 Nov | — | TwiBot-22 at scale; shortcut, heterophily and label checks; final test set scored once | TwiBot-20 results needed confirming at scale |
-| 7 – 8 Nov | Write-up | Seed and control runs; final report | — |
+| Early – mid Oct | Find a dataset with real text | Literature on camouflage and heterophily; dataset search; TwiBot-20/22 chosen | Real text and a real follow graph were needed |TwiBot-20 pipeline: LoRA, DGP, robustness checks | — |
+| Late Oct | Semantic neighbour filtering | Research questions refined; evaluation protocol designed; first versions of the pipeline | — |TwiBot-22 at scale; shortcut, heterophily and label checks; final test set scored once | TwiBot-20 results needed confirming at scale | 
+| 2 – 8 Nov | Write-up | Seed and control runs; final report | — |
 
 Of the planned items, repeated seeds, semantic neighbour filtering (FLAG-lite) and real-language data were done; threshold calibration and GraphSAGE/GAT fusion were replaced by the move to TwiBot.
 
@@ -168,7 +165,6 @@ The best model, XGB-Graph with profile on all one million users, reaches PR-AUC 
 - **(Q1) Bots hide among humans on every relation.** Bots' neighbours are 4–17% bots against a 14% base rate; humans' neighbours are about 93% humans. Adjusted homophily is 0.010–0.024. This is the shape FRAUDRE reports for fraud graphs.
 - **(Q2) Neighbours help some users and hurt others.** Neighbour features help users whose neighbours mostly share their label: +0.057 [+0.045, +0.071] AUROC (27,002 users, 1% bots). They hurt users whose neighbours mostly do not: −0.016 [−0.022, −0.009] (4,197 users, 77% bots). R-GCN loses 0.052 in the homophilous group, while FAGCN gains slightly in every group. This is the node-level pattern Mao et al. (2023) predict, and the question MAGNET addresses. One caution: these groups are defined using each user's own label, so they diagnose where models fail but cannot be used to make predictions. The same caution applies to the heterophily bands in our second-phase report.
 - **(Q3) Relations do not disagree usefully.** DEFEND's premise is that fraudsters avoid consistent cross-relation interactions. Our eight features comparing each user's follow neighbourhood with their interaction neighbourhood test that premise directly, and they do not help: −0.002 [−0.004, −0.000] macro-F1 on all users (a tiny decrease), and no change on the sample.
-- **TROPICAL's premise does not transfer.** Bot density among a bot's neighbours falls overall with distance (0.116, 0.081, 0.086 and 0.059 at one to four hops), unlike the rising density on Amazon.
 
 **[FIGURE 3: (a) per-relation share of bot neighbours for bots and humans against the 14% base rate (Q1); (b) gain from neighbour features by local-homophily group (Q2)]**
 
@@ -285,9 +281,7 @@ Several parts of the problem remain open beyond this project.
 - Feng, S., Tan, Z., Wan, H., Wang, N., Chen, Z., Zhang, B., et al. (2022). TwiBot-22: Towards graph-based Twitter bot detection. *NeurIPS 2022 Datasets and Benchmarks*. arXiv:2206.04564.
 - Feng, S., Wan, H., Wang, N., et al. (2024). What does the bot say? Opportunities and risks of large language models in social media bot detection. *ACL 2024*. arXiv:2402.00371.
 - Guo, J., Weng, Z., Liu, Y., Qiao, Y., & Li, M. (2026). L2IR: Revealing latent intent in graph fraud detection. arXiv:2605.26040.
-- Haghighi, V., Shabani, N., Soltani, B., Yao, L., Sheng, Q. Z., Yang, J., & Beheshti, A. (2024a). Robust graph learning against camouflaged malicious actors. *WISE 2024*, LNCS, pp. 146–161. doi:10.1007/978-981-96-0567-5_12.
-- Haghighi, V., Soltani, B., Shabani, N., Wu, J., Zhang, Y., Yao, L., Sheng, Q. Z., & Yang, J. (2024b). TROPICAL: Transformer-based hypergraph learning for camouflaged fraudster detection. *IEEE ICDM 2024*, pp. 121–130. doi:10.1109/icdm59182.2024.00019.
-- Haghighi, V., Soltani, B., Shabani, N., Wu, J., Zhang, Y., Yao, L., Yang, J., & Sheng, Q. Z. (2025). Beyond pairwise relationships: A transformer-based hypergraph learning approach for fraud detection. *Knowledge and Information Systems*, 67, 7987–8022. doi:10.1007/s10115-025-02476-5.
+- Haghighi, V., Shabani, N., Soltani, B., Yao, L., Sheng, Q. Z., Yang, J., & Beheshti, A. (2024). Robust graph learning against camouflaged malicious actors. *WISE 2024*, LNCS, pp. 146–161. doi:10.1007/978-981-96-0567-5_12.
 - Haghighi, V., Soltani, B., Yao, L., Wu, J., Yang, J., & Sheng, Q. Z. (2026). Beyond smoothing: A discriminative enhanced aggregation graph neural network for camouflaged fraud detection (DEFEND). *ACM Transactions on Knowledge Discovery from Data*, 20, 1–33. doi:10.1145/3801967.
 - Hays, C., Schutzman, Z., Raghavan, M., Walsh, E., & Cresci, S. (2023). Simplistic collection and labeling practices limit the utility of benchmark datasets for Twitter bot detection. *WWW 2023*. arXiv:2301.07015.
 - Huang, T., Wang, Y., Li, Q., He, C., & Gao, J. (2025). Can LLMs find fraudsters? Multi-level LLM enhanced graph fraud detection. arXiv:2507.11997.
