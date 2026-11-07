@@ -85,7 +85,7 @@ Each change followed from the need for real text and real links. None made our r
 
 **3.6 Human-label checks (S5).** TwiBot-22's labels were produced by weak supervision: 8 hand-written rules (including `verified` and spam keywords), 3 feature-based classifiers and 4 neural classifiers (MLP, GCN, GAT, R-GCN), combined by Snorkel and an MLP. The classifiers were trained on 800 of the 1,000 expert labels. We used the 986 released expert labels in two ways. First, by 5-fold rotation each model gets a second, expert-label training stage on four folds and is scored on the fifth, so every expert is scored once by a model that never saw them. Second, as clean evaluation labels. Because the experts trained the label-makers, they are not independent of the weak labels. We therefore also used the dataset's separate annotation study: 500 users, each judged by 3 researchers on a five-point scale. We took the median and kept "likely" or "definitely" judgements, dropping "not sure". These annotators never trained the label-makers.
 
-**3.7 The camouflage questions.** Following the literature, we asked four questions of TwiBot-22:
+**3.7 The camouflage questions.** Following the literature, we asked three questions of TwiBot-22:
 
 - **Q1:** class homophily per relation and direction.
 - **Q2:** local heterogeneity. Each user's share of training-labelled neighbours with the same label, and where neighbour features help or hurt by that share.
