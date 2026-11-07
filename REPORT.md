@@ -393,6 +393,8 @@ The GCN loss holds without verified users. With two seeds and the matched checkp
 
 **Crawl artefact, tree baseline (C4; 3 seeds averaged):** adding the 4 in/out friend/follow degrees gives +0.021 [+0.002, +0.040] macro-F1 and +0.031 [+0.019, +0.043] AUROC on all test users, but **−0.008 [−0.033, +0.018] and +0.009 [−0.007, +0.026] on non-verified users**: the artefact's gain comes from the verified, all-human users.
 
+**Three LoRA seeds and the matched-text control (6–7 Nov; R1, R4; `c3_three_seeds.json`, `g4_matched_text.json`).** With seeds unseeded / 1 / 2 and each adapter chosen by full-validation macro-F1 (the rule the MLP uses): `target` 0.734 / 0.818, `dgp` 0.740 / 0.822 (all test users; macro-F1 / AUROC), MLP on the same 1,300 users 0.726 / 0.796, MLP on all users 0.766 / 0.840. `dgp` − `target`: +0.006 [−0.011, +0.022] macro-F1 all; +0.023 [+0.006, +0.039] AUROC on non-verified users. `dgp` − MLP (all users): −0.026 [−0.046, −0.004]. **Matched text:** Qwen2.5-1.5B embeddings of exactly LoRA's 480-token strings give MLP 0.762 / 0.837 (all users) and 0.722 / 0.790 (1,300), against 0.766 / 0.840 and 0.726 / 0.796 with the full text: the text cap does not explain LoRA's gap.
+
 ## Limitations (so far)
 
 - **One seed for step 6 so far, and that run was unseeded on the LoRA side.** The first `dgp` and `target` runs fixed the training users (SEED=42) and batch order, but not the LoRA start weights or dropout (no `torch.manual_seed`), so they cannot be reproduced exactly. Seeded runs (`LORA_SEED=1, 2`, same 1,300 users and summaries) are running on TwiBot-20 A; the unseeded run will be the third. Qwen3-1.7B instead of the paper's Qwen3-8B; the paper uses 5 seeds.
