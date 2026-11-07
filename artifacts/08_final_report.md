@@ -37,6 +37,58 @@ November 2026
 
 <div style="page-break-after: always;"></div>
 
+## Table of Contents
+
+1. Introduction
+2. Literature Review
+   - 2.1 Graph fraud detection under camouflage
+   - 2.2 Simple baselines and benchmark artefacts
+   - 2.3 LLMs and graphs for fraud
+   - 2.4 Benchmarks
+   - 2.5 Where this project fits
+3. Research Methodology
+   - 3.1 Decomposition
+   - 3.2 Datasets and why they changed
+   - 3.3 A fair protocol
+   - 3.4 Features and models
+   - 3.5 Controls
+   - 3.6 Human-label checks
+   - 3.7 The camouflage questions
+   - 3.8 Timeline
+   - 3.9 Difficulties and fallbacks
+4. Research Outcome: Results, Analysis and Discussion
+   - 4.1 Supporting datasets: TwiBot-20 and Instagram
+   - 4.2 TwiBot-22: main results
+   - 4.3 What carries the signal
+   - 4.4 What the links add
+   - 4.5 Are the labels telling the truth?
+   - 4.6 Why the benchmark ranks graph models first
+   - 4.7 Answers to the original research questions
+   - 4.8 How the problem was revised (P → P′)
+   - 4.9 Limitations
+5. Individual Contributions
+6. Future Outlook
+7. Bibliography
+
+**List of Figures**
+
+- Figure 1. The pipeline
+- Figure 2. Ranking quality (AUROC) of each model on TwiBot-22
+- Figure 3. Camouflage on TwiBot-22
+- Figure 4. TwiBot-20 against TwiBot-22
+- Figure 5. Empty-bio lift
+- Figure 6. The accounts that all four models get right or wrong
+- Figure 7. AUROC on the official split vs our split
+
+**List of Tables**
+
+- Table 1. TwiBot-22 final-test-set results
+- Table 2. Weak-label training vs an added expert-label stage
+- Table 3. Empty-bio lift
+- Table 4. Reconciliation with the official benchmark
+
+<div style="page-break-after: always;"></div>
+
 **Title of the Project:** Large Language Models for Graph-Based Fraud Detection: When Do Text and Links Help Under Camouflage?
 
 **Supervisor:** Dr Venus Haghighi
