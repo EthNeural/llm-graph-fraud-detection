@@ -122,7 +122,7 @@ Of the planned items, repeated seeds, semantic neighbour filtering (FLAG-lite) a
 - **The label signal the links do carry is a crawl artefact.** It is in which of another user's two follower samples an account appears, and it tracks follower count. Adding these in/out counts to a tree helps on all test users (+0.021 [+0.002, +0.040] macro-F1) but not once the verified users, all human, are removed (−0.008 [−0.033, +0.018]).
 - **LoRA fine-tuning roughly matches text models trained on the same 1,300 users.** Averaged over three seeds, with each adapter chosen by full-validation macro-F1 like the other models, LoRA scores 0.734 (`target`) and 0.740 (`dgp`) against 0.726 for an MLP on the same 1,300 users, and stays below text models trained on all 8,278 users (`dgp` − MLP on all users −0.026 [−0.046, −0.004]). Reading less text is not the reason: the same encoder reading exactly LoRA's 480 tokens scores 0.762 against 0.766 with all users and 0.722 against 0.726 with 1,300.
 - **DGP's neighbour summaries help ranking a little.** Over three seeds, `dgp` − `target` is +0.006 [−0.011, +0.022] macro-F1 on all test users, and +0.023 [+0.006, +0.039] AUROC on the non-verified users.
-- **The findings hold without verified users and with profile fields.** On non-verified test users GCN stays 0.052 [0.025, 0.080] below the MLP. With the five allowed profile fields added, as on TwiBot-22, the MLP reaches 0.808 and every GNN stays below it on AUROC (by 0.018 to 0.078).
+- **The findings hold without verified users and with profile fields.** On non-verified test users GCN stays 0.052 [0.025, 0.080] below the MLP. With the five allowed profile fields added, as on TwiBot-22, the MLP reaches 0.808 and every GNN stays below it on AUROC (by 0.018 to 0.078; Figure 4).
 
 On the Instagram graph, where text alone is weak (AUROC about 0.63), GCN is level with the MLP (+0.002 [−0.016, +0.020]), consistent with neighbour averaging hurting most when a user's own text is strong.
 
@@ -176,6 +176,10 @@ The best model, XGB-Graph with profile on all one million users, reaches PR-AUC 
 
 **Finding 6 (exploratory): little room for adaptive neighbour trust.** Because Q2 shows neighbours hurting a minority of users, we asked how much a per-user switch could gain if it knew exactly whom to trust. This test was designed after seeing Q2, so it is exploratory. An oracle switch uses the own-feature tree for users whose true local homophily is below 0.5 (8.8% of users) and XGB-Graph for everyone else. It gains only +0.003 [+0.002, +0.004] AUROC and +0.006 macro-F1 over XGB-Graph. A real switch would have to guess the groups from predicted labels and could only do worse, so we did not build it.
 
+![Figure 4. TwiBot-20 against TwiBot-22. (a) With the profile as input, every GNN loses to the MLP without edges on TwiBot-20; on TwiBot-22 the differences are small (hollow squares: one seed, no CI). (b) DGP's neighbour summaries against the account's own text: no reliable gain on either dataset, except a small ranking gain on TwiBot-20's non-verified users.](figures/fig6_twibot20_vs_22.png)
+
+*Figure 4. TwiBot-20 against TwiBot-22. (a) With the profile as input, every GNN loses to the MLP without edges on TwiBot-20; on TwiBot-22 the differences are small (hollow squares: one seed, no CI). (b) DGP's neighbour summaries against the account's own text: no reliable gain on either dataset, except a small ranking gain on TwiBot-20's non-verified users.*
+
 **4.5 Are the labels telling the truth?**
 
 **Finding 7: the model ranking holds on expert labels.** On the 986 experts (105 bots), each scored by a model that never saw them:
@@ -207,11 +211,15 @@ Neighbour-feature trees remain best. R-GCN gains most from clean labels but stay
 
 The experts agree with the weak labels, but they trained the label-makers, so their agreement is built in. The independent annotators see a much weaker link, and the difference excludes zero. The annotation study is small (44 bots), and its 1.6× could still hide a modest real effect. But the dataset's labels clearly overstate the cue. This is consistent with Hays et al.'s warning about benchmark labels and, as far as we found, extends it to TwiBot-22.
 
-![Figure 4. Empty-bio lift with 95% CIs. The dataset's labels and the experts (who trained the label-makers) see a strong link; independent annotators see a much weaker one.](figures/fig4_empty_bio_lift.png)
+![Figure 5. Empty-bio lift with 95% CIs. The dataset's labels and the experts (who trained the label-makers) see a strong link; independent annotators see a much weaker one.](figures/fig4_empty_bio_lift.png)
 
-*Figure 4. Empty-bio lift with 95% CIs. The dataset's labels and the experts (who trained the label-makers) see a strong link; independent annotators see a much weaker one.*
+*Figure 5. Empty-bio lift with 95% CIs. The dataset's labels and the experts (who trained the label-makers) see a strong link; independent annotators see a much weaker one.*
 
 **Finding 8b (exploratory): what every model gets wrong.** On the 5,000 test users we looked at the accounts on which XGB-Graph, the profile + text tree, the LLM and FAGCN all agree and are wrong. Of 700 bots, 230 (33%) are missed by all four; of 4,300 humans, 95 are flagged by all four. The groups split by activity, not by bot-ness. Bots caught by every model have an empty bio (95%), often a default image (40%), very few followers (5th percentile), and half have no tweets; the humans flagged by every model look the same (87% empty bio, 7th percentile). The bots every model misses look like ordinary active users (4% empty bio, all with tweets, 44th follower percentile). In other words, the detectors find dormant-looking accounts, whichever label they carry, and miss active bots. On the experts, about half of these shared "errors" are label errors: 17 of the 32 dataset "bots" missed by every model are human according to the experts, and 15 of the 33 dataset "humans" flagged by every model are bots.
+
+![Figure 6. The accounts that all four models get right or wrong (5,000 sample test users). The models say "bot" to dormant-looking accounts (empty bio, few tweets, few followers), whatever their label, and miss active bots.](figures/fig7_shared_errors.png)
+
+*Figure 6. The accounts that all four models get right or wrong (5,000 sample test users). The models say "bot" to dormant-looking accounts (empty bio, few tweets, few followers), whatever their label, and miss active bots.*
 
 **4.6 Why the benchmark ranks graph models first.** The TwiBot-22 leaderboard ranks graph models such as BotRGCN at the top. We read the official code. BotRGCN, GCN and GAT take `verified` as an input, use the skewed released split, train for a fixed 200 epochs with no validation-based selection, report AUC computed from hard 0/1 predictions, and are ranked by accuracy. On bot-F1, a random forest (0.587) already beats BotRGCN (0.575) on the leaderboard itself.
 
@@ -235,9 +243,9 @@ Three things follow:
 
 We therefore read the leaderboard's graph advantage as a product of the protocol (accuracy on a skewed split, a shortcut feature, labels partly made by graph models), not as evidence that message passing helps under camouflage.
 
-![Figure 5. AUROC on the official released split vs our stratified split (seed 0, `verified` excluded). Every model loses 0.07–0.12 on the official split.](figures/fig5_split_reconciliation.png)
+![Figure 7. AUROC on the official released split vs our stratified split (seed 0, `verified` excluded). Every model loses 0.07–0.12 on the official split.](figures/fig5_split_reconciliation.png)
 
-*Figure 5. AUROC on the official released split vs our stratified split (seed 0, `verified` excluded). Every model loses 0.07–0.12 on the official split.*
+*Figure 7. AUROC on the official released split vs our stratified split (seed 0, `verified` excluded). Every model loses 0.07–0.12 on the official split.*
 
 **4.7 Answers to the original research questions.**
 

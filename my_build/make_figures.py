@@ -179,5 +179,68 @@ def fig5():
     save(fig, "fig5_split_reconciliation.png")
 
 
+# ---------- Figure 6: TwiBot-20 vs TwiBot-22 (c2_gnn_profile.json, c3_three_seeds.json, final_run.json, dgp_vs_target.json) ----------
+def fig6():
+    R20 = ROOT / "my_build" / "results" / "twibot20" / "A"
+    c2 = json.load(open(R20 / "c2_gnn_profile.json"))["pairs"]
+    c3 = json.load(open(R20 / "c3_three_seeds.json"))["pairs"]["dgp - target"]
+    fr = json.load(open(RES / "final_run.json"))
+    m22 = {k.split("/")[1]: v["target"]["auroc"] for k, v in fr["models"].items() if k.startswith("full_gnn/")}
+    d22 = json.load(open(RES / "dgp_vs_target.json"))["pairs"]
+    gnns = ["GCN", "SAGE", "LINKX", "FAGCN", "R-GCN"]
+    t20 = {g: c2[f"{g} - MLP"]["all"]["auroc"] for g in ["GCN", "SAGE", "LINKX", "FAGCN"]}
+    t22 = {"FAGCN": fr["pairs"]["full/FAGCN_minus_MLP"]["auroc"], "R-GCN": fr["pairs"]["full/RGCN_minus_MLP"]["auroc"]}
+    for g in ["GCN", "SAGE", "LINKX"]:
+        t22[g] = [m22[g] - m22["MLP"], None, None]           # one seed: no CI
+    fig, (a1, a2) = plt.subplots(1, 2, figsize=(7.8, 3.2), gridspec_kw={"width_ratios": [1.3, 1], "wspace": 0.55})
+
+    def dots(ax, labels, series):
+        for k, (name, data, col, mk) in enumerate(series):
+            for i, lab in enumerate(labels):
+                if lab not in data:
+                    continue
+                v, lo, hi = data[lab]
+                both = all(lab in d for _, d, _, _ in series)
+                yy = len(labels) - 1 - i + ((0.17 if k == 0 else -0.17) if both else 0)
+                if lo is not None:
+                    ax.plot([lo, hi], [yy, yy], color=col, lw=1.6, solid_capstyle="round")
+                ax.plot(v, yy, mk, ms=6.5, color=col, markeredgecolor=SURF if lo is not None else col, markeredgewidth=0.8 if lo is not None else 1.4,
+                        markerfacecolor=col if lo is not None else SURF)
+        ax.axvline(0, color=INK, lw=0.8)
+        ax.set_yticks(range(len(labels)), labels[::-1], fontsize=8)
+        grid_x(ax), ax.tick_params(axis="y", length=0)
+    dots(a1, gnns, [("TwiBot-20", t20, ORANGE, "o"), ("TwiBot-22", t22, BLUE, "s")])
+    a1.set_xlabel("AUROC: GNN − MLP without edges [95% CI]", fontsize=7.5)
+    a1.set_title("(a) Message passing vs no edges (with profile)", loc="left", fontsize=8.5, weight="bold")
+    a1.plot([], [], "o", color=ORANGE, label="TwiBot-20 (3 seeds)"), a1.plot([], [], "s", color=BLUE, label="TwiBot-22 (hollow = 1 seed)")
+    a1.legend(frameon=False, fontsize=6.8, loc="lower left", bbox_to_anchor=(0, 1.08), ncol=2)
+    labels = ["all test users", "non-verified users", "seed 0", "seed 1"]
+    dots(a2, labels, [("TwiBot-20", {"all test users": c3["all"]["auroc"], "non-verified users": c3["non_verified"]["auroc"]}, ORANGE, "o"),
+                      ("TwiBot-22", {"seed 0": d22["dgp_minus_target"]["auroc"], "seed 1": d22["dgp_minus_target_s1"]["auroc"]}, BLUE, "s")])
+    a2.set_xlabel("AUROC: DGP − own text [95% CI]", fontsize=7.5)
+    a2.set_title("(b) LLM neighbour summaries", loc="left", fontsize=8.5, weight="bold")
+    save(fig, "fig6_twibot20_vs_22.png")
+
+
+# ---------- Figure 7: what every model gets wrong (fusion_errors_deeper.log table, 5,000 sample test users) ----------
+def fig7():
+    groups = [("bots caught by all (146)", 95.2, 47.9, 5, ORANGE), ("humans flagged by all (95)", 87.4, 55.8, 7, ORANGE),
+              ("bots missed by all (230)", 4.3, 100.0, 44, BLUE), ("humans cleared by all (3,463)", 2.7, 100.0, 62, BLUE)]
+    metrics = [("% with empty bio", 1), ("% with any tweets", 2), ("median follower percentile", 3)]
+    fig, axes = plt.subplots(1, 3, figsize=(7.8, 2.5), sharey=True, gridspec_kw={"wspace": 0.12})
+    y = [3.3, 2.3, 1.0, 0.0]
+    for ax, (title, j) in zip(axes, metrics):
+        vals = [g[j] for g in groups]
+        ax.barh(y, vals, height=0.7, color=[g[4] for g in groups])
+        for yi, v in zip(y, vals):
+            ax.text(v + 2, yi, f"{v:g}", va="center", fontsize=7.5)
+        ax.set_xlim(0, 118), ax.set_title(title, fontsize=8, loc="left", weight="bold")
+        grid_x(ax), ax.tick_params(axis="y", length=0)
+    axes[0].set_yticks(y, [g[0] for g in groups], fontsize=8)
+    axes[0].plot([], [], "s", color=ORANGE, label="models say bot"), axes[0].plot([], [], "s", color=BLUE, label="models say human")
+    axes[0].legend(frameon=False, fontsize=7, loc="lower left", bbox_to_anchor=(0, 1.12), ncol=2)
+    save(fig, "fig7_shared_errors.png")
+
+
 if __name__ == "__main__":
-    fig1(), fig2(), fig3(), fig4(), fig5()
+    fig1(), fig2(), fig3(), fig4(), fig5(), fig6(), fig7()
