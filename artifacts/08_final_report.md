@@ -26,7 +26,7 @@ We carried this out on three datasets, ending with **TwiBot-22**, the largest pu
 
 The results differ from what we expected, and in an informative way. **An account's own profile and text carry most of the signal. Information from neighbours adds a little at large scale. GNN message passing adds almost nothing under the camouflage we measured. A fine-tuned LLM does not beat simpler text models once those have enough training data.** We also found that the dataset's labels, which were made mostly by automatic rules and models, overstate one profile cue (an empty bio) about three times compared with independent human judges. Together these findings explain why a published benchmark ranking that puts graph models first does not hold under a common, fair protocol. The project's contribution is therefore not a new model that wins, but a careful answer to *where* text and links help, *where* they do not, and *why* existing benchmarks give a different picture.
 
-**[FIGURE 1: the pipeline. Data → own features (15 profile fields, multilingual-E5 text embeddings) | neighbour features (per-relation averages) | LLM (zero-shot, LoRA fine-tuning, DGP prompting with neighbour summaries) → models (trees, GNNs, LLM) → evaluation on working test users, sealed test set and human-labelled users]**
+**[FIGURE 1: the pipeline. Data → own features (15 profile fields, multilingual-E5 text embeddings) | neighbour features (per-relation averages) | LLM (zero-shot, LoRA fine-tuning, DGP prompting with neighbour summaries) → models (trees, GNNs, LLM) → evaluation on working test users, held-back test set and human-labelled users]**
 
 ## 2. Literature Review
 
@@ -136,13 +136,13 @@ On the Instagram graph, where text alone is weak (AUROC about 0.63), GCN is leve
 
 **[FIGURE 2: Table 1 as a bar chart with 95% confidence intervals]**
 
-The best model, XGB-Graph with profile on all one million users, reaches PR-AUC 0.590 on the sealed users, about four times random. When bots are made rarer by reweighting, PR-AUC falls to 0.378 at 5% bots and 0.156 at 1%. That is a reminder of how hard detection becomes at realistic fraud rates.
+The best model, XGB-Graph with profile on all one million users, reaches PR-AUC 0.590 on the held-back test users, about four times random. When bots are made rarer by reweighting, PR-AUC falls to 0.378 at 5% bots and 0.156 at 1%. That is a reminder of how hard detection becomes at realistic fraud rates.
 
 **4.3 What carries the signal.**
 
 **Finding 1: the profile beats text, and not only through one cue.** The 15 profile fields beat every text model. Profile minus LoRA: +0.073 [+0.054, +0.093] macro-F1 and +0.128 AUROC. The gap is not because the trees saw more data: trained on LoRA's exact 1,300 users, the profile tree still reaches 0.677 / 0.808. Much of the profile's strength comes from one cue: 40.6% of bots have an empty bio, against 7.8% of humans. But the model is not stuck on it. Given 15 fields instead of the empty-bio flag alone, AUROC rises from 0.658 to 0.837. On users who *have* a bio, where the flag is useless (AUROC 0.500), the profile model still scores 0.790 on the sample and 0.802 on all users.
 
-**Finding 2: text adds a little on top of the profile.** On the sealed users, profile plus text minus profile is +0.015 [+0.003, +0.028] macro-F1 on the sample and +0.016 [+0.012, +0.020] on all users. A surprise: for a text-only model, adding 20 tweets to the bio *hurts*, −0.052 [−0.074, −0.030] on the same users. Slices explain why. On users with a bio, the two are equal (AUROC 0.682 against 0.681). Averaging tweets into one vector blurs the sharp contrast between empty and non-empty bios. We tested this directly: adding a single empty-bio flag to the bio-plus-tweets embedding closes the gap (0.672 against 0.673).
+**Finding 2: text adds a little on top of the profile.** On the held-back test users, profile plus text minus profile is +0.015 [+0.003, +0.028] macro-F1 on the sample and +0.016 [+0.012, +0.020] on all users. A surprise: for a text-only model, adding 20 tweets to the bio *hurts*, −0.052 [−0.074, −0.030] on the same users. Slices explain why. On users with a bio, the two are equal (AUROC 0.682 against 0.681). Averaging tweets into one vector blurs the sharp contrast between empty and non-empty bios. We tested this directly: adding a single empty-bio flag to the bio-plus-tweets embedding closes the gap (0.672 against 0.673).
 
 **Finding 3: the fine-tuned LLM helps only when data is scarce, and its neighbour summaries add nothing.** DGP's prompt with neighbour summaries scores the same as the account's own text on a 1,500-user subset: over two seeds the macro-F1 difference is 0.000 (−0.004 and +0.005) and the AUROC difference +0.015 (−0.001 and +0.030 [−0.000, +0.058]), smaller than the seed-to-seed change of `target` itself (0.037 AUROC). That is what heterophily predicts: the neighbours' text says little about the account. With the same 1,300 training users, LoRA beats TF-IDF by +0.050 macro-F1 (the CI excludes 0). With 70,000 training users, TF-IDF ties LoRA (+0.002 [−0.015, +0.019]). The zero-shot model's raw answer is "bot" for about 99% of accounts; even with a cut-off tuned on validation it ranks no better than chance (AUROC 0.461 on the 5,000 users).
 
@@ -150,7 +150,7 @@ The best model, XGB-Graph with profile on all one million users, reaches PR-AUC 
 
 **4.4 What the links add.**
 
-**Finding 4: neighbour features help a little at full scale; message passing does not.** On the sealed users, adding neighbour averages to the own-feature tree gives +0.012 [+0.009, +0.016] macro-F1 and +0.054 [+0.048, +0.060] PR-AUC on all users. Without the profile the gain is larger (+0.043 AUROC), because neighbours partly stand in for missing profile information. GNNs are a different story: all five stay within about 0.01 macro-F1 of the MLP without edges and well below the trees on the same features. The best GNN, FAGCN, beats the MLP by +0.011 [+0.008, +0.014] macro-F1 and +0.029 AUROC, yet still scores 0.830 AUROC against 0.874 for XGB-Graph.
+**Finding 4: neighbour features help a little at full scale; message passing does not.** On the held-back test users, adding neighbour averages to the own-feature tree gives +0.012 [+0.009, +0.016] macro-F1 and +0.054 [+0.048, +0.060] PR-AUC on all users. Without the profile the gain is larger (+0.043 AUROC), because neighbours partly stand in for missing profile information. GNNs are a different story: all five stay within about 0.01 macro-F1 of the MLP without edges and well below the trees on the same features. The best GNN, FAGCN, beats the MLP by +0.011 [+0.008, +0.014] macro-F1 and +0.029 AUROC, yet still scores 0.830 AUROC against 0.874 for XGB-Graph.
 
 **Finding 5: the camouflage questions, answered on TwiBot-22.**
 
@@ -181,7 +181,7 @@ The best model, XGB-Graph with profile on all one million users, reaches PR-AUC 
 
 Neighbour-feature trees remain best. R-GCN gains most from clean labels but stays below the trees; FAGCN does not change. One epoch of LoRA on about 789 experts lowers its ranking quality, though its macro-F1 rises through the new cut-off. The dataset's own labels agree with the experts 90.5% of the time, as its paper reports. But that is barely above the 89.4% achieved by calling everyone human: only 56 of the 105 expert bots are labelled bots.
 
-**Finding 7b (D7): the neighbour-tree gain appears only under the weak labels.** If graph models partly re-learn the label-making GNNs, their gain should shrink under expert labels. For XGB-Graph minus the own-feature tree on all users, the AUROC gain is +0.012 [+0.011, +0.014] under the weak labels (sealed users) but −0.005 [−0.015, +0.004] under the expert labels; the difference, +0.018 [+0.008, +0.027], excludes zero. FAGCN's gain over the MLP holds under both (+0.029 and +0.026 [+0.003, +0.053]). So the small neighbour-feature gain at full scale is at least partly an artefact of how the labels were made.
+**Finding 7b (D7): the neighbour-tree gain appears only under the weak labels.** If graph models partly re-learn the label-making GNNs, their gain should shrink under expert labels. For XGB-Graph minus the own-feature tree on all users, the AUROC gain is +0.012 [+0.011, +0.014] under the weak labels (held-back users) but −0.005 [−0.015, +0.004] under the expert labels; the difference, +0.018 [+0.008, +0.027], excludes zero. FAGCN's gain over the MLP holds under both (+0.029 and +0.026 [+0.003, +0.053]). So the small neighbour-feature gain at full scale is at least partly an artefact of how the labels were made.
 
 **Finding 8: the empty-bio cue is mostly a label-maker habit.** If empty bios are a genuine bot habit, independent humans should see the same link as the dataset's labels. We measured the *lift*: the bot rate among empty-bio users divided by the bot rate among users with a bio.
 
@@ -190,7 +190,7 @@ Neighbour-feature trees remain best. R-GCN gains most from clean labels but stay
 | 986 experts | 8.7× [6.4, 12.3] | 7.2× [5.3, 10.3] (experts) | +1.5 [−1.5, +4.6] |
 | 458 annotation-study users | 5.0× [3.3, 7.7] | **1.6× [0.7, 3.1]** (annotators) | **+3.4 [+1.2, +6.1]** |
 
-*Table 3. Empty-bio lift. Sealed non-expert users were removed from the annotation study (21 users) and "not sure" judgements dropped (21).*
+*Table 3. Empty-bio lift. Held-back non-expert users were removed from the annotation study (21 users) and "not sure" judgements dropped (21).*
 
 The experts agree with the weak labels, but they trained the label-makers, so their agreement is built in. The independent annotators see a much weaker link, and the difference excludes zero. The annotation study is small (44 bots), and its 1.6× could still hide a modest real effect. But the dataset's labels clearly overstate the cue. This is consistent with Hays et al.'s warning about benchmark labels and, as far as we found, extends it to TwiBot-22.
 
