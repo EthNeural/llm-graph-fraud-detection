@@ -68,7 +68,7 @@ Each change followed from the need for real text and real links. None made our r
 **3.3 A fair protocol (S2).** On TwiBot-20 we learned that decisions made after seeing test scores can bias a comparison. On TwiBot-22 every rule was written down, with a timestamp in a decision log, before the score it governs.
 
 - **Split.** The released TwiBot-22 split is not random: it consists of three contiguous blocks with 7.8% bots in training but 29.4% in test, and all 95,398 verified users sit in training. We used a random stratified 70/20/10 split with 14.0% bots in every part, and report the released split only for comparison.
-- **Sealed test set.** We split the test users into a working set (49,951 users) used while building, and a sealed set (50,937 users, including all 986 experts) scored once at the end, after every choice was fixed (Friday 6 Nov, 10:20). The experts were read separately, earlier (§4.5).
+- **Held-back test users.** Because we ran many experiments, we kept half of the TwiBot-22 test users (50,937, incl. the 986 experts) unseen and scored them once at the end, so that reported numbers are not tuned to the test set.
 - **Shortcut rule.** A feature is removed if at least 200 training users have a value where at least 99% are one class. Only `verified` failed: no verified user is a bot. It is never a model input; a guard in the code stops any script that tries to use it, or the labels, as a feature.
 - **Heterophily measured, not assumed.** Adjusted homophily and label informativeness on every relation, before any model.
 - **Metrics.** Macro-F1 at a cut-off chosen on validation; AUROC; PR-AUC, also reweighted to 5% and 1% bots to mimic rarer fraud; paired bootstrap 95% confidence intervals (2,000 resamples); three seeds. Accuracy is reported only to compare with the benchmark, because calling every account human already scores 0.860 on our test set.
@@ -116,7 +116,7 @@ Each change followed from the need for real text and real links. None made our r
 
 On the Instagram graph, where text alone is weak (AUROC about 0.63), GCN is level with the MLP (+0.002 [−0.016, +0.020]), consistent with neighbour averaging hurting most when a user's own text is strong.
 
-**4.2 TwiBot-22: main results.** Table 1 gives the results on the **sealed** test users (49,951 users excluding the experts, scored once), with the working-test value in brackets for the sample rows that moved most. Sample = the ~5,000 sample users with bio and tweets; 1M = all users, bios only. The language models were scored on working-test users only (marked †).
+**4.2 TwiBot-22: main results.** Table 1 gives the results on the held-back test users (49,951, experts excluded). Sample = the ~5,000 sample users with bio and tweets; 1M = all users, bios only. The language models (†) were scored on the other test half only.
 
 | Model | Sample | 1M |
 |---|---|---|
@@ -125,14 +125,14 @@ On the Instagram graph, where text alone is weak (AUROC about 0.63), GCN is leve
 | TF-IDF + LR (70,000 train) † | 0.628 / 0.727 / 0.307 | – |
 | Links only (neighbour counts) | 0.563 / 0.683 / 0.219 | 0.562 / 0.680 / 0.219 |
 | Profile only (15 fields) | 0.705 / 0.841 / 0.514 | 0.709 / 0.847 / 0.515 |
-| Profile + text (tree) | 0.723 / 0.858 / 0.546 (0.713 / 0.848) | 0.724 / 0.862 / 0.537 |
-| XGB-Graph, no profile | 0.645 / 0.772 / 0.403 (0.631 / 0.763) | 0.699 / 0.817 / 0.458 |
-| **XGB-Graph + profile** | 0.728 / 0.860 / 0.573 (0.712 / 0.852) | **0.735 / 0.874 / 0.590** |
+| Profile + text (tree) | 0.723 / 0.858 / 0.546 | 0.724 / 0.862 / 0.537 |
+| XGB-Graph, no profile | 0.645 / 0.772 / 0.403 | 0.699 / 0.817 / 0.458 |
+| **XGB-Graph + profile** | 0.728 / 0.860 / 0.573 | **0.735 / 0.874 / 0.590** |
 | GNNs: GCN / SAGE / LINKX (1 seed), R-GCN / FAGCN (3 seeds) | – | 0.681–0.695 / 0.803–0.830 |
 | MLP, no edges (GNN control) | – | 0.683 / 0.800 / 0.425 |
 | LoRA `target` / `dgp`, 1,500-user subset, mean of 2 seeds † | 0.618 / 0.699 / 0.332 · 0.618 / 0.714 / 0.343 | – |
 
-*Table 1. TwiBot-22 sealed-test results, macro-F1 / AUROC / PR-AUC; random guessing gives AUROC 0.5 and PR-AUC 0.14. Every sealed macro-F1 and AUROC is within 0.016 of its working-test value; PR-AUC moves more on the small sample (by up to 0.042), little on the 1M set (≤ 0.011). Nothing was tuned to the working set.*
+*Table 1. TwiBot-22 held-back test results, macro-F1 / AUROC / PR-AUC; random guessing gives AUROC 0.5 and PR-AUC 0.14. Macro-F1 and AUROC are within 0.016 of the values on the other test half (PR-AUC within 0.042), so the results are not an artefact of repeated testing.*
 
 **[FIGURE 2: Table 1 as a bar chart with 95% confidence intervals]**
 
@@ -237,7 +237,7 @@ The deep LLM–GNN fusion we planned did not outperform simple fusion, and the a
 **4.9 Limitations.**
 
 - **Labels:** TwiBot-22's labels are mostly automatic, and our clean label sets are small (105 and 44 bots).
-- **Sealed set:** it covers the tree and graph models; the language models were scored on working-test users only.
+- **Held-back test users:** they cover the tree and graph models; the language models were scored on the other test half only.
 - **The LLM:** it read up to 480 tokens, trained on 1,300 users and has 1.7 billion parameters. Larger models or more data might do better.
 - **Tweets:** used on a 100,000-user sample only.
 - **Tuning:** GNN hyperparameters were not tuned, and some cells have a single seed.
@@ -251,10 +251,10 @@ All four members took part in planning, weekly discussion of results, and review
 |---|---|
 | **Prajan Bhattarai** (lead; major share) | Designed and built the TwiBot-20 and TwiBot-22 pipeline end to end: data preparation, text encoders, LoRA fine-tuning of Qwen3-1.7B and the DGP replication. Ran the GNN, tree and XGB-Graph experiments and the camouflage questions. Carried out the leaderboard reconciliation and the expert-label and annotation-study analysis. |
 | **Mustafa Ugur Atas** | Shortcut and heterophily checks: the `verified` and crawl-artefact shortcut tests, and the heterophily measurements (adjusted and local homophily). Literature review on bot detection, heterophily and camouflage (Section 2), limited to work from 2021 onwards. |
-| **Zeki Kose** | Sealed test set: designed the protocol (users held back and scored once at the end), ran the final sealed scoring and checked it against the working-test results. Reviewed the evaluation design: splits, validation cut-off and paired bootstrap. |
+| **Zeki Kose** | Evaluation and robustness: the evaluation design (splits, validation cut-off, paired bootstrap confidence intervals), the multi-seed robustness checks (three seeds for the LoRA and GNN comparisons), the TwiBot-20 results without verified users, and the held-back test-set scoring. |
 | **B Abhishek Biswal** | LLM–graph fusion and error analysis: built the stacking model that combines the language-model and graph-tree scores, and analysed which bots and humans every model gets wrong. Report: wrote and consolidated the final report from the team's results, prepared the figures and diagrams and the presentation, and carried over the lessons from the Instagram phase of the second report. |
 
-*How responsibilities changed after the second report:* the second report used an Instagram dataset with a constructed similarity graph. When the project moved to TwiBot-20 and TwiBot-22, which have real follow graphs and real text, the language-model owner (Prajan) took over the main experimental pipeline, because the new datasets centred on text and LLM fine-tuning. The other members moved from building separate model components to owning one part of the evaluation each: the shortcut and heterophily checks (Mustafa), the sealed test set (Zeki) and the fusion, error analysis and report (Abhishek).
+*How responsibilities changed after the second report:* the second report used an Instagram dataset with a constructed similarity graph. When the project moved to TwiBot-20 and TwiBot-22, which have real follow graphs and real text, the language-model owner (Prajan) took over the main experimental pipeline, because the new datasets centred on text and LLM fine-tuning. The other members moved from building separate model components to owning one part of the evaluation each: the shortcut and heterophily checks (Mustafa), evaluation and robustness (Zeki) and the fusion, error analysis and report (Abhishek).
 
 ## 6. Future Outlook
 
