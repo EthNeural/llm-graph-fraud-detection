@@ -1,0 +1,98 @@
+{
+ "note": "one unseeded run per variant",
+ "models": {
+  "target": {
+   "all": {
+    "macro_f1": 0.7278,
+    "auroc": 0.8115,
+    "pr_auc": 0.838
+   },
+   "non_verified": {
+    "macro_f1": 0.6374,
+    "auroc": 0.7346,
+    "pr_auc": 0.8907
+   },
+   "candidates": 2
+  },
+  "dgp": {
+   "all": {
+    "macro_f1": 0.7271,
+    "auroc": 0.8154,
+    "pr_auc": 0.8497
+   },
+   "non_verified": {
+    "macro_f1": 0.6583,
+    "auroc": 0.7801,
+    "pr_auc": 0.9135
+   },
+   "candidates": 2
+  },
+  "dgp_num": {
+   "all": {
+    "macro_f1": 0.7255,
+    "auroc": 0.7947,
+    "pr_auc": 0.823
+   },
+   "non_verified": {
+    "macro_f1": 0.6392,
+    "auroc": 0.7361,
+    "pr_auc": 0.8858
+   },
+   "candidates": 1
+  }
+ },
+ "pairs": {
+  "dgp_num - target": {
+   "all": {
+    "macro_f1": [
+     -0.0027,
+     -0.0331,
+     0.0269
+    ],
+    "auroc": [
+     -0.0171,
+     -0.0419,
+     0.0076
+    ]
+   },
+   "non_verified": {
+    "macro_f1": [
+     0.0011,
+     -0.0363,
+     0.0371
+    ],
+    "auroc": [
+     0.001,
+     -0.0339,
+     0.036
+    ]
+   }
+  },
+  "dgp_num - dgp": {
+   "all": {
+    "macro_f1": [
+     -0.0019,
+     -0.0289,
+     0.0254
+    ],
+    "auroc": [
+     -0.021,
+     -0.0433,
+     0.0015
+    ]
+   },
+   "non_verified": {
+    "macro_f1": [
+     -0.0197,
+     -0.0533,
+     0.0152
+    ],
+    "auroc": [
+     -0.0441,
+     -0.0729,
+     -0.0154
+    ]
+   }
+  }
+ }
+}

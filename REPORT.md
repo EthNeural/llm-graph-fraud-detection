@@ -485,3 +485,5 @@ The GCN loss holds without verified users. With two seeds and the matched checkp
 - **3 Nov 2026 (afternoon):** Step 4 robustness check on the bridge graph: GCN drops 0.02–0.04 on every encoder, SAGE gains up to 0.012. Steps 5 and 6 stay on the labelled-only graph. Started step 6 `VARIANT=target` on TwiBot-20 A.
 - **3 Nov 2026:** TwiBot-20 A step 6 `dgp` finished (LoRA 0.726 on the step 5 sample, 0.711 on the full test set). Counted the dropped support users: 8,082 bridges; bridge edges are more homophilous (0.619) than our graph (0.532).
 - **2 Nov 2026:** TwiBot-20 step 5 finished (A and B). Step 6 (DGP replication) written and started on TwiBot-20 A. Repository created.
+
+- **7 Nov 2026 (15:30):** TwiBot-20 G3 `dgp_num` (DGP with numeric profile summaries of neighbours, one run): macro-F1 0.726 / AUROC 0.795; level with `target` (−0.003 [−0.033, +0.027] macro-F1) and below `dgp` on non-verified ranking (−0.044 [−0.073, −0.015] AUROC). The DGP gain on TwiBot-20 comes from neighbours' text, not their numbers. All TwiBot-20 GPU work is complete.

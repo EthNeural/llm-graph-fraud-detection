@@ -17,7 +17,7 @@ Run in one queue, each job logs its exit code and writes to its own named file (
 |---|---|---|---|
 | G1 ✅ 7 Nov (3 seeds) | **LoRA seed 2** for `target` and `dgp` (A), seeds 1 and 2 so no headline rests on the unseeded run | Seed noise (0.02-0.03) is larger than every dgp − target gap | lessons 7, 8; plan step 8 |
 | G2 ✅ (chosen-adapter rule, every check saved) | In those runs: **save the adapter at every check** and select by **full-validation macro-F1** (not the 200-user validation loss) | Same selection rule as the MLP; Google feedback #1; lessons 8, 11 | feedback #1 |
-| G3 | **`dgp_num`** (DGP with numeric profile summaries, the 5 allowed fields) | The profile track for the LLM, matching TwiBot-22's "expensive models with profile" (H3) | plan step 8; H3 |
+| G3 ✅ | **`dgp_num`** (DGP with numeric profile summaries, the 5 allowed fields) | The profile track for the LLM, matching TwiBot-22's "expensive models with profile" (H3) | plan step 8; H3 |
 | G4 ✅ 7 Nov (cap does not explain the gap) | **Matched-text control**: re-embed TwiBot-20 with the encoders reading exactly LoRA's 480-token strings (Qwen tokenizer), then MLP / LR on them | LoRA reads 480 tokens, encoders up to 2,000 characters; 81% of users are cut for LoRA. Equal text answers "frozen encoder vs fine-tuning" fairly | lesson 10; feedback #2 |
 
 Check before queueing: the step 6 launcher accepts the selection rule and saves every check (`step6_dgp.py:416-418` saved only 2 adapters).
@@ -47,3 +47,5 @@ Check before queueing: the step 6 launcher accepts the selection rule and saves 
 
 - Raising LoRA's token cap to 2,000 characters: too much GPU memory for a 16 GB Mac; G4 equalises from the other side instead.
 - A sealed test set for TwiBot-20 after the fact: every test number has already been seen.
+
+**G3 result (Sat 7 Nov 15:30, `results/twibot20/A/g3_dgp_num.json`, one unseeded run each, chosen-adapter rule):** `dgp_num` macro-F1 0.726 / AUROC 0.795 on all test users. vs `target`: −0.003 [−0.033, +0.027] macro-F1, −0.017 [−0.042, +0.008] AUROC. vs `dgp`: −0.002 [−0.029, +0.025] macro-F1; non-verified AUROC −0.044 [−0.073, −0.015]. Numeric neighbour summaries add nothing; DGP's small non-verified ranking gain comes from neighbours' text. Caveat: dgp_num has only a best-loss checkpoint (no last-check scores), target/dgp had two candidates.

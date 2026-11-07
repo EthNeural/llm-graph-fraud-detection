@@ -1,0 +1,163 @@
+On branch main
+Your branch is up to date with 'origin/main'.
+
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+	modified:   my_build/results/twibot20/A/step6_lora.json
+	modified:   reports/overnight_notes_2026-11-05.md
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+	artifacts/google_feedback.txt
+	my_build/results/twibot20/A/c1_scores/
+	my_build/results/twibot20/A/gpu_batch_launcher.out
+	my_build/results/twibot20/A/step6_Qwen3-1.7B_target_s2_scores.npz
+	my_build/results/twibot20/A/step6_target_s2.log
+	my_build/results/twibot20/B/c1_scores/
+	my_build/results/twibot22/A/expert_rotation_target_folds/
+	my_build/results/twibot22/A/expert_rotation_target_folds_smoke/
+	my_build/results/twibot22/A/metapath_summaries_b10_Qwen3-1.7B.json
+	my_build/results/twibot22/A/metapath_summaries_b10_Qwen3-1.7B_smoke.json
+	my_build/results/twibot22/A/splits.npz
+	my_build/results/twibot22/A/step6_Qwen3-1.7B_dgp_smoke_scores.npz
+	my_build/results/twibot22/A/step6_Qwen3-1.7B_dgp_smoke_zeroshot.npz
+	my_build/results/twibot22/embed_bio_qwen.log
+	my_build/results/twibot22/expert_rotation_gnn.partial.npz
+	my_build/results/twibot22/final_launcher.out
+	my_build/results/twibot22/overnight_finisher.log
+	my_build/results/twibot22/q3_inconsistency.log
+	my_build/results/twibot22/runs/bio_on_sample/
+	my_build/results/twibot22/runs/full/
+	my_build/results/twibot22/runs/full_gnn/
+	my_build/results/twibot22/runs/sample/
+	my_build/results/twibot22/summaries_b10_Qwen3-1.7B.json
+	my_build/results/twibot22/summaries_b10_Qwen3-1.7B_smoke.json
+
+no changes added to commit (use "git add" and/or "git commit -a")
+On branch main
+Your branch is up to date with 'origin/main'.
+
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+	modified:   my_build/results/twibot20/A/step6_lora.json
+	modified:   my_build/results/twibot20/A/step6_rescore.json
+	modified:   reports/overnight_notes_2026-11-05.md
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+	artifacts/google_feedback.txt
+	my_build/results/twibot20/A/c1_scores/
+	my_build/results/twibot20/A/gpu_batch_launcher.out
+	my_build/results/twibot20/A/step6_Qwen3-1.7B_target_s2_last_scores.npz
+	my_build/results/twibot20/A/step6_Qwen3-1.7B_target_s2_scores.npz
+	my_build/results/twibot20/A/step6_rescore_target_s2.log
+	my_build/results/twibot20/A/step6_target_s2.log
+	my_build/results/twibot20/B/c1_scores/
+	my_build/results/twibot22/A/expert_rotation_target_folds/
+	my_build/results/twibot22/A/expert_rotation_target_folds_smoke/
+	my_build/results/twibot22/A/metapath_summaries_b10_Qwen3-1.7B.json
+	my_build/results/twibot22/A/metapath_summaries_b10_Qwen3-1.7B_smoke.json
+	my_build/results/twibot22/A/splits.npz
+	my_build/results/twibot22/A/step6_Qwen3-1.7B_dgp_smoke_scores.npz
+	my_build/results/twibot22/A/step6_Qwen3-1.7B_dgp_smoke_zeroshot.npz
+	my_build/results/twibot22/embed_bio_qwen.log
+	my_build/results/twibot22/expert_rotation_gnn.partial.npz
+	my_build/results/twibot22/final_launcher.out
+	my_build/results/twibot22/overnight_finisher.log
+	my_build/results/twibot22/q3_inconsistency.log
+	my_build/results/twibot22/runs/bio_on_sample/
+	my_build/results/twibot22/runs/full/
+	my_build/results/twibot22/runs/full_gnn/
+	my_build/results/twibot22/runs/sample/
+	my_build/results/twibot22/summaries_b10_Qwen3-1.7B.json
+	my_build/results/twibot22/summaries_b10_Qwen3-1.7B_smoke.json
+
+no changes added to commit (use "git add" and/or "git commit -a")
+On branch main
+Your branch is up to date with 'origin/main'.
+
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+	modified:   my_build/results/twibot20/A/step6_dgp_s2.log
+	modified:   my_build/results/twibot20/A/step6_lora.json
+	modified:   my_build/results/twibot20/A/step6_rescore.json
+	modified:   reports/overnight_notes_2026-11-05.md
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+	artifacts/google_feedback.txt
+	my_build/results/twibot20/A/c1_scores/
+	my_build/results/twibot20/A/gpu_batch_launcher.out
+	my_build/results/twibot20/A/step6_Qwen3-1.7B_dgp_s2_scores.npz
+	my_build/results/twibot20/A/step6_Qwen3-1.7B_target_s2_last_scores.npz
+	my_build/results/twibot20/A/step6_Qwen3-1.7B_target_s2_scores.npz
+	my_build/results/twibot20/A/step6_rescore_target_s2.log
+	my_build/results/twibot20/A/step6_target_s2.log
+	my_build/results/twibot20/B/c1_scores/
+	my_build/results/twibot22/A/expert_rotation_target_folds/
+	my_build/results/twibot22/A/expert_rotation_target_folds_smoke/
+	my_build/results/twibot22/A/metapath_summaries_b10_Qwen3-1.7B.json
+	my_build/results/twibot22/A/metapath_summaries_b10_Qwen3-1.7B_smoke.json
+	my_build/results/twibot22/A/splits.npz
+	my_build/results/twibot22/A/step6_Qwen3-1.7B_dgp_smoke_scores.npz
+	my_build/results/twibot22/A/step6_Qwen3-1.7B_dgp_smoke_zeroshot.npz
+	my_build/results/twibot22/embed_bio_qwen.log
+	my_build/results/twibot22/expert_rotation_gnn.partial.npz
+	my_build/results/twibot22/final_launcher.out
+	my_build/results/twibot22/overnight_finisher.log
+	my_build/results/twibot22/q3_inconsistency.log
+	my_build/results/twibot22/runs/bio_on_sample/
+	my_build/results/twibot22/runs/full/
+	my_build/results/twibot22/runs/full_gnn/
+	my_build/results/twibot22/runs/sample/
+	my_build/results/twibot22/summaries_b10_Qwen3-1.7B.json
+	my_build/results/twibot22/summaries_b10_Qwen3-1.7B_smoke.json
+
+no changes added to commit (use "git add" and/or "git commit -a")
+On branch main
+Your branch is up to date with 'origin/main'.
+
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+	modified:   my_build/results/twibot20/A/step6_dgp_s2.log
+	modified:   my_build/results/twibot20/A/step6_lora.json
+	modified:   my_build/results/twibot20/A/step6_rescore.json
+	modified:   reports/overnight_notes_2026-11-05.md
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+	artifacts/google_feedback.txt
+	my_build/results/twibot20/A/c1_scores/
+	my_build/results/twibot20/A/gpu_batch_launcher.out
+	my_build/results/twibot20/A/step6_Qwen3-1.7B_dgp_s2_last_scores.npz
+	my_build/results/twibot20/A/step6_Qwen3-1.7B_dgp_s2_scores.npz
+	my_build/results/twibot20/A/step6_Qwen3-1.7B_target_s2_last_scores.npz
+	my_build/results/twibot20/A/step6_Qwen3-1.7B_target_s2_scores.npz
+	my_build/results/twibot20/A/step6_rescore_dgp_s2.log
+	my_build/results/twibot20/A/step6_rescore_target_s2.log
+	my_build/results/twibot20/A/step6_target_s2.log
+	my_build/results/twibot20/B/c1_scores/
+	my_build/results/twibot22/A/expert_rotation_target_folds/
+	my_build/results/twibot22/A/expert_rotation_target_folds_smoke/
+	my_build/results/twibot22/A/metapath_summaries_b10_Qwen3-1.7B.json
+	my_build/results/twibot22/A/metapath_summaries_b10_Qwen3-1.7B_smoke.json
+	my_build/results/twibot22/A/splits.npz
+	my_build/results/twibot22/A/step6_Qwen3-1.7B_dgp_smoke_scores.npz
+	my_build/results/twibot22/A/step6_Qwen3-1.7B_dgp_smoke_zeroshot.npz
+	my_build/results/twibot22/embed_bio_qwen.log
+	my_build/results/twibot22/expert_rotation_gnn.partial.npz
+	my_build/results/twibot22/final_launcher.out
+	my_build/results/twibot22/overnight_finisher.log
+	my_build/results/twibot22/q3_inconsistency.log
+	my_build/results/twibot22/runs/bio_on_sample/
+	my_build/results/twibot22/runs/full/
+	my_build/results/twibot22/runs/full_gnn/
+	my_build/results/twibot22/runs/sample/
+	my_build/results/twibot22/summaries_b10_Qwen3-1.7B.json
+	my_build/results/twibot22/summaries_b10_Qwen3-1.7B_smoke.json
+
+no changes added to commit (use "git add" and/or "git commit -a")
