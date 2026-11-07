@@ -92,7 +92,18 @@ Each change followed from the need for real text and real links. None made our r
 - **Q3:** cross-relation inconsistency. Eight label-free features comparing a user's follow neighbourhood with their interaction neighbourhood.
 - **TROPICAL's premise:** bot density among a bot's neighbours at hop distances 1 to 4.
 
-**3.8 Timeline.** *Skipped in this mock on purpose (deferred by the builder; to be added before submission). It will compare the planned schedule, reconstructed from the initiation report's task list and the second report's next steps, with the actual dates in the decision log.*
+**3.8 Timeline.** The plan below comes from the next steps listed in the second report (submitted 20 Sep 2026).
+
+| Period | Planned | Actual | Why it changed |
+|---|---|---|---|
+| 21 Sep – late Sep | Threshold calibration; fusion for GraphSAGE and GAT; repeated seeds | Reviewed the second report's results | Instagram's made-up text profiles could not test the LLM question |
+| Early – mid Oct | Find a dataset with real text | Literature on camouflage and heterophily; dataset search; TwiBot-20/22 chosen | Real text and a real follow graph were needed |
+| Late Oct | Semantic neighbour filtering | Research questions refined; evaluation protocol designed; first versions of the pipeline | — |
+| 2 – 4 Nov | — | TwiBot-20 pipeline: LoRA, DGP, robustness checks | — |
+| 5 – 6 Nov | — | TwiBot-22 at scale; shortcut, heterophily and label checks; final test set scored once | TwiBot-20 results needed confirming at scale |
+| 7 – 8 Nov | Write-up | Seed and control runs; final report | — |
+
+Of the planned items, repeated seeds, semantic neighbour filtering (FLAG-lite) and real-language data were done; threshold calibration and GraphSAGE/GAT fusion were replaced by the move to TwiBot.
 
 **3.9 Difficulties and fallbacks.** Several sub-problems did not go as planned.
 
