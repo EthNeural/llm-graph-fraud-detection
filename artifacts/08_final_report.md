@@ -178,14 +178,16 @@ Each change followed from the need for real text and real links. None made our r
 - **Q2:** local heterogeneity. Each user's share of training-labelled neighbours with the same label, and where neighbour features help or hurt by that share.
 - **Q3:** cross-relation inconsistency. Eight label-free features comparing a user's follow neighbourhood with their interaction neighbourhood.
 
-**3.8 Timeline.** The plan below comes from the next steps listed in the second report (submitted 20 Sep 2026).
+**3.8 Timeline.** The plan comes from the next steps listed in the second report (submitted 20 Sep 2026). The work after it ran in six phases, in this order.
 
-| Period | Planned | Actual | Why it changed |
+| Phase | Planned | Actual | Why it changed |
 |---|---|---|---|
-| 21 Sep – late Sep | Threshold calibration; fusion for GraphSAGE and GAT; repeated seeds | Reviewed the second report's results | Instagram's made-up text profiles could not test the LLM question |
-| Early – mid Oct | Find a dataset with real text | Literature on camouflage and heterophily; dataset search; TwiBot-20/22 chosen | Real text and a real follow graph were needed |TwiBot-20 pipeline: LoRA, DGP, robustness checks | — |
-| Late Oct | Semantic neighbour filtering | Research questions refined; evaluation protocol designed; first versions of the pipeline | — |TwiBot-22 at scale; shortcut, heterophily and label checks; final test set scored once | TwiBot-20 results needed confirming at scale | 
-| 2 – 8 Nov | Write-up | Seed and control runs; final report | — |
+| 1. Review | Threshold calibration; fusion for GraphSAGE and GAT; repeated seeds | Reviewed the second report's results | Instagram's made-up text profiles could not test the LLM question |
+| 2. Data and literature | Find a dataset with real text | Literature on camouflage and heterophily; dataset search; TwiBot-20/22 chosen | Real text and a real follow graph were needed |
+| 3. Design | Semantic neighbour filtering | Research questions refined; evaluation protocol designed (splits, two test sets, bootstrap) | Benchmark shortcuts had to be ruled out first |
+| 4. TwiBot-20 | — | Full pipeline: text encoders, GNNs, LoRA, DGP, robustness checks, FLAG-lite | A small dataset to develop and debug on |
+| 5. TwiBot-22 | — | Scaled to one million users; shortcut, heterophily and label checks; final test set scored once | TwiBot-20 results needed confirming at scale |
+| 6. Completion | Write-up | Seed and control runs; final report | — |
 
 Of the planned items, repeated seeds, semantic neighbour filtering (FLAG-lite) and real-language data were done; threshold calibration and GraphSAGE/GAT fusion were replaced by the move to TwiBot.
 
