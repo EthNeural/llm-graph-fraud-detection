@@ -148,3 +148,4 @@ Saved dgp_vs_target.json
 - 11:30 TwiBot-20 GPU: g4_matched_text finished, exit 0.
 - 11:33 TwiBot-20 GPU: step6_dgp_num started.
 - 12:35 Found: the Mac slept from Fri 16:08 (idle sleep between two GPU steps: only each step was under caffeinate) to Sat 12:28, waking ~1 min per 15 min; G4 took 17 h instead of ~30 min (~18 h of GPU lost; every step still exit 0). Fix: caffeinate -s -i on the whole launcher (pid 43364).
+- 15:22 TwiBot-20 GPU: step6_dgp_num finished, exit 0.
