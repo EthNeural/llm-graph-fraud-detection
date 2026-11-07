@@ -1,6 +1,6 @@
 # Final report draft (Fri 6 Nov 2026, ~10:40; sealed final run included)
 
-> **Status.** Built from the reviewed mock (`07_mock_final_report.md`) after the TwiBot-22 sealed final run (Fri 10:20, read once). Length target ~7,000 words excluding the bibliography, Arial 11 pt; one submission per group, due 11:55 PM Sun 8 Nov. Still open: the timeline (§3.8, skipped on purpose; to add before submission), and TwiBot-20 `dgp_num` (running). Numbers come from the result files named in `reports/report_for_submission.md`.
+> **Status.** Built from the reviewed mock (`07_mock_final_report.md`) after the TwiBot-22 sealed final run (Fri 10:20, read once). Length target ~7,000 words excluding the bibliography, Arial 11 pt; one submission per group, due 11:55 PM Sun 8 Nov. Still open: the timeline (§3.8, skipped on purpose; to add before submission). All experiments are complete (TwiBot-20 `dgp_num` added Sat 15:30). Numbers come from the result files named in `reports/report_for_submission.md`.
 
 ---
 
