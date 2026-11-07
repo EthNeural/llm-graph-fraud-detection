@@ -4,6 +4,39 @@
 
 ---
 
+<div align="center">
+
+# Large Language Models for Graph-Based Fraud Detection
+
+### When Do Text and Links Help Under Camouflage? Evidence from TwiBot-20 and TwiBot-22
+
+<br><br>
+
+**COMP8851 Major Project**
+
+**Assessment 3: Project Completion**
+
+<br>
+
+Supervisor: Dr Venus Haghighi
+
+<br>
+
+Mustafa Ugur Atas [48763802]<br>
+Zeki Kose [48718459]<br>
+Prajan Bhattarai [48807567]<br>
+B Abhishek Biswal [48681466]
+
+<br>
+
+School of Computing, Macquarie University
+
+November 2026
+
+</div>
+
+<div style="page-break-after: always;"></div>
+
 **Title of the Project:** Large Language Models for Graph-Based Fraud Detection: When Do Text and Links Help Under Camouflage?
 
 **Supervisor:** Dr Venus Haghighi
