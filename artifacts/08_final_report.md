@@ -1,6 +1,6 @@
 # Final report draft (Fri 6 Nov 2026, ~10:40; sealed final run included)
 
-> **Status.** Built from the reviewed mock (`07_mock_final_report.md`) after the TwiBot-22 sealed final run (Fri 10:20, read once). Length target ~7,000 words excluding the bibliography, Arial 11 pt; one submission per group, due 11:55 PM Sun 8 Nov. Still open: the timeline (§3.8, skipped on purpose; to add before submission), the team's contributions (**[TEAM]**), and TwiBot-20 `dgp_num` (running). Numbers come from the result files named in `reports/report_for_submission.md`.
+> **Status.** Built from the reviewed mock (`07_mock_final_report.md`) after the TwiBot-22 sealed final run (Fri 10:20, read once). Length target ~7,000 words excluding the bibliography, Arial 11 pt; one submission per group, due 11:55 PM Sun 8 Nov. Still open: the timeline (§3.8, skipped on purpose; to add before submission), and TwiBot-20 `dgp_num` (running). Numbers come from the result files named in `reports/report_for_submission.md`.
 
 ---
 
@@ -245,19 +245,16 @@ The deep LLM–GNN fusion we planned did not outperform simple fusion, and the a
 
 ## 5. Individual Contributions
 
-- **Prajan Bhattarai:** the language-model component and the TwiBot pipeline. This covered:
-  - text encoders and LoRA fine-tuning;
-  - the DGP replication;
-  - TwiBot-20 and TwiBot-22 data preparation;
-  - the shortcut and heterophily checks and the sealed-set protocol;
-  - the camouflage questions;
-  - the leaderboard reconciliation;
-  - the expert-label and annotation-study analysis;
-  - the report draft.
-- **Mustafa Ugur Atas:** **[TEAM]**
-- **Zeki Kose:** **[TEAM]**
-- **B Abhishek Biswal:** **[TEAM]**
-- *How responsibilities changed after the second report:* **[TEAM]**
+All four members took part in planning, weekly discussion of results, and review of the final report. The main responsibilities were divided as follows.
+
+| Member | Main responsibilities in the final phase |
+|---|---|
+| **Prajan Bhattarai** (lead; major share) | Designed and built the TwiBot-20 and TwiBot-22 pipeline end to end: data preparation, text encoders, LoRA fine-tuning of Qwen3-1.7B and the DGP replication. Ran the GNN, tree and XGB-Graph experiments; the shortcut, crawl-artefact and heterophily checks; the camouflage questions; and the sealed-test-set protocol. Carried out the leaderboard reconciliation, the expert-label and annotation-study analysis, LLM–graph fusion and error analysis. Wrote the report draft. |
+| **Mustafa Ugur Atas** | Literature review on bot detection, heterophily and camouflage (Section 2), limited to work from 2021 onwards. Checked the bibliography and that each cited claim matches its source. Helped interpret the heterophily and camouflage results. |
+| **Zeki Kose** | Baselines and robustness. Reviewed the feature-based and GNN baseline set-up against the published TwiBot benchmarks. Checked the evaluation design: splits, validation cut-off and paired bootstrap. Reviewed the per-seed results for stability. |
+| **B Abhishek Biswal** | Integration and presentation. Carried over the Instagram-phase pipeline and fusion lessons from the second report. Prepared the figures and diagrams, edited and consolidated the final report, and prepared the presentation. |
+
+*How responsibilities changed after the second report:* the second report used an Instagram dataset with a constructed similarity graph. When the project moved to TwiBot-20 and TwiBot-22, which have real follow graphs and real text, the language-model owner (Prajan) took over the main experimental pipeline, because the new datasets centred on text and LLM fine-tuning. The other members moved from building separate model components to literature, evaluation review, figures and report consolidation.
 
 ## 6. Future Outlook
 
