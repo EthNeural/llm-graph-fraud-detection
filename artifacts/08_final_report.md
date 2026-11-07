@@ -26,7 +26,9 @@ We carried this out on three datasets, ending with **TwiBot-22**, the largest pu
 
 The results differ from what we expected, and in an informative way. **An account's own profile and text carry most of the signal. Information from neighbours adds a little at large scale. GNN message passing adds almost nothing under the camouflage we measured. A fine-tuned LLM does not beat simpler text models once those have enough training data.** We also found that the dataset's labels, which were made mostly by automatic rules and models, overstate one profile cue (an empty bio) about three times compared with independent human judges. Together these findings explain why a published benchmark ranking that puts graph models first does not hold under a common, fair protocol. The project's contribution is therefore not a new model that wins, but a careful answer to *where* text and links help, *where* they do not, and *why* existing benchmarks give a different picture.
 
-**[FIGURE 1: the pipeline. Data → own features (15 profile fields, multilingual-E5 text embeddings) | neighbour features (per-relation averages) | LLM (zero-shot, LoRA fine-tuning, DGP prompting with neighbour summaries) → models (trees, GNNs, LLM) → evaluation on the development test set, the final test set and human-labelled users]**
+![Figure 1. The pipeline. Each user is described by its own features, by averages over its neighbours, or by an LLM reading its text; models are compared on two test sets and on human-labelled users.](figures/fig1_pipeline.png)
+
+*Figure 1. The pipeline. Each user is described by its own features, by averages over its neighbours, or by an LLM reading its text; models are compared on two test sets and on human-labelled users.*
 
 ## 2. Literature Review
 
@@ -142,7 +144,9 @@ On the Instagram graph, where text alone is weak (AUROC about 0.63), GCN is leve
 
 *Table 1. TwiBot-22 final-test-set results, macro-F1 / AUROC / PR-AUC; random guessing gives AUROC 0.5 and PR-AUC 0.14. Macro-F1 and AUROC are within 0.016 of the development-test-set values (PR-AUC within 0.042), so the results are not an artefact of repeated testing.*
 
-**[FIGURE 2: Table 1 as a bar chart with 95% confidence intervals]**
+![Figure 2. Ranking quality (AUROC) of each model on TwiBot-22. Tree models on the user's own features lead; GNNs sit just above the MLP that ignores links. Text-only models were scored on the 5,000-user sample.](figures/fig2_main_results.png)
+
+*Figure 2. Ranking quality (AUROC) of each model on TwiBot-22. Tree models on the user's own features lead; GNNs sit just above the MLP that ignores links. Text-only models were scored on the 5,000-user sample.*
 
 The best model, XGB-Graph with profile on all one million users, reaches PR-AUC 0.590 on the final test set, about four times random. When bots are made rarer by reweighting, PR-AUC falls to 0.378 at 5% bots and 0.156 at 1%. That is a reminder of how hard detection becomes at realistic fraud rates.
 
@@ -166,7 +170,9 @@ The best model, XGB-Graph with profile on all one million users, reaches PR-AUC 
 - **(Q2) Neighbours help some users and hurt others.** Neighbour features help users whose neighbours mostly share their label: +0.057 [+0.045, +0.071] AUROC (27,002 users, 1% bots). They hurt users whose neighbours mostly do not: −0.016 [−0.022, −0.009] (4,197 users, 77% bots). R-GCN loses 0.052 in the homophilous group, while FAGCN gains slightly in every group. This is the node-level pattern Mao et al. (2023) predict, and the question MAGNET addresses. One caution: these groups are defined using each user's own label, so they diagnose where models fail but cannot be used to make predictions. The same caution applies to the heterophily bands in our second-phase report.
 - **(Q3) Relations do not disagree usefully.** DEFEND's premise is that fraudsters avoid consistent cross-relation interactions. Our eight features comparing each user's follow neighbourhood with their interaction neighbourhood test that premise directly, and they do not help: −0.002 [−0.004, −0.000] macro-F1 on all users (a tiny decrease), and no change on the sample.
 
-**[FIGURE 3: (a) per-relation share of bot neighbours for bots and humans against the 14% base rate (Q1); (b) gain from neighbour features by local-homophily group (Q2)]**
+![Figure 3. Camouflage on TwiBot-22. (a) On every relation, bots' neighbours are mostly human, close to the 14% base rate. (b) AUROC gain from neighbour information, by the share of a user's labelled neighbours that share their label, with 95% CIs (development test set).](figures/fig3_camouflage.png)
+
+*Figure 3. Camouflage on TwiBot-22. (a) On every relation, bots' neighbours are mostly human, close to the 14% base rate. (b) AUROC gain from neighbour information, by the share of a user's labelled neighbours that share their label, with 95% CIs (development test set).*
 
 **Finding 6 (exploratory): little room for adaptive neighbour trust.** Because Q2 shows neighbours hurting a minority of users, we asked how much a per-user switch could gain if it knew exactly whom to trust. This test was designed after seeing Q2, so it is exploratory. An oracle switch uses the own-feature tree for users whose true local homophily is below 0.5 (8.8% of users) and XGB-Graph for everyone else. It gains only +0.003 [+0.002, +0.004] AUROC and +0.006 macro-F1 over XGB-Graph. A real switch would have to guess the groups from predicted labels and could only do worse, so we did not build it.
 
@@ -201,7 +207,9 @@ Neighbour-feature trees remain best. R-GCN gains most from clean labels but stay
 
 The experts agree with the weak labels, but they trained the label-makers, so their agreement is built in. The independent annotators see a much weaker link, and the difference excludes zero. The annotation study is small (44 bots), and its 1.6× could still hide a modest real effect. But the dataset's labels clearly overstate the cue. This is consistent with Hays et al.'s warning about benchmark labels and, as far as we found, extends it to TwiBot-22.
 
-**[FIGURE 4: empty-bio lift under weak, expert and independent labels, with 95% CIs]**
+![Figure 4. Empty-bio lift with 95% CIs. The dataset's labels and the experts (who trained the label-makers) see a strong link; independent annotators see a much weaker one.](figures/fig4_empty_bio_lift.png)
+
+*Figure 4. Empty-bio lift with 95% CIs. The dataset's labels and the experts (who trained the label-makers) see a strong link; independent annotators see a much weaker one.*
 
 **Finding 8b (exploratory): what every model gets wrong.** On the 5,000 test users we looked at the accounts on which XGB-Graph, the profile + text tree, the LLM and FAGCN all agree and are wrong. Of 700 bots, 230 (33%) are missed by all four; of 4,300 humans, 95 are flagged by all four. The groups split by activity, not by bot-ness. Bots caught by every model have an empty bio (95%), often a default image (40%), very few followers (5th percentile), and half have no tweets; the humans flagged by every model look the same (87% empty bio, 7th percentile). The bots every model misses look like ordinary active users (4% empty bio, all with tweets, 44th follower percentile). In other words, the detectors find dormant-looking accounts, whichever label they carry, and miss active bots. On the experts, about half of these shared "errors" are label errors: 17 of the 32 dataset "bots" missed by every model are human according to the experts, and 15 of the 33 dataset "humans" flagged by every model are bots.
 
@@ -227,7 +235,9 @@ Three things follow:
 
 We therefore read the leaderboard's graph advantage as a product of the protocol (accuracy on a skewed split, a shortcut feature, labels partly made by graph models), not as evidence that message passing helps under camouflage.
 
-**[FIGURE 5: AUROC on our split vs the official split, with and without `verified`]**
+![Figure 5. AUROC on the official released split vs our stratified split (seed 0, `verified` excluded). Every model loses 0.07–0.12 on the official split.](figures/fig5_split_reconciliation.png)
+
+*Figure 5. AUROC on the official released split vs our stratified split (seed 0, `verified` excluded). Every model loses 0.07–0.12 on the official split.*
 
 **4.7 Answers to the original research questions.**
 
