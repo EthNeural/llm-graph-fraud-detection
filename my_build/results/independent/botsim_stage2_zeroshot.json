@@ -1,0 +1,52 @@
+{
+ "comments": 69468,
+ "users_scored": 2458,
+ "test_users": 277,
+ "test_bots": 100,
+ "untrained_auroc": {
+  "binoculars": {
+   "working_test": 0.8224,
+   "train_val": 0.8209
+  },
+  "fast_detectgpt": {
+   "working_test": 0.8308,
+   "train_val": 0.8399
+  },
+  "log_ppl": {
+   "working_test": 0.8707,
+   "train_val": 0.8273
+  },
+  "focal_word_rate": {
+   "working_test": 0.8432,
+   "train_val": 0.8546
+  }
+ },
+ "comment_level_auroc_test": {
+  "binoculars": 0.6753,
+  "fast_detectgpt": 0.6883,
+  "log_ppl": 0.6963
+ },
+ "trained_lr_4_scores": {
+  "macro_f1": 0.8634,
+  "auroc": 0.9276,
+  "pr_auc": 0.8487
+ },
+ "mean_score_by_class_working_test": {
+  "binoculars": {
+   "bot": -1.0576,
+   "human": -1.1633
+  },
+  "fast_detectgpt": {
+   "bot": -0.3494,
+   "human": -0.9997
+  },
+  "log_ppl": {
+   "bot": -3.5529,
+   "human": -4.4121
+  },
+  "focal_word_rate": {
+   "bot": 0.0066,
+   "human": 0.0008
+  }
+ }
+}

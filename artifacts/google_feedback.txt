@@ -1,0 +1,18 @@
+
+1. The Checkpoint Confound (The Selection Bias)
+
+• The Problem: Your classical models (MLP, GCN, SAGE) get the advantage of looking at the entire validation set (2,365 users) to maximize Macro-F1. Your LoRA model is forced to choose its checkpoint based on the lowest validation loss on a tiny 200-user sample.
+• The Impact: Because validation loss minimized at Epoch 1 while the model's actual ranking ability (AUROC) kept climbing into Epoch 2, you are intentionally evaluating an under-optimized LoRA model.
+• The Fix: You need to enforce my_build/step6_rescore.py to use the last-check adapter (Epoch 2). As your own preliminary check showed, switching to this matching rule immediately narrows the gap and reveals that DGP summaries add practically zero gain over target text alone in Setting A (0.727 vs 0.728).
+
+2. The Information Bottleneck (The Prompt Cap)
+
+• The Problem: The text feature encoders read the full 2,000-character string (the bio plus the first 20 tweets). The fine-tuned LoRA model is artificially choked down to a hard limit of 480 tokens.
+• The Impact: 81% of your TwiBot-20 users are being cut short in the LoRA pipeline. On average, they lose more than 3 full lines of text data compared to the frozen MLPs. Any claim that "frozen encoders beat fine-tuning" is completely invalid until you equalize this context window.
+• The Fix: You must scale the LoRA context limit up to handle the full text length or clip the text feature encoders to the exact same 480-token strings to run a fair, like-for-like experiment.
+
+3. Setting B Small-Sample Noise (The Statistical Blindspot)
+
+• The Problem: Subsampling Setting B down to a 1:10 ratio left the test set with only 54 actual bots.
+• The Impact: A Macro-F1 confidence interval of \(\pm 0.05\) means that your finding where no graph model consistently beats a text model is just an artifact of statistical noise. You cannot state that a model is better or worse because a single test user flipping classes swings the metric wildly.
+• The Fix: Stop relying on Macro-F1 for Setting B claims. Shift your primary evaluation metric in this imbalanced space exclusively to AUROC and PR-AUC, where the gaps are actually statistically separated outside of the bootstrap noise.

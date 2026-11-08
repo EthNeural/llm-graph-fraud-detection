@@ -1,0 +1,17 @@
+=== 19:23 DESIGN=sample MODEL=xgb_graph PROFILE=1
+sample xgb_graph_prof_inc: 838 columns; train 70,000 val 20,000 test 5,000
+  seed 0: val F1 0.721 | test all F1 0.708 AUROC 0.853 PR-AUC 0.537 | non-verified F1 0.702 (2.64 min)
+  seed 1: val F1 0.721 | test all F1 0.718 AUROC 0.851 PR-AUC 0.528 | non-verified F1 0.713 (1.7 min)
+  seed 2: val F1 0.723 | test all F1 0.714 AUROC 0.852 PR-AUC 0.533 | non-verified F1 0.709 (2.33 min)
+=== exit code 0 (DESIGN=sample MODEL=xgb_graph PROFILE=1)
+=== 19:30 DESIGN=sample MODEL=xgb_graph PROFILE=0
+sample xgb_graph_noprof_inc: 583 columns; train 70,000 val 20,000 test 5,000
+  seed 0: val F1 0.646 | test all F1 0.637 AUROC 0.770 PR-AUC 0.383 | non-verified F1 0.631 (1.2 min)
+  seed 1: val F1 0.647 | test all F1 0.646 AUROC 0.773 PR-AUC 0.386 | non-verified F1 0.641 (1.33 min)
+  seed 2: val F1 0.651 | test all F1 0.644 AUROC 0.770 PR-AUC 0.385 | non-verified F1 0.639 (1.07 min)
+=== exit code 0 (DESIGN=sample MODEL=xgb_graph PROFILE=0)
+=== 19:33 DESIGN=full MODEL=xgb_graph PROFILE=1 SEEDS=0
+full xgb_graph_prof_inc: 822 columns; train 699,309 val 199,803 test 49,951
+  seed 0: val F1 0.735 | test all F1 0.729 AUROC 0.872 PR-AUC 0.579 | non-verified F1 0.724 (106.79 min)
+=== exit code 0 (DESIGN=full MODEL=xgb_graph PROFILE=1 SEEDS=0)
+=== 21:21 all done
