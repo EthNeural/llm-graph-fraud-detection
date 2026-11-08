@@ -7,6 +7,9 @@
 !/TEAM_GUIDE.md
 !/REPORT.md
 !/.gitignore
+/reports
+/outputs
+/
 
 __pycache__/
 *.pyc

@@ -48,13 +48,13 @@ def fig1():
     def arrow(x0, y0, x1, y1):
         ax.annotate("", (x1, y1), (x0, y0), arrowprops=dict(arrowstyle="-|>", color=INK2, lw=1.0, shrinkA=0, shrinkB=0))
 
-    box(1, 14, 16, 22, "Data", "TwiBot-22\n1M users,\nfollow + interaction\nlinks\n(TwiBot-20 to check)", INK2)
+    box(1, 14, 16, 22, "Data", "TwiBot-22\n1M users,\nfollow + interaction\nlinks\n(plus TwiBot-20)", INK2)
     box(23, 34, 22, 14, "Own features", "15 profile fields\nmultilingual-E5 text", BLUE)
     box(23, 18, 22, 13, "Neighbour features", "per-relation averages\nof neighbours", AQUA)
     box(23, 1, 22, 14, "LLM (Qwen3-1.7B)", "zero-shot · LoRA\nDGP: + neighbour\nsummaries", YELLOW)
     box(51, 24, 20, 22, "Models", "trees (own)\nXGB-Graph (own +\nneighbours)\nGNNs vs MLP control", ORANGE)
     box(51, 2, 20, 16, "Fusion", "stack LLM score\nwith tree score", YELLOW)
-    box(77, 8, 22, 36, "Evaluation", "development test set\n(used while building)\n\nfinal test set\n(scored once)\n\n986 expert-labelled\nusers + annotation\nstudy", INK2)
+    box(77, 4, 22, 44, "Evaluation", "development set\n49,951 non-experts\n(used during model work)\n\nfinal holdout\n50,937 users\n(49,951 non-experts;\n986 experts assessed\nseparately)\n\nannotation study", INK2)
     for y in (41, 24.5, 8):
         arrow(17.8, 25, 22.2, y)
     arrow(45.8, 41, 50.2, 37), arrow(45.8, 24.5, 50.2, 30), arrow(45.8, 8, 50.2, 10)
@@ -81,7 +81,7 @@ def fig2():
     text_rows = [("TF-IDF + LR (70,000 train)", 0.727, BLUE), ("LoRA Qwen3-1.7B (1,300 train)", 0.710, YELLOW),
                  ("Zero-shot Qwen3-1.7B", 0.461, YELLOW)]
     fig, axes = plt.subplots(2, 1, figsize=(6.6, 4.6), sharex=True, gridspec_kw={"height_ratios": [len(rows), len(text_rows)], "hspace": 0.35})
-    for ax, rs, title in ((axes[0], rows, "All 1M users, final test set"), (axes[1], text_rows, "Text-only models, 5,000-user sample, development test set")):
+    for ax, rs, title in ((axes[0], rows, "Full-graph models, 49,951-user final holdout"), (axes[1], text_rows, "Text-only models, 5,000-user sample, development test set")):
         y = list(range(len(rs)))[::-1]
         ax.barh(y, [r[1] - 0.4 for r in rs], left=0.4, height=0.62, color=[r[2] for r in rs])
         for yi, r in zip(y, rs):

@@ -1,14 +1,6 @@
-# Final report draft (Fri 6 Nov 2026, ~10:40; sealed final run included)
-
-> **Status.** Built from the reviewed mock (`07_mock_final_report.md`) after the TwiBot-22 sealed final run (Fri 10:20, read once). Length target ~7,000 words excluding the bibliography, Arial 11 pt; one submission per group, due 11:55 PM Sun 8 Nov. Still open: the timeline (§3.8, skipped on purpose; to add before submission). All experiments are complete (TwiBot-20 `dgp_num` added Sat 15:30). Numbers come from the result files named in `reports/report_for_submission.md`.
-
 ---
 
 <div align="center">
-
-# Large Language Models for Graph-Based Fraud Detection
-
-### When Do Text and Links Help Under Camouflage? Evidence from TwiBot-20 and TwiBot-22
 
 <br><br>
 
@@ -73,7 +65,7 @@ November 2026
 **List of Figures**
 
 - Figure 1. The pipeline
-- Figure 2. Ranking quality (AUROC) of each model on TwiBot-22
+- Figure 2. Ranking quality (AUROC) of selected models on TwiBot-22
 - Figure 3. Camouflage on TwiBot-22
 - Figure 4. TwiBot-20 against TwiBot-22
 - Figure 5. Empty-bio lift
@@ -82,7 +74,7 @@ November 2026
 
 **List of Tables**
 
-- Table 1. TwiBot-22 final-test-set results
+- Table 1. TwiBot-22 results across the final holdout and development evaluations
 - Table 2. Weak-label training vs an added expert-label stage
 - Table 3. Empty-bio lift
 - Table 4. Reconciliation with the official benchmark
@@ -107,13 +99,13 @@ There is a catch. Fraudulent accounts often **camouflage** themselves by connect
 
 This project set out to answer a practical question: **when an LLM and a graph model are combined to detect fraudulent accounts, does detection actually improve, and if not, why not?** In our project initiation report we planned a hybrid system that joins LLM-derived text representations with GNN representations, and a controlled comparison against traditional machine learning, GNN-only and language-only models under the same data splits and metrics. We expected the hybrid to beat each component on its own.
 
-We carried this out on three datasets, ending with **TwiBot-22**, the largest public graph benchmark for bot detection: one million Twitter users, seven types of connection and 88 million tweets. Before trusting any graph model we measured how much the connections actually reflect the labels, and we designed the evaluation so that known shortcuts could not inflate the scores.
+We carried this out across several datasets, ending with **TwiBot-22**, the largest public graph benchmark for bot detection: one million Twitter users, seven types of connection and 88 million tweets. Before trusting any graph model we measured how much the connections actually reflect the labels, and we designed the evaluation so that known shortcuts could not inflate the scores.
 
 The results differ from what we expected, and in an informative way. **An account's own profile and text carry most of the signal. Information from neighbours adds a little at large scale. GNN message passing adds almost nothing under the camouflage we measured. A fine-tuned LLM does not beat simpler text models once those have enough training data.** We also found that the dataset's labels, which were made mostly by automatic rules and models, overstate one profile cue (an empty bio) about three times compared with independent human judges. Together these findings explain why a published benchmark ranking that puts graph models first does not hold under a common, fair protocol. The project's contribution is therefore not a new model that wins, but a careful answer to *where* text and links help, *where* they do not, and *why* existing benchmarks give a different picture.
 
-![Figure 1. The pipeline. Each user is described by its own features, by averages over its neighbours, or by an LLM reading its text; models are compared on two test sets and on human-labelled users.](figures/fig1_pipeline.png)
+![Figure 1. The pipeline. Models use each user's own features, neighbour averages, or LLM analysis of text. The development set is used during model work; the final holdout has 49,951 non-experts and 986 expert-labelled users, who are assessed separately.](figures/fig1_pipeline.png)
 
-*Figure 1. The pipeline. Each user is described by its own features, by averages over its neighbours, or by an LLM reading its text; models are compared on two test sets and on human-labelled users.*
+*Figure 1. The pipeline. Models use each user's own features, neighbour averages, or LLM analysis of text. The development set is used during model work; the final holdout has 49,951 non-experts and 986 expert-labelled users, who are assessed separately.*
 
 ## 2. Literature Review
 
@@ -143,6 +135,8 @@ Two analysis tools frame our measurements. Adjusted homophily (Platonov et al., 
 
 The sub-problems fit together as a pipeline (Figure 1): S1 and S2 fix the data and the rules, S3 produces the scores, and S4 and S5 decide which differences can be believed.
 
+The framework prototype is implemented in the project's `my_build/` Python pipeline. It includes dataset preparation, feature and embedding generation, profile, text, neighbour-feature and GNN model runs, validation-based threshold selection, guarded evaluation, and paired-bootstrap analysis. The TwiBot datasets themselves are not bundled with the code; they must be obtained separately under their dataset terms.
+
 **3.2 Datasets and why they changed (S1).** The initiation report promised a dataset-agnostic plan: any public fraud dataset that can be represented as a graph. We started with the Elliptic Bitcoin transaction graph. It supported a full pipeline, but it has no natural text, so an LLM could only read sentences generated from the same numbers the other models already had. In the second phase we moved to a Kaggle dataset of fake and authentic Instagram accounts (65,326 accounts, 17 numerical features). It had labels but no real links (we had to build an artificial similarity graph) and no raw text (again, sentences generated from numbers). We therefore moved to the GLBench Instagram graph, which has real bios and real follow links but labels commercial against personal accounts rather than fraud; we kept it as a secondary dataset. TwiBot-20 then gave real bot labels, real text and real links with an official split. Finally, **TwiBot-22** became the large test:
 
 - **Users:** 1,000,000, of which 14.0% are labelled bots.
@@ -155,8 +149,8 @@ Each change followed from the need for real text and real links. None made our r
 **3.3 A fair protocol (S2).** On TwiBot-20 we learned that decisions made after seeing test scores can bias a comparison. On TwiBot-22 every rule was written down, with a timestamp in a decision log, before the score it governs.
 
 - **Split.** The released TwiBot-22 split is not random: it consists of three contiguous blocks with 7.8% bots in training but 29.4% in test, and all 95,398 verified users sit in training. We used a random stratified 70/20/10 split with 14.0% bots in every part, and report the released split only for comparison.
-- **Two test sets.** Because we ran many experiments, we split the TwiBot-22 test users into two halves. The **development test set** (49,951 users) was used while building and comparing models. The **final test set** (50,937 users, incl. the 986 experts) was never looked at until every choice was fixed, and was then scored once. If the two agree, our findings are not luck from testing the same users too often.
-- **Shortcut rule.** A feature is removed if at least 200 training users have a value where at least 99% are one class. Only `verified` failed: no verified user is a bot. It is never a model input; a guard in the code stops any script that tries to use it, or the labels, as a feature.
+- **Two test sets.** The development set (49,951 non-expert users) was used during model work. A separate final holdout contained 49,951 non-expert users and 986 expert-labelled users. The non-expert users in the final holdout were kept separate until the analysis was complete; the expert-labelled users were evaluated separately.
+- **Shortcut rule.** A feature is removed if at least 200 training users have a value where at least 99% are one class. Only `verified` failed: no verified user is a bot. It is excluded from the main protocol, and the code guard prevents its use there. It is included only in the controlled protocol-reconciliation experiment (§4.6).
 - **Heterophily measured, not assumed.** Adjusted homophily and label informativeness on every relation, before any model.
 - **Metrics.** Macro-F1 at a cut-off chosen on validation; AUROC; PR-AUC, also reweighted to 5% and 1% bots to mimic rarer fraud; paired bootstrap 95% confidence intervals (2,000 resamples); three seeds. Accuracy is reported only to compare with the benchmark, because calling every account human already scores 0.860 on our test set.
 
@@ -164,7 +158,7 @@ Each change followed from the need for real text and real links. None made our r
 
 - *Own features:* 15 profile fields (follower and following counts, account age, empty bio, default profile picture, tweet count and others) and text embeddings from multilingual-E5. Bios are embedded for all one million users; bio plus 20 tweets for a 100,000-user stratified sample. This is because embedding 20 tweets for every user did not fit the time available.
 - *Neighbour features ("XGB-Graph"):* for each relation and direction, the mean of the neighbours' own features. These are fed with the user's own features to a gradient-boosted tree, the style of model used in industry.
-- *GNNs on the full one-million-user graph:* GCN, GraphSAGE, FAGCN (Bo et al., 2021; it can subtract a neighbour's signal and is designed for heterophily), LINKX (Lim et al., 2021; it reads the adjacency pattern instead of averaging) and R-GCN (one weight matrix per relation). As a control, an MLP with the same layers and inputs but no edges: any GNN gain over it is the gain from the links.
+- *GNNs on the full one-million-user graph:* GCN, GraphSAGE, FAGCN (it can subtract a neighbour's signal and is designed for heterophily), LINKX (Lim et al., 2021; it reads the adjacency pattern instead of averaging) and R-GCN (one weight matrix per relation). As a control, an MLP with the same layers and inputs but no edges: any GNN gain over it is the gain from the links.
 - *LLM (Qwen3-1.7B):* zero-shot prompting; LoRA fine-tuning on the account's own text (`target`, 1,300 training users, following the DGP paper's setting); and DGP, the same fine-tuning with summaries of the account's neighbours added to the prompt. DGP's summaries take about a second each, so DGP was run on a 1,500-user stratified test subset fixed before scoring, and compared with `target` on the same users.
 - *Text baselines:* TF-IDF with logistic regression, and MiniLM embeddings with an MLP.
 
@@ -178,24 +172,24 @@ Each change followed from the need for real text and real links. None made our r
 - **Q2:** local heterogeneity. Each user's share of training-labelled neighbours with the same label, and where neighbour features help or hurt by that share.
 - **Q3:** cross-relation inconsistency. Eight label-free features comparing a user's follow neighbourhood with their interaction neighbourhood.
 
-**3.8 Timeline.** The plan comes from the next steps listed in the second report (submitted 20 Sep 2026). The work after it ran in six phases, in this order.
+**3.8 Timeline.** The original schedule came from the Assessment 2 plan and its next steps (submitted 20 September 2026). The dates below show how that plan changed as the data and results clarified the research question.
 
-| Phase | Planned | Actual | Why it changed |
+| Period | Planned work | What happened | Change and reason |
 |---|---|---|---|
-| 1. Review | Threshold calibration; fusion for GraphSAGE and GAT; repeated seeds | Reviewed the second report's results | Instagram's made-up text profiles could not test the LLM question |
-| 2. Data and literature | Find a dataset with real text | Literature on camouflage and heterophily; dataset search; TwiBot-20/22 chosen | Real text and a real follow graph were needed |
-| 3. Design | Semantic neighbour filtering | Research questions refined; evaluation protocol designed (splits, two test sets, bootstrap) | Benchmark shortcuts had to be ruled out first |
-| 4. TwiBot-20 | — | Full pipeline: text encoders, GNNs, LoRA, DGP, robustness checks, FLAG-lite | A small dataset to develop and debug on |
-| 5. TwiBot-22 | — | Scaled to one million users; shortcut, heterophily and label checks; final test set scored once | TwiBot-20 results needed confirming at scale |
-| 6. Completion | Write-up | Seed and control runs; final report | — |
+| Sep–Oct | Complete the Elliptic pipeline; reconcile LLaMA fusion and test FLAG-style neighbour sampling (Assessment 2 schedule: 22 Sep–19 Oct) | An initial Elliptic graph pipeline was built. The planned language/graph questions were not resolved on Elliptic. | Elliptic contains numerical transaction fields but no natural language, so generated descriptions could not test semantic information. |
+| 27–30 Oct | No dataset pivot was scheduled | Moved to the GLBench Instagram text graph; built and evaluated the steps 1–5 pipeline in natural and 1:10 settings. | Instagram supplied real bios and links, but commercial-account labels were only a fraud proxy. |
+| 1–4 Nov | Follow-up work from Assessment 2: calibrate thresholds, repeat seeds, use real-language data, and test semantic neighbour filtering | Made TwiBot-20 the main dataset; completed encoder, baseline, GNN, zero-shot, LoRA/DGP and FLAG-lite comparisons, plus shortcut, crawl-artifact and robustness checks. | Real bot labels and text made it the appropriate development benchmark; threshold selection and repeat-seed checks were retained, while the fusion plan changed. |
+| 4–5 Nov | Prepare TwiBot-22; embed the 100k text sample; run cheap models and full-graph GNNs | Prepared the one-million-user graph, fixed the stratified splits and final holdout, checked leakage and shortcuts, and built the text/profile features. | The larger benchmark tested whether graph information mattered when text-only performance was weaker. |
+| 5–6 Nov | Run the planned model comparisons, expert rotation, confidence intervals and one final-holdout evaluation | Completed the full-scale tree and GNN comparisons, LoRA and DGP subset comparisons, expert-label checks, leaderboard reconciliation, and the final-holdout run on 6 Nov. | Tweet embeddings and the expensive DGP comparison were limited to fixed samples; the full graph remained available to cheaper models. |
+| 6–8 Nov | Optional TwiBot-20 follow-up, figures and final write-up | Completed the final TwiBot-20 seed/control batch, prepared figures, and consolidated the report. | Follow-up controls and repeat seeds were used to resolve remaining uncertainty before writing. |
 
-Of the planned items, repeated seeds, semantic neighbour filtering (FLAG-lite) and real-language data were done; threshold calibration and GraphSAGE/GAT fusion were replaced by the move to TwiBot.
+The planned threshold calibration, repeated seeds and semantic neighbour filtering were completed. GraphSAGE/GAT fusion on Elliptic was replaced by comparisons on real text graphs; the final question became which signals help under measured camouflage and weak labels (P → P′, §4.8).
 
 **3.9 Difficulties and fallbacks.** Several sub-problems did not go as planned.
 
 - **Tweets.** Embedding 20 tweets for all one million users did not fit, so tweets were used on a 100,000-user sample and bios on everyone.
 - **Memory.** Full-graph GNNs on 9 million edges exceeded laptop memory. A FAGCN run was killed and rewritten to process edges in checkpointed chunks.
-- **DGP speed.** DGP's neighbour summaries ran slower than estimated while other jobs shared the processor, so DGP was scoped to the TwiBot-20 setting.
+- **DGP speed.** Generating neighbour summaries was slow, so the TwiBot-22 DGP comparison used the preselected 1,500-user test subset rather than the full population. Cheaper profile, tree and GNN models were run at full scale.
 - **The language model's readout.** A zero-shot AUROC below 0.5 suggested an inverted readout. We checked it directly: it was not inverted, the model simply answers "bot" for nearly every account.
 - **The released split.** Its skew made it unsuitable as the main evaluation. Rather than drop it, we used it in a reconciliation experiment (§4.6).
 
@@ -213,59 +207,60 @@ Of the planned items, repeated seeds, semantic neighbour filtering (FLAG-lite) a
 
 On the Instagram graph, where text alone is weak (AUROC about 0.63), GCN is level with the MLP (+0.002 [−0.016, +0.020]), consistent with neighbour averaging hurting most when a user's own text is strong.
 
-**4.2 TwiBot-22: main results.** Table 1 gives the results on the final test set (49,951 users once the experts are excluded, scored once). Sample = the ~5,000 sample users with bio and tweets; 1M = all users, bios only. The language models (†) were scored on the development test set only.
+**4.2 TwiBot-22: main results.** Table 1 reports the final-holdout evaluation on 49,951 non-expert users. Sample = the ~5,000 sample users with bio and tweets; 1M = all users, bios only. The language models (†), including the 1,500-user DGP comparison, were scored on the development test set only, so those rows are not directly comparable to the final-holdout results.
 
 | Model | Sample | 1M |
 |---|---|---|
 | Zero-shot Qwen3-1.7B † | 0.505 / 0.461 / 0.139 | – |
 | LoRA `target` (text, 1,300 train) † | 0.626 / 0.710 / 0.312 | – |
 | TF-IDF + LR (70,000 train) † | 0.628 / 0.727 / 0.307 | – |
+| MiniLM + MLP (70,000 train) † | 0.607 / 0.684 / 0.291 | – |
 | Links only (neighbour counts) | 0.563 / 0.683 / 0.219 | 0.562 / 0.680 / 0.219 |
 | Profile only (15 fields) | 0.705 / 0.841 / 0.514 | 0.709 / 0.847 / 0.515 |
 | Profile + text (tree) | 0.723 / 0.858 / 0.546 | 0.724 / 0.862 / 0.537 |
 | XGB-Graph, no profile | 0.645 / 0.772 / 0.403 | 0.699 / 0.817 / 0.458 |
 | **XGB-Graph + profile** | 0.728 / 0.860 / 0.573 | **0.735 / 0.874 / 0.590** |
-| GNNs: GCN / SAGE / LINKX (1 seed), R-GCN / FAGCN (3 seeds) | – | 0.681–0.695 / 0.803–0.830 |
+| GNNs: GCN / SAGE / LINKX (1 seed), R-GCN / FAGCN (3 seeds) | – | 0.681–0.695 / 0.803–0.830 / 0.435–0.458 |
 | MLP, no edges (GNN control) | – | 0.683 / 0.800 / 0.425 |
 | LoRA `target` / `dgp`, 1,500-user subset, mean of 2 seeds † | 0.618 / 0.699 / 0.332 · 0.618 / 0.714 / 0.343 | – |
 
-*Table 1. TwiBot-22 final-test-set results, macro-F1 / AUROC / PR-AUC; random guessing gives AUROC 0.5 and PR-AUC 0.14. Macro-F1 and AUROC are within 0.016 of the development-test-set values (PR-AUC within 0.042), so the results are not an artefact of repeated testing.*
+*Table 1. TwiBot-22 results, macro-F1 / AUROC / PR-AUC. Undaggered rows are from the final holdout's 49,951 non-expert users; daggered rows are from the development test set (the LoRA `target` / `dgp` row is a 1,500-user development-test subset). The GNN ranges give the mean across seeds for each architecture. Random guessing gives AUROC 0.5 and PR-AUC 0.14. Macro-F1 and AUROC are within 0.016 of the development-test-set values (PR-AUC within 0.042), so the results are not an artefact of repeated testing.*
 
-![Figure 2. Ranking quality (AUROC) of each model on TwiBot-22. Tree models on the user's own features lead; GNNs sit just above the MLP that ignores links. Text-only models were scored on the 5,000-user sample.](figures/fig2_main_results.png)
+![Figure 2. Ranking quality (AUROC) of selected TwiBot-22 models. The full-graph models are scored on the 49,951-user final holdout; text-only models are scored on the 5,000-user development sample. Tree models on the user's own features lead; GNNs sit just above the MLP that ignores links.](figures/fig2_main_results.png)
 
-*Figure 2. Ranking quality (AUROC) of each model on TwiBot-22. Tree models on the user's own features lead; GNNs sit just above the MLP that ignores links. Text-only models were scored on the 5,000-user sample.*
+*Figure 2. Ranking quality (AUROC) of selected TwiBot-22 models. The full-graph models are scored on the 49,951-user final holdout; text-only models are scored on the 5,000-user development sample. Tree models on the user's own features lead; GNNs sit just above the MLP that ignores links.*
 
-The best model, XGB-Graph with profile on all one million users, reaches PR-AUC 0.590 on the final test set, about four times random. When bots are made rarer by reweighting, PR-AUC falls to 0.378 at 5% bots and 0.156 at 1%. That is a reminder of how hard detection becomes at realistic fraud rates.
+The best model, XGB-Graph with profile on all one million users, reaches PR-AUC 0.590 on the final holdout, about four times random. When bots are made rarer by reweighting, PR-AUC falls to 0.378 at 5% bots and 0.156 at 1%. That is a reminder of how hard detection becomes at realistic fraud rates.
 
 **4.3 What carries the signal.**
 
-**Finding 1: the profile beats text, and not only through one cue.** The 15 profile fields beat every text model. Profile minus LoRA: +0.073 [+0.054, +0.093] macro-F1 and +0.128 AUROC. The gap is not because the trees saw more data: trained on LoRA's exact 1,300 users, the profile tree still reaches 0.677 / 0.808. Much of the profile's strength comes from one cue: 40.6% of bots have an empty bio, against 7.8% of humans. But the model is not stuck on it. Given 15 fields instead of the empty-bio flag alone, AUROC rises from 0.658 to 0.837. On users who *have* a bio, where the flag is useless (AUROC 0.500), the profile model still scores 0.790 on the sample and 0.802 on all users.
+**Finding 1: the profile beats text, and not only through one cue.** On the development test set, the 15 profile fields beat every text model. Profile minus LoRA: +0.073 [+0.054, +0.093] macro-F1 and +0.128 AUROC. The gap is not because the trees saw more data: trained on LoRA's exact 1,300 users, the profile tree still reaches 0.677 / 0.808. Much of the profile's strength comes from one cue: 40.6% of bots have an empty bio, against 7.8% of humans. But the model is not stuck on it. Given 15 fields instead of the empty-bio flag alone, AUROC rises from 0.658 to 0.837. On users who *have* a bio, where the flag is useless (AUROC 0.500), the profile model still scores 0.790 on the sample and 0.802 on all users.
 
-**Finding 2: text adds a little on top of the profile.** On the final test set, profile plus text minus profile is +0.015 [+0.003, +0.028] macro-F1 on the sample and +0.016 [+0.012, +0.020] on all users. A surprise: for a text-only model, adding 20 tweets to the bio *hurts*, −0.052 [−0.074, −0.030] on the same users. Slices explain why. On users with a bio, the two are equal (AUROC 0.682 against 0.681). Averaging tweets into one vector blurs the sharp contrast between empty and non-empty bios. We tested this directly: adding a single empty-bio flag to the bio-plus-tweets embedding closes the gap (0.672 against 0.673).
+**Finding 2: text adds a little on top of the profile.** On the final holdout, profile plus text minus profile is +0.015 [+0.003, +0.028] macro-F1 on the sample and +0.016 [+0.012, +0.020] on all users. Separately, on the development test sample, adding 20 tweets to a text-only model *hurts*, −0.052 [−0.074, −0.030] on the same users. Slices explain why. On users with a bio, the two are equal (AUROC 0.682 against 0.681). Averaging tweets into one vector blurs the sharp contrast between empty and non-empty bios. We tested this directly: adding a single empty-bio flag to the bio-plus-tweets embedding closes the gap (0.672 against 0.673).
 
-**Finding 3: the fine-tuned LLM helps only when data is scarce, and its neighbour summaries add nothing.** DGP's prompt with neighbour summaries scores the same as the account's own text on a 1,500-user subset: over two seeds the macro-F1 difference is 0.000 (−0.004 and +0.005) and the AUROC difference +0.015 (−0.001 and +0.030 [−0.000, +0.058]), smaller than the seed-to-seed change of `target` itself (0.037 AUROC). That is what heterophily predicts: the neighbours' text says little about the account. With the same 1,300 training users, LoRA beats TF-IDF by +0.050 macro-F1 (the CI excludes 0). With 70,000 training users, TF-IDF ties LoRA (+0.002 [−0.015, +0.019]). The zero-shot model's raw answer is "bot" for about 99% of accounts; even with a cut-off tuned on validation it ranks no better than chance (AUROC 0.461 on the 5,000 users).
+**Finding 3: the fine-tuned LLM helps only when data is scarce, and its neighbour summaries add nothing.** On the development test set, DGP's prompt with neighbour summaries scores the same as the account's own text on a 1,500-user subset: over two seeds the macro-F1 difference is 0.000 (−0.004 and +0.005) and the AUROC difference +0.015 (−0.001 and +0.030 [−0.000, +0.058]), smaller than the seed-to-seed change of `target` itself (0.037 AUROC). That is what heterophily predicts: the neighbours' text says little about the account. With the same 1,300 training users, LoRA beats TF-IDF by +0.050 macro-F1 (the CI excludes 0). With 70,000 training users, TF-IDF ties LoRA (+0.002 [−0.015, +0.019]). The zero-shot model's raw answer is "bot" for about 99% of accounts; even with a cut-off tuned on validation it ranks no better than chance (AUROC 0.461 on the 5,000 users).
 
-**Finding 3b (exploratory): combining the LLM with the graph model adds nothing.** We stacked the fine-tuned LLM's score with each tree's score, fitting the weights on the 1,000 validation users. The fit gives the LLM a weight of about −0.02 to −0.05 against about 1.0 for the tree, and no gain on test users: XGB-Graph plus the LLM minus XGB-Graph is −0.005 [−0.013, +0.004] macro-F1, with no gain in any slice (users without a bio, without tweets, or where the tree is uncertain), with DGP instead of `target`, or on the experts. The reason is that the LLM is weaker than a tree on multilingual-E5 text features even on its own ground (AUROC 0.618 against 0.687 on users with a bio), and its score overlaps the text tree's (Spearman 0.49). With 1,300 training users and 480 tokens, it learns a weaker version of what the text features already give.
+**Finding 3b (exploratory): combining the LLM with the graph model adds nothing.** We stacked the fine-tuned LLM's score with each tree's score, fitting the weights on the 1,000 validation users. We evaluated the stack on the 5,000-user development test sample and the expert-labelled users. The fit gives the LLM a weight of about −0.02 to −0.05 against about 1.0 for the tree, and no gain on the development-test users: XGB-Graph plus the LLM minus XGB-Graph is −0.005 [−0.013, +0.004] macro-F1, with no gain in any slice (users without a bio, without tweets, or where the tree is uncertain), with DGP instead of `target`, or on the experts. The reason is that the LLM is weaker than a tree on multilingual-E5 text features even on its own ground (AUROC 0.618 against 0.687 on users with a bio), and its score overlaps the text tree's (Spearman 0.49). With 1,300 training users and 480 tokens, it learns a weaker version of what the text features already give.
 
 **4.4 What the links add.**
 
-**Finding 4: neighbour features help a little at full scale; message passing does not.** On the final test set, adding neighbour averages to the own-feature tree gives +0.012 [+0.009, +0.016] macro-F1 and +0.054 [+0.048, +0.060] PR-AUC on all users. Without the profile the gain is larger (+0.043 AUROC), because neighbours partly stand in for missing profile information. GNNs are a different story: all five stay within about 0.01 macro-F1 of the MLP without edges and well below the trees on the same features. The best GNN, FAGCN, beats the MLP by +0.011 [+0.008, +0.014] macro-F1 and +0.029 AUROC, yet still scores 0.830 AUROC against 0.874 for XGB-Graph.
+**Finding 4: neighbour features help a little at full scale; message passing does not.** On the final holdout, adding neighbour averages to the own-feature tree gives +0.012 [+0.009, +0.016] macro-F1 and +0.054 [+0.048, +0.060] PR-AUC on all users. Without the profile the gain is larger (+0.043 AUROC), because neighbours partly stand in for missing profile information. GNNs are a different story: all five stay within about 0.01 macro-F1 of the MLP without edges and well below the trees on the same features. The best GNN, FAGCN, beats the MLP by +0.011 [+0.008, +0.014] macro-F1 and +0.029 AUROC, yet still scores 0.830 AUROC against 0.874 for XGB-Graph.
 
 **Finding 5: the camouflage questions, answered on TwiBot-22.**
 
 - **(Q1) Bots hide among humans on every relation.** Bots' neighbours are 4–17% bots against a 14% base rate; humans' neighbours are about 93% humans. Adjusted homophily is 0.010–0.024. This is the shape FRAUDRE reports for fraud graphs.
-- **(Q2) Neighbours help some users and hurt others.** Neighbour features help users whose neighbours mostly share their label: +0.057 [+0.045, +0.071] AUROC (27,002 users, 1% bots). They hurt users whose neighbours mostly do not: −0.016 [−0.022, −0.009] (4,197 users, 77% bots). R-GCN loses 0.052 in the homophilous group, while FAGCN gains slightly in every group. This is the node-level pattern Mao et al. (2023) predict, and the question MAGNET addresses. One caution: these groups are defined using each user's own label, so they diagnose where models fail but cannot be used to make predictions. The same caution applies to the heterophily bands in our second-phase report.
-- **(Q3) Relations do not disagree usefully.** DEFEND's premise is that fraudsters avoid consistent cross-relation interactions. Our eight features comparing each user's follow neighbourhood with their interaction neighbourhood test that premise directly, and they do not help: −0.002 [−0.004, −0.000] macro-F1 on all users (a tiny decrease), and no change on the sample.
+- **(Q2) Neighbours help some users and hurt others.** On the development test set, neighbour features help users whose neighbours mostly share their label: +0.057 [+0.045, +0.071] AUROC (27,002 users, 1% bots). They hurt users whose neighbours mostly do not: −0.016 [−0.022, −0.009] (4,197 users, 77% bots). R-GCN loses 0.052 in the homophilous group, while FAGCN gains slightly in every group. This is the node-level pattern Mao et al. (2023) predict, and the question MAGNET addresses. One caution: these groups are defined using each user's own label, so they diagnose where models fail but cannot be used to make predictions. The same caution applies to the heterophily bands in our second-phase report.
+- **(Q3) Relations do not disagree usefully.** DEFEND's premise is that fraudsters avoid consistent cross-relation interactions. On the development test set, our eight features comparing each user's follow neighbourhood with their interaction neighbourhood test that premise directly, and they do not help: −0.002 [−0.004, −0.000] macro-F1 on all users (a tiny decrease), and no change on the sample.
 
 ![Figure 3. Camouflage on TwiBot-22. (a) On every relation, bots' neighbours are mostly human, close to the 14% base rate. (b) AUROC gain from neighbour information, by the share of a user's labelled neighbours that share their label, with 95% CIs (development test set).](figures/fig3_camouflage.png)
 
 *Figure 3. Camouflage on TwiBot-22. (a) On every relation, bots' neighbours are mostly human, close to the 14% base rate. (b) AUROC gain from neighbour information, by the share of a user's labelled neighbours that share their label, with 95% CIs (development test set).*
 
-**Finding 6 (exploratory): little room for adaptive neighbour trust.** Because Q2 shows neighbours hurting a minority of users, we asked how much a per-user switch could gain if it knew exactly whom to trust. This test was designed after seeing Q2, so it is exploratory. An oracle switch uses the own-feature tree for users whose true local homophily is below 0.5 (8.8% of users) and XGB-Graph for everyone else. It gains only +0.003 [+0.002, +0.004] AUROC and +0.006 macro-F1 over XGB-Graph. A real switch would have to guess the groups from predicted labels and could only do worse, so we did not build it.
+**Finding 6 (exploratory): little room for adaptive neighbour trust.** Because Q2 shows neighbours hurting a minority of users, we asked how much a per-user switch could gain if it knew exactly whom to trust. This test was designed after seeing Q2, so it is exploratory. On the development test set, an oracle switch uses the own-feature tree for users whose true local homophily is below 0.5 (8.8% of users) and XGB-Graph for everyone else. It gains only +0.003 [+0.002, +0.004] AUROC and +0.006 macro-F1 over XGB-Graph. A real switch would have to guess the groups from predicted labels and could only do worse, so we did not build it.
 
-![Figure 4. TwiBot-20 against TwiBot-22. (a) With the profile as input, every GNN loses to the MLP without edges on TwiBot-20; on TwiBot-22 the differences are small (hollow squares: one seed, no CI). (b) DGP's neighbour summaries against the account's own text: no reliable gain on either dataset, except a small ranking gain on TwiBot-20's non-verified users.](figures/fig6_twibot20_vs_22.png)
+![Figure 4. TwiBot-20 against TwiBot-22. (a) With the profile as input, every tested GNN loses to the MLP without edges on TwiBot-20; on TwiBot-22 the differences are small (hollow squares: one seed, no CI). (b) DGP's neighbour summaries against the account's own text: the TwiBot-22 comparison uses the development test set. There is no reliable gain on either dataset, except a small ranking gain on TwiBot-20's non-verified users.](figures/fig6_twibot20_vs_22.png)
 
-*Figure 4. TwiBot-20 against TwiBot-22. (a) With the profile as input, every GNN loses to the MLP without edges on TwiBot-20; on TwiBot-22 the differences are small (hollow squares: one seed, no CI). (b) DGP's neighbour summaries against the account's own text: no reliable gain on either dataset, except a small ranking gain on TwiBot-20's non-verified users.*
+*Figure 4. TwiBot-20 against TwiBot-22. (a) With the profile as input, every tested GNN loses to the MLP without edges on TwiBot-20; on TwiBot-22 the differences are small (hollow squares: one seed, no CI). (b) DGP's neighbour summaries against the account's own text: the TwiBot-22 comparison uses the development test set. There is no reliable gain on either dataset, except a small ranking gain on TwiBot-20's non-verified users.*
 
 **4.5 Are the labels telling the truth?**
 
@@ -285,7 +280,7 @@ The best model, XGB-Graph with profile on all one million users, reaches PR-AUC 
 
 Neighbour-feature trees remain best. R-GCN gains most from clean labels but stays below the trees; FAGCN does not change. One epoch of LoRA on about 789 experts lowers its ranking quality, though its macro-F1 rises through the new cut-off. The dataset's own labels agree with the experts 90.5% of the time, as its paper reports. But that is barely above the 89.4% achieved by calling everyone human: only 56 of the 105 expert bots are labelled bots.
 
-**Finding 7b (D7): the neighbour-tree gain appears only under the weak labels.** If graph models partly re-learn the label-making GNNs, their gain should shrink under expert labels. For XGB-Graph minus the own-feature tree on all users, the AUROC gain is +0.012 [+0.011, +0.014] under the weak labels (final test set) but −0.005 [−0.015, +0.004] under the expert labels; the difference, +0.018 [+0.008, +0.027], excludes zero. FAGCN's gain over the MLP holds under both (+0.029 and +0.026 [+0.003, +0.053]). So the small neighbour-feature gain at full scale is at least partly an artefact of how the labels were made.
+**Finding 7b (D7): the neighbour-tree gain appears only under the weak labels.** If graph models partly re-learn the label-making GNNs, their gain should shrink under expert labels. For XGB-Graph minus the own-feature tree on all users, the AUROC gain is +0.012 [+0.011, +0.014] under the weak labels (final holdout) but −0.005 [−0.015, +0.004] under the expert labels; the difference, +0.018 [+0.008, +0.027], excludes zero. FAGCN's gain over the MLP holds under both (+0.029 and +0.026 [+0.003, +0.053]). So the small neighbour-feature gain at full scale is at least partly an artefact of how the labels were made.
 
 **Finding 8: the empty-bio cue is mostly a label-maker habit.** If empty bios are a genuine bot habit, independent humans should see the same link as the dataset's labels. We measured the *lift*: the bot rate among empty-bio users divided by the bot rate among users with a bio.
 
@@ -294,7 +289,7 @@ Neighbour-feature trees remain best. R-GCN gains most from clean labels but stay
 | 986 experts | 8.7× [6.4, 12.3] | 7.2× [5.3, 10.3] (experts) | +1.5 [−1.5, +4.6] |
 | 458 annotation-study users | 5.0× [3.3, 7.7] | **1.6× [0.7, 3.1]** (annotators) | **+3.4 [+1.2, +6.1]** |
 
-*Table 3. Empty-bio lift. Final-test-set non-expert users were removed from the annotation study (21 users) and "not sure" judgements dropped (21).*
+*Table 3. Empty-bio lift. Final-holdout non-expert users were removed from the annotation study (21 users) and "not sure" judgements dropped (21).*
 
 The experts agree with the weak labels, but they trained the label-makers, so their agreement is built in. The independent annotators see a much weaker link, and the difference excludes zero. The annotation study is small (44 bots), and its 1.6× could still hide a modest real effect. But the dataset's labels clearly overstate the cue. This is consistent with Hays et al.'s warning about benchmark labels and, as far as we found, extends it to TwiBot-22.
 
@@ -302,11 +297,11 @@ The experts agree with the weak labels, but they trained the label-makers, so th
 
 *Figure 5. Empty-bio lift with 95% CIs. The dataset's labels and the experts (who trained the label-makers) see a strong link; independent annotators see a much weaker one.*
 
-**Finding 8b (exploratory): what every model gets wrong.** On the 5,000 test users we looked at the accounts on which XGB-Graph, the profile + text tree, the LLM and FAGCN all agree and are wrong. Of 700 bots, 230 (33%) are missed by all four; of 4,300 humans, 95 are flagged by all four. The groups split by activity, not by bot-ness. Bots caught by every model have an empty bio (95%), often a default image (40%), very few followers (5th percentile), and half have no tweets; the humans flagged by every model look the same (87% empty bio, 7th percentile). The bots every model misses look like ordinary active users (4% empty bio, all with tweets, 44th follower percentile). In other words, the detectors find dormant-looking accounts, whichever label they carry, and miss active bots. On the experts, about half of these shared "errors" are label errors: 17 of the 32 dataset "bots" missed by every model are human according to the experts, and 15 of the 33 dataset "humans" flagged by every model are bots.
+**Finding 8b (exploratory): what every model gets wrong.** On the 5,000-user development test sample we looked at the accounts on which XGB-Graph, the profile + text tree, the LLM and FAGCN all agree and are wrong. Of 700 bots, 230 (33%) are missed by all four; of 4,300 humans, 95 are flagged by all four. The groups split by activity, not by bot-ness. Bots caught by every model have an empty bio (95%), often a default image (40%), very few followers (5th percentile), and half have no tweets; the humans flagged by all look the same (87% empty bio, 7th percentile). The bots every model misses look like ordinary active users (4% empty bio, all with tweets, 44th follower percentile). In other words, the detectors find dormant-looking accounts, whichever label they carry, and miss active bots. On the experts, about half of these shared "errors" are label errors: 17 of the 32 dataset "bots" missed by every model are human according to the experts, and 15 of the 33 dataset "humans" flagged by every model are bots.
 
-![Figure 6. The accounts that all four models get right or wrong (5,000 sample test users). The models say "bot" to dormant-looking accounts (empty bio, few tweets, few followers), whatever their label, and miss active bots.](figures/fig7_shared_errors.png)
+![Figure 6. The accounts that all four models get right or wrong on the 5,000-user development test sample. The models say "bot" to dormant-looking accounts (empty bio, few tweets, few followers), whatever their label, and miss active bots.](figures/fig7_shared_errors.png)
 
-*Figure 6. The accounts that all four models get right or wrong (5,000 sample test users). The models say "bot" to dormant-looking accounts (empty bio, few tweets, few followers), whatever their label, and miss active bots.*
+*Figure 6. The accounts that all four models get right or wrong on the 5,000-user development test sample. The models say "bot" to dormant-looking accounts (empty bio, few tweets, few followers), whatever their label, and miss active bots.*
 
 **4.6 Why the benchmark ranks graph models first.** The TwiBot-22 leaderboard ranks graph models such as BotRGCN at the top. We read the official code. BotRGCN, GCN and GAT take `verified` as an input, use the skewed released split, train for a fixed 200 epochs with no validation-based selection, report AUC computed from hard 0/1 predictions, and are ranked by accuracy. On bot-F1, a random forest (0.587) already beats BotRGCN (0.575) on the leaderboard itself.
 
@@ -320,7 +315,7 @@ We reran our own models under their protocol, with and without `verified` (Table
 | FAGCN | 0.667 / 0.731 · 0.678 / 0.745 | 0.674 / 0.799 · 0.689 / 0.828 |
 | R-GCN | 0.666 / 0.724 · 0.653 / 0.726 | 0.678 / 0.797 · 0.689 / 0.800 |
 
-*Table 4. Reconciliation, seed 0. On the official split 29.5% of test users are bots, so calling everyone human scores accuracy 0.705.*
+*Table 4. Reconciliation on the official split and the development split, seed 0. The final holdout was excluded from this experiment. On the official split 29.5% of test users are bots, so calling everyone human scores accuracy 0.705.*
 
 Three things follow:
 
@@ -330,9 +325,9 @@ Three things follow:
 
 We therefore read the leaderboard's graph advantage as a product of the protocol (accuracy on a skewed split, a shortcut feature, labels partly made by graph models), not as evidence that message passing helps under camouflage.
 
-![Figure 7. AUROC on the official released split vs our stratified split (seed 0, `verified` excluded). Every model loses 0.07–0.12 on the official split.](figures/fig5_split_reconciliation.png)
+![Figure 7. AUROC on the official released split vs our stratified development split (seed 0, `verified` excluded). Every model loses 0.07–0.12 on the official split.](figures/fig5_split_reconciliation.png)
 
-*Figure 7. AUROC on the official released split vs our stratified split (seed 0, `verified` excluded). Every model loses 0.07–0.12 on the official split.*
+*Figure 7. AUROC on the official released split vs our stratified development split (seed 0, `verified` excluded). Every model loses 0.07–0.12 on the official split.*
 
 **4.7 Answers to the original research questions.**
 
@@ -349,7 +344,7 @@ The deep LLM–GNN fusion we planned did not outperform simple fusion, and the a
 **4.9 Limitations.**
 
 - **Labels:** TwiBot-22's labels are mostly automatic, and our clean label sets are small (105 and 44 bots).
-- **Final test set:** it covers the tree and graph models; the language models were scored on the development test set only.
+- **Final holdout:** it covers the tree and graph models; the language models were scored on the development test set only.
 - **The LLM:** it read up to 480 tokens, trained on 1,300 users and has 1.7 billion parameters. Larger models or more data might do better.
 - **Tweets:** used on a 100,000-user sample only.
 - **Tuning:** GNN hyperparameters were not tuned, and some cells have a single seed.
@@ -379,9 +374,8 @@ Several parts of the problem remain open beyond this project.
 
 ## 7. Bibliography
 
-*(All entries 2021 or later; older methods are described in the text, not cited. Each entry checked on arXiv, Crossref or the publisher on 6 Nov 2026. Style to be unified.)*
+*(All entries are from 2021 onward; older methods are described in the text without citation.)*
 
-- Bo, D., Wang, X., Shi, C., & Shen, H. (2021). Beyond low-frequency information in graph convolutional networks (FAGCN). *AAAI 2021*. arXiv:2101.00797.
 - Feng, S., Wan, H., Wang, N., Li, J., & Luo, M. (2021). TwiBot-20: A comprehensive Twitter bot detection benchmark. *CIKM 2021*. arXiv:2106.13088.
 - Feng, S., Tan, Z., Wan, H., Wang, N., Chen, Z., Zhang, B., et al. (2022). TwiBot-22: Towards graph-based Twitter bot detection. *NeurIPS 2022 Datasets and Benchmarks*. arXiv:2206.04564.
 - Feng, S., Wan, H., Wang, N., et al. (2024). What does the bot say? Opportunities and risks of large language models in social media bot detection. *ACL 2024*. arXiv:2402.00371.
